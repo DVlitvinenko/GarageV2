@@ -72,12 +72,13 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+
         $request->validate([
             'phone' => 'required|string',
             'password' => 'required|string',
         ]);
 
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+        if (Auth::attempt(['phone' => $request->phone, 'password' => $request->password])) {
             $user = Auth::user();
             $token = $user->createToken('auth_token')->plainTextToken;
 
@@ -85,14 +86,19 @@ class AuthController extends Controller
         }
 
         throw ValidationException::withMessages([
-            'email' => ['The provided credentials are incorrect.'],
+            'phone' => ['The provided credentials are incorrect.'],
         ]);
     }
 
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();
-
         return response()->json(['message' => 'User logged out successfully']);
+    }
+
+    public function  getSession(Request $request)
+    {
+        $user = Auth::user();
+        return response()->json(['user_name' => $user->name]);
     }
 }
