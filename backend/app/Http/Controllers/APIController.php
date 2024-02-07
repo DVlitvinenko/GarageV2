@@ -237,7 +237,9 @@ class APIController extends Controller
         $cityName = $request->input('city');
         $divisionName = $request->input('division_name');
 
-        $car = Car::find($carId);
+        $car = Car::where('id', $carId)
+            ->where('park_id', $park->id)
+            ->first();
         if (!$car) {
             return response()->json(['message' => 'Автомобиль не найден'], 404);
         }
@@ -314,7 +316,9 @@ class APIController extends Controller
             return response()->json(['errors' => $validator->errors()], 400);
         }
         $carId = $request->input('car_id');
-        $car = Car::find($carId);
+        $car = Car::where('id', $carId)
+            ->where('park_id', $park->id)
+            ->first();
         if (!$car) {
             return response()->json(['message' => 'Автомобиль не найден'], 404);
         }
@@ -542,7 +546,9 @@ class APIController extends Controller
         $rentTermId = $request->input('rent_term_id');
         $carId = $request->input('car_id');
 
-        $car = Car::find($carId);
+        $car = Car::where('id', $carId)
+            ->where('park_id', $park->id)
+            ->first();
 
         if (!$car) {
             return response()->json(['message' => 'Автомобиль не найден'], 404);
