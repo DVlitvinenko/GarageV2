@@ -13,9 +13,9 @@ use App\Http\Controllers\APIController;
 |
 */
 
-Route::get('/', function () {
-    return redirect()->route('home');
-});
+// Route::get('/', function () {
+//     return redirect()->route('home');
+// });
 
 
 
@@ -27,9 +27,9 @@ Route::post('/parks/rent-terms', [APIController::class, 'createOrUpdateRentTerm'
 
 
 
-Auth::routes();
+// Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 
 Route::group(['prefix' => 'admin'], function () {
