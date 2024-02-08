@@ -13,23 +13,24 @@ use App\Http\Controllers\ParserController;
 use App\Models\City;
 use App\Models\DriverSpecification;
 use App\Models\DriverDoc;
+use Session;
 
 class AuthController extends Controller
 {
     public function register(Request $request)
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:40', 'regex:/^[А-Яа-яЁё\s]+$/u'],
+            // 'name' => ['required', 'string', 'max:40', 'regex:/^[А-Яа-яЁё\s]+$/u'],
             'captcha_token' => ['nullable'],
             'phone' => ['required', 'string', 'max:255', 'unique:users'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'city' => ['required', 'string', 'max:250', function ($attribute, $value, $fail) {
-                $parser = new ParserController();
-                if (!$parser->parseCity($value)) {
-                    $fail('Некорректный город.');
-                }
-            }],
+            // 'email' => ['string', 'email', 'max:255', 'unique:users'],
+            // 'password' => ['required', 'string', 'min:8', 'confirmed'],
+            // 'city' => ['required', 'string', 'max:250', function ($attribute, $value, $fail) {
+            //     $parser = new ParserController();
+            //     if (!$parser->parseCity($value)) {
+            //         $fail('Некорректный город.');
+            //     }
+            // }],
         ], [
             'captcha_token.required' => __('google captcha is required'),
             'name.required' => __('name is required'),
@@ -45,20 +46,20 @@ class AuthController extends Controller
         ]);
 
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+            // 'name' => $request->name,
+            // 'email' => $request->email,
+            // 'password' => Hash::make($request->password),
             'user_status' => false,  //водитель
             'phone' => $request->phone,
             'avatar' => 'users/default.png',
             'user_type' => 1 //водитель
         ]);
-        $cityName = $request->city;
-        $city = City::firstOrCreate(['name' => $cityName]);
+        // $cityName = $request->city;
+        // $city = City::firstOrCreate(['name' => $cityName]);
         $driver = Driver::create(
             [
                 'user_id' => $user->id,
-                'city_id' => $city->id,
+                // 'city_id' => $city->id,
             ]
         );
         $driverSpecification = DriverSpecification::create([
@@ -72,12 +73,13 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+
         $request->validate([
             'phone' => 'required|string',
             'password' => 'required|string',
         ]);
 
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+        if (Auth::attempt(['phone' => $request->phone, 'password' => $request->password])) {
             $user = Auth::user();
             $token = $user->createToken('auth_token')->plainTextToken;
 
@@ -85,14 +87,13 @@ class AuthController extends Controller
         }
 
         throw ValidationException::withMessages([
-            'email' => ['The provided credentials are incorrect.'],
+            'phone' => ['The provided credentials are incorrect.'],
         ]);
     }
 
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();
-
         return response()->json(['message' => 'User logged out successfully']);
     }
 }

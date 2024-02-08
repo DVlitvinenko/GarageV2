@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Auth\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,9 +15,11 @@ use App\Http\Controllers\AuthController;
 |
 */
 
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api');
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+
+// "access_token": "1|vynLWb2gOiMpic0aLgoEPmfwdpARiQPXjYn3DiKl74225261"
