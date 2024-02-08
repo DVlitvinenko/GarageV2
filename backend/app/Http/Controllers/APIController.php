@@ -35,6 +35,7 @@ class APIController extends Controller
     /**
      * @OA\Post(
      *     path="/push-cars",
+     *      operationId="pushCars",
      *     summary="Добавить несколько автомобилей",
      *     tags={"API"},
      *     security={{"api_key": {}}},
@@ -155,6 +156,7 @@ class APIController extends Controller
     /**
      * @OA\Put(
      *     path="/cars",
+     *      operationId="updateCar",
      *     summary="Обновление информации о машине",
      *     tags={"API"},
      *     security={{"api_key": {}}},
@@ -273,6 +275,7 @@ class APIController extends Controller
     /**
      * @OA\Put(
      *     path="/cars/status",
+     *      operationId="updateCarStatus",
      *     summary="Обновление статуса допуска к бронированию",
      *     tags={"API"},
      *     security={{"api_key": {}}},
@@ -392,6 +395,7 @@ class APIController extends Controller
     /**
      * @OA\Post(
      *     path="/parks/rent-terms",
+     *      operationId="createOrUpdateRentTerm",
      *     summary="Создание или обновление условий аренды",
      *     tags={"API"},
      *     security={{"api_key": {}}},
@@ -501,6 +505,7 @@ class APIController extends Controller
     /**
      * @OA\Put(
      *     path="/cars/rent-term",
+     *      operationId="updateCarDivision",
      *     summary="Обновление условия аренды для автомобиля",
      *     tags={"API"},
      *     security={{"api_key": {}}},

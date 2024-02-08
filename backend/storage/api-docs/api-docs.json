@@ -12,7 +12,7 @@
                     "API"
                 ],
                 "summary": "Добавить несколько автомобилей",
-                "operationId": "7838e7c632ad3876ae62a5a544449d85",
+                "operationId": "pushCars",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -267,7 +267,7 @@
                     "API"
                 ],
                 "summary": "Обновление информации о машине",
-                "operationId": "74cdb8dd97de08138d34742b0e2ec1b7",
+                "operationId": "updateCar",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -396,7 +396,7 @@
                     "API"
                 ],
                 "summary": "Обновление статуса допуска к бронированию",
-                "operationId": "b3717a476efa167d113b3d8929b4df08",
+                "operationId": "updateCarStatus",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -562,7 +562,7 @@
                     "API"
                 ],
                 "summary": "Создание или обновление условий аренды",
-                "operationId": "9668267f390ece5fb232da345153abe6",
+                "operationId": "createOrUpdateRentTerm",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -740,7 +740,7 @@
                     "API"
                 ],
                 "summary": "Обновление условия аренды для автомобиля",
-                "operationId": "30574ac784a00c428460e9cec40254b2",
+                "operationId": "updateCarDivision",
                 "requestBody": {
                     "required": true,
                     "content": {

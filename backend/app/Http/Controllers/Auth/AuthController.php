@@ -99,6 +99,7 @@ class AuthController extends Controller
     /**
      * @OA\Get(
      *     path="/user",
+     *      operationId="loginOrRegister",
      *     summary="Аутентификация пользователя или регистрация нового",
      *     tags={"Authentication"},
      *     @OA\RequestBody(
@@ -145,6 +146,7 @@ class AuthController extends Controller
     /**
      * @OA\Post(
      *     path="/user/logout",
+     *      operationId="logout",
      *     summary="Выход пользователя из системы",
      *     tags={"Authentication"},
      *     security={{"bearerAuth": {}}},
@@ -191,6 +193,7 @@ class AuthController extends Controller
     /**
      * @OA\Post(
      *     path="/user/code",
+     *      operationId="phoneCodeAuthentication",
      *     summary="Создание и отправка кода аутентификации",
      *     tags={"Authentication"},
      *     @OA\RequestBody(
