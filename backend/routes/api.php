@@ -20,7 +20,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
-Route::middleware('auth:sanctum')->get('/user-name', [AuthController::class, 'getSession']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 // "access_token": "1|vynLWb2gOiMpic0aLgoEPmfwdpARiQPXjYn3DiKl74225261"
