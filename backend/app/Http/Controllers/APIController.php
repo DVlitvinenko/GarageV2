@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Car;
 use App\Models\City;
+use App\Models\Tariff;
 use App\Models\RentTerm;
 
 use Illuminate\Support\Str;
@@ -138,7 +139,7 @@ class APIController extends Controller
             $car->transmission_type = $carData['transmission_type'];
             $car->brand = $carData['brand'];
             $car->model = $carData['model'];
-            $car->conditions = $carData['class'];
+            $car->tariff_id = $this->GetTariffId($park->id, $city->id, $carData['class']);
             $car->year_produced = $carData['year_produced'];
             $car->id_car = $carData['id'];
             $car->images = json_encode($carData['images']);
@@ -256,7 +257,7 @@ class APIController extends Controller
             'name' => $divisionName,
         ]);
 
-
+        $car->tariff_id = $this->GetTariffId($park->id, $city->id, $request->input('class'));
         $car->division_id = $division->id;
         $car->fuel_type = $request->input('fuel_type');
         $car->transmission_type = $request->input('transmission_type');
@@ -568,5 +569,39 @@ class APIController extends Controller
         $car->save();
 
         return response()->json(['message' => 'Условие аренды успешно привязано к автомобилю'], 200);
+    }
+    private function GetTariffId($park_id, $city_id, $classNum)
+    {
+        $class = '';
+        switch ($classNum) {
+            case 1:
+                $class = 'Эконом';
+                break;
+            case 2:
+                $class = 'Комфорт';
+                break;
+            case 3:
+                $class = 'Комфорт+';
+                break;
+            case 4:
+                $class = 'Бизнес';
+                break;
+            default:
+                $class = null;
+                break;
+        }
+        $tariffId = Tariff::where('class', $class)
+            ->where('park_id', $park_id)
+            ->where('city_id', $city_id)
+            ->value('id');
+        if (!$tariffId) {
+            $newTariff = Tariff::create([
+                'class' => $class,
+                'park_id' => $park_id,
+                'city_id' => $city_id,
+            ]);
+            $tariffId = $newTariff->id;
+        }
+        return $tariffId;
     }
 }
