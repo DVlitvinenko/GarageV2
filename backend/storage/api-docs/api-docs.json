@@ -863,7 +863,7 @@
                     "Authentication"
                 ],
                 "summary": "Аутентификация пользователя или регистрация нового",
-                "operationId": "9889f4d9cd27b751520fb065d3b3d637",
+                "operationId": "loginOrRegister",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -932,7 +932,7 @@
                     "Authentication"
                 ],
                 "summary": "Выход пользователя из системы",
-                "operationId": "6f0c924e4acc7acf3c54e5163c500729",
+                "operationId": "logout",
                 "responses": {
                     "200": {
                         "description": "Пользователь успешно вышел из системы",
@@ -980,7 +980,7 @@
                     "Authentication"
                 ],
                 "summary": "Создание и отправка кода аутентификации",
-                "operationId": "56b32f6718fbc510954704763c143438",
+                "operationId": "phoneCodeAuthentication",
                 "requestBody": {
                     "required": true,
                     "content": {
