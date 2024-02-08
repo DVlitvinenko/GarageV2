@@ -160,6 +160,108 @@
             }
         },
         "/cars": {
+            "get": {
+                "tags": [
+                    "Cars"
+                ],
+                "summary": "Получение списка автомобилей с учетом фильтров",
+                "operationId": "4e0a432c98e544a16b14a68f758ffdcd",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "city": {
+                                        "description": "Название города",
+                                        "type": "string"
+                                    },
+                                    "fuel_type": {
+                                        "description": "Тип топлива",
+                                        "type": "string"
+                                    },
+                                    "transmission_type": {
+                                        "description": "Тип трансмиссии",
+                                        "type": "string"
+                                    },
+                                    "brand": {
+                                        "description": "Марка автомобиля",
+                                        "type": "string"
+                                    },
+                                    "model": {
+                                        "description": "Модель автомобиля",
+                                        "type": "string"
+                                    },
+                                    "class": {
+                                        "description": "Класс автомобиля (1 - Эконом, 2 - Комфорт, 3 - Комфорт+, 4 - Бизнес)",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "cars": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "description": "Идентификатор автомобиля",
+                                                        "type": "integer"
+                                                    },
+                                                    "brand": {
+                                                        "description": "Марка автомобиля",
+                                                        "type": "string"
+                                                    },
+                                                    "model": {
+                                                        "description": "Модель автомобиля",
+                                                        "type": "string"
+                                                    },
+                                                    "tariff_id": {
+                                                        "description": "Идентификатор тарифа",
+                                                        "type": "integer"
+                                                    },
+                                                    "fuel_type": {
+                                                        "description": "Тип топлива",
+                                                        "type": "string"
+                                                    },
+                                                    "transmission_type": {
+                                                        "description": "Тип трансмиссии",
+                                                        "type": "string"
+                                                    },
+                                                    "show_status": {
+                                                        "description": "Статус отображения",
+                                                        "type": "integer"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Ошибка аутентификации"
+                    },
+                    "422": {
+                        "description": "Ошибки валидации"
+                    },
+                    "500": {
+                        "description": "Ошибка сервера"
+                    }
+                }
+            },
             "put": {
                 "tags": [
                     "API"
@@ -931,6 +1033,255 @@
                         }
                     }
                 }
+            }
+        },
+        "/auth/cars": {
+            "get": {
+                "tags": [
+                    "Cars"
+                ],
+                "summary": "Получение списка автомобилей с учетом фильтров (аутентифицированный запрос)",
+                "operationId": "263595f2615520d6dd22e4c9efe54ae0",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "city": {
+                                        "description": "Название города",
+                                        "type": "string"
+                                    },
+                                    "fuel_type": {
+                                        "description": "Тип топлива",
+                                        "type": "string"
+                                    },
+                                    "transmission_type": {
+                                        "description": "Тип трансмиссии",
+                                        "type": "string"
+                                    },
+                                    "brand": {
+                                        "description": "Марка автомобиля",
+                                        "type": "string"
+                                    },
+                                    "model": {
+                                        "description": "Модель автомобиля",
+                                        "type": "string"
+                                    },
+                                    "class": {
+                                        "description": "Класс автомобиля (1 - Эконом, 2 - Комфорт, 3 - Комфорт+, 4 - Бизнес)",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "cars": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "description": "Идентификатор автомобиля",
+                                                        "type": "integer"
+                                                    },
+                                                    "brand": {
+                                                        "description": "Марка автомобиля",
+                                                        "type": "string"
+                                                    },
+                                                    "model": {
+                                                        "description": "Модель автомобиля",
+                                                        "type": "string"
+                                                    },
+                                                    "tariff_id": {
+                                                        "description": "Идентификатор тарифа",
+                                                        "type": "integer"
+                                                    },
+                                                    "fuel_type": {
+                                                        "description": "Тип топлива",
+                                                        "type": "string"
+                                                    },
+                                                    "transmission_type": {
+                                                        "description": "Тип трансмиссии",
+                                                        "type": "string"
+                                                    },
+                                                    "show_status": {
+                                                        "description": "Статус отображения",
+                                                        "type": "integer"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Ошибка аутентификации"
+                    },
+                    "422": {
+                        "description": "Ошибки валидации"
+                    },
+                    "500": {
+                        "description": "Ошибка сервера"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/auth/cars/booking": {
+            "post": {
+                "tags": [
+                    "Cars"
+                ],
+                "summary": "Бронирование автомобиля",
+                "operationId": "3431841610c9b3414e142806bb87e834",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "car_id": {
+                                        "description": "Идентификатор автомобиля, который необходимо забронировать",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Успешное бронирование",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Автомобиль успешно забронирован"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Пользователь не зарегистрирован или не верифицирован",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Пользователь не зарегистрирован или не верифицирован"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Машина не найдена",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Машина не найдена"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/auth/cars/cancel-booking": {
+            "post": {
+                "tags": [
+                    "Cars"
+                ],
+                "summary": "Отмена бронирования автомобиля (аутентифицированный запрос)",
+                "operationId": "fd3ea01bf0467434eb0f852769cd5727",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "car_id": {
+                                        "description": "Идентификатор автомобиля",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "description": "Сообщение об успешной отмене бронирования",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Ошибка аутентификации"
+                    },
+                    "403": {
+                        "description": "Ошибка доступа"
+                    },
+                    "404": {
+                        "description": "Машина не найдена"
+                    },
+                    "500": {
+                        "description": "Ошибка сервера"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/api/upload-file": {

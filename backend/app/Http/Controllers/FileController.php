@@ -17,6 +17,7 @@ class FileController extends Controller
      *      path="/api/upload-file",
      *      operationId="uploadFile",
      *      tags={"Files"},
+     *     security={{"bearerAuth": {}}},
      *      summary="Upload a file",
      *      description="Upload a file and associate it with the authenticated user's driver documents.",
      *      @OA\RequestBody(
