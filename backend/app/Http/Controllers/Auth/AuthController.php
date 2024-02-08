@@ -16,6 +16,10 @@ use App\Models\DriverDoc;
 use Session;
 use Illuminate\Support\Facades\Http;
 
+
+
+
+
 class AuthController extends Controller
 {
     // public function register(Request $request)
@@ -92,7 +96,27 @@ class AuthController extends Controller
     //     ]);
     // }
 
-
+    /**
+     * @OA\Get(
+     *     path="/user",
+     *     summary="Аутентификация пользователя или регистрация нового",
+     *     tags={"Authentication"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="phone", type="string", example="1234567890", description="Номер телефона пользователя"),
+     *             @OA\Property(property="code", type="integer", example=1234, description="Код аутентификации")
+     *         )
+     *     ),
+     *     @OA\Response(response="200", description="Успешная аутентификация или регистрация", @OA\JsonContent(
+     *         @OA\Property(property="user", type="object", description="Данные пользователя"),
+     *         @OA\Property(property="access_token", type="string", description="Токен аутентификации")
+     *     )),
+     *     @OA\Response(response="422", description="Ошибка валидации", @OA\JsonContent(
+     *         @OA\Property(property="errors", type="object", description="Список ошибок валидации")
+     *     ))
+     * )
+     */
     public function loginOrRegister(Request $request)
     {
 
@@ -117,6 +141,21 @@ class AuthController extends Controller
         }
     }
 
+
+    /**
+     * @OA\Post(
+     *     path="/user/logout",
+     *     summary="Выход пользователя из системы",
+     *     tags={"Authentication"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(response="200", description="Пользователь успешно вышел из системы", @OA\JsonContent(
+     *         @OA\Property(property="message", type="string", example="Пользователь успешно вышел из системы")
+     *     )),
+     *     @OA\Response(response="401", description="Ошибка аутентификации", @OA\JsonContent(
+     *         @OA\Property(property="message", type="string", example="Недопустимый токен аутентификации")
+     *     ))
+     * )
+     */
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();
@@ -148,18 +187,33 @@ class AuthController extends Controller
             return response()->json(['success' => false]);
         }
     }
+
+    /**
+     * @OA\Post(
+     *     path="/user/code",
+     *     summary="Создание и отправка кода аутентификации",
+     *     tags={"Authentication"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="phone", type="string", example="1234567890", description="Номер телефона пользователя")
+     *         )
+     *     ),
+     *     @OA\Response(response="200", description="Код аутентификации успешно отправлен", @OA\JsonContent(
+     *         @OA\Property(property="success", type="boolean", example=true, description="Успешность отправки кода")
+     *     )),
+     *     @OA\Response(response="422", description="Ошибка валидации", @OA\JsonContent(
+     *         @OA\Property(property="errors", type="object", description="Список ошибок валидации")
+     *     ))
+     * )
+     */
     public function phoneCodeAuthentication($phone, $code)
     {
-        // Найдите пользователя по полю "phone"
         $user = User::where('phone', $phone)->first();
-
-        // Проверьте, существует ли пользователь и совпадает ли код
         if ($user && $user->code === $code) {
-            // Аутентифицируйте пользователя
             Auth::login($user);
             return true;
         }
-
         return false;
     }
 }
