@@ -21,11 +21,11 @@ URL::forceScheme('https');
 
 
 
-Route::post('/cars', [APIController::class, 'pushCars'])->middleware('api.key');
-Route::put('/cars', [APIController::class, 'updateCar'])->middleware('api.key');
-Route::put('/cars/rent-term', [APIController::class, 'UpdateCarRentTerm'])->middleware('api.key');
-Route::put('/cars/status', [APIController::class, 'updateCarStatus'])->middleware('api.key');
-Route::post('/parks/rent-terms', [APIController::class, 'createOrUpdateRentTerm'])->middleware('api.key');
+Route::middleware('api.key')->post('/cars', [APIController::class, 'pushCars']);
+Route::middleware('api.key')->put('/cars', [APIController::class, 'updateCar']);
+Route::middleware('api.key')->put('/cars/rent-term', [APIController::class, 'UpdateCarRentTerm']);
+Route::middleware('api.key')->put('/cars/status', [APIController::class, 'updateCarStatus']);
+Route::middleware('api.key')->post('/parks/rent-terms', [APIController::class, 'createOrUpdateRentTerm']);
 
 
 
