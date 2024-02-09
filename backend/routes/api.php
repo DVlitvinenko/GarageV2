@@ -17,11 +17,6 @@ use App\Http\Controllers\CarsController;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-// Route::post('user/register', [AuthController::class, 'register']);
-// Route::post('user/login', [AuthController::class, 'login'])->name('login');
 Route::middleware('auth:sanctum')->get('auth/cars', [CarsController::class, 'GetCars']);
 Route::middleware('auth:sanctum')->post('auth/cars/booking', [CarsController::class, 'Booking']);
 Route::middleware('auth:sanctum')->post('auth/cars/cancel-booking', [CarsController::class, 'cancelBooking']);
