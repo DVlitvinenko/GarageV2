@@ -339,6 +339,103 @@
                                                         "type": "string",
                                                         "format": "date-time"
                                                     },
+                                                    "division": {
+                                                        "description": "Данные о подразделении",
+                                                        "properties": {
+                                                            "id": {
+                                                                "description": "Идентификатор подразделения",
+                                                                "type": "integer"
+                                                            },
+                                                            "park": {
+                                                                "description": "Данные о парке",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "description": "Идентификатор парка",
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "API_key": {
+                                                                        "description": "API ключ",
+                                                                        "type": "string"
+                                                                    },
+                                                                    "url": {
+                                                                        "description": "URL",
+                                                                        "type": "string"
+                                                                    },
+                                                                    "comission": {
+                                                                        "description": "Комиссия",
+                                                                        "type": "number",
+                                                                        "format": "double"
+                                                                    },
+                                                                    "park_name": {
+                                                                        "description": "Название парка",
+                                                                        "type": "string"
+                                                                    },
+                                                                    "about": {
+                                                                        "description": "Описание",
+                                                                        "type": "string"
+                                                                    },
+                                                                    "working_hours": {
+                                                                        "description": "Рабочие часы",
+                                                                        "type": "string"
+                                                                    },
+                                                                    "created_at": {
+                                                                        "description": "Дата создания записи",
+                                                                        "type": "string",
+                                                                        "format": "date-time"
+                                                                    },
+                                                                    "updated_at": {
+                                                                        "description": "Дата обновления записи",
+                                                                        "type": "string",
+                                                                        "format": "date-time"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            },
+                                                            "city": {
+                                                                "description": "Данные о городе",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "description": "Идентификатор города",
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "description": "Название города",
+                                                                        "type": "string"
+                                                                    },
+                                                                    "created_at": {
+                                                                        "description": "Дата создания записи",
+                                                                        "type": "string",
+                                                                        "format": "date-time"
+                                                                    },
+                                                                    "updated_at": {
+                                                                        "description": "Дата обновления записи",
+                                                                        "type": "string",
+                                                                        "format": "date-time"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            },
+                                                            "coords": {
+                                                                "description": "Координаты",
+                                                                "type": "string"
+                                                            },
+                                                            "address": {
+                                                                "description": "Адрес",
+                                                                "type": "string"
+                                                            },
+                                                            "created_at": {
+                                                                "description": "Дата создания записи",
+                                                                "type": "string",
+                                                                "format": "date-time"
+                                                            },
+                                                            "updated_at": {
+                                                                "description": "Дата обновления записи",
+                                                                "type": "string",
+                                                                "format": "date-time"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
                                                     "tariff": {
                                                         "description": "Данные о тарифе",
                                                         "properties": {
@@ -763,9 +860,9 @@
                 "tags": [
                     "API"
                 ],
-                "summary": "Изменить статус бронирования автомобиля",
+                "summary": "Изменить статус бронирования автомобиля, ОТ МОЕГО ГАРАЖА",
                 "description": "Изменить статус бронирования автомобиля\n\nЭтот метод используется для передачи данных ОТ МОЕГО ГАРАЖА.",
-                "operationId": "4f2f767882ae7fd819e39245f993e128",
+                "operationId": "changedBookingStatus",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1587,6 +1684,103 @@
                                                         "description": "Дата обновления записи",
                                                         "type": "string",
                                                         "format": "date-time"
+                                                    },
+                                                    "division": {
+                                                        "description": "Данные о подразделении",
+                                                        "properties": {
+                                                            "id": {
+                                                                "description": "Идентификатор подразделения",
+                                                                "type": "integer"
+                                                            },
+                                                            "park": {
+                                                                "description": "Данные о парке",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "description": "Идентификатор парка",
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "API_key": {
+                                                                        "description": "API ключ",
+                                                                        "type": "string"
+                                                                    },
+                                                                    "url": {
+                                                                        "description": "URL",
+                                                                        "type": "string"
+                                                                    },
+                                                                    "comission": {
+                                                                        "description": "Комиссия",
+                                                                        "type": "number",
+                                                                        "format": "double"
+                                                                    },
+                                                                    "park_name": {
+                                                                        "description": "Название парка",
+                                                                        "type": "string"
+                                                                    },
+                                                                    "about": {
+                                                                        "description": "Описание",
+                                                                        "type": "string"
+                                                                    },
+                                                                    "working_hours": {
+                                                                        "description": "Рабочие часы",
+                                                                        "type": "string"
+                                                                    },
+                                                                    "created_at": {
+                                                                        "description": "Дата создания записи",
+                                                                        "type": "string",
+                                                                        "format": "date-time"
+                                                                    },
+                                                                    "updated_at": {
+                                                                        "description": "Дата обновления записи",
+                                                                        "type": "string",
+                                                                        "format": "date-time"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            },
+                                                            "city": {
+                                                                "description": "Данные о городе",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "description": "Идентификатор города",
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "description": "Название города",
+                                                                        "type": "string"
+                                                                    },
+                                                                    "created_at": {
+                                                                        "description": "Дата создания записи",
+                                                                        "type": "string",
+                                                                        "format": "date-time"
+                                                                    },
+                                                                    "updated_at": {
+                                                                        "description": "Дата обновления записи",
+                                                                        "type": "string",
+                                                                        "format": "date-time"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            },
+                                                            "coords": {
+                                                                "description": "Координаты",
+                                                                "type": "string"
+                                                            },
+                                                            "address": {
+                                                                "description": "Адрес",
+                                                                "type": "string"
+                                                            },
+                                                            "created_at": {
+                                                                "description": "Дата создания записи",
+                                                                "type": "string",
+                                                                "format": "date-time"
+                                                            },
+                                                            "updated_at": {
+                                                                "description": "Дата обновления записи",
+                                                                "type": "string",
+                                                                "format": "date-time"
+                                                            }
+                                                        },
+                                                        "type": "object"
                                                     },
                                                     "tariff": {
                                                         "description": "Данные о тарифе",

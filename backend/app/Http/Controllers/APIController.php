@@ -419,8 +419,9 @@ class APIController extends Controller
      *
      * @OA\Put(
      *     path="/URL_АДРЕС_ПАРКА/cars/outbound/status",
-     *     summary="Изменить статус бронирования автомобиля",
+     *     summary="Изменить статус бронирования автомобиля, ОТ МОЕГО ГАРАЖА",
      *     tags={"API"},
+     *     operationId="changedBookingStatus",
      *     security={{"api_key": {}}},
      *     @OA\RequestBody(
      *         required=true,
