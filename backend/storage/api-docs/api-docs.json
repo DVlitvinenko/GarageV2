@@ -215,7 +215,7 @@
                         }
                     },
                     {
-                        "name": "class",
+                        "name": "tariff",
                         "in": "query",
                         "description": "Класс автомобиля (1 - Эконом, 2 - Комфорт, 3 - Комфорт+, 4 - Бизнес)",
                         "required": false,
@@ -251,7 +251,7 @@
                                         "description": "Модель автомобиля",
                                         "type": "string"
                                     },
-                                    "class": {
+                                    "tariff": {
                                         "description": "Класс автомобиля (1 - Эконом, 2 - Комфорт, 3 - Комфорт+, 4 - Бизнес)",
                                         "type": "integer"
                                     }
@@ -443,7 +443,7 @@
                                                                 "description": "Идентификатор тарифа",
                                                                 "type": "integer"
                                                             },
-                                                            "class": {
+                                                            "tariff": {
                                                                 "description": "Класс тарифа",
                                                                 "type": "string"
                                                             },
@@ -1561,7 +1561,7 @@
                         }
                     },
                     {
-                        "name": "class",
+                        "name": "tariff",
                         "in": "query",
                         "description": "Класс автомобиля (1 - Эконом, 2 - Комфорт, 3 - Комфорт+, 4 - Бизнес)",
                         "required": false,
@@ -1597,7 +1597,7 @@
                                         "description": "Модель автомобиля",
                                         "type": "string"
                                     },
-                                    "class": {
+                                    "tariff": {
                                         "description": "Класс автомобиля (1 - Эконом, 2 - Комфорт, 3 - Комфорт+, 4 - Бизнес)",
                                         "type": "integer"
                                     }
@@ -1789,7 +1789,7 @@
                                                                 "description": "Идентификатор тарифа",
                                                                 "type": "integer"
                                                             },
-                                                            "class": {
+                                                            "tariff": {
                                                                 "description": "Класс тарифа",
                                                                 "type": "string"
                                                             },
