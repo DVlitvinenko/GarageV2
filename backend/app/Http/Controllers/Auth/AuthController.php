@@ -144,7 +144,7 @@ class AuthController extends Controller
             $token = $user->createToken('auth_token')->plainTextToken;
             return response()->json(['access_token' => $token]);
         }
-        return response()->json(['error' => 'Телефон или код не совпадают']);
+        return  401;
     }
     /**
      * Выход пользователя из системы
