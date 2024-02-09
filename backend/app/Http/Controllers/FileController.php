@@ -13,53 +13,60 @@ use App\Models\User;
 class FileController extends Controller
 {
     /**
+     * Загрузка файла
+     *
+     * Этот эндпоинт позволяет аутентифицированным пользователям загружать файл и связывать его с их документами водителя.
+     *
      * @OA\Post(
-     *      path="/api/upload-file",
-     *      operationId="uploadFile",
-     *      tags={"Files"},
+     *     path="/api/upload-file",
+     *     operationId="uploadFile",
+     *     tags={"Files"},
      *     security={{"bearerAuth": {}}},
-     *      summary="Upload a file",
-     *      description="Upload a file and associate it with the authenticated user's driver documents.",
-     *      @OA\RequestBody(
-     *          required=true,
-     *          description="File to upload",
-     *          @OA\MediaType(
-     *              mediaType="multipart/form-data",
-     *              @OA\Schema(
-     *                  type="object",
-     *                  @OA\Property(
-     *                      property="file",
-     *                      description="File to upload",
-     *                      type="string",
-     *                      format="binary"
-     *                  ),
-     *                  @OA\Property(
-     *                      property="type",
-     *                      description="Type of the file",
-     *                      type="string",
-     *                      enum={"image_licence_front", "image_licence_back", "image_pasport_front", "image_pasport_address", "image_fase_and_pasport"}
-     *                  ),
-     *              ),
-     *          ),
-     *      ),
-     *      @OA\Response(
-     *          response=200,
-     *          description="File uploaded successfully",
-     *          @OA\JsonContent(
-     *              @OA\Property(property="success", type="boolean", example=true),
-     *          ),
-     *      ),
-     *      @OA\Response(
-     *          response=400,
-     *          description="Bad request",
-     *          @OA\JsonContent(
-     *              @OA\Property(property="error", type="string", example="Invalid file type"),
-     *          ),
-     *      ),
-     *      security={
-     *          {"bearerAuth": {}}
-     *      }
+     *     summary="Загрузить файл",
+     *     description="Загрузить файл и связать его с документами водителя аутентифицированного пользователя",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Файл для загрузки",
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="file",
+     *                     description="Файл для загрузки",
+     *                     type="string",
+     *                     format="binary"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="type",
+     *                     description="Тип файла",
+     *                     type="string",
+     *                     enum={"image_licence_front", "image_licence_back", "image_pasport_front", "image_pasport_address", "image_fase_and_pasport"}
+     *                 ),
+     *             ),
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Файл успешно загружен",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Неверный запрос",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Недопустимый тип файла"),
+     *         ),
+     *     ),
+     *     security={
+     *         {"bearerAuth": {}}
+     *     }
      * )
+     *
+     * @param \Illuminate\Http\Request $request The request object containing the file and its type
+     * @return \Illuminate\Http\JsonResponse JSON response indicating the success or failure of the file upload
      */
     public function uploadFile(Request $request)
     {

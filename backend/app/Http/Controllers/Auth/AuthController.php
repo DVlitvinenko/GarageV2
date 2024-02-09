@@ -22,84 +22,78 @@ use Illuminate\Support\Facades\Http;
 
 class AuthController extends Controller
 {
-    // public function register(Request $request)
-    // {
-    //     $request->validate([
-    //         // 'name' => ['required', 'string', 'max:40', 'regex:/^[А-Яа-яЁё\s]+$/u'],
-    //         'captcha_token' => ['nullable'],
-    //         'phone' => ['required', 'string', 'max:255', 'unique:users'],
-    //         // 'email' => ['string', 'email', 'max:255', 'unique:users'],
-    //         // 'password' => ['required', 'string', 'min:8', 'confirmed'],
-    //         // 'city' => ['required', 'string', 'max:250', function ($attribute, $value, $fail) {
-    //         //     $parser = new ParserController();
-    //         //     if (!$parser->parseCity($value)) {
-    //         //         $fail('Некорректный город.');
-    //         //     }
-    //         // }],
-    //     ], [
-    //         'captcha_token.required' => __('google captcha is required'),
-    //         'name.required' => __('name is required'),
-    //         'name.max' => __('name is must be between 191 character'),
-    //         'name.regex' => __('name should contain only Cyrillic letters'),
-    //         'phone.required' => __('phone is required'),
-    //         'phone.max' => __('phone is must be between 191 character'),
-    //         'phone.unique' => __('phone is already taken'),
-    //         'email.unique' => __('email is already taken'),
-    //         'email.required' => __('Неправильный e-mail'),
-    //         'password.required' => __('password is required'),
-    //         'password.confirmed' => __('both password does not matched'),
-    //     ]);
 
-    //     $user = User::create([
-    //         // 'name' => $request->name,
-    //         // 'email' => $request->email,
-    //         // 'password' => Hash::make($request->password),
-    //         'user_status' => 0,  //водитель
-    //         'phone' => $request->phone,
-    //         'avatar' => 'users/default.png',
-    //         'user_type' => 1 //водитель
-    //     ]);
-    //     // $cityName = $request->city;
-    //     // $city = City::firstOrCreate(['name' => $cityName]);
-    //     $driver = Driver::create(
-    //         [
-    //             'user_id' => $user->id,
-    //             // 'city_id' => $city->id,
-    //         ]
-    //     );
-    //     $driverSpecification = DriverSpecification::create([
-    //         'driver_id ' => $driver->id,
-    //     ]);
-    //     $driverDocs = DriverDoc::create([
-    //         'driver_id ' => $driver->id,
-    //     ]);
-    //     return response()->json(['user' => $user, 'message' => 'User registered successfully']);
-    // }
-
-    // public function login(Request $request)
-    // {
-
-    //     $request->validate([
-    //         'phone' => 'required|string',
-    //         'password' => 'required|string',
-    //     ]);
-
-    //     if (Auth::attempt(['phone' => $request->phone, 'password' => $request->password])) {
-    //         $user = Auth::user();
-    //         $token = $user->createToken('auth_token')->plainTextToken;
-
-    //         return response()->json(['user' => $user, 'access_token' => $token]);
-    //     }
-
-    //     throw ValidationException::withMessages([
-    //         'phone' => ['The provided credentials are incorrect.'],
-    //     ]);
-    // }
 
     /**
+     * Получение данных пользователя (аутентифицированный запрос)
+     *
      * @OA\Get(
      *     path="/user",
-     *      operationId="loginOrRegister",
+     *     operationId="GetUser",
+     *     summary="Получение данных пользователя (аутентифицированный запрос)",
+     *     tags={"Authentication"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Успешная аутентификация или регистрация",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="user",
+     *                 type="object",
+     *                 description="Данные пользователя",
+     *                 @OA\Property(property="id", type="integer", description="ID пользователя"),
+     *                 @OA\Property(property="code", type="integer", description="Код пользователя"),
+     *                 @OA\Property(property="role_id", type="integer", description="ID роли пользователя"),
+     *                 @OA\Property(property="user_status", type="integer", description="Статус пользователя"),
+     *                 @OA\Property(property="phone", type="string", description="Номер телефона пользователя"),
+     *                 @OA\Property(property="name", type="string", nullable=true, description="Имя пользователя"),
+     *                 @OA\Property(property="email", type="string", nullable=true, description="Email пользователя"),
+     *                 @OA\Property(property="avatar", type="string", description="Аватар пользователя"),
+     *                 @OA\Property(property="created_at", type="string", format="date-time", description="Дата и время создания пользователя"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time", description="Дата и время последнего обновления пользователя"),
+     *                 @OA\Property(property="user_type", type="integer", description="Тип пользователя")
+     *             ),
+     *             @OA\Property(
+     *                 property="driver",
+     *                 type="object",
+     *                 description="Данные водителя",
+     *                 @OA\Property(property="id", type="integer", description="ID водителя"),
+     *                 @OA\Property(property="user_id", type="integer", description="ID пользователя"),
+     *                 @OA\Property(property="city_id", type="integer", nullable=true, description="ID города"),
+     *                 @OA\Property(property="created_at", type="string", format="date-time", description="Дата и время создания водителя"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time", description="Дата и время последнего обновления водителя")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Ошибка валидации",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="errors",
+     *                 type="object",
+     *                 description="Список ошибок валидации"
+     *             )
+     *         )
+     *     )
+     * )
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function GetUser(Request $request)
+    {
+        $user = Auth::user();
+        $driver = Driver::where('user_id', $user->id)->first();
+        return response()->json(['user' => $user, 'driver' => $driver]);
+    }
+
+    /**
+     * Аутентификация пользователя или регистрация нового
+     *
+     * @OA\Post(
+     *     path="/user/login",
+     *     operationId="loginOrRegister",
      *     summary="Аутентификация пользователя или регистрация нового",
      *     tags={"Authentication"},
      *     @OA\RequestBody(
@@ -109,14 +103,24 @@ class AuthController extends Controller
      *             @OA\Property(property="code", type="integer", example=1234, description="Код аутентификации")
      *         )
      *     ),
-     *     @OA\Response(response="200", description="Успешная аутентификация или регистрация", @OA\JsonContent(
-     *         @OA\Property(property="user", type="object", description="Данные пользователя"),
-     *         @OA\Property(property="access_token", type="string", description="Токен аутентификации")
-     *     )),
-     *     @OA\Response(response="422", description="Ошибка валидации", @OA\JsonContent(
-     *         @OA\Property(property="errors", type="object", description="Список ошибок валидации")
-     *     ))
+     *     @OA\Response(
+     *         response=200,
+     *         description="Успешная аутентификация или регистрация",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="access_token", type="string", description="Токен аутентификации")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Ошибка валидации",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="errors", type="object", description="Список ошибок валидации")
+     *         )
+     *     )
      * )
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function loginOrRegister(Request $request)
     {
@@ -138,32 +142,75 @@ class AuthController extends Controller
             $driverSpecification = DriverSpecification::firstOrCreate(['driver_id' => $driver->id]);
             $driverDocs = DriverDoc::firstOrCreate(['driver_id' => $driver->id]);
             $token = $user->createToken('auth_token')->plainTextToken;
-            return response()->json(['user' => $user, 'access_token' => $token]);
+            return response()->json(['access_token' => $token]);
         }
     }
-
-
     /**
+     * Выход пользователя из системы
+     *
      * @OA\Post(
      *     path="/user/logout",
-     *      operationId="logout",
+     *     operationId="logout",
      *     summary="Выход пользователя из системы",
      *     tags={"Authentication"},
      *     security={{"bearerAuth": {}}},
-     *     @OA\Response(response="200", description="Пользователь успешно вышел из системы", @OA\JsonContent(
-     *         @OA\Property(property="message", type="string", example="Пользователь успешно вышел из системы")
-     *     )),
-     *     @OA\Response(response="401", description="Ошибка аутентификации", @OA\JsonContent(
-     *         @OA\Property(property="message", type="string", example="Недопустимый токен аутентификации")
-     *     ))
+     *     @OA\Response(
+     *         response=200,
+     *         description="Пользователь успешно вышел из системы",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Пользователь успешно вышел из системы")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Ошибка аутентификации",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Недопустимый токен аутентификации")
+     *         )
+     *     )
      * )
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();
         return response()->json(['message' => 'User logged out successfully']);
     }
-
+    /**
+     * Создание и отправка проверочного кода на указанный номер телефона
+     *
+     * @OA\Post(
+     *     path="/user/code",
+     *     operationId="CreateAndSendCode",
+     *     summary="Создание и отправка проверочного кода на указанный номер телефона",
+     *     tags={"Authentication"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="phone", type="string", example="1234567890", description="Номер телефона пользователя")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Запрос успешно выполнен",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true, description="Успешность операции")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Ошибка валидации",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="errors", type="object", description="Список ошибок валидации")
+     *         )
+     *     )
+     * )
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function CreateAndSendCode(Request $request)
     {
         $request->validate([
@@ -190,27 +237,7 @@ class AuthController extends Controller
         }
     }
 
-    /**
-     * @OA\Post(
-     *     path="/user/code",
-     *      operationId="phoneCodeAuthentication",
-     *     summary="Создание и отправка кода аутентификации",
-     *     tags={"Authentication"},
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             @OA\Property(property="phone", type="string", example="1234567890", description="Номер телефона пользователя")
-     *         )
-     *     ),
-     *     @OA\Response(response="200", description="Код аутентификации успешно отправлен", @OA\JsonContent(
-     *         @OA\Property(property="success", type="boolean", example=true, description="Успешность отправки кода")
-     *     )),
-     *     @OA\Response(response="422", description="Ошибка валидации", @OA\JsonContent(
-     *         @OA\Property(property="errors", type="object", description="Список ошибок валидации")
-     *     ))
-     * )
-     */
-    public function phoneCodeAuthentication($phone, $code)
+    private function phoneCodeAuthentication($phone, $code)
     {
         $user = User::where('phone', $phone)->first();
         if ($user && $user->code === $code) {

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Car extends Model
 {
     use HasFactory;
+
     protected $fillable = ['division_id', 'tariff_id', 'rent_term_id', 'fuel_type', 'transmission_type', 'brand', 'model', 'year_produced', 'id_car', 'images', 'booking_time', 'user_booked_id', 'show_status'];
 
     public function division()
@@ -23,5 +24,10 @@ class Car extends Model
     public function rentTerm()
     {
         return $this->belongsTo(RentTerm::class);
+    }
+
+    public function schema()
+    {
+        return $this->hasOneThrough(Schema::class, RentTerm::class);
     }
 }

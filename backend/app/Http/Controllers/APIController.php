@@ -33,43 +33,68 @@ class APIController extends Controller
 
 
     /**
+     * Добавить несколько автомобилей
+     *
      * @OA\Post(
      *     path="/push-cars",
-     *      operationId="pushCars",
+     *     operationId="pushCars",
      *     summary="Добавить несколько автомобилей",
      *     tags={"API"},
      *     security={{"api_key": {}}},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             @OA\Property(property="cars", type="array", @OA\Items(
-     *                 @OA\Property(property="id", type="string", maxLength=17, description="VIN-номер"),
-     *                 @OA\Property(property="city", type="string", maxLength=50, description="Город колонны"),
-     *                 @OA\Property(property="division_name", type="string", maxLength=250, description="Название колонны"),
-     *                 @OA\Property(property="fuel_type", type="integer", description="Вид топлива (1 - газ, 0 - бензин)"),
-     *                 @OA\Property(property="transmission_type", type="integer", description="КПП ТС (1 - автомат, 0 - механика)"),
-     *                 @OA\Property(property="brand", type="string", maxLength=50, description="Бренд авто"),
-     *                 @OA\Property(property="model", type="string", maxLength=80, description="Модель авто"),
-     *                 @OA\Property(property="class", type="integer", description="Тариф авто (1 - эконом, 2 - комфорт, 3 - комфорт+, 4 - бизнес)"),
-     *                 @OA\Property(property="year_produced", type="integer", description="Год выпуска авто"),
-     *                 @OA\Property(property="images", type="array", @OA\Items(type="string"), description="Фото авто"),
-     *             ))
+     *             @OA\Property(
+     *                 property="cars",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     @OA\Property(property="id", type="string", maxLength=17, description="VIN-номер автомобиля"),
+     *                     @OA\Property(property="city", type="string", maxLength=50, description="Город колонны"),
+     *                     @OA\Property(property="division_name", type="string", maxLength=250, description="Название колонны"),
+     *                     @OA\Property(property="fuel_type", type="integer", description="Вид топлива (1 - газ, 0 - бензин)"),
+     *                     @OA\Property(property="transmission_type", type="integer", description="КПП ТС (1 - автомат, 0 - механика)"),
+     *                     @OA\Property(property="brand", type="string", maxLength=50, description="Бренд автомобиля"),
+     *                     @OA\Property(property="model", type="string", maxLength=80, description="Модель автомобиля"),
+     *                     @OA\Property(property="class", type="integer", description="Тариф автомобиля (1 - эконом, 2 - комфорт, 3 - комфорт+, 4 - бизнес)"),
+     *                     @OA\Property(property="year_produced", type="integer", description="Год выпуска автомобиля"),
+     *                     @OA\Property(property="images", type="array", @OA\Items(type="string"), description="Ссылки на фотографии автомобиля"),
+     *                 )
+     *             )
      *         )
      *     ),
-     *     @OA\Response(response="200", description="Успешный ответ", @OA\JsonContent(
-     *         @OA\Property(property="message", type="string", example="Автомобили успешно добавлены")
-     *     )),
-     *     @OA\Response(response="401", description="Ошибка аутентификации", @OA\JsonContent(
-     *         @OA\Property(property="message", type="string", example="Ошибка аутентификации")
-     *     )),
-     *     @OA\Response(response="500", description="Ошибка сервера", @OA\JsonContent(
-     *         @OA\Property(property="message", type="string", example="Ошибка сервера")
-     *     )),
-     *     @OA\Response(response="400", description="Ошибки валидации", @OA\JsonContent(
-     *         @OA\Property(property="message", type="string", example="Неверные или недостающие параметры в запросе"),
-     *         @OA\Property(property="errors", type="object", nullable=true, description="Список ошибок валидации")
-     *     ))
+     *     @OA\Response(
+     *         response=200,
+     *         description="Успешное добавление автомобилей",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Автомобили успешно добавлены")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Ошибка аутентификации",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Ошибка аутентификации")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Ошибка сервера",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Ошибка сервера")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Ошибки валидации",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Неверные или недостающие параметры в запросе"),
+     *             @OA\Property(property="errors", type="object", nullable=true, description="Список ошибок валидации")
+     *         )
+     *     )
      * )
+     *
+     * @param \Illuminate\Http\Request $request Объект запроса, содержащий информацию о добавляемых автомобилях
+     * @return \Illuminate\Http\JsonResponse JSON-ответ с результатом добавления автомобилей
      */
 
 
@@ -154,38 +179,59 @@ class APIController extends Controller
 
 
     /**
+     * Обновление информации о машине
+     *
      * @OA\Put(
      *     path="/cars",
-     *      operationId="updateCar",
+     *     operationId="updateCar",
      *     summary="Обновление информации о машине",
      *     tags={"API"},
      *     security={{"api_key": {}}},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             @OA\Property(property="id", type="string", maxLength=20, description="VIN-номер"),
+     *             @OA\Property(property="id", type="string", maxLength=20, description="VIN-номер машины"),
      *             @OA\Property(property="city", type="string", maxLength=50, nullable=true, description="Город машины"),
      *             @OA\Property(property="division_name", type="string", maxLength=250, nullable=true, description="Подразделение машины"),
-     *             @OA\Property(property="class", type="integer", nullable=true, description="Тариф авто (1 - эконом, 2 - комфорт, 3 - комфорт+, 4 - бизнес)"),
+     *             @OA\Property(property="class", type="integer", nullable=true, description="Тариф машины (1 - эконом, 2 - комфорт, 3 - комфорт+, 4 - бизнес)"),
      *             @OA\Property(property="images", type="array", @OA\Items(type="string"), nullable=true, description="Изображения машины"),
      *         )
      *     ),
-     *     @OA\Response(response="200", description="Успешный ответ", @OA\JsonContent(
-     *         @OA\Property(property="message", type="string", example="Машина успешно обновлена")
-     *     )),
-     *     @OA\Response(response="401", description="Ошибка аутентификации", @OA\JsonContent(
-     *         @OA\Property(property="message", type="string", example="Ошибка аутентификации")
-     *     )),
-     *     @OA\Response(response="500", description="Ошибка сервера", @OA\JsonContent(
-     *         @OA\Property(property="message", type="string", example="Ошибка сервера")
-     *     )),
-     *     @OA\Response(response="400", description="Ошибки валидации", @OA\JsonContent(
-     *         @OA\Property(property="errors", type="object", example={
-     *             "id": {"Поле id обязательно для заполнения."},
-     *             "city": {"Поле city должно быть строкой."},
-     *         })
-     *     ))
+     *     @OA\Response(
+     *         response=200,
+     *         description="Успешное обновление информации о машине",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Машина успешно обновлена")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Ошибка аутентификации",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Ошибка аутентификации")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Ошибка сервера",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Ошибка сервера")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Ошибки валидации",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="errors", type="object", example={
+     *                 "id": {"Поле id обязательно для заполнения."},
+     *                 "city": {"Поле city должно быть строкой."}
+     *             })
+     *         )
+     *     )
      * )
+     *
+     * @param \Illuminate\Http\Request $request Объект запроса, содержащий информацию об обновляемой машине
+     * @return \Illuminate\Http\JsonResponse JSON-ответ с результатом обновления информации о машине
      */
 
     public function updateCar(Request $request)
@@ -273,38 +319,63 @@ class APIController extends Controller
     }
 
     /**
+     * Обновление статуса допуска к бронированию автомобиля
+     *
      * @OA\Put(
      *     path="/cars/status",
-     *      operationId="updateCarStatus",
+     *     operationId="updateCarStatus",
      *     summary="Обновление статуса допуска к бронированию",
      *     tags={"API"},
      *     security={{"api_key": {}}},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             @OA\Property(property="id", type="string", maxLength=20, description="VIN-номер"),
-     *             @OA\Property(property="status", type="integer", description="Допуск машины к бронированию, где 1 - допущена, 0 - заблокирована")
+     *             @OA\Property(property="id", type="string", maxLength=20, description="VIN-номер автомобиля"),
+     *             @OA\Property(property="status", type="integer", description="Допуск автомобиля к бронированию. 1 - допущен, 0 - заблокирован")
      *         )
      *     ),
-     *     @OA\Response(response="200", description="Успешный ответ", @OA\JsonContent(
-     *         @OA\Property(property="message", type="string", example="Машина успешно обновлена")
-     *     )),
-     *     @OA\Response(response="401", description="Ошибка аутентификации", @OA\JsonContent(
-     *         @OA\Property(property="message", type="string", example="Ошибка аутентификации")
-     *     )),
-     *     @OA\Response(response="500", description="Ошибка сервера", @OA\JsonContent(
-     *         @OA\Property(property="message", type="string", example="Ошибка сервера")
-     *     )),
-     *     @OA\Response(response="400", description="Ошибки валидации", @OA\JsonContent(
-     *         @OA\Property(property="errors", type="object", example={
-     *             "id": {"Поле id обязательно для заполнения."},
-     *             "status": {"Поле status должно быть числом."}
-     *         })
-     *     )),
-     *         @OA\Response(response="409", description="Конфликт", @OA\JsonContent(
-     *         @OA\Property(property="errors", type="object", example="Авто сейчас забронировано, изменить статус невозможно")
-     *     ))
+     *     @OA\Response(
+     *         response=200,
+     *         description="Успешное обновление статуса автомобиля",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Статус автомобиля успешно обновлен")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Ошибка аутентификации",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Ошибка аутентификации")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Ошибка сервера",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Ошибка сервера")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Ошибки валидации",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="errors", type="object", example={
+     *                 "id": {"Поле id обязательно для заполнения."},
+     *                 "status": {"Поле status должно быть числом."}
+     *             })
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="Конфликт",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Автомобиль сейчас забронирован, изменение статуса невозможно")
+     *         )
+     *     )
      * )
+     *
+     * @param \Illuminate\Http\Request $request Объект запроса, содержащий информацию об обновляемом статусе автомобиля
+     * @return \Illuminate\Http\JsonResponse JSON-ответ с результатом обновления статуса автомобиля
      */
 
     public function updateCarStatus(Request $request)
@@ -342,22 +413,34 @@ class APIController extends Controller
 
 
     /**
+     * Изменить статус бронирования автомобиля
+     *
+     * Этот метод используется для передачи данных ОТ МОЕГО ГАРАЖА.
+     *
      * @OA\Put(
-     *     path="URL_АДРЕС_ПАРКА/cars/outbound/status",
-     *     summary="Изменить статус бронирования автомобиля, пример метода, который будет использоваться для передачи данных ОТ МОЙ ГАРАЖ",
+     *     path="/URL_АДРЕС_ПАРКА/cars/outbound/status",
+     *     summary="Изменить статус бронирования автомобиля",
      *     tags={"API"},
-     *     @OA\Response(response="204", description="Успешное изменение"),
-     *     @OA\Response(response="400", description="Некорректный запрос"),
      *     security={{"api_key": {}}},
-
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             @OA\Property(property="id", type="string", description="VIN-номер"),
-     *             @OA\Property(property="is_booked", type="integer", description="Статус бронирования, где 1 - забронировано, 0 - бронь отменена")
+     *             @OA\Property(property="id", type="string", description="VIN-номер автомобиля"),
+     *             @OA\Property(property="is_booked", type="integer", description="Статус бронирования. 1 - забронировано, 0 - бронь отменена")
      *         )
+     *     ),
+     *     @OA\Response(
+     *         response=204,
+     *         description="Успешное изменение статуса бронирования"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Некорректный запрос"
      *     )
      * )
+     *
+     * @param \Illuminate\Http\Request $request Объект запроса, содержащий информацию об изменении статуса бронирования автомобиля
+     * @return \Illuminate\Http\JsonResponse JSON-ответ с результатом изменения статуса бронирования
      */
 
     public function changedBookingStatus($car)
@@ -393,9 +476,13 @@ class APIController extends Controller
     }
 
     /**
+     * Создание или обновление условий аренды
+     *
+     * Этот метод позволяет создавать новые или обновлять существующие условия аренды для парков.
+     *
      * @OA\Post(
      *     path="/parks/rent-terms",
-     *      operationId="createOrUpdateRentTerm",
+     *     operationId="createOrUpdateRentTerm",
      *     summary="Создание или обновление условий аренды",
      *     tags={"API"},
      *     security={{"api_key": {}}},
@@ -408,37 +495,65 @@ class APIController extends Controller
      *             @OA\Property(property="is_buyout_possible", type="boolean", description="Возможность выкупа (true/false)"),
      *             @OA\Property(property="minimum_period_days", type="integer", description="Минимальный период аренды в днях"),
      *             @OA\Property(property="name", type="string", description="Название условия аренды"),
-     *             @OA\Property(property="schemas", type="array", @OA\Items(
+     *             @OA\Property(
+     *                 property="schemas",
+     *                 type="array",
+     *                 @OA\Items(
      *                     @OA\Property(property="daily_amount", type="number", format="float", description="Стоимость аренды авто"),
      *                     @OA\Property(property="non_working_days", type="integer", description="Количество нерабочих дней"),
      *                     @OA\Property(property="working_days", type="integer", description="Количество рабочих дней")
-     *                 ), description="Схемы аренды"),
+     *                 ),
+     *                 description="Схемы аренды"
+     *             ),
      *         )
      *     ),
-     *     @OA\Response(response="200", description="Успешный ответ", @OA\JsonContent(
-     *         @OA\Property(property="message", type="string", example="Условие аренды успешно создано или изменено"),
-     *         @OA\Property(property="id", type="integer", example="Идентификатор условия аренды")
-     *     )),
-     *     @OA\Response(response="401", description="Ошибка аутентификации", @OA\JsonContent(
-     *         @OA\Property(property="message", type="string", example="Ошибка аутентификации")
-     *     )),
-     *     @OA\Response(response="422", description="Ошибки валидации", @OA\JsonContent(
-     *         @OA\Property(property="errors", type="object", example={
-     *             "deposit_amount_daily": {"Поле deposit_amount_daily обязательно для заполнения и должно быть числом."},
-     *             "deposit_amount_total": {"Поле deposit_amount_total обязательно для заполнения и должно быть числом."},
-     *             "is_buyout_possible": {"Поле is_buyout_possible обязательно для заполнения и должно быть булевым значением."},
-     *             "minimum_period_days": {"Поле minimum_period_days обязательно для заполнения и должно быть целым числом."},
-     *             "name": {"Поле name обязательно для заполнения и должно быть строкой."},
-     *             "schemas": {"Поле schemas обязательно для заполнения и должно быть массивом строк."},
-     *         })
-     *     )),
-     *     @OA\Response(response="404", description="Парк с указанным API ключом не найден", @OA\JsonContent(
-     *         @OA\Property(property="message", type="string", example="Парк не найден")
-     *     )),
-     *     @OA\Response(response="500", description="Ошибка сервера", @OA\JsonContent(
-     *         @OA\Property(property="message", type="string", example="Ошибка сервера")
-     *     ))
+     *     @OA\Response(
+     *         response=200,
+     *         description="Успешное создание или обновление условий аренды",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Условие аренды успешно создано или изменено"),
+     *             @OA\Property(property="id", type="integer", example="Идентификатор условия аренды")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Ошибка аутентификации",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Ошибка аутентификации")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Ошибки валидации",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="errors", type="object", example={
+     *                 "deposit_amount_daily": {"Поле deposit_amount_daily обязательно для заполнения и должно быть числом."},
+     *                 "deposit_amount_total": {"Поле deposit_amount_total обязательно для заполнения и должно быть числом."},
+     *                 "is_buyout_possible": {"Поле is_buyout_possible обязательно для заполнения и должно быть булевым значением."},
+     *                 "minimum_period_days": {"Поле minimum_period_days обязательно для заполнения и должно быть целым числом."},
+     *                 "name": {"Поле name обязательно для заполнения и должно быть строкой."},
+     *                 "schemas": {"Поле schemas обязательно для заполнения и должно быть массивом строк."},
+     *             })
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Парк с указанным API ключом не найден",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Парк не найден")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Ошибка сервера",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Ошибка сервера")
+     *         )
+     *     )
      * )
+     *
+     * @param \Illuminate\Http\Request $request Объект запроса с данными для создания или обновления условий аренды
+     * @return \Illuminate\Http\JsonResponse JSON-ответ с результатом операции
      */
 
 
@@ -503,38 +618,65 @@ class APIController extends Controller
     }
 
     /**
+     * Обновление условия аренды для автомобиля
+     *
+     * Этот метод позволяет обновлять условие аренды для конкретного автомобиля по его VIN-номеру.
+     *
      * @OA\Put(
      *     path="/cars/rent-term",
-     *      operationId="updateCarDivision",
+     *     operationId="updateCarDivision",
      *     summary="Обновление условия аренды для автомобиля",
      *     tags={"API"},
      *     security={{"api_key": {}}},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             @OA\Property(property="id", type="string", description="VIN-номер"),
-     *             @OA\Property(property="rent_term_id", type="integer", description="Идентификатор условия аренды"),
+     *             @OA\Property(property="id", type="string", description="VIN-номер автомобиля"),
+     *             @OA\Property(property="rent_term_id", type="integer", description="Идентификатор условия аренды")
      *         )
      *     ),
-     *     @OA\Response(response="200", description="Успешный ответ", @OA\JsonContent(
-     *         @OA\Property(property="message", type="string", example="Условие аренды успешно обновлено для автомобиля")
-     *     )),
-     *     @OA\Response(response="401", description="Ошибка аутентификации", @OA\JsonContent(
-     *         @OA\Property(property="message", type="string", example="Ошибка аутентификации")
-     *     )),
-     *     @OA\Response(response="400", description="Ошибки валидации", @OA\JsonContent(
-     *         @OA\Property(property="errors", type="object", example={
-     *             "rent_term_id": {"Поле rent_term_id обязательно для заполнения и должно быть целым числом."},
-     *             "id": {"Поле id обязательно для заполнения и должно быть целым числом."},
-     *         })
-     *     )),
-     *     @OA\Response(response="404", description="Условие аренды или автомобиль не найдены", @OA\JsonContent(
-     *         @OA\Property(property="message", type="string", example="Условие аренды или автомобиль не найдены")
-     *     )),
-     *     @OA\Response(response="500", description="Ошибка сервера", @OA\JsonContent(
-     *         @OA\Property(property="message", type="string", example="Ошибка сервера")
-     *     ))
+     *     @OA\Response(
+     *         response=200,
+     *         description="Успешное обновление условия аренды для автомобиля",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Условие аренды успешно обновлено для автомобиля")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Ошибка аутентификации",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Ошибка аутентификации")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Ошибки валидации",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="errors", type="object", example={
+     *                 "rent_term_id": {"Поле rent_term_id обязательно для заполнения и должно быть целым числом."},
+     *                 "id": {"Поле id обязательно для заполнения и должно быть целым числом."}
+     *             })
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Условие аренды или автомобиль не найдены",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Условие аренды или автомобиль не найдены")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Ошибка сервера",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Ошибка сервера")
+     *         )
+     *     )
      * )
+     *
+     * @param \Illuminate\Http\Request $request Объект запроса с данными для обновления условия аренды для автомобиля
+     * @return \Illuminate\Http\JsonResponse JSON-ответ с результатом операции
      */
 
     public function updateCarDivision(Request $request)

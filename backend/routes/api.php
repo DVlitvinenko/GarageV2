@@ -26,7 +26,8 @@ Route::middleware('auth:sanctum')->get('auth/cars', [CarsController::class, 'Get
 Route::middleware('auth:sanctum')->post('auth/cars/booking', [CarsController::class, 'Booking']);
 Route::middleware('auth:sanctum')->post('auth/cars/cancel-booking', [CarsController::class, 'cancelBooking']);
 Route::get('cars', [CarsController::class, 'GetCars']);
-Route::get('user', [AuthController::class, 'loginOrRegister']);
+Route::post('user/login', [AuthController::class, 'loginOrRegister']);
+Route::middleware('auth:sanctum')->get('user', [AuthController::class, 'GetUser']);
 Route::post('user/code', [AuthController::class, 'CreateAndSendCode']);
 Route::post('user/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 Route::middleware('auth:sanctum')->post('upload-file', [FileController::class, 'uploadFile']);
