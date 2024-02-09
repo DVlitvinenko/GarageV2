@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\APIController;
+use Illuminate\Support\Facades\URL;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,6 +14,7 @@ use App\Http\Controllers\APIController;
 |
 */
 
+URL::forceScheme('https');
 // Route::get('/', function () {
 //     return redirect()->route('home');
 // });
