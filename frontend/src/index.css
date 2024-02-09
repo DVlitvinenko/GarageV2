@@ -1,3 +1,5 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -5,7 +7,7 @@
 
 @layer base {
   h1 {
-    @apply text-2xl font-bold mb-4;
+    @apply text-base font-semibold mb-4 text-gray;
   }
   h2 {
     @apply text-xl font-bold mb-2;
@@ -13,10 +15,13 @@
   h3 {
     @apply text-lg font-bold mb-1;
   }
+  p {
+    @apply text-sm font-medium;
+  }
 }
 
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif; 
+  /* font-family: "Montserrat", sans-serif; */
 
   color-scheme: light ;  
 

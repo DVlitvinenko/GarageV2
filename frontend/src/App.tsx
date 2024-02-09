@@ -1,5 +1,5 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
+import logo from "./assets/logo.png";
 import viteLogo from "/vite.svg";
 import "./App.css";
 import { Link, Outlet, Route, Routes } from "react-router-dom";
@@ -12,19 +12,13 @@ function App() {
 
   return (
     <>
-      <div
-        className="w-1/2 h-80 mx-auto flex flex-col
-   items-center"
-      >
-        {/* <img className='animate-spin' src={reactLogo} /> */}
-        <Menu />
-        <Routes>
-          <Route path="login/driver" element={<DriverLogin />} />
-          <Route path="login/manager" element={<ManagerLogin />} />
-          <Route path="login/admin" element={<AdminLogin />} />
-        </Routes>
-      </div>
-      <Outlet />
+      <img className="my-8 mx-auto" src={logo} />
+      {/* <Menu /> */}
+      <Routes>
+        <Route path="/" element={<DriverLogin />} />
+        <Route path="login/manager" element={<ManagerLogin />} />
+        <Route path="login/admin" element={<AdminLogin />} />
+      </Routes>
     </>
   );
 }
@@ -33,16 +27,22 @@ export default App;
 
 const DriverLogin = () => (
   <>
-    <div className=" ">
-      <h1>Driver login page</h1>
+    <div className="w-80 mx-auto">
+      <h1  className="text-center my-10">
+        Зарегистрируйтесь, чтобы получить возможность бронирования автомобиля
+        или войдите в личный кабинет.
+      </h1>
+      <Label htmlFor="email">Введите ваш телефон</Label>
+      <Input title="phone" placeholder="+7 (999) 123-45-67" />
 
-      <Label htmlFor="email">Email</Label>
-      <Input type="email" id="email" placeholder="mya@ya.ru" />
-
-      <Label htmlFor="email">Phone</Label>
-      <Input title="phone" placeholder="+7 (846) 429-383-645" />
-
-      <Button type="button">Войти</Button>
+      <Label htmlFor="email">Введите полученную смс</Label>
+      <Input type="email" id="email" placeholder="_ _ _ _ _ _ _" />
+      <p  className="text-center my-4 text-red">
+        Вы ввели неправильный код
+      </p>
+      <div className="text-center">
+        <Button type="button">Войти</Button>
+      </div>
     </div>
   </>
 );
