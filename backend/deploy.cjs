@@ -7,9 +7,9 @@ let sftp = new Client();
 const connSettings = {
     host: '77.222.56.111',
     port: 22,
-    username: 'kwolru',
-    // privateKey: fs.readFileSync('path/to/your/private/key'),
-    password: '55996633Kwol',
+    username: '',
+    // privateKey: fs.readFileSync('C:\Users\dimab\.ssh\id_rsa'),
+    password: '',
     tryKeyboard: true
 };
 
