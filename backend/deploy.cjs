@@ -10,7 +10,7 @@ const connSettings = {
     username: 'kwolru',
     // privateKey: fs.readFileSync('path/to/your/private/key'),
     password: '55996633Kwol',
-    // tryKeyboard: true
+    tryKeyboard: true
 };
 
 // const commands = [
