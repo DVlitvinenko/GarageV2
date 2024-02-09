@@ -57,7 +57,7 @@ class CarsController extends Controller
      *                     description="Модель автомобиля"
      *                 ),
      *                 @OA\Property(
-     *                     property="tariff",
+     *                     property="car_class",
      *                     type="integer",
      *                     description="Класс автомобиля (1 - Эконом, 2 - Комфорт, 3 - Комфорт+, 4 - Бизнес)"
      *                 ),
@@ -100,7 +100,7 @@ class CarsController extends Controller
      *         @OA\Schema(type="string")
      *     ),
      *     @OA\Parameter(
-     *         name="tariff",
+     *         name="car_class",
      *         in="query",
      *         description="Класс автомобиля (1 - Эконом, 2 - Комфорт, 3 - Комфорт+, 4 - Бизнес)",
      *         required=false,
@@ -153,7 +153,7 @@ class CarsController extends Controller
      *                 ),
      *                 @OA\Property(property="tariff", type="object", description="Данные о тарифе",
      *                     @OA\Property(property="id", type="integer", description="Идентификатор тарифа"),
-     *                     @OA\Property(property="tariff", type="string", description="Класс тарифа"),
+     *                     @OA\Property(property="car_class", type="string", description="Класс тарифа"),
      *                     @OA\Property(property="park_id", type="integer", description="Идентификатор парка"),
      *                     @OA\Property(property="city_id", type="integer", description="Идентификатор города"),
      *                     @OA\Property(property="criminal_ids", type="string", description="Идентификаторы преступлений"),
@@ -246,7 +246,7 @@ class CarsController extends Controller
      *                     description="Модель автомобиля"
      *                 ),
      *                 @OA\Property(
-     *                     property="tariff",
+     *                     property="car_class",
      *                     type="integer",
      *                     description="Класс автомобиля (1 - Эконом, 2 - Комфорт, 3 - Комфорт+, 4 - Бизнес)"
      *                 ),
@@ -289,7 +289,7 @@ class CarsController extends Controller
      *         @OA\Schema(type="string")
      *     ),
      *     @OA\Parameter(
-     *         name="tariff",
+     *         name="car_class",
      *         in="query",
      *         description="Класс автомобиля (1 - Эконом, 2 - Комфорт, 3 - Комфорт+, 4 - Бизнес)",
      *         required=false,
@@ -342,7 +342,7 @@ class CarsController extends Controller
      *                 ),
      *                 @OA\Property(property="tariff", type="object", description="Данные о тарифе",
      *                     @OA\Property(property="id", type="integer", description="Идентификатор тарифа"),
-     *                     @OA\Property(property="tariff", type="string", description="Класс тарифа"),
+     *                     @OA\Property(property="car_class", type="string", description="Класс тарифа"),
      *                     @OA\Property(property="park_id", type="integer", description="Идентификатор парка"),
      *                     @OA\Property(property="city_id", type="integer", description="Идентификатор города"),
      *                     @OA\Property(property="criminal_ids", type="string", description="Идентификаторы преступлений"),
@@ -461,8 +461,8 @@ class CarsController extends Controller
 
                     $cars = $carsQuery->get();
 
-                    if (isset($filters['tariff'])) {
-                        switch ($filters['tariff']) {
+                    if (isset($filters['car_class'])) {
+                        switch ($filters['car_class']) {
                             case 1:
                                 $class = 'Эконом';
                                 break;
@@ -509,8 +509,8 @@ class CarsController extends Controller
 
         $cars = $carsQuery->get();
 
-        if (isset($filters['tariff'])) {
-            switch ($filters['tariff']) {
+        if (isset($filters['car_class'])) {
+            switch ($filters['car_class']) {
                 case 1:
                     $class = 'Эконом';
                     break;
