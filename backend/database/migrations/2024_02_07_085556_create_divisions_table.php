@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('coords');
             $table->string('address');
             $table->timestamps();
+            $table->string('name');
 
             $table->foreign('park_id')->references('id')->on('parks')->onDelete('cascade');
             $table->foreign('city_id')->references('id')->on('cities')->onDelete('cascade');

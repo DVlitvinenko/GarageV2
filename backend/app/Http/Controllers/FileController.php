@@ -9,9 +9,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\DriverDoc;
 use App\Models\User;
+use App\Http\Controllers\Suit;
+
 
 class FileController extends Controller
 {
+
     /**
      * Загрузка файла
      *
@@ -74,7 +77,6 @@ class FileController extends Controller
             'type' => 'required|string|in:image_licence_front,image_licence_back,image_pasport_front,image_pasport_address,image_fase_and_pasport',
             'file' => 'required|file|mimes:png,jpg,jpeg|max:7168', // Максимальный размер файла 7 МБ
         ]);
-
         $type = $request->type;
         $user = Auth::user();
         $user_id = $user->id;
@@ -83,13 +85,16 @@ class FileController extends Controller
         if (!$docs) {
             $docs = new DriverDoc(['driver_id' => $driver->id]);
         }
-        $fileName = now()->format('YmdHis') . '_' . Str::random(10) . '.' . $request->file->extension();
+        $fileName = $type . $request->file->extension();
+        $filePath = 'uploads/user/' . $user_id . '/' . $fileName;
 
-        $filePath = $request->file->storeAs('uploads/user/' . $user_id, $fileName); //сохраняет в \backend\storage\app\uploads\user
+        if (Storage::exists($filePath . $fileName)) {
+            Storage::delete($filePath . $fileName); // Удаление существующего файла
+        }
 
+        $request->file->storeAs('uploads/user/' . $user_id, $fileName); // Сохранение нового файла
         $docs->{$type} = $filePath;
         $docs->save();
-
         return response()->json(['success' => true]);
     }
 }

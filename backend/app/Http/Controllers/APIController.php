@@ -11,9 +11,10 @@ use App\Models\Car;
 use App\Models\City;
 use App\Models\Tariff;
 use App\Models\RentTerm;
-
+use App\Enums\SuitEnum;
 use Illuminate\Support\Str;
 use GuzzleHttp\Client;
+use App\Http\Controllers\Enums;
 
 use App\Http\Controllers\ParserController;
 use Illuminate\Support\Facades\File;
@@ -143,7 +144,7 @@ class APIController extends Controller
             ],
             'cars.*.class' => 'required|integer|between:0,4',
             'cars.*.year_produced' => 'nullable|integer',
-            'cars.*.id' => 'required|string|max:20',
+            'cars.*.id' => 'required|string|max:20|unique:cars,id_car',
             'cars.*.images' => 'required|array',
         ]);
         if ($validator->fails()) {
@@ -151,14 +152,16 @@ class APIController extends Controller
         }
         $cars = $request->input('cars');
         foreach ($cars as $index => $carData) {
-            $cityName = $request->input('city');
-            $divisionName = $request->input('division_name');
+            $cityName = $carData['city'];
+            $divisionName = $carData['division_name'];
             $city = City::firstOrCreate(['name' => $cityName]);
+
             $division = Division::firstOrCreate([
                 'park_id' => $park->id,
                 'city_id' => $city->id,
                 'name' => $divisionName,
             ]);
+
             $car = new Car;
             $car->division_id = $division->id;
             $car->fuel_type = $carData['fuel_type'];
