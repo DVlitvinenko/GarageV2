@@ -16,7 +16,8 @@ use App\Models\DriverDoc;
 use Session;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
-
+use App\Enums\UserStatusEnum;
+use App\Enums\UserTypeEnum;
 
 
 
@@ -44,14 +45,14 @@ class AuthController extends Controller
      *                 @OA\Property(property="id", type="integer", description="ID пользователя"),
      *                 @OA\Property(property="code", type="integer", description="Код пользователя"),
      *                 @OA\Property(property="role_id", type="integer", description="ID роли пользователя"),
-     *                 @OA\Property(property="user_status", type="integer", description="Статус пользователя"),
+     *                 @OA\Property(property="user_status", type="integer", description="Статус пользователя", enum={"DocumentsNotUploaded", "Verification", "Verified"}),
      *                 @OA\Property(property="phone", type="string", description="Номер телефона пользователя"),
      *                 @OA\Property(property="name", type="string", nullable=true, description="Имя пользователя"),
      *                 @OA\Property(property="email", type="string", nullable=true, description="Email пользователя"),
      *                 @OA\Property(property="avatar", type="string", description="Аватар пользователя"),
      *                 @OA\Property(property="created_at", type="string", format="date-time", description="Дата и время создания пользователя"),
      *                 @OA\Property(property="updated_at", type="string", format="date-time", description="Дата и время последнего обновления пользователя"),
-     *                 @OA\Property(property="user_type", type="integer", description="Тип пользователя")
+     *                 @OA\Property(property="user_type", type="integer", description="Тип пользователя", enum={"Driver", "Manager", "Admin"}))
      *             ),
      *             @OA\Property(
      *                 property="driver",
@@ -101,9 +102,14 @@ class AuthController extends Controller
         $user = Auth::user();
         $driver = Driver::where('user_id', $user->id)->first();
         $driverDocs = DriverDoc::where('driver_id', $driver->id)->first();
-        return response()->json(['user' => $user, 'driver' => $driver, 'driverDocs' => $driverDocs]);
+        $user->user_type = UserTypeEnum::getTypeName($user->user_type);
+        $user->user_status = UserStatusEnum::getStatusName($user->user_status);
+        return response()->json([
+            'user' => $user,
+            'driver' => $driver,
+            'driverDocs' => $driverDocs
+        ]);
     }
-
     /**
      * Аутентификация пользователя или регистрация нового
      *
@@ -140,7 +146,6 @@ class AuthController extends Controller
      */
     public function loginOrRegister(Request $request)
     {
-
         $request->validate([
             'phone' => 'required|string',
             'code' => 'required|integer',
@@ -149,7 +154,7 @@ class AuthController extends Controller
         if ($this->phoneCodeAuthentication($request->phone, $request->code)) {
             $user = Auth::user();
             if ($user->user_status === null) {
-                $user->user_status = 0;
+                $user->user_status = UserStatusEnum::DocumentsNotUploaded->value;
                 $user->avatar = "users/default.png";
                 $user->user_type = 1;
                 $user->save();

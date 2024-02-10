@@ -13,6 +13,7 @@ use App\Models\Division;
 use App\Models\RentTerm;
 use App\Models\Schema;
 use Illuminate\Support\Facades\Auth;
+use App\Enums\UserStatusEnum;
 
 class CarsController extends Controller
 {
@@ -397,7 +398,7 @@ class CarsController extends Controller
         $carsQuery = Car::query()->with('tariff', 'rentTerm', 'schema', 'division.park', 'division.city');
         if (Auth::check()) {
             $user = Auth::user();
-            if ($user->user_status >= 1) {
+            if ($user->user_status >= UserStatusEnum::Verified->value) {
                 $driver = Driver::where('user_id', $user->id)->first();
                 if ($driver) {
                     $driverSpec = DriverSpecification::where('driver_id', $driver->id)->first();
@@ -600,7 +601,7 @@ class CarsController extends Controller
     {
 
         $user = $user = Auth::user();
-        if ($user->user_status >= 1) {
+        if ($user->user_status >= UserStatusEnum::Verified->value) {
 
             $car = Car::where('id', $request->car_id)->first();
             if (!$car) {

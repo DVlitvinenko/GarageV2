@@ -89,10 +89,10 @@ class FileController extends Controller
         $filePath = 'uploads/user/' . $user_id . '/' . $fileName;
 
         if (Storage::exists($filePath . $fileName)) {
-            Storage::delete($filePath . $fileName); // Удаление существующего файла
+            Storage::delete($filePath . $fileName);
         }
 
-        $request->file->storeAs('uploads/user/' . $user_id, $fileName); // Сохранение нового файла
+        $request->file->storeAs('uploads/user/' . $user_id, $fileName);
         $docs->{$type} = $filePath;
         $docs->save();
         return response()->json(['success' => true]);
