@@ -5,8 +5,9 @@
         "dev": "vite",
         "build": "vite build",
         "serve": "vite preview",
-        "watch": "vite --watch"
-      },
+        "watch": "vite --watch",
+        "deploy": "node deploy.cjs"
+    },
     "devDependencies": {
         "@popperjs/core": "^2.11.6",
         "@vitejs/plugin-react": "^4.2.0",
@@ -20,6 +21,8 @@
     },
     "dependencies": {
         "react": "^18.2.0",
-        "react-dom": "^18.2.0"
+        "react-dom": "^18.2.0",
+        "ssh2": "^1.15.0",
+        "ssh2-sftp-client": "^10.0.3"
     }
 }
