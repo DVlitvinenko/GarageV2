@@ -1233,7 +1233,7 @@
                                                 },
                                                 "user_status": {
                                                     "description": "Статус пользователя",
-                                                    "type": "integer",
+                                                    "type": "string",
                                                     "enum": [
                                                         "DocumentsNotUploaded",
                                                         "Verification",
@@ -1270,7 +1270,7 @@
                                                 },
                                                 "user_type": {
                                                     "description": "Тип пользователя",
-                                                    "type": "integer",
+                                                    "type": "string",
                                                     "enum": [
                                                         "Driver",
                                                         "Manager",

@@ -45,14 +45,14 @@ class AuthController extends Controller
      *                 @OA\Property(property="id", type="integer", description="ID пользователя"),
      *                 @OA\Property(property="code", type="integer", description="Код пользователя"),
      *                 @OA\Property(property="role_id", type="integer", description="ID роли пользователя"),
-     *                 @OA\Property(property="user_status", type="integer", description="Статус пользователя", enum={"DocumentsNotUploaded", "Verification", "Verified"}),
+     *                 @OA\Property(property="user_status", type="string", description="Статус пользователя", enum={"DocumentsNotUploaded", "Verification", "Verified"}),
      *                 @OA\Property(property="phone", type="string", description="Номер телефона пользователя"),
      *                 @OA\Property(property="name", type="string", nullable=true, description="Имя пользователя"),
      *                 @OA\Property(property="email", type="string", nullable=true, description="Email пользователя"),
      *                 @OA\Property(property="avatar", type="string", description="Аватар пользователя"),
      *                 @OA\Property(property="created_at", type="string", format="date-time", description="Дата и время создания пользователя"),
      *                 @OA\Property(property="updated_at", type="string", format="date-time", description="Дата и время последнего обновления пользователя"),
-     *                 @OA\Property(property="user_type", type="integer", description="Тип пользователя", enum={"Driver", "Manager", "Admin"}))
+     *                 @OA\Property(property="user_type", type="string", description="Тип пользователя", enum={"Driver", "Manager", "Admin"}))
      *             ),
      *             @OA\Property(
      *                 property="driver",
