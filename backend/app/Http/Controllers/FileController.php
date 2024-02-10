@@ -85,7 +85,7 @@ class FileController extends Controller
         if (!$docs) {
             $docs = new DriverDoc(['driver_id' => $driver->id]);
         }
-        $fileName = $type . $request->file->extension();
+        $fileName = $type . '.' . $request->file->extension();
         $filePath = 'uploads/user/' . $user_id . '/' . $fileName;
 
         if (Storage::exists($filePath . $fileName)) {
