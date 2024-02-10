@@ -24,7 +24,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('auth/cars/cancel-booking', [CarsController::class, 'cancelBooking']);
     Route::post('user/logout', [AuthController::class, 'logout']);
     Route::DELETE('user', [AuthController::class, 'DeleteUser']);
-
     Route::get('user', [AuthController::class, 'GetUser']);
     Route::post('upload-file', [FileController::class, 'uploadFile']);
 });

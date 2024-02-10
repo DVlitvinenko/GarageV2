@@ -1298,6 +1298,60 @@
                                                 }
                                             },
                                             "type": "object"
+                                        },
+                                        "driverDocs": {
+                                            "description": "Данные документов водителя",
+                                            "properties": {
+                                                "id": {
+                                                    "description": "ID документов водителя",
+                                                    "type": "integer"
+                                                },
+                                                "driver_id": {
+                                                    "description": "ID водителя",
+                                                    "type": "integer"
+                                                },
+                                                "image_licence_front": {
+                                                    "description": "Фотография лицевой стороны водительского удостоверения",
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "image_licence_back": {
+                                                    "description": "Фотография обратной стороны водительского удостоверения",
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "image_pasport_front": {
+                                                    "description": "Фотография лицевой стороны паспорта",
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "image_pasport_address": {
+                                                    "description": "Фотография страницы с адресом в паспорте",
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "image_fase_and_pasport": {
+                                                    "description": "Фотография лица и паспорта на одном изображении",
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "docs_verify": {
+                                                    "description": "Статус верификации документов",
+                                                    "type": "boolean",
+                                                    "nullable": true
+                                                },
+                                                "created_at": {
+                                                    "description": "Дата и время создания записей о документах водителя",
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "description": "Дата и время последнего обновления записей о документах водителя",
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
