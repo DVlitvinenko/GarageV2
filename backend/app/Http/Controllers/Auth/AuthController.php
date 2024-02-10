@@ -15,7 +15,7 @@ use App\Models\DriverSpecification;
 use App\Models\DriverDoc;
 use Session;
 use Illuminate\Support\Facades\Http;
-
+use Illuminate\Support\Facades\Storage;
 
 
 
@@ -246,5 +246,53 @@ class AuthController extends Controller
             return true;
         }
         return false;
+    }
+
+    /**
+     * Удаление пользователя и связанных записей
+     *
+     * @OA\Delete(
+     *     path="/user",
+     *     operationId="DeleteUser",
+     *     summary="Удаление пользователя и связанных записей",
+     *     tags={"Authentication"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Пользователь успешно удален",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Пользователь успешно удален")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Ошибка аутентификации",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Недопустимый токен аутентификации")
+     *         )
+     *     )
+     * )
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function DeleteUser(Request $request)
+    {
+        $user = Auth::user();
+        $driver = Driver::where('user_id', $user->id)->first();
+
+        // Удаление папки с фотографиями пользователя
+        $folderPath = 'uploads/user/' . $user->id;
+        if (Storage::exists($folderPath)) {
+            Storage::deleteDirectory($folderPath);
+        }
+
+        // Удаление записей о пользователе и водителе
+        $user->delete();
+        if ($driver) {
+            $driver->delete();
+        }
+
+        return response()->json(['message' => 'Пользователь успешно удален']);
     }
 }

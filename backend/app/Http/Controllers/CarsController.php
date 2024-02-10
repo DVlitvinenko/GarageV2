@@ -703,4 +703,146 @@ class CarsController extends Controller
             return response()->json(['message' => 'Вы не можете отменить бронирование данного автомобиля'], 403);
         }
     }
+    /**
+     * Получить информацию об автомобиле
+     *
+     * @param \Illuminate\Http\Request $request Объект запроса, содержащий идентификатор автомобиля
+     * @return \Illuminate\Http\JsonResponse JSON-ответ с информацией об автомобиле
+     *
+     * @OA\Get(
+     *     path="/car",
+     *     operationId="getCar",
+     *     summary="Получить информацию об автомобиле",
+     *     tags={"Cars"},
+     *     @OA\Parameter(
+     *         name="id_car",
+     *         in="query",
+     *         description="Идентификатор автомобиля",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Успешный ответ",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="car",
+     *                 type="object",
+     *                 description="Информация об автомобиле",
+     *                 @OA\Property(property="id", type="integer"),
+     *                 @OA\Property(property="division_id", type="integer"),
+     *                 @OA\Property(property="tariff_id", type="integer"),
+     *                 @OA\Property(property="rent_term_id", type="integer", nullable=true),
+     *                 @OA\Property(property="fuel_type", type="integer"),
+     *                 @OA\Property(property="transmission_type", type="integer"),
+     *                 @OA\Property(property="brand", type="string"),
+     *                 @OA\Property(property="model", type="string"),
+     *                 @OA\Property(property="year_produced", type="integer"),
+     *                 @OA\Property(property="id_car", type="string"),
+     *                 @OA\Property(property="images", type="string"),
+     *                 @OA\Property(property="booking_time", type="string", nullable=true),
+     *                 @OA\Property(property="user_booked_id", type="integer", nullable=true),
+     *                 @OA\Property(property="show_status", type="integer"),
+     *                 @OA\Property(property="created_at", type="string"),
+     *                 @OA\Property(property="updated_at", type="string"),
+     *                 @OA\Property(
+     *                     property="tariff",
+     *                     type="object",
+     *                     description="Информация о тарифе",
+     *                     @OA\Property(property="id", type="integer"),
+     *                     @OA\Property(property="class", type="string"),
+     *                     @OA\Property(property="park_id", type="integer"),
+     *                     @OA\Property(property="city_id", type="integer"),
+     *                     @OA\Property(property="criminal_ids", type="integer", nullable=true),
+     *                     @OA\Property(property="participation_accident", type="integer", nullable=true),
+     *                     @OA\Property(property="experience", type="integer", nullable=true),
+     *                     @OA\Property(property="max_cont_seams", type="integer", nullable=true),
+     *                     @OA\Property(property="abandoned_car", type="integer", nullable=true),
+     *                     @OA\Property(property="min_scoring", type="integer", nullable=true),
+     *                     @OA\Property(property="forbidden_republic_ids", type="integer", nullable=true),
+     *                     @OA\Property(property="alcohol", type="integer", nullable=true),
+     *                     @OA\Property(property="created_at", type="string"),
+     *                     @OA\Property(property="updated_at", type="string")
+     *                 ),
+     *                 @OA\Property(property="rent_term", type="object", description="Данные о сроке аренды",
+     *                     @OA\Property(property="id", type="integer", description="Идентификатор срока аренды"),
+     *                     @OA\Property(property="park_id", type="integer", description="Идентификатор парка"),
+     *                     @OA\Property(property="deposit_amount_daily", type="number", description="Сумма депозита за день"),
+     *                     @OA\Property(property="deposit_amount_total", type="number", description="Общая сумма депозита"),
+     *                     @OA\Property(property="minimum_period_days", type="integer", description="Минимальный период в днях"),
+     *                     @OA\Property(property="name", type="string", description="Название срока аренды"),
+     *                     @OA\Property(property="is_buyout_possible", type="boolean", description="Возможность выкупа"),
+     *                     @OA\Property(property="created_at", type="string", format="date-time", description="Дата создания записи"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time", description="Дата обновления записи"),
+     *                 ),
+     *                 @OA\Property(property="schema", type="object", description="Данные о схеме аренды",
+     *                     @OA\Property(property="id", type="integer", description="Идентификатор схемы аренды"),
+     *                     @OA\Property(property="rent_term_id", type="integer", description="Идентификатор срока аренды"),
+     *                     @OA\Property(property="daily_amount", type="integer", description="Суточная стоимость"),
+     *                     @OA\Property(property="non_working_days", type="integer", description="Количество нерабочих дней"),
+     *                     @OA\Property(property="working_days", type="integer", description="Количество рабочих дней"),
+     *                     @OA\Property(property="created_at", type="string", format="date-time", description="Дата создания записи"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time", description="Дата обновления записи"),
+     *                 ),
+     *                 @OA\Property(
+     *                     property="division",
+     *                     type="object",
+     *                     description="Информация о подразделении",
+     *                     @OA\Property(property="id", type="integer"),
+     *                     @OA\Property(property="park_id", type="integer"),
+     *                     @OA\Property(property="city_id", type="integer"),
+     *                     @OA\Property(property="coords", type="string", nullable=true),
+     *                     @OA\Property(property="address", type="string", nullable=true),
+     *                     @OA\Property(property="created_at", type="string"),
+     *                     @OA\Property(property="updated_at", type="string"),
+     *                     @OA\Property(
+     *                         property="park",
+     *                         type="object",
+     *                         description="Информация о парке",
+     *                         @OA\Property(property="id", type="integer"),
+     *                         @OA\Property(property="API_key", type="string"),
+     *                         @OA\Property(property="url", type="string"),
+     *                         @OA\Property(property="comission", type="number"),
+     *                         @OA\Property(property="park_name", type="string"),
+     *                         @OA\Property(property="about", type="string"),
+     *                         @OA\Property(property="working_hours", type="string"),
+     *                         @OA\Property(property="created_at", type="string"),
+     *                         @OA\Property(property="updated_at", type="string")
+     *                     ),
+     *                     @OA\Property(
+     *                         property="city",
+     *                         type="object",
+     *                         description="Информация о городе",
+     *                         @OA\Property(property="id", type="integer"),
+     *                         @OA\Property(property="name", type="string"),
+     *                         @OA\Property(property="created_at", type="string"),
+     *                         @OA\Property(property="updated_at", type="string")
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Машина не найдена",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", description="Автомобиль с указанным идентификатором не найден")
+     *         )
+     *     )
+     * )
+     */
+    public function GetCar(Request $request)
+    {
+        $car = Car::with('tariff', 'rentTerm', 'rentTerm.schema', 'division.park', 'division.city')
+            ->where('id_car', $request->id_car)
+            ->first();
+
+        if (!$car) {
+            return response()->json(['message' => 'Машина не найдена'], 404);
+        }
+
+        return response()->json(['car' => $car]);
+    }
 }
