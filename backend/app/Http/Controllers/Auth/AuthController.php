@@ -52,7 +52,7 @@ class AuthController extends Controller
      *                 @OA\Property(property="avatar", type="string", description="Аватар пользователя"),
      *                 @OA\Property(property="created_at", type="string", format="date-time", description="Дата и время создания пользователя"),
      *                 @OA\Property(property="updated_at", type="string", format="date-time", description="Дата и время последнего обновления пользователя"),
-     *                 @OA\Property(property="user_type", type="string", description="Тип пользователя", enum={"Driver":1, "Manager":0, "Admin":2}))
+     *                 @OA\Property(property="user_type", type="string", description="Тип пользователя", enum={"Driver:1", "Manager:0", "Admin:2"}))
      *             ),
      *             @OA\Property(
      *                 property="driver",
