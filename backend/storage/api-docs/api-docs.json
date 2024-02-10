@@ -1272,9 +1272,9 @@
                                                     "description": "Тип пользователя",
                                                     "type": "string",
                                                     "enum": [
-                                                        "Driver",
-                                                        "Manager",
-                                                        "Admin"
+                                                        1,
+                                                        0,
+                                                        2
                                                     ]
                                                 }
                                             },
