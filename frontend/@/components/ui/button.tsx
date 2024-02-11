@@ -36,6 +36,7 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
+  onAsyncClick?: () => Promise<void | (() => void)>;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -46,16 +47,44 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       size,
       type = "button",
       asChild = false,
+      onAsyncClick,
       ...props
     },
     ref
   ) => {
+    const [actionInProgress, setActionInProgress] = React.useState(false);
+
     const Comp = asChild ? Slot : "button";
+
+    const handleAsyncOnPress = async () => {
+      setActionInProgress(true);
+
+      const unmountCallback = await onAsyncClick!();
+      if (!!unmountCallback) {
+        unmountCallback();
+      } else {
+        setActionInProgress(false);
+      }
+    };
+
+    const handler = onAsyncClick
+      ? async () => {
+          await handleAsyncOnPress();
+        }
+      : props.onClick;
+
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
         {...props}
+        onClick={handler}
+        children={
+          <span className="flex">
+            {props.children}
+            {actionInProgress && <div className="ml-4 animate-spin font-bold">c</div>}
+          </span>
+        }
       />
     );
   }
