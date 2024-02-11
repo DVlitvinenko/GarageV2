@@ -407,22 +407,16 @@ class CarsController extends Controller
                             ->where(function ($q) use ($driverSpec) {
                                 if ($driverSpec->abandoned_car) {
                                     $q->where('abandoned_car', true);
-                                } else {
-                                    $q->where('abandoned_car', false);
                                 }
                             })
                             ->Where(function ($q) use ($driverSpec) {
                                 if ($driverSpec->participation_accident) {
                                     $q->where('participation_accident', true);
-                                } else {
-                                    $q->where('participation_accident', false);
                                 }
                             })
                             ->Where(function ($q) use ($driverSpec) {
                                 if ($driverSpec->alcohol) {
                                     $q->where('alcohol', true);
-                                } else {
-                                    $q->where('alcohol', false);
                                 }
                             })
                             ->Where(function ($q) use ($driverSpec) {
@@ -432,12 +426,12 @@ class CarsController extends Controller
                             })
                             ->Where(function ($q) use ($driverSpec) {
                                 if ($driverSpec->experience !== null) {
-                                    $q->where('experience', '>=', $driverSpec->experience);
+                                    $q->where('experience', '<=', $driverSpec->experience);
                                 }
                             })
                             ->Where(function ($q) use ($driverSpec) {
                                 if ($driverSpec->count_seams !== null) {
-                                    $q->where('max_cont_seams', '<', $driverSpec->count_seams);
+                                    $q->where('max_cont_seams', '>', $driverSpec->count_seams);
                                 }
                             })
                             ->where('criminal_ids', '!=', $driverSpec->criminal_ids)

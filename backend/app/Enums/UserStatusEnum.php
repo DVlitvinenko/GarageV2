@@ -13,11 +13,24 @@ enum UserStatusEnum: int
     {
         switch ($status) {
             case self::DocumentsNotUploaded->value:
-                return 'Documents Not Uploaded';
+                return self::DocumentsNotUploaded->name;
             case self::Verification->value:
-                return 'Verification';
+                return self::Verification->name;
             case self::Verified->value:
-                return 'Verified';
+                return self::Verified->name;
+            default:
+                return 'Unknown';
+        }
+    }
+    public static function getStatusValue(string $status): int
+    {
+        switch ($status) {
+            case self::DocumentsNotUploaded->name:
+                return self::DocumentsNotUploaded->value;
+            case self::Verification->name:
+                return self::Verification->value;
+            case self::Verified->name:
+                return self::Verified->value;
             default:
                 return 'Unknown';
         }
