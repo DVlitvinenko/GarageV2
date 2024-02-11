@@ -23,6 +23,14 @@ module.exports = {
           },
         },
       }),
+     colors: {
+        red: "#b91c1c",
+        yellow: "#fbbf24",         
+        black: "#0c0a09",
+        gray: "#1f2937",
+        pale: "EBF0F3",
+        white: "#f8fafc",
+        },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
