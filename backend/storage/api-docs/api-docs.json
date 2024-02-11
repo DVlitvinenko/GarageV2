@@ -1219,18 +1219,6 @@
                                         "user": {
                                             "description": "Данные пользователя",
                                             "properties": {
-                                                "id": {
-                                                    "description": "ID пользователя",
-                                                    "type": "integer"
-                                                },
-                                                "code": {
-                                                    "description": "Код пользователя",
-                                                    "type": "integer"
-                                                },
-                                                "role_id": {
-                                                    "description": "ID роли пользователя",
-                                                    "type": "integer"
-                                                },
                                                 "user_status": {
                                                     "description": "Статус пользователя",
                                                     "type": "string",
@@ -1254,30 +1242,61 @@
                                                     "type": "string",
                                                     "nullable": true
                                                 },
-                                                "avatar": {
-                                                    "description": "Аватар пользователя",
-                                                    "type": "string"
-                                                },
-                                                "created_at": {
-                                                    "description": "Дата и время создания пользователя",
-                                                    "type": "string",
-                                                    "format": "date-time"
-                                                },
-                                                "updated_at": {
-                                                    "description": "Дата и время последнего обновления пользователя",
-                                                    "type": "string",
-                                                    "format": "date-time"
-                                                },
                                                 "user_type": {
                                                     "description": "Тип пользователя",
                                                     "type": "string",
                                                     "enum": [
-                                                        "Driver:1",
-                                                        "Manager:0",
-                                                        "Admin:2"
+                                                        "Driver",
+                                                        "Manager",
+                                                        "Admin"
                                                     ]
+                                                },
+                                                "city_name": {
+                                                    "description": "Название города",
+                                                    "type": "string"
+                                                },
+                                                "docs": {
+                                                    "description": "Данные документов водителя",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "type": {
+                                                                "description": "Тип документа",
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "image_licence_front",
+                                                                    "image_licence_back",
+                                                                    "image_pasport_front",
+                                                                    "image_pasport_address",
+                                                                    "image_fase_and_pasport"
+                                                                ]
+                                                            },
+                                                            "url": {
+                                                                "description": "URL документа",
+                                                                "type": "string",
+                                                                "nullable": true
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
                                                 }
                                             },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "description": "Список ошибок валидации",
                                             "type": "object"
                                         }
                                     },
@@ -2559,26 +2578,6 @@
                         "bearerAuth": []
                     }
                 ]
-            }
-        }
-    },
-    "components": {
-        "responses": {
-            "422": {
-                "description": "Ошибка валидации",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "properties": {
-                                "errors": {
-                                    "description": "Список ошибок валидации",
-                                    "type": "object"
-                                }
-                            },
-                            "type": "object"
-                        }
-                    }
-                }
             }
         }
     }

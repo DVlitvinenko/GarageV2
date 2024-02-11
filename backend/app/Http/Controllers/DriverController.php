@@ -78,7 +78,7 @@ class DriverController extends Controller
         ]);
 
         $type = $request->type;
-        $user = Auth::user();
+        $user = Auth::guard('sanctum')->user();
         $user_id = $user->id;
         $driver = Driver::where('user_id', $user_id)->first();
         $docs = DriverDoc::where('driver_id', $driver->id)->first();

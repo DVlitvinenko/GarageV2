@@ -42,42 +42,22 @@ class AuthController extends Controller
      *                 property="user",
      *                 type="object",
      *                 description="Данные пользователя",
-     *                 @OA\Property(property="id", type="integer", description="ID пользователя"),
-     *                 @OA\Property(property="code", type="integer", description="Код пользователя"),
-     *                 @OA\Property(property="role_id", type="integer", description="ID роли пользователя"),
      *                 @OA\Property(property="user_status", type="string", description="Статус пользователя", enum={"DocumentsNotUploaded", "Verification", "Verified"}),
      *                 @OA\Property(property="phone", type="string", description="Номер телефона пользователя"),
      *                 @OA\Property(property="name", type="string", nullable=true, description="Имя пользователя"),
      *                 @OA\Property(property="email", type="string", nullable=true, description="Email пользователя"),
-     *                 @OA\Property(property="avatar", type="string", description="Аватар пользователя"),
-     *                 @OA\Property(property="created_at", type="string", format="date-time", description="Дата и время создания пользователя"),
-     *                 @OA\Property(property="updated_at", type="string", format="date-time", description="Дата и время последнего обновления пользователя"),
-     *                 @OA\Property(property="user_type", type="string", description="Тип пользователя", enum={"Driver", "Manager", "Admin"}))
-     *             ),
-     *             @OA\Property(
-     *                 property="driver",
-     *                 type="object",
-     *                 description="Данные водителя",
-     *                 @OA\Property(property="id", type="integer", description="ID водителя"),
-     *                 @OA\Property(property="user_id", type="integer", description="ID пользователя"),
-     *                 @OA\Property(property="city_id", type="integer", nullable=true, description="ID города"),
-     *                 @OA\Property(property="created_at", type="string", format="date-time", description="Дата и время создания водителя"),
-     *                 @OA\Property(property="updated_at", type="string", format="date-time", description="Дата и время последнего обновления водителя")
-     *             ),
-     *             @OA\Property(
-     *                 property="driverDocs",
-     *                 type="object",
-     *                 description="Данные документов водителя",
-     *                 @OA\Property(property="id", type="integer", description="ID документов водителя"),
-     *                 @OA\Property(property="driver_id", type="integer", description="ID водителя"),
-     *                 @OA\Property(property="image_licence_front", type="string", nullable=true, description="Фотография лицевой стороны водительского удостоверения"),
-     *                 @OA\Property(property="image_licence_back", type="string", nullable=true, description="Фотография обратной стороны водительского удостоверения"),
-     *                 @OA\Property(property="image_pasport_front", type="string", nullable=true, description="Фотография лицевой стороны паспорта"),
-     *                 @OA\Property(property="image_pasport_address", type="string", nullable=true, description="Фотография страницы с адресом в паспорте"),
-     *                 @OA\Property(property="image_fase_and_pasport", type="string", nullable=true, description="Фотография лица и паспорта на одном изображении"),
-     *                 @OA\Property(property="docs_verify", type="boolean", nullable=true, description="Статус верификации документов"),
-     *                 @OA\Property(property="created_at", type="string", format="date-time", description="Дата и время создания записей о документах водителя"),
-     *                 @OA\Property(property="updated_at", type="string", format="date-time", description="Дата и время последнего обновления записей о документах водителя")
+     *                 @OA\Property(property="user_type", type="string", description="Тип пользователя", enum={"Driver", "Manager", "Admin"}),
+     *                 @OA\Property(property="city_name", type="string", description="Название города"),
+     *                 @OA\Property(
+     *                     property="docs",
+     *                     type="array",
+     *                     description="Данные документов водителя",
+     *                     @OA\Items(
+     *                         type="object",
+     *                         @OA\Property(property="type", type="string", description="Тип документа",enum={"image_licence_front", "image_licence_back", "image_pasport_front", "image_pasport_address", "image_fase_and_pasport"}),
+     *                         @OA\Property(property="url", type="string", nullable=true, description="URL документа")
+     *                     )
+     *                 )
      *             )
      *         )
      *     ),
@@ -99,17 +79,31 @@ class AuthController extends Controller
      */
     public function GetUser(Request $request)
     {
-
-        $user = Auth::user();
-        $driver = Driver::where('user_id', $user->id)->first();
-        $driverDocs = DriverDoc::where('driver_id', $driver->id)->first();
+        $user = Auth::guard('sanctum')->user();
         $user->user_type = UserTypeEnum::getTypeName($user->user_type);
         $user->user_status = UserStatusEnum::getStatusName($user->user_status);
-        return response()->json([
-            'user' => $user,
-            'driver' => $driver,
-            'driverDocs' => $driverDocs
-        ]);
+        $driver = Driver::where('user_id', $user->id)->with('city')->first();
+        $driverDocs = DriverDoc::where('driver_id', $driver->id)->first(['image_licence_front', 'image_licence_back', 'image_pasport_front', 'image_pasport_address', 'image_fase_and_pasport']);
+
+        $docs = [];
+        foreach ($driverDocs->toArray() as $key => $value) {
+            $docs[] = [
+                'type' => $key,
+                'url' => $value,
+            ];
+        }
+        if (!$driver->city) {
+            $user->city_name = 'Москва';
+        } else {
+            $user->city_name = $driver->city->name;
+        }
+
+
+        $user->docs = $docs;
+
+        unset($user->id, $user->code, $user->role_id, $user->avatar, $user->email_verified_at, $user->settings, $user->created_at, $user->updated_at);
+
+        return response()->json([$user]);
     }
     /**
      * Аутентификация пользователя или регистрация нового
@@ -151,13 +145,12 @@ class AuthController extends Controller
             'phone' => 'required|string',
             'code' => 'required|integer',
         ]);
-
-        if ($this->phoneCodeAuthentication($request->phone, $request->code)) {
-            $user = Auth::user();
+        $user = $this->phoneCodeAuthentication($request->phone, $request->code);
+        if ($user) {
             if ($user->user_status === null) {
                 $user->user_status = UserStatusEnum::DocumentsNotUploaded->value;
                 $user->avatar = "users/default.png";
-                $user->user_type = 1;
+                $user->user_type = UserTypeEnum::Driver->value;
                 $user->save();
             }
             $driver = Driver::firstOrCreate(['user_id' => $user->id]);
@@ -262,12 +255,12 @@ class AuthController extends Controller
 
     private function phoneCodeAuthentication($phone, $code)
     {
-        $user = User::where('phone', $phone)->first();
-        if ($user && $user->code === $code) {
+        $user = User::where('phone', $phone)->where('code', $code)->first();
+        if ($user) {
             Auth::login($user);
-            return true;
+            return $user;
         }
-        return false;
+        return null;
     }
 
     /**
@@ -300,7 +293,7 @@ class AuthController extends Controller
      */
     public function DeleteUser(Request $request)
     {
-        $user = Auth::user();
+        $user = Auth::guard('sanctum')->user();
         $driver = Driver::where('user_id', $user->id)->first();
 
         // Удаление папки с фотографиями пользователя

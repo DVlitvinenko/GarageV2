@@ -397,7 +397,7 @@ class CarsController extends Controller
 
         $carsQuery = Car::query()->with('tariff', 'rentTerm', 'schema', 'division.park', 'division.city');
         if (Auth::check()) {
-            $user = Auth::user();
+            $user = Auth::guard('sanctum')->user();
             if ($user->user_status >= UserStatusEnum::Verified->value) {
                 $driver = Driver::where('user_id', $user->id)->first();
                 if ($driver) {
@@ -594,7 +594,7 @@ class CarsController extends Controller
     public function Booking(Request $request)
     {
 
-        $user = $user = Auth::user();
+        $user = Auth::guard('sanctum')->user();
         if ($user->user_status >= UserStatusEnum::Verified->value) {
 
             $car = Car::where('id', $request->car_id)->first();
@@ -682,7 +682,7 @@ class CarsController extends Controller
      */
     public function cancelBooking(Request $request)
     {
-        $user = Auth::user();
+        $user = Auth::guard('sanctum')->user();
         $car = Car::where('id', $request->car_id)->first();
 
         if (!$car) {

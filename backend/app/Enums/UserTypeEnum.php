@@ -11,11 +11,24 @@ enum UserTypeEnum: int
     {
         switch ($status) {
             case self::Driver->value:
-                return 'Driver';
+                return self::Driver->name;
             case self::Manager->value:
-                return 'Manager';
+                return self::Manager->name;
             case self::Admin->value:
-                return 'Admin';
+                return self::Admin->name;
+            default:
+                return 'Unknown';
+        }
+    }
+    public static function getTypeValue(string $status): int
+    {
+        switch ($status) {
+            case self::Driver->name:
+                return self::Driver->value;
+            case self::Manager->name:
+                return self::Manager->value;
+            case self::Admin->name:
+                return self::Admin->value;
             default:
                 return 'Unknown';
         }

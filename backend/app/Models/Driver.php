@@ -19,4 +19,14 @@ class Driver extends Model
     {
         return $this->belongsTo(City::class);
     }
+
+    public function driverDocs()
+    {
+        return $this->hasOne(DriverDoc::class);
+    }
+
+    public function driverSpecification()
+    {
+        return $this->hasOne(DriverSpecification::class);
+    }
 }
