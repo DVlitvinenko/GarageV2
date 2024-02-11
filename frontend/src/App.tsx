@@ -1,10 +1,10 @@
 import { useState } from "react";
 import logo from "./assets/logo.png";
 import selca from "./assets/placeholders/selca.png";
-import frontdriverid from "./assets/placeholders/front-driver-id.png";
-import backdriverid from "./assets/placeholders/back-driver-id.png";
-import frontpassport from "./assets/placeholders/front-passport.png";
-import backpassport from "./assets/placeholders/back-passport.png";
+import frontDriverId from "./assets/placeholders/front-driver-id.png";
+import backDriverId from "./assets/placeholders/back-driver-id.png";
+import frontPassport from "./assets/placeholders/front-passport.png";
+import backPassport from "./assets/placeholders/back-passport.png";
 import search from "./assets/search.svg";
 import account from "./assets/account.svg";
 import viteLogo from "/vite.svg";
@@ -13,6 +13,8 @@ import { Link, Outlet, Route, Routes } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { DropdownMenu } from "@/components/ui/dropdown-menu";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -42,7 +44,7 @@ const CarFinder = () => (
       <h2 className="text-center my-10">ПОИСК АВТО</h2>
       <Label htmlFor="email">Введите ваш телефон</Label>
       <Input title="phone" placeholder="+7 (999) 123-45-67" />
-
+      <Checkbox text="lalala" />
       <Label htmlFor="email">Введите полученную смс</Label>
       <Input type="email" id="email" placeholder="_ _ _ _ _ _ _" />
       <p className="text-center my-4 text-red">Вы ввели неправильный код</p>
@@ -98,7 +100,7 @@ const Account = () => (
       <p className="text-center my-4">
         Загрузите лицевую сторону водительского удостоверения
       </p>
-      <img className="my-8 mx-auto" src={frontdriverid} />
+      <img className="my-8 mx-auto" src={frontDriverId} />
       <div className="text-center">
         <Button>Загрузить</Button>
       </div>
@@ -106,7 +108,7 @@ const Account = () => (
       <p className="text-center my-4">
         Загрузите обратную сторону водительского удостоверения
       </p>
-      <img className="my-8 mx-auto" src={backdriverid} />
+      <img className="my-8 mx-auto" src={backDriverId} />
       <div className="text-center">
         <Button>Загрузить</Button>
       </div>
@@ -114,7 +116,7 @@ const Account = () => (
       <p className="text-center my-4">
         Загрузите разворот вашего паспорта с фото
       </p>
-      <img className="my-8 mx-auto" src={frontpassport} />
+      <img className="my-8 mx-auto" src={frontPassport} />
       <div className="text-center">
         <Button>Загрузить</Button>
       </div>
@@ -122,7 +124,7 @@ const Account = () => (
       <p className="text-center my-4">
         Загрузите страницу паспорта с разворотом прописки
       </p>
-      <img className="my-8 mx-auto" src={backpassport} />
+      <img className="my-8 mx-auto" src={backPassport} />
       <div className="text-center">
         <Button>Загрузить</Button>
       </div>
