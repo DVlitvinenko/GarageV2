@@ -53,7 +53,7 @@ export default App;
 
 const Menu = () => (
   <div className="w-60 mx-auto flex justify-around mb-12 cursor-pointer my-2">
-    <Link className="hover:text-sky-400" to="/search">
+    <Link className="hover:text-sky-400" to="/">
       <img className="object-scale-down h-8 w-8" src={search} />
     </Link>
     <Link className="hover:text-sky-400" to="account">

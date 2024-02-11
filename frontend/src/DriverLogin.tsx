@@ -4,7 +4,7 @@ import { client } from "./backend";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Body8 } from "./api-client";
+import { Body8, Body9 } from "./api-client";
 
 export const DriverLogin = () => {
   const CODE_LENGTH = 8;
@@ -18,7 +18,7 @@ export const DriverLogin = () => {
   const navigate = useNavigate();
 
   const getCode = async () => {
-    // await client.createAndSendCode(new Body9({ phone: creds.phone }));
+    await client.createAndSendCode(new Body9({ phone }));
     setRequested(true);
   };
 
@@ -30,7 +30,7 @@ export const DriverLogin = () => {
 
       localStorage.setItem("token", access_token!);
 
-      navigate("/driver/login");
+      navigate("/");
     } catch (error) {
       setCodeHasError(true);
     }
