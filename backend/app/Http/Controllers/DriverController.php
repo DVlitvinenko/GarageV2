@@ -2,17 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Driver;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Auth;
+
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Driver;
 use App\Models\DriverDoc;
-use App\Models\User;
-use App\Http\Controllers\Suit;
+use App\Services\FileService;
 
-
-class FileController extends Controller
+class DriverController extends Controller
 {
 
     /**
@@ -71,30 +68,32 @@ class FileController extends Controller
      * @param \Illuminate\Http\Request $request The request object containing the file and its type
      * @return \Illuminate\Http\JsonResponse JSON response indicating the success or failure of the file upload
      */
+
+
     public function uploadFile(Request $request)
     {
         $request->validate([
             'type' => 'required|string|in:image_licence_front,image_licence_back,image_pasport_front,image_pasport_address,image_fase_and_pasport',
             'file' => 'required|file|mimes:png,jpg,jpeg|max:7168', // Максимальный размер файла 7 МБ
         ]);
+
         $type = $request->type;
         $user = Auth::user();
         $user_id = $user->id;
         $driver = Driver::where('user_id', $user_id)->first();
         $docs = DriverDoc::where('driver_id', $driver->id)->first();
+
         if (!$docs) {
             $docs = new DriverDoc(['driver_id' => $driver->id]);
         }
-        $fileName = $type . $request->file->extension();
-        $filePath = 'uploads/user/' . $user_id . '/' . $fileName;
+        $fileService = new FileService;
+        $path = 'uploads/user/' . $user_id;
+        $name = $type;
 
-        if (Storage::exists($filePath . $fileName)) {
-            Storage::delete($filePath . $fileName); // Удаление существующего файла
-        }
-
-        $request->file->storeAs('uploads/user/' . $user_id, $fileName); // Сохранение нового файла
-        $docs->{$type} = $filePath;
+        $fileService->saveFile($request->file('file'), $path, $name);
+        $docs->{$type} = $path . '/' . $name . '.' . $request->file('file')->extension();
         $docs->save();
+
         return response()->json(['success' => true]);
     }
 }
