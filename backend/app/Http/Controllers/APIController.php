@@ -37,7 +37,7 @@ class APIController extends Controller
      * Добавить несколько автомобилей
      *
      * @OA\Post(
-     *     path="/push-cars",
+     *     path="/cars",
      *     operationId="pushCars",
      *     summary="Добавить несколько автомобилей",
      *     tags={"API"},
@@ -156,11 +156,7 @@ class APIController extends Controller
             $divisionName = $carData['division_name'];
             $city = City::firstOrCreate(['name' => $cityName]);
 
-            $division = Division::firstOrCreate([
-                'park_id' => $park->id,
-                'city_id' => $city->id,
-                'name' => $divisionName,
-            ]);
+            $division = $this->divisionCheck($divisionName, $park->id, $city->id);
 
             $car = new Car;
             $car->division_id = $division->id;
@@ -174,7 +170,7 @@ class APIController extends Controller
             $car->images = json_encode($carData['images']);
             $car->booking_time = null;
             $car->user_booked_id = null;
-            $car->show_status = false;
+            $car->show_status = 1;
             $car->save();
         }
         return response()->json(['message' => 'Автомобили успешно добавлены'], 200);
@@ -287,29 +283,27 @@ class APIController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
         }
-        $carId = $request->input('car_id');
-        $cityName = $request->input('city');
-        $divisionName = $request->input('division_name');
 
-        $car = Car::where('id', $carId)
-            ->where('park_id', $park->id)
-            ->first();
-        if (!$car) {
-            return response()->json(['message' => 'Автомобиль не найден'], 404);
-        }
+        $carId = $request->input('id');
+        $cityName = $request->input('city');
+        $divisionName = trim($request->input('division_name'));
+
         $park = Park::where('API_key', $apiKey)->first();
         if (!$park) {
             return response()->json(['message' => 'Неверный ключ авторизации'], 401);
         }
         $city = City::firstOrCreate(['name' => $cityName]);
-        $division = Division::firstOrCreate([
-            'park_id' => $park->id,
-            'city_id' => $city->id,
-            'name' => $divisionName,
-        ]);
 
+        $division = $this->divisionCheck($divisionName, $park->id, $city->id);
+        $car = Car::where('id_car', $carId)
+            ->where('park_id', $park->id)
+            ->first();
+        if (!$car) {
+            return response()->json(['message' => 'Автомобиль не найден'], 404);
+        }
         $car->tariff_id = $this->GetTariffId($park->id, $city->id, $request->input('class'));
         $car->division_id = $division->id;
+        $car->park_id = $park->id;
         $car->fuel_type = $request->input('fuel_type');
         $car->transmission_type = $request->input('transmission_type');
         $car->brand = $request->input('brand');
@@ -389,14 +383,14 @@ class APIController extends Controller
             return response()->json(['message' => 'Неверный ключ авторизации'], 401);
         }
         $validator = Validator::make($request->all(), [
-            'car_id' => 'required|string|max:20',
+            'id' => 'required|string|max:20',
             'status' => 'integer|max:1',
         ]);
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
         }
-        $carId = $request->input('car_id');
-        $car = Car::where('id', $carId)
+        $carId = $request->input('id');
+        $car = Car::where('id_car', $carId)
             ->where('park_id', $park->id)
             ->first();
         if (!$car) {
@@ -683,14 +677,14 @@ class APIController extends Controller
      * @return \Illuminate\Http\JsonResponse JSON-ответ с результатом операции
      */
 
-    public function updateCarDivision(Request $request)
+    public function updateCarRentTerm(Request $request)
     {
         $apiKey = $request->header('X-API-Key');
         $park = Park::where('API_key', $apiKey)->firstOrFail();
 
         $validator = Validator::make($request->all(), [
             'rent_term_id' => 'required|integer',
-            'car_id' => 'required|integer',
+            'id' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -698,16 +692,7 @@ class APIController extends Controller
         }
 
         $rentTermId = $request->input('rent_term_id');
-        $carId = $request->input('car_id');
-
-        $car = Car::where('id', $carId)
-            ->where('park_id', $park->id)
-            ->first();
-
-        if (!$car) {
-            return response()->json(['message' => 'Автомобиль не найден'], 404);
-        }
-
+        $carId = $request->input('id');
         $rentTerm = RentTerm::where('id', $rentTermId)
             ->where('park_id', $park->id)
             ->first();
@@ -715,6 +700,15 @@ class APIController extends Controller
         if (!$rentTerm) {
             return response()->json(['message' => 'Условие аренды не найдено'], 404);
         }
+        $car = Car::where('id_car', $carId)
+            ->where('park_id', $park->id)
+            ->first();
+
+        if (!$car) {
+            return response()->json(['message' => 'Автомобиль не найден'], 404);
+        }
+
+
 
         $car->rent_term_id = $rentTermId;
         $car->save();
@@ -754,5 +748,19 @@ class APIController extends Controller
             $tariffId = $newTariff->id;
         }
         return $tariffId;
+    }
+
+    private function divisionCheck($divisionName, $park_id, $city_id)
+    {
+        $division = Division::where('park_id', $park_id)->where('city_id', $city_id)->where('name', $divisionName)->first();
+        if (!$division) {
+            $division = Division::create([
+                'park_id' => $park_id,
+                'city_id' => $city_id,
+            ]);
+            $division->name = $divisionName;
+            $division->save();
+        }
+        return  $division;
     }
 }

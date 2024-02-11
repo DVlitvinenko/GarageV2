@@ -20,7 +20,6 @@ use App\Enums\UserStatusEnum;
 use App\Enums\UserTypeEnum;
 
 
-
 class AuthController extends Controller
 {
 
@@ -80,8 +79,8 @@ class AuthController extends Controller
     public function GetUser(Request $request)
     {
         $user = Auth::guard('sanctum')->user();
-        $user->user_type = UserTypeEnum::getTypeName($user->user_type);
-        $user->user_status = UserStatusEnum::getStatusName($user->user_status);
+        $user->user_type = UserTypeEnum::from($user->user_type)->name;
+        $user->user_status = UserStatusEnum::from($user->user_status)->name;
         $driver = Driver::where('user_id', $user->id)->with('city')->first();
         $driverDocs = DriverDoc::where('driver_id', $driver->id)->first(['image_licence_front', 'image_licence_back', 'image_pasport_front', 'image_pasport_address', 'image_fase_and_pasport']);
 
@@ -141,6 +140,14 @@ class AuthController extends Controller
      */
     public function loginOrRegister(Request $request)
     {
+        $name = "DocumentsNotUploaded";
+        $typeValue = UserStatusEnum::{$name}->value;
+        $value = 0;
+        $typeName = UserStatusEnum::from($value)->name;
+
+        echo $typeName;
+        echo $typeValue;
+        dd();
         $request->validate([
             'phone' => 'required|string',
             'code' => 'required|integer',
