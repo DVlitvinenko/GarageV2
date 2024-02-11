@@ -14,6 +14,7 @@ use App\Models\RentTerm;
 use App\Models\Schema;
 use Illuminate\Support\Facades\Auth;
 use App\Enums\UserStatusEnum;
+use App\Enums\FuelTypeEnum;
 
 class CarsController extends Controller
 {
@@ -305,7 +306,7 @@ class CarsController extends Controller
      *                 @OA\Property(property="division_id", type="integer", description="Индекс"),
      *                 @OA\Property(property="tariff_id", type="integer", description="Индекс"),
      *                 @OA\Property(property="rent_term_id", type="integer", description="Индекс"),
-     *                 @OA\Property(property="fuel_type", type="integer", description="Тип топлива"),
+     *                 @OA\Property(property="fuel_type", type="integer", description="Тип топлива", enum={"Gas", "Gasoline"}),
      *                 @OA\Property(property="transmission_type", type="integer", description="Тип трансмиссии"),
      *                 @OA\Property(property="brand", type="string", description="Марка автомобиля"),
      *                 @OA\Property(property="model", type="string", description="Модель автомобиля"),
@@ -439,8 +440,8 @@ class CarsController extends Controller
                     })->pluck('id');
 
                     $carsQuery->whereIn('tariff_id', $filteredTariffs);
-                    if (isset($filters['fuel_type'])) {
-                        $carsQuery->where('fuel_type', $filters['fuel_type']);
+                    if (isset(FuelTypeEnum::{$filters['fuel_type']}->value)) {
+                        $carsQuery->where('fuel_type', FuelTypeEnum::{$filters['fuel_type']}->value);
                     }
                     if (isset($filters['transmission_type'])) {
                         $carsQuery->where('transmission_type', $filters['transmission_type']);
@@ -487,8 +488,8 @@ class CarsController extends Controller
         $divisionIds = Division::where('city_id', $cityId)->pluck('id');
         $carsQuery->whereIn('division_id', $divisionIds);
 
-        if (isset($filters['fuel_type'])) {
-            $carsQuery->where('fuel_type', $filters['fuel_type']);
+        if (isset(FuelTypeEnum::{$filters['fuel_type']}->value)) {
+            $carsQuery->where('fuel_type', FuelTypeEnum::{$filters['fuel_type']}->value);
         }
         if (isset($filters['transmission_type'])) {
             $carsQuery->where('transmission_type', $filters['transmission_type']);
