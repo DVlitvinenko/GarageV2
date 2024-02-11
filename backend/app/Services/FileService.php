@@ -2,19 +2,26 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
+
 
 class FileService
 {
-    public function saveFile($file, $path, $name)
+    public function saveFile($file, $name, $oldFileName = null)
     {
         $fileName = $name . '.' . $file->extension();
+        $path = public_path('uploads');
 
-        if (Storage::exists($path . '/' . $fileName)) {
-            Storage::delete($path . '/' . $fileName);
+
+        if ($oldFileName) {
+            $oldFilePath = $path . DIRECTORY_SEPARATOR . $oldFileName;
+            if (File::exists($oldFilePath)) {
+                File::delete($oldFilePath);
+            }
         }
 
-        $file->storeAs($path, $fileName);
+
+        $file->move($path, $fileName);
 
         return true;
     }

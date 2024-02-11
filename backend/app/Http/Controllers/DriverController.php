@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Enums\UserStatusEnum;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Driver;
@@ -83,17 +83,22 @@ class DriverController extends Controller
         $driver = Driver::where('user_id', $user_id)->first();
         $docs = DriverDoc::where('driver_id', $driver->id)->first();
 
+
         if (!$docs) {
             $docs = new DriverDoc(['driver_id' => $driver->id]);
         }
+        $oldFileName = $docs->{$type};
+
         $fileService = new FileService;
-        $path = 'uploads/user/' . $user_id;
-        $name = $type;
-
-        $fileService->saveFile($request->file('file'), $path, $name);
-        $docs->{$type} = $path . '/' . $name . '.' . $request->file('file')->extension();
+        $name = uuid_create(UUID_TYPE_RANDOM);
+        $docs->{$type} = $name . '.' . $request->file('file')->extension();
+        $fileService->saveFile($request->file('file'), $name, $oldFileName);
         $docs->save();
-
+        $readyToVerify = $docs->image_licence_front && $docs->image_licence_back && $docs->image_pasport_front && $docs->image_pasport_address && $docs->image_fase_and_pasport;
+        if ($readyToVerify) {
+            $user->user_status = UserStatusEnum::Verification->value;
+            $user->save();
+        }
         return response()->json(['success' => true]);
     }
 }
