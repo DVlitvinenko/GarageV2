@@ -4030,7 +4030,7 @@ export class CarSearchResult implements ICarSearchResult {
     /** Индекс */
     rent_term_id?: number;
     /** Тип топлива */
-    fuel_type?: CarSearchResultFuel_type;
+    fuelType?: CarSearchResultFuelType;
     /** Тип трансмиссии */
     transmission_type?: number;
     /** Марка автомобиля */
@@ -4083,7 +4083,7 @@ export class CarSearchResult implements ICarSearchResult {
             this.division_id = _data["division_id"];
             this.tariff_id = _data["tariff_id"];
             this.rent_term_id = _data["rent_term_id"];
-            this.fuel_type = _data["fuel_type"];
+            this.fuelType = _data["fuelType"];
             this.transmission_type = _data["transmission_type"];
             this.brand = _data["brand"];
             this.model = _data["model"];
@@ -4119,7 +4119,7 @@ export class CarSearchResult implements ICarSearchResult {
         data["division_id"] = this.division_id;
         data["tariff_id"] = this.tariff_id;
         data["rent_term_id"] = this.rent_term_id;
-        data["fuel_type"] = this.fuel_type;
+        data["fuelType"] = this.fuelType;
         data["transmission_type"] = this.transmission_type;
         data["brand"] = this.brand;
         data["model"] = this.model;
@@ -4149,7 +4149,7 @@ export interface ICarSearchResult {
     /** Индекс */
     rent_term_id?: number;
     /** Тип топлива */
-    fuel_type?: CarSearchResultFuel_type;
+    fuelType?: CarSearchResultFuelType;
     /** Тип трансмиссии */
     transmission_type?: number;
     /** Марка автомобиля */
@@ -4410,9 +4410,9 @@ export interface ICar {
     [key: string]: any;
 }
 
-export enum CarSearchResultFuel_type {
-    _Gas = Gas,
-    _Gasoline = Gasoline,
+export enum CarSearchResultFuelType {
+    Gas = "Gas",
+    Gasoline = "Gasoline",
 }
 
 export class Division implements IDivision {
@@ -4505,7 +4505,7 @@ export class Tariff implements ITariff {
     /** Идентификатор тарифа */
     id?: number;
     /** Класс тарифа */
-    car_class?: string;
+    car_class?: TariffCar_class;
     /** Идентификатор парка */
     park_id?: number;
     /** Идентификатор города */
@@ -4600,7 +4600,7 @@ export interface ITariff {
     /** Идентификатор тарифа */
     id?: number;
     /** Класс тарифа */
-    car_class?: string;
+    car_class?: TariffCar_class;
     /** Идентификатор парка */
     park_id?: number;
     /** Идентификатор города */
@@ -5413,6 +5413,13 @@ export interface ICity {
     updated_at?: Date;
 
     [key: string]: any;
+}
+
+export enum TariffCar_class {
+    Economy = "Economy",
+    Comfort = "Comfort",
+    ComfortPlus = "ComfortPlus",
+    Business = "Business",
 }
 
 export enum DocsDriverDocumentType {
