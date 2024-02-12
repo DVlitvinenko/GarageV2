@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Enums\UserStatus;
 use App\Enums\FuelType;
 use App\Enums\TransmissionType;
-
+use App\Http\Controllers\ParserController;
 class CarsController extends Controller
 {
 
@@ -207,13 +207,22 @@ class CarsController extends Controller
     public function getCars(Request $request)
     {
         $request->validate([
-            'city' => 'required|string',
+            'city' => ['required', 'string', 'max:250', function ($attribute, $value, $fail) {
+                $parser = new ParserController();
+                if (!$parser->parseCity($value)) {
+                    $fail('Некорректный город.');
+                }
+            }],
         ]);
         $user = Auth::guard('sanctum')->user();
         $fuelType = $request->fuel_type?FuelType::{$request->fuel_type}->value:null ;
         $transmission_type = $request->transmission_type?TransmissionType::{$request->transmission_type}->value:null;
-        $city = City::where('name', $request->city);
-        $cityId = $city->id;
+        $city = City::firstOrCreate(
+            ['name' => $request->city], // Указываем имя города
+            ['updated_at' => now(), 'created_at' => now()] // Указываем временные метки
+        );
+
+       $cityId = $city->id;
         if (!$city) {
             return response()->json(['error' => 'Город не найден'], 404);
         }
@@ -227,27 +236,27 @@ class CarsController extends Controller
         $comission = $request->comission;
 
         $carsQuery = Car::query()->where('show_status','!=',0)->where('rent_term_id','!=',null)
-         ->whereHas('division.city', function($query) use ($cityId) {
-             $query->where('id', $cityId);
+         ->whereHas('division', function($query) use ($cityId) {
+             $query->where('city_id', $cityId);
          })
         ->with([
             'division.city' => function($query) {
-                $query->select('id', 'name'); // Выбираем только необходимые поля из таблицы cities
+                $query->select('id', 'name');
             },
             'tariff' => function($query) {
-                $query->select('id', 'class'); // Выбираем только необходимые поля из таблицы tariffs
+                $query->select('id', 'class');
             },
             'rentTerm' => function($query) {
-                $query->select('id', 'deposit_amount_daily', 'deposit_amount_total', 'minimum_period_days', 'name', 'is_buyout_possible'); // Выбираем только необходимые поля из таблицы rent_terms
+                $query->select('id', 'deposit_amount_daily', 'deposit_amount_total', 'minimum_period_days', 'name', 'is_buyout_possible');
             },
             'rentTerm.schemas' => function($query) {
-                $query->select('id', 'daily_amount', 'non_working_days', 'working_days'); // Выбираем только необходимые поля из таблицы schemas
+                $query->select('id', 'daily_amount', 'non_working_days', 'working_days');
             },
             'division.park' => function($query) {
-                $query->select('id', 'name'); // Выбираем только необходимые поля из таблицы parks
+                $query->select('id', 'name');
             },
             'division' => function($query) {
-                $query->select('id', 'coords', 'address', 'name'); // Выбираем только необходимые поля из таблицы parks
+                $query->select('id', 'coords', 'address', 'name');
             }
         ])
         ->select(

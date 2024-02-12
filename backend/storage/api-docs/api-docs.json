@@ -2077,7 +2077,7 @@
                                         "type": "string",
                                         "format": "binary"
                                     },
-                                    "type": {
+                                    "driverDocumentType": {
                                         "description": "Тип файла",
                                         "type": "string",
                                         "enum": [

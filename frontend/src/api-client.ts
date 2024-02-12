@@ -894,10 +894,10 @@ export class Client {
     /**
      * Загрузить файл
      * @param file (optional) Файл для загрузки
-     * @param type (optional) Тип файла
+     * @param driverDocumentType (optional) Тип файла
      * @return Файл успешно загружен
      */
-    uploadFile(file: FileParameter | undefined, type: Type | undefined): Promise<Anonymous44> {
+    uploadFile(file: FileParameter | undefined, driverDocumentType: DriverDocumentType | undefined): Promise<Anonymous44> {
         let url_ = this.baseUrl + "/api/upload-file";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -906,10 +906,10 @@ export class Client {
             throw new Error("The parameter 'file' cannot be null.");
         else
             content_.append("file", file.data, file.fileName ? file.fileName : "file");
-        if (type === null || type === undefined)
-            throw new Error("The parameter 'type' cannot be null.");
+        if (driverDocumentType === null || driverDocumentType === undefined)
+            throw new Error("The parameter 'driverDocumentType' cannot be null.");
         else
-            content_.append("type", type.toString());
+            content_.append("driverDocumentType", driverDocumentType.toString());
 
         let options_: RequestInit = {
             body: content_,
@@ -1636,7 +1636,7 @@ export interface IBody11 {
     [key: string]: any;
 }
 
-export enum Type {
+export enum DriverDocumentType {
     Image_licence_front = "image_licence_front",
     Image_licence_back = "image_licence_back",
     Image_pasport_front = "image_pasport_front",
