@@ -91,7 +91,7 @@ class DriverController extends Controller
 
         $fileService = new FileService;
         $name = uuid_create(UUID_TYPE_RANDOM);
-        $docs->{$type} = $name . '.' . $request->file('file')->extension();
+        $docs->{$type} = $name;
         $fileService->saveFile($request->file('file'), $name, $oldFileName);
         $docs->save();
         $readyToVerify = $docs->image_licence_front && $docs->image_licence_back && $docs->image_pasport_front && $docs->image_pasport_address && $docs->image_fase_and_pasport;

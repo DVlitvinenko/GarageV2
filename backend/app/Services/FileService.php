@@ -9,7 +9,7 @@ class FileService
 {
     public function saveFile($file, $name, $oldFileName = null)
     {
-        $fileName = $name . '.' . $file->extension();
+        $fileName = $name;
         $path = public_path('uploads');
 
 

@@ -88,7 +88,7 @@ class AuthController extends Controller
         foreach ($driverDocs->toArray() as $key => $value) {
             $docs[] = [
                 'type' => $key,
-                'url' => asset('uploads') . DIRECTORY_SEPARATOR . $value,
+                'url' => $value  ? asset('uploads') . '/' . $value : null,
             ];
         }
         if (!$driver->city) {
