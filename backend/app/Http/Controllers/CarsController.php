@@ -210,6 +210,8 @@ class CarsController extends Controller
     public function getCars(Request $request)
     {
         $request->validate([
+            'offset'=>'required|integer',
+            'limit'=>'required|integer',
             'city' => ['required', 'string', 'max:250', function ($attribute, $value, $fail) {
                 $parser = new ParserController();
                 if (!$parser->parseCity($value)) {
@@ -232,7 +234,7 @@ class CarsController extends Controller
 
         $brand = $request->brand;
         $model = $request->model;
-        $carClass = $request->car_class;
+        $carClass = $request->car_class?CarClass::{$request->car_class}->value:null;
         $selfEmployed = $request->self_employed;
         $isBuyoutPossible = $request->is_buyout_possible;
         $comission = $request->comission;
@@ -241,6 +243,38 @@ class CarsController extends Controller
         ->whereHas('division', function($query) use ($cityId) {
             $query->where('city_id', $cityId);
         });
+        if ($user && $user->user_status == UserStatus::Verified->value) {
+            $driverSpecifications = $user->driver->driverSpecification;
+            if ($driverSpecifications) {
+                $carsQuery->whereHas('tariff', function($query) use ($driverSpecifications) {
+                    $criminalIds = explode(',', $driverSpecifications->criminal_ids);
+            $criminalIds = array_map('intval', $criminalIds);
+            if (!empty(array_filter($criminalIds, 'is_numeric'))) {
+                $query->whereNotIn('criminal_ids', $criminalIds);
+            }
+            $forbiddenRepublicIds = explode(',', $driverSpecifications->republick_id);
+            $forbiddenRepublicIds = array_map('intval', $forbiddenRepublicIds);
+            if (!empty(array_filter($forbiddenRepublicIds, 'is_numeric'))) {
+                $query->whereNotIn('forbidden_republic_ids', $forbiddenRepublicIds);
+            }
+                    $query->where('experience', '<=', $driverSpecifications->experience);
+                    $query->where('max_cont_seams', '>=', $driverSpecifications->count_seams);
+                    $query->where('min_scoring', '<=', $driverSpecifications->scoring);
+                    if ($driverSpecifications->participation_accident == 1) {
+                        $query->where('participation_accident', 0);
+                    }
+                    if ($driverSpecifications->abandoned_car == 1) {
+                        $query->where('abandoned_car', 0);
+                    }
+                    if ($driverSpecifications->participation_accident == 1) {
+                        $query->where('participation_accident', 0);
+                    }
+                    if ($driverSpecifications->alcohol == 1) {
+                        $query->where('alcohol', 0);
+                    }
+                });
+            }
+        }
         if ($fuelType) {
             $carsQuery->where('fuel_type', $fuelType);
         }
@@ -260,6 +294,21 @@ class CarsController extends Controller
         if ($carClass) {
             $carsQuery->where('car_class', $carClass);
         }
+        if ($selfEmployed) {
+            $carsQuery->whereHas('division.park', function($query) use ($selfEmployed) {
+                $query->where('self_employed', $selfEmployed);
+            });
+        }
+        if ($comission) {
+            $carsQuery->whereHas('division.park', function($query) use ($comission) {
+                $query->where('comission','<=', $comission);
+            });
+        }
+        if ($isBuyoutPossible) {
+            $carsQuery->whereHas('rentTerm', function($query) use ($isBuyoutPossible) {
+                $query->where('is_buyout_possible', $isBuyoutPossible);
+            });
+        }
         $carsQuery->with([
             'division.city' => function($query) {
                 $query->select('id', 'name');
@@ -268,16 +317,16 @@ class CarsController extends Controller
                 $query->select('id', 'class');
             },
             'rentTerm' => function($query) {
-                $query->select('id', 'deposit_amount_daily', 'deposit_amount_total', 'minimum_period_days', 'name', 'is_buyout_possible');
+                $query->select('id', 'deposit_amount_daily', 'deposit_amount_total', 'minimum_period_days', 'is_buyout_possible');
             },
             'rentTerm.schemas' => function($query) {
-                $query->select('id', 'daily_amount', 'non_working_days', 'working_days');
+                $query->select('id', 'daily_amount', 'non_working_days', 'working_days','rent_term_id');
             },
             'division.park' => function($query) {
-                $query->select('id', 'name');
+                $query->select('id', 'park_name');
             },
             'division' => function($query) {
-                $query->select('id', 'coords', 'address', 'name');
+                $query->select('id', 'coords', 'address', 'name','park_id');
             }
         ])
         ->select(
@@ -296,191 +345,51 @@ class CarsController extends Controller
         );
 
     $cars = $carsQuery->get();
-        // $carsQuery = Car::query()
-        // ->with([
-        //     'tariff' => function($query) {
-        //         $query->select('class');
-        //     },
-        //     'rentTerm' => function($query) {
-        //         $query->select('deposit_amount_daily', 'deposit_amount_total', 'minimum_period_days', 'name', 'is_buyout_possible');
-        //     },
-        //     'rentTerm.schema' => function($query) {
-        //         $query->select('daily_amount', 'non_working_days', 'working_days');
-        //     },
-        //     'division.city' => function($query) {
-        //         $query->select('name');
-        //     },
-        //     'division.park' => function($query) {
-        //         $query->select('coords', 'address', 'name');
-        //     }
-        // ])
-        //  ->select(
-        //      'cars.id',
-        //      'cars.fuel_type',
-        //      'cars.transmission_type',
-        //      'cars.brand',
-        //      'cars.model',
-        //      'cars.year_produced',
-        //      'cars.images','cars.rent_term_id AS rent_term',
-        //  );
-        // $filters = $request->all();
-        // $cityName = $filters['city'] ?? null;
-        // $cityId = City::where('name', $cityName)->value('id');
 
-        // $carsQuery = Car::query()->with('tariff', 'rentTerm', 'schema', 'division.park', 'division.city');
-        // if (Auth::check()) {
-        //     $user = Auth::guard('sanctum')->user();
-        //     if ($user->user_status >= UserStatus::Verified->value) {
-        //         $driver = Driver::where('user_id', $user->id)->first();
-        //         if ($driver) {
-        //             $driverSpec = DriverSpecification::where('driver_id', $driver->id)->first();
-        //             $filteredTariffs = Tariff::where('city_id', $cityId)->where(function ($query) use ($driverSpec) {
-        //                 $query
-        //                     ->where(function ($q) use ($driverSpec) {
-        //                         if ($driverSpec->abandoned_car) {
-        //                             $q->where('abandoned_car', true);
-        //                         }
-        //                     })
-        //                     ->Where(function ($q) use ($driverSpec) {
-        //                         if ($driverSpec->participation_accident) {
-        //                             $q->where('participation_accident', true);
-        //                         }
-        //                     })
-        //                     ->Where(function ($q) use ($driverSpec) {
-        //                         if ($driverSpec->alcohol) {
-        //                             $q->where('alcohol', true);
-        //                         }
-        //                     })
-        //                     ->Where(function ($q) use ($driverSpec) {
-        //                         if ($driverSpec->scoring !== null) {
-        //                             $q->where('min_scoring', '<', $driverSpec->scoring);
-        //                         }
-        //                     })
-        //                     ->Where(function ($q) use ($driverSpec) {
-        //                         if ($driverSpec->experience !== null) {
-        //                             $q->where('experience', '<=', $driverSpec->experience);
-        //                         }
-        //                     })
-        //                     ->Where(function ($q) use ($driverSpec) {
-        //                         if ($driverSpec->count_seams !== null) {
-        //                             $q->where('max_cont_seams', '>', $driverSpec->count_seams);
-        //                         }
-        //                     })
-        //                     ->where('criminal_ids', '!=', $driverSpec->criminal_ids)
-        //                     ->whereNotIn('forbidden_republic_ids', [$driverSpec->republick_id]);
-        //             })->pluck('id');
-
-        //             $carsQuery->whereIn('tariff_id', $filteredTariffs);
-        //             if (isset($filters['fuel_type'])) {
-        //                 $carsQuery->where('fuel_type', FuelType::{$filters['fuel_type']}->value);
-        //             }
-        //             if (isset($filters['transmission_type'])) {
-        //                 $carsQuery->where('transmission_type', $filters['transmission_type']);
-        //             }
-
-        //             if (isset($filters['brand'])) {
-        //                 $carsQuery->where('brand', $filters['brand']);
-        //             }
-        //             if (isset($filters['model'])) {
-        //                 $carsQuery->where('model', $filters['model']);
-        //             }
-        //             $carsQuery->where('show_status', 1);
-
-        //             $cars = $carsQuery->get();
-
-        //             if (isset($filters['car_class'])) {
-        //                 switch ($filters['car_class']) {
-        //                     case 1:
-        //                         $class = 'Эконом';
-        //                         break;
-        //                     case 2:
-        //                         $class = 'Комфорт';
-        //                         break;
-        //                     case 3:
-        //                         $class = 'Комфорт+';
-        //                         break;
-        //                     case 4:
-        //                         $class = 'Бизнес';
-        //                         break;
-        //                     default:
-        //                         $class = null;
-        //                         break;
-        //                 }
-        //                 $cars = $cars->filter(function ($car) use ($class) {
-        //                     return $car->tariff->class == $class;
-        //                 });
-        //             }
-
-        //             return response()->json(['cars' => $cars]);
-        //         }
-        //     }
-        // }
-
-        // $divisionIds = Division::where('city_id', $cityId)->pluck('id');
-        // $carsQuery->whereIn('division_id', $divisionIds);
-
-        // if (isset($filters['fuel_type'])) {
-        //     $carsQuery->where('fuel_type', FuelType::{$filters['fuel_type']}->value);
-        // }
-        // if (isset($filters['transmission_type'])) {
-        //     $carsQuery->where('transmission_type', $filters['transmission_type']);
-        // }
-
-        // if (isset($filters['brand'])) {
-        //     $carsQuery->where('brand', $filters['brand']);
-        // }
-        // if (isset($filters['model'])) {
-        //     $carsQuery->where('model', $filters['model']);
-        // }
-        // $carsQuery->where('show_status', 1);
-
-        // $cars = $carsQuery->get();
-
-        // if (isset($filters['car_class'])) {
-        //     switch ($filters['car_class']) {
-        //         case 1:
-        //             $class = 'Эконом';
-        //             break;
-        //         case 2:
-        //             $class = 'Комфорт';
-        //             break;
-        //         case 3:
-        //             $class = 'Комфорт+';
-        //             break;
-        //         case 4:
-        //             $class = 'Бизнес';
-        //             break;
-        //         default:
-        //             $class = null;
-        //             break;
-        //     }
-        //     $cars = $cars->filter(function ($car) use ($class) {
-        //         return $car->tariff->class == $class;
-        //     });
-        // }
-
-
-        return response()->json(['cars' => $cars]);
+    foreach ($cars as $car) {
+        $car['images'] = json_decode($car['images']);
+        $car['fuel_type'] = FuelType::from($car['fuel_type'])->name;
+        $car['transmission_type'] = TransmissionType::from($car['transmission_type'])->name;
+        $end =$this->tarifEng($car['tariff']['class']);
+        $car['tariff']['class'] =  $end;
+        $parkName = $car['division']['park']['park_name'];
+        unset(
+            $car['division']['park'],
+            $car['division']['park_id'],
+            $car['division']['id'],
+            $car['tariff'],
+            $car['division']['city'],
+            $car['division_id'],
+            $car['park_id'],
+            $car['tariff_id'],
+            $car['rent_term_id'],
+        );
+        $car->tariff= $end;
+        $car->park_name= $parkName;
     }
 
-    // private function getTariffsForCars($cars)
-    // {
-    //     $tariffIds = $cars->pluck('tariff_id')->unique()->toArray();
-    //     $tariffs = Tariff::whereIn('id', $tariffIds)->get();
-    //     return $tariffs;
-    // }
-    // private function getRentTermsForCars($cars)
-    // {
-    //     $rentTermIds  = $cars->pluck('rent_term_id ')->unique()->toArray();
-    //     $rentTerms  = RentTerm::whereIn('id', $rentTermIds)->get();
-    //     return $rentTerms;
-    // }
-    // private function getScemasForRentTerms($rentTerms)
-    // {
-    //     $rentTermIds  = $rentTerms->pluck('id')->unique()->toArray();
-    //     $scemas  = Schema::whereIn('rent_term_id', $rentTermIds)->get();
-    //     return $scemas;
-    // }
+
+    return response()->json(['cars' => $cars]);
+
+    }
+    private function tarifEng($string) {
+        $string = mb_strtolower($string);
+
+        switch ($string) {
+            case 'эконом':
+               return CarClass::Economy->name;
+            case 'комфорт':
+                return CarClass::Comfort->name;
+            case 'комфорт+':
+               return CarClass::ComfortPlus->name;
+            case 'бизнес':
+                return CarClass::Business->name;
+            default:
+
+                return null;
+        }
+    }
+
 
     /**
      * Бронирование автомобиля
