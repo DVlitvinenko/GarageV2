@@ -1,6 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import econom from "./assets/car_icons/econom.png";
+import comfort from "./assets/car_icons/comfort.png";
+import comfortPlus from "./assets/car_icons/comfort-plus.png";
+import business from "./assets/car_icons/business.png";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
@@ -13,8 +17,13 @@ import {
 
 export const CarFinder = () => (
   <>
-    <div className="mx-auto w-80">
-      <h2 className="my-10 text-center">ПОИСК АВТО</h2>
+    <div className="w-80 mx-auto">
+      <div className="flex">
+        <img className="my-8 mx-auto h-8 w-8" src={econom} />
+        <img className="my-8 mx-auto h-8 w-8" src={comfort} />
+        <img className="my-8 mx-auto h-8 w-8" src={comfortPlus} />
+        <img className="my-8 mx-auto h-8 w-8" src={business} />
+      </div>
       <Checkbox title="Для самозанятых" />
       <Checkbox title="Выкуп автомобиля" />
       <DropdownMenu>
@@ -48,7 +57,7 @@ export const CarFinder = () => (
           <DropdownMenuItem>&lt; 5</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <p className="my-4 text-center text-red">Вы ввели неправильный код</p>
+      <p className="text-center my-4 text-red">Вы ввели неправильный код</p>
       <div className="text-center">
         <Button>Войти</Button>
       </div>

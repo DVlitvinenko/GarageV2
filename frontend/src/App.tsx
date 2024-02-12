@@ -5,9 +5,10 @@ import account from "./assets/account.svg";
 import "./App.css";
 import { Link, Route, Routes, useNavigate } from "react-router-dom";
 import { client } from "./backend";
-import { CarFinder } from "./CarFinder";
+import { CarFinder } from "./Finder";
 import { Account } from "./Account";
 import { DriverLogin } from "./DriverLogin";
+import { Card } from "./Card";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -35,11 +36,12 @@ function App() {
   return (
     <>
       <a>
-        <img className="mx-auto my-8" src={logo} />
+        <img className="my-8 mx-auto" src={logo} />
       </a>
       <Menu />
       <Routes>
         <Route path="/" element={<CarFinder />} />
+        <Route path="/card" element={<Card />} />
         <Route path="account" element={<Account />} />
         <Route path="login/driver" element={<DriverLogin />} />
         <Route path="login/manager" element={<ManagerLogin />} />
@@ -52,12 +54,12 @@ function App() {
 export default App;
 
 const Menu = () => (
-  <div className="flex justify-around mx-auto my-2 mb-12 cursor-pointer w-60">
+  <div className="w-60 mx-auto flex justify-around mb-12 cursor-pointer my-2">
     <Link className="hover:text-sky-400" to="/">
-      <img className="object-scale-down w-8 h-8" src={search} />
+      <img className="object-scale-down h-8 w-8" src={search} />
     </Link>
     <Link className="hover:text-sky-400" to="account">
-      <img className="object-scale-down w-8 h-8" src={account} />
+      <img className="object-scale-down h-8 w-8" src={account} />
     </Link>
   </div>
 );
