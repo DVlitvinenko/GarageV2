@@ -134,9 +134,9 @@
                                                         "description": "Индекс",
                                                         "type": "integer"
                                                     },
-                                                    "fuel_type": {
+                                                    "fuelType": {
                                                         "description": "Тип топлива",
-                                                        "type": "integer",
+                                                        "type": "string",
                                                         "enum": [
                                                             "Gas",
                                                             "Gasoline"
@@ -295,7 +295,13 @@
                                                             },
                                                             "car_class": {
                                                                 "description": "Класс тарифа",
-                                                                "type": "string"
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "Economy",
+                                                                    "Comfort",
+                                                                    "ComfortPlus",
+                                                                    "Business"
+                                                                ]
                                                             },
                                                             "park_id": {
                                                                 "description": "Идентификатор парка",

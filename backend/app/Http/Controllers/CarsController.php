@@ -17,6 +17,7 @@ use App\Enums\UserStatus;
 use App\Enums\FuelType;
 use App\Enums\TransmissionType;
 use App\Http\Controllers\ParserController;
+use App\Enums\CarClass;
 class CarsController extends Controller
 {
 
@@ -64,7 +65,9 @@ class CarsController extends Controller
      *                 @OA\Property(
      *                     property="car_class",
      *                     type="integer",
-     *                     description="Класс автомобиля (1 - Эконом, 2 - Комфорт, 3 - Комфорт+, 4 - Бизнес)"
+     *                     description="Класс автомобиля (1 - Эконом, 2 - Комфорт, 3 - Комфорт+, 4 - Бизнес)",
+
+     *
      *                 ),
      *             ),
      *         ),
@@ -120,7 +123,7 @@ class CarsController extends Controller
      *                 @OA\Property(property="division_id", type="integer", description="Индекс"),
      *                 @OA\Property(property="tariff_id", type="integer", description="Индекс"),
      *                 @OA\Property(property="rent_term_id", type="integer", description="Индекс"),
-     *                 @OA\Property(property="fuel_type", type="integer", description="Тип топлива", enum={"Gas", "Gasoline"}),
+     *                 @OA\Property(property="fuelType", type="string", description="Тип топлива", enum={"Gas", "Gasoline"}),
      *                 @OA\Property(property="transmission_type", type="integer", description="Тип трансмиссии"),
      *                 @OA\Property(property="brand", type="string", description="Марка автомобиля"),
      *                 @OA\Property(property="model", type="string", description="Модель автомобиля"),
@@ -158,7 +161,7 @@ class CarsController extends Controller
      *                 ),
      *                 @OA\Property(property="tariff", type="object", description="Данные о тарифе",
      *                     @OA\Property(property="id", type="integer", description="Идентификатор тарифа"),
-     *                     @OA\Property(property="car_class", type="string", description="Класс тарифа"),
+     *                     @OA\Property(property="car_class", type="string", description="Класс тарифа",enum={"Economy","Comfort","ComfortPlus","Business"}),
      *                     @OA\Property(property="park_id", type="integer", description="Идентификатор парка"),
      *                     @OA\Property(property="city_id", type="integer", description="Идентификатор города"),
      *                     @OA\Property(property="criminal_ids", type="string", description="Идентификаторы преступлений"),
@@ -216,19 +219,18 @@ class CarsController extends Controller
         ]);
         $user = Auth::guard('sanctum')->user();
         $fuelType = $request->fuel_type?FuelType::{$request->fuel_type}->value:null ;
-        $transmission_type = $request->transmission_type?TransmissionType::{$request->transmission_type}->value:null;
+        $transmissionType = $request->transmission_type?TransmissionType::{$request->transmission_type}->value:null;
         $city = City::firstOrCreate(
-            ['name' => $request->city], // Указываем имя города
-            ['updated_at' => now(), 'created_at' => now()] // Указываем временные метки
+            ['name' => $request->city],
+            ['updated_at' => now(), 'created_at' => now()]
         );
 
-       $cityId = $city->id;
+        $cityId = $city->id;
         if (!$city) {
             return response()->json(['error' => 'Город не найден'], 404);
         }
 
-
-        $brend = $request->brend;
+        $brand = $request->brand;
         $model = $request->model;
         $carClass = $request->car_class;
         $selfEmployed = $request->self_employed;
@@ -236,10 +238,29 @@ class CarsController extends Controller
         $comission = $request->comission;
 
         $carsQuery = Car::query()->where('show_status','!=',0)->where('rent_term_id','!=',null)
-         ->whereHas('division', function($query) use ($cityId) {
-             $query->where('city_id', $cityId);
-         })
-        ->with([
+        ->whereHas('division', function($query) use ($cityId) {
+            $query->where('city_id', $cityId);
+        });
+        if ($fuelType) {
+            $carsQuery->where('fuel_type', $fuelType);
+        }
+
+        if ($transmissionType) {
+            $carsQuery->where('transmission_type', $transmissionType);
+        }
+
+        if ($brand) {
+            $carsQuery->where('brand', 'like', '%' . $brand . '%');
+        }
+
+        if ($model) {
+            $carsQuery->where('model', 'like', '%' . $model . '%');
+        }
+
+        if ($carClass) {
+            $carsQuery->where('car_class', $carClass);
+        }
+        $carsQuery->with([
             'division.city' => function($query) {
                 $query->select('id', 'name');
             },
