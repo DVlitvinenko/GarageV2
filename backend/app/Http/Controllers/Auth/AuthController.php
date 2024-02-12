@@ -23,6 +23,13 @@ use App\Enums\UserType;
 class AuthController extends Controller
 {
 
+    /**
+     * @OA\Schema(
+     *     schema="UserStatus",
+     *     type="string",
+     *     enum={"DocumentsNotUploaded", "Verification", "Verified"}
+     * )
+     */
 
     /**
      * Получение данных пользователя (аутентифицированный запрос)
@@ -45,7 +52,7 @@ class AuthController extends Controller
      *                 @OA\Property(property="phone", type="string", description="Номер телефона пользователя"),
      *                 @OA\Property(property="name", type="string", nullable=true, description="Имя пользователя"),
      *                 @OA\Property(property="email", type="string", nullable=true, description="Email пользователя"),
-     *                 @OA\Property(property="user_type", type="string", description="Тип пользователя", enum={"Driver", "Manager", "Admin"}),
+     *                 @OA\Property(property="user_type", type="string", description="Тип пользователя", ref="#/components/schemas/UserType"),
      *                 @OA\Property(property="city_name", type="string", description="Название города"),
      *                 @OA\Property(
      *                     property="docs",
@@ -53,7 +60,7 @@ class AuthController extends Controller
      *                     description="Данные документов водителя",
      *                     @OA\Items(
      *                         type="object",
-     *                         @OA\Property(property="driverDocumentType", type="string", description="Тип документа",enum={"image_licence_front", "image_licence_back", "image_pasport_front", "image_pasport_address", "image_fase_and_pasport"}),
+     *                         @OA\Property(property="driverDocumentType", type="string", description="Тип документа", ref="#/components/schemas/DriverDocumentType"),
      *                         @OA\Property(property="url", type="string", nullable=true, description="URL документа")
      *                     )
      *                 )

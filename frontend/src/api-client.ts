@@ -894,11 +894,11 @@ export class Client {
     /**
      * Загрузить файл
      * @param file (optional) Файл для загрузки
-     * @param driverDocumentType (optional) Тип файла
+     * @param driverDocumentType (optional) 
      * @return Файл успешно загружен
      */
     uploadFile(file: FileParameter | undefined, driverDocumentType: DriverDocumentType | undefined): Promise<Anonymous44> {
-        let url_ = this.baseUrl + "/api/upload-file";
+        let url_ = this.baseUrl + "/driver/upload-file";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = new FormData();
@@ -948,6 +948,45 @@ export class Client {
         }
         return Promise.resolve<Anonymous44>(null as any);
     }
+}
+
+export enum CarClass {
+    Economy = "Economy",
+    Comfort = "Comfort",
+    ComfortPlus = "ComfortPlus",
+    Business = "Business",
+}
+
+/** The unique identifier of a product in our catalog */
+export enum DriverDocumentType {
+    Image_licence_front = "image_licence_front",
+    Image_licence_back = "image_licence_back",
+    Image_pasport_front = "image_pasport_front",
+    Image_pasport_address = "image_pasport_address",
+    Image_fase_and_pasport = "image_fase_and_pasport",
+}
+
+export enum FuelType {
+    Gas = "Gas",
+    Gasoline = "Gasoline",
+}
+
+export enum TransmissionType {
+    Mechanics = "Mechanics",
+    Automatic = "Automatic",
+}
+
+export enum UserStatus {
+    DocumentsNotUploaded = "DocumentsNotUploaded",
+    Verification = "Verification",
+    Verified = "Verified",
+}
+
+/** The unique identifier of a product in our catalog */
+export enum UserType {
+    Driver = "Driver",
+    Manager = "Manager",
+    Admin = "Admin",
 }
 
 export class Body implements IBody {
@@ -1634,14 +1673,6 @@ export interface IBody11 {
     car_id?: number;
 
     [key: string]: any;
-}
-
-export enum DriverDocumentType {
-    Image_licence_front = "image_licence_front",
-    Image_licence_back = "image_licence_back",
-    Image_pasport_front = "image_pasport_front",
-    Image_pasport_address = "image_pasport_address",
-    Image_fase_and_pasport = "image_fase_and_pasport",
 }
 
 export class Anonymous implements IAnonymous {
@@ -4193,8 +4224,7 @@ export class User implements IUser {
     name?: string | undefined;
     /** Email пользователя */
     email?: string | undefined;
-    /** Тип пользователя */
-    user_type?: User_type;
+    user_type?: UserType;
     /** Название города */
     city_name?: string;
     /** Данные документов водителя */
@@ -4268,8 +4298,7 @@ export interface IUser {
     name?: string | undefined;
     /** Email пользователя */
     email?: string | undefined;
-    /** Тип пользователя */
-    user_type?: User_type;
+    user_type?: UserType;
     /** Название города */
     city_name?: string;
     /** Данные документов водителя */
@@ -4819,15 +4848,8 @@ export enum User_status {
     Verified = "Verified",
 }
 
-export enum User_type {
-    Driver = "Driver",
-    Manager = "Manager",
-    Admin = "Admin",
-}
-
 export class Docs implements IDocs {
-    /** Тип документа */
-    driverDocumentType?: DocsDriverDocumentType;
+    driverDocumentType?: DriverDocumentType;
     /** URL документа */
     url?: string | undefined;
 
@@ -4873,8 +4895,7 @@ export class Docs implements IDocs {
 }
 
 export interface IDocs {
-    /** Тип документа */
-    driverDocumentType?: DocsDriverDocumentType;
+    driverDocumentType?: DriverDocumentType;
     /** URL документа */
     url?: string | undefined;
 
@@ -5420,14 +5441,6 @@ export enum TariffCar_class {
     Comfort = "Comfort",
     ComfortPlus = "ComfortPlus",
     Business = "Business",
-}
-
-export enum DocsDriverDocumentType {
-    Image_licence_front = "image_licence_front",
-    Image_licence_back = "image_licence_back",
-    Image_pasport_front = "image_pasport_front",
-    Image_pasport_address = "image_pasport_address",
-    Image_fase_and_pasport = "image_fase_and_pasport",
 }
 
 export class Park2 implements IPark2 {
