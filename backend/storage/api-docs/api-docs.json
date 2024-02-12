@@ -1258,7 +1258,7 @@
                                                     "type": "array",
                                                     "items": {
                                                         "properties": {
-                                                            "DriverDocumentType": {
+                                                            "driverDocumentType": {
                                                                 "description": "Тип документа",
                                                                 "type": "string",
                                                                 "enum": [

@@ -53,7 +53,7 @@ class AuthController extends Controller
      *                     description="Данные документов водителя",
      *                     @OA\Items(
      *                         type="object",
-     *                         @OA\Property(property="DriverDocumentType", type="string", description="Тип документа",enum={"image_licence_front", "image_licence_back", "image_pasport_front", "image_pasport_address", "image_fase_and_pasport"}),
+     *                         @OA\Property(property="driverDocumentType", type="string", description="Тип документа",enum={"image_licence_front", "image_licence_back", "image_pasport_front", "image_pasport_address", "image_fase_and_pasport"}),
      *                         @OA\Property(property="url", type="string", nullable=true, description="URL документа")
      *                     )
      *                 )

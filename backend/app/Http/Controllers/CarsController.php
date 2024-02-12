@@ -397,9 +397,9 @@ class CarsController extends Controller
             'city' => 'required|string',
         ]);
 
-        $fuelTupe = $request->fuel_type?FuelType::{$request->fuel_type}->value:null ;
+        $fuelType = $request->fuel_type?FuelType::{$request->fuel_type}->value:null ;
         $transmission_type = $request->transmission_type?TransmissionType::{$request->transmission_type}->value:null;
-        $cityId = $request->city?City::where('name', $request->city):1;
+        $city = $request->city?City::where('name', $request->city):1;
         $brend = $request->brend;
         $model = $request->model;
         $carClass = $request->car_class;
