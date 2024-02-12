@@ -102,7 +102,7 @@ class AuthController extends Controller
 
         unset($user->id, $user->code, $user->role_id, $user->avatar, $user->email_verified_at, $user->settings, $user->created_at, $user->updated_at);
 
-        return response()->json([$user]);
+        return response()->json(['user' => $user]);
     }
     /**
      * Аутентификация пользователя или регистрация нового
@@ -122,9 +122,12 @@ class AuthController extends Controller
      *     @OA\Response(
      *         response=200,
      *         description="Успешная аутентификация или регистрация",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="access_token", type="string", description="Токен аутентификации")
-     *         )
+     *     @OA\MediaType(
+     *         mediaType="text/plain",
+     *         @OA\Schema(
+     *             type="string",
+     *             example="Success"
+     *         ))
      *     ),
      *     @OA\Response(
      *         response=422,
