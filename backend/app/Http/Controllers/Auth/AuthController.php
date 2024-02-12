@@ -140,14 +140,6 @@ class AuthController extends Controller
      */
     public function loginOrRegister(Request $request)
     {
-        $name = "DocumentsNotUploaded";
-        $typeValue = UserStatus::{$name}->value;
-        $value = 0;
-        $typeName = UserStatus::from($value)->name;
-
-        echo $typeName;
-        echo $typeValue;
-        dd();
         $request->validate([
             'phone' => 'required|string',
             'code' => 'required|integer',
