@@ -4,7 +4,7 @@ namespace App\Enums;
 
 
 
-enum FuelTypeEnum: int
+enum FuelType: int
 {
     case Gas = 1;
     case Gasoline = 0;

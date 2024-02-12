@@ -14,4 +14,12 @@ class RentTerm extends Model
     {
         return $this->belongsTo(Park::class);
     }
+    public function cars()
+    {
+        return $this->hasMany(Car::class, 'rent_term_id ');
+    }
+    public function schema()
+    {
+        return $this->hasOne(Schema::class);
+    }
 }

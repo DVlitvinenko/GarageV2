@@ -41,8 +41,8 @@ export const DriverLogin = () => {
 
   return (
     <>
-      <div className="w-80 mx-auto">
-        <h2 className="text-center my-10">
+      <div className="mx-auto w-80">
+        <h2 className="my-10 text-center">
           Зарегистрируйтесь, чтобы получить возможность бронирования автомобиля
           или войдите в личный кабинет.
         </h2>
@@ -62,7 +62,7 @@ export const DriverLogin = () => {
               placeholder="_ _ _ _ _ _ _"
             />
             {codeHasError && (
-              <p className="text-center my-4 text-red">
+              <p className="my-4 text-center text-red">
                 Вы ввели неправильный код
               </p>
             )}
@@ -70,7 +70,9 @@ export const DriverLogin = () => {
         )}
 
         <div className="text-center">
-          {!codeRequested && <Button onAsyncClick={getCode}>Получить код</Button>}
+          {!codeRequested && (
+            <Button onAsyncClick={getCode}>Получить код</Button>
+          )}
           {codeRequested && (
             <Button
               onAsyncClick={login}
@@ -82,7 +84,7 @@ export const DriverLogin = () => {
         </div>
 
         {codeRequested && (
-          <div className="text-center my-4">
+          <div className="my-4 text-center">
             Нажимая 'Войти' вы соглашаетесь с{" "}
             <a className="text-blue-800 underline" href="kwol.ru">
               условиями договора

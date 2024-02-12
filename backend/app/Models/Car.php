@@ -15,19 +15,12 @@ class Car extends Model
     {
         return $this->belongsTo(Division::class);
     }
-
     public function tariff()
     {
         return $this->belongsTo(Tariff::class);
     }
-
     public function rentTerm()
     {
         return $this->belongsTo(RentTerm::class);
-    }
-
-    public function schema()
-    {
-        return $this->hasOneThrough(Schema::class, RentTerm::class);
     }
 }

@@ -25,7 +25,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('user/logout', [AuthController::class, 'logout']);
     Route::DELETE('user', [AuthController::class, 'DeleteUser']);
     Route::get('user', [AuthController::class, 'GetUser']);
-    Route::post('driver/upload-file', [DriverController::class, 'uploadFile']);
+    Route::post('driver/upload-file', [DriverController::class, 'uploadDocs']);
 });
 Route::get('cars', [CarsController::class, 'GetCars']);
 Route::get('car', [CarsController::class, 'GetCar']);

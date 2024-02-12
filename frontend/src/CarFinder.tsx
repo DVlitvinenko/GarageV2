@@ -13,8 +13,8 @@ import {
 
 export const CarFinder = () => (
   <>
-    <div className="w-80 mx-auto">
-      <h2 className="text-center my-10">ПОИСК АВТО</h2>
+    <div className="mx-auto w-80">
+      <h2 className="my-10 text-center">ПОИСК АВТО</h2>
       <Checkbox title="Для самозанятых" />
       <Checkbox title="Выкуп автомобиля" />
       <DropdownMenu>
@@ -48,7 +48,7 @@ export const CarFinder = () => (
           <DropdownMenuItem>&lt; 5</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <p className="text-center my-4 text-red">Вы ввели неправильный код</p>
+      <p className="my-4 text-center text-red">Вы ввели неправильный код</p>
       <div className="text-center">
         <Button>Войти</Button>
       </div>

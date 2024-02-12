@@ -6,160 +6,6 @@
         "version": "1.0.2"
     },
     "paths": {
-        "/push-cars": {
-            "post": {
-                "tags": [
-                    "API"
-                ],
-                "summary": "Добавить несколько автомобилей",
-                "description": "Добавить несколько автомобилей",
-                "operationId": "pushCars",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "cars": {
-                                        "type": "array",
-                                        "items": {
-                                            "properties": {
-                                                "id": {
-                                                    "description": "VIN-номер автомобиля",
-                                                    "type": "string",
-                                                    "maxLength": 17
-                                                },
-                                                "city": {
-                                                    "description": "Город колонны",
-                                                    "type": "string",
-                                                    "maxLength": 50
-                                                },
-                                                "division_name": {
-                                                    "description": "Название колонны",
-                                                    "type": "string",
-                                                    "maxLength": 250
-                                                },
-                                                "fuel_type": {
-                                                    "description": "Вид топлива (1 - газ, 0 - бензин)",
-                                                    "type": "integer"
-                                                },
-                                                "transmission_type": {
-                                                    "description": "КПП ТС (1 - автомат, 0 - механика)",
-                                                    "type": "integer"
-                                                },
-                                                "brand": {
-                                                    "description": "Бренд автомобиля",
-                                                    "type": "string",
-                                                    "maxLength": 50
-                                                },
-                                                "model": {
-                                                    "description": "Модель автомобиля",
-                                                    "type": "string",
-                                                    "maxLength": 80
-                                                },
-                                                "class": {
-                                                    "description": "Тариф автомобиля (1 - эконом, 2 - комфорт, 3 - комфорт+, 4 - бизнес)",
-                                                    "type": "integer"
-                                                },
-                                                "year_produced": {
-                                                    "description": "Год выпуска автомобиля",
-                                                    "type": "integer"
-                                                },
-                                                "images": {
-                                                    "description": "Ссылки на фотографии автомобиля",
-                                                    "type": "array",
-                                                    "items": {
-                                                        "type": "string"
-                                                    }
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Успешное добавление автомобилей",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Автомобили успешно добавлены"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Ошибка аутентификации",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Ошибка аутентификации"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Ошибка сервера",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Ошибка сервера"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Ошибки валидации",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Неверные или недостающие параметры в запросе"
-                                        },
-                                        "errors": {
-                                            "description": "Список ошибок валидации",
-                                            "type": "object",
-                                            "nullable": true
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "api_key": []
-                    }
-                ]
-            }
-        },
         "/cars": {
             "get": {
                 "tags": [
@@ -728,6 +574,158 @@
                         "api_key": []
                     }
                 ]
+            },
+            "post": {
+                "tags": [
+                    "API"
+                ],
+                "summary": "Добавить несколько автомобилей",
+                "description": "Добавить несколько автомобилей",
+                "operationId": "pushCars",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "cars": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "id": {
+                                                    "description": "VIN-номер автомобиля",
+                                                    "type": "string",
+                                                    "maxLength": 17
+                                                },
+                                                "city": {
+                                                    "description": "Город колонны",
+                                                    "type": "string",
+                                                    "maxLength": 50
+                                                },
+                                                "division_name": {
+                                                    "description": "Название колонны",
+                                                    "type": "string",
+                                                    "maxLength": 250
+                                                },
+                                                "fuel_type": {
+                                                    "description": "Вид топлива (1 - газ, 0 - бензин)",
+                                                    "type": "integer"
+                                                },
+                                                "transmission_type": {
+                                                    "description": "КПП ТС (1 - автомат, 0 - механика)",
+                                                    "type": "integer"
+                                                },
+                                                "brand": {
+                                                    "description": "Бренд автомобиля",
+                                                    "type": "string",
+                                                    "maxLength": 50
+                                                },
+                                                "model": {
+                                                    "description": "Модель автомобиля",
+                                                    "type": "string",
+                                                    "maxLength": 80
+                                                },
+                                                "class": {
+                                                    "description": "Тариф автомобиля (1 - эконом, 2 - комфорт, 3 - комфорт+, 4 - бизнес)",
+                                                    "type": "integer"
+                                                },
+                                                "year_produced": {
+                                                    "description": "Год выпуска автомобиля",
+                                                    "type": "integer"
+                                                },
+                                                "images": {
+                                                    "description": "Ссылки на фотографии автомобиля",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Успешное добавление автомобилей",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Автомобили успешно добавлены"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Ошибка аутентификации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ошибка аутентификации"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ошибка сервера"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Ошибки валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Неверные или недостающие параметры в запросе"
+                                        },
+                                        "errors": {
+                                            "description": "Список ошибок валидации",
+                                            "type": "object",
+                                            "nullable": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
             }
         },
         "/cars/status": {
@@ -1260,7 +1258,7 @@
                                                     "type": "array",
                                                     "items": {
                                                         "properties": {
-                                                            "type": {
+                                                            "DriverDocumentType": {
                                                                 "description": "Тип документа",
                                                                 "type": "string",
                                                                 "enum": [
@@ -1667,7 +1665,11 @@
                                                     },
                                                     "fuel_type": {
                                                         "description": "Тип топлива",
-                                                        "type": "integer"
+                                                        "type": "integer",
+                                                        "enum": [
+                                                            "Gas",
+                                                            "Gasoline"
+                                                        ]
                                                     },
                                                     "transmission_type": {
                                                         "description": "Тип трансмиссии",

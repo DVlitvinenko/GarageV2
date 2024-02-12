@@ -13,8 +13,9 @@ use App\Models\Division;
 use App\Models\RentTerm;
 use App\Models\Schema;
 use Illuminate\Support\Facades\Auth;
-use App\Enums\UserStatusEnum;
-use App\Enums\FuelTypeEnum;
+use App\Enums\UserStatus;
+use App\Enums\FuelType;
+use App\Enums\TransmissionType;
 
 class CarsController extends Controller
 {
@@ -392,141 +393,156 @@ class CarsController extends Controller
 
     public function getCars(Request $request)
     {
-        $filters = $request->all();
-        $cityName = $filters['city'] ?? null;
-        $cityId = City::where('name', $cityName)->value('id');
+        $request->validate([
+            'city' => 'required|string',
+        ]);
 
-        $carsQuery = Car::query()->with('tariff', 'rentTerm', 'schema', 'division.park', 'division.city');
-        if (Auth::check()) {
-            $user = Auth::guard('sanctum')->user();
-            if ($user->user_status >= UserStatusEnum::Verified->value) {
-                $driver = Driver::where('user_id', $user->id)->first();
-                if ($driver) {
-                    $driverSpec = DriverSpecification::where('driver_id', $driver->id)->first();
-                    $filteredTariffs = Tariff::where('city_id', $cityId)->where(function ($query) use ($driverSpec) {
-                        $query
-                            ->where(function ($q) use ($driverSpec) {
-                                if ($driverSpec->abandoned_car) {
-                                    $q->where('abandoned_car', true);
-                                }
-                            })
-                            ->Where(function ($q) use ($driverSpec) {
-                                if ($driverSpec->participation_accident) {
-                                    $q->where('participation_accident', true);
-                                }
-                            })
-                            ->Where(function ($q) use ($driverSpec) {
-                                if ($driverSpec->alcohol) {
-                                    $q->where('alcohol', true);
-                                }
-                            })
-                            ->Where(function ($q) use ($driverSpec) {
-                                if ($driverSpec->scoring !== null) {
-                                    $q->where('min_scoring', '<', $driverSpec->scoring);
-                                }
-                            })
-                            ->Where(function ($q) use ($driverSpec) {
-                                if ($driverSpec->experience !== null) {
-                                    $q->where('experience', '<=', $driverSpec->experience);
-                                }
-                            })
-                            ->Where(function ($q) use ($driverSpec) {
-                                if ($driverSpec->count_seams !== null) {
-                                    $q->where('max_cont_seams', '>', $driverSpec->count_seams);
-                                }
-                            })
-                            ->where('criminal_ids', '!=', $driverSpec->criminal_ids)
-                            ->whereNotIn('forbidden_republic_ids', [$driverSpec->republick_id]);
-                    })->pluck('id');
+        $fuelTupe = $request->fuel_type?FuelType::{$request->fuel_type}->value:null ;
+        $transmission_type = $request->transmission_type?TransmissionType::{$request->transmission_type}->value:null;
+        $cityId = $request->city?City::where('name', $request->city):1;
+        $brend = $request->brend;
+        $model = $request->model;
+        $carClass = $request->car_class;
+        $selfEmployed = $request->self_employed;
+        $isBuyoutPossible = $request->is_buyout_possible;
+        $comission = $request->comission;
 
-                    $carsQuery->whereIn('tariff_id', $filteredTariffs);
-                    if (isset(FuelTypeEnum::{$filters['fuel_type']}->value)) {
-                        $carsQuery->where('fuel_type', FuelTypeEnum::{$filters['fuel_type']}->value);
-                    }
-                    if (isset($filters['transmission_type'])) {
-                        $carsQuery->where('transmission_type', $filters['transmission_type']);
-                    }
+        $carsQuery = Car::query()->with('tariff', 'rentTerm', 'rentTerm.schema', 'division.park', 'division.city');
+        // $filters = $request->all();
+        // $cityName = $filters['city'] ?? null;
+        // $cityId = City::where('name', $cityName)->value('id');
 
-                    if (isset($filters['brand'])) {
-                        $carsQuery->where('brand', $filters['brand']);
-                    }
-                    if (isset($filters['model'])) {
-                        $carsQuery->where('model', $filters['model']);
-                    }
-                    $carsQuery->where('show_status', 1);
+        // $carsQuery = Car::query()->with('tariff', 'rentTerm', 'schema', 'division.park', 'division.city');
+        // if (Auth::check()) {
+        //     $user = Auth::guard('sanctum')->user();
+        //     if ($user->user_status >= UserStatus::Verified->value) {
+        //         $driver = Driver::where('user_id', $user->id)->first();
+        //         if ($driver) {
+        //             $driverSpec = DriverSpecification::where('driver_id', $driver->id)->first();
+        //             $filteredTariffs = Tariff::where('city_id', $cityId)->where(function ($query) use ($driverSpec) {
+        //                 $query
+        //                     ->where(function ($q) use ($driverSpec) {
+        //                         if ($driverSpec->abandoned_car) {
+        //                             $q->where('abandoned_car', true);
+        //                         }
+        //                     })
+        //                     ->Where(function ($q) use ($driverSpec) {
+        //                         if ($driverSpec->participation_accident) {
+        //                             $q->where('participation_accident', true);
+        //                         }
+        //                     })
+        //                     ->Where(function ($q) use ($driverSpec) {
+        //                         if ($driverSpec->alcohol) {
+        //                             $q->where('alcohol', true);
+        //                         }
+        //                     })
+        //                     ->Where(function ($q) use ($driverSpec) {
+        //                         if ($driverSpec->scoring !== null) {
+        //                             $q->where('min_scoring', '<', $driverSpec->scoring);
+        //                         }
+        //                     })
+        //                     ->Where(function ($q) use ($driverSpec) {
+        //                         if ($driverSpec->experience !== null) {
+        //                             $q->where('experience', '<=', $driverSpec->experience);
+        //                         }
+        //                     })
+        //                     ->Where(function ($q) use ($driverSpec) {
+        //                         if ($driverSpec->count_seams !== null) {
+        //                             $q->where('max_cont_seams', '>', $driverSpec->count_seams);
+        //                         }
+        //                     })
+        //                     ->where('criminal_ids', '!=', $driverSpec->criminal_ids)
+        //                     ->whereNotIn('forbidden_republic_ids', [$driverSpec->republick_id]);
+        //             })->pluck('id');
 
-                    $cars = $carsQuery->get();
+        //             $carsQuery->whereIn('tariff_id', $filteredTariffs);
+        //             if (isset($filters['fuel_type'])) {
+        //                 $carsQuery->where('fuel_type', FuelType::{$filters['fuel_type']}->value);
+        //             }
+        //             if (isset($filters['transmission_type'])) {
+        //                 $carsQuery->where('transmission_type', $filters['transmission_type']);
+        //             }
 
-                    if (isset($filters['car_class'])) {
-                        switch ($filters['car_class']) {
-                            case 1:
-                                $class = 'Эконом';
-                                break;
-                            case 2:
-                                $class = 'Комфорт';
-                                break;
-                            case 3:
-                                $class = 'Комфорт+';
-                                break;
-                            case 4:
-                                $class = 'Бизнес';
-                                break;
-                            default:
-                                $class = null;
-                                break;
-                        }
-                        $cars = $cars->filter(function ($car) use ($class) {
-                            return $car->tariff->class == $class;
-                        });
-                    }
+        //             if (isset($filters['brand'])) {
+        //                 $carsQuery->where('brand', $filters['brand']);
+        //             }
+        //             if (isset($filters['model'])) {
+        //                 $carsQuery->where('model', $filters['model']);
+        //             }
+        //             $carsQuery->where('show_status', 1);
 
-                    return response()->json(['cars' => $cars]);
-                }
-            }
-        }
+        //             $cars = $carsQuery->get();
 
-        $divisionIds = Division::where('city_id', $cityId)->pluck('id');
-        $carsQuery->whereIn('division_id', $divisionIds);
+        //             if (isset($filters['car_class'])) {
+        //                 switch ($filters['car_class']) {
+        //                     case 1:
+        //                         $class = 'Эконом';
+        //                         break;
+        //                     case 2:
+        //                         $class = 'Комфорт';
+        //                         break;
+        //                     case 3:
+        //                         $class = 'Комфорт+';
+        //                         break;
+        //                     case 4:
+        //                         $class = 'Бизнес';
+        //                         break;
+        //                     default:
+        //                         $class = null;
+        //                         break;
+        //                 }
+        //                 $cars = $cars->filter(function ($car) use ($class) {
+        //                     return $car->tariff->class == $class;
+        //                 });
+        //             }
 
-        if (isset(FuelTypeEnum::{$filters['fuel_type']}->value)) {
-            $carsQuery->where('fuel_type', FuelTypeEnum::{$filters['fuel_type']}->value);
-        }
-        if (isset($filters['transmission_type'])) {
-            $carsQuery->where('transmission_type', $filters['transmission_type']);
-        }
+        //             return response()->json(['cars' => $cars]);
+        //         }
+        //     }
+        // }
 
-        if (isset($filters['brand'])) {
-            $carsQuery->where('brand', $filters['brand']);
-        }
-        if (isset($filters['model'])) {
-            $carsQuery->where('model', $filters['model']);
-        }
-        $carsQuery->where('show_status', 1);
+        // $divisionIds = Division::where('city_id', $cityId)->pluck('id');
+        // $carsQuery->whereIn('division_id', $divisionIds);
+
+        // if (isset($filters['fuel_type'])) {
+        //     $carsQuery->where('fuel_type', FuelType::{$filters['fuel_type']}->value);
+        // }
+        // if (isset($filters['transmission_type'])) {
+        //     $carsQuery->where('transmission_type', $filters['transmission_type']);
+        // }
+
+        // if (isset($filters['brand'])) {
+        //     $carsQuery->where('brand', $filters['brand']);
+        // }
+        // if (isset($filters['model'])) {
+        //     $carsQuery->where('model', $filters['model']);
+        // }
+        // $carsQuery->where('show_status', 1);
 
         $cars = $carsQuery->get();
 
-        if (isset($filters['car_class'])) {
-            switch ($filters['car_class']) {
-                case 1:
-                    $class = 'Эконом';
-                    break;
-                case 2:
-                    $class = 'Комфорт';
-                    break;
-                case 3:
-                    $class = 'Комфорт+';
-                    break;
-                case 4:
-                    $class = 'Бизнес';
-                    break;
-                default:
-                    $class = null;
-                    break;
-            }
-            $cars = $cars->filter(function ($car) use ($class) {
-                return $car->tariff->class == $class;
-            });
-        }
+        // if (isset($filters['car_class'])) {
+        //     switch ($filters['car_class']) {
+        //         case 1:
+        //             $class = 'Эконом';
+        //             break;
+        //         case 2:
+        //             $class = 'Комфорт';
+        //             break;
+        //         case 3:
+        //             $class = 'Комфорт+';
+        //             break;
+        //         case 4:
+        //             $class = 'Бизнес';
+        //             break;
+        //         default:
+        //             $class = null;
+        //             break;
+        //     }
+        //     $cars = $cars->filter(function ($car) use ($class) {
+        //         return $car->tariff->class == $class;
+        //     });
+        // }
 
 
         return response()->json(['cars' => $cars]);
@@ -596,7 +612,7 @@ class CarsController extends Controller
     {
 
         $user = Auth::guard('sanctum')->user();
-        if ($user->user_status >= UserStatusEnum::Verified->value) {
+        if ($user->user_status >= UserStatus::Verified->value) {
 
             $car = Car::where('id', $request->car_id)->first();
             if (!$car) {

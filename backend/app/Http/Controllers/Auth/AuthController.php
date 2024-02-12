@@ -16,8 +16,8 @@ use App\Models\DriverDoc;
 use Session;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
-use App\Enums\UserStatusEnum;
-use App\Enums\UserTypeEnum;
+use App\Enums\UserStatus;
+use App\Enums\UserType;
 
 
 class AuthController extends Controller
@@ -53,7 +53,7 @@ class AuthController extends Controller
      *                     description="Данные документов водителя",
      *                     @OA\Items(
      *                         type="object",
-     *                         @OA\Property(property="type", type="string", description="Тип документа",enum={"image_licence_front", "image_licence_back", "image_pasport_front", "image_pasport_address", "image_fase_and_pasport"}),
+     *                         @OA\Property(property="DriverDocumentType", type="string", description="Тип документа",enum={"image_licence_front", "image_licence_back", "image_pasport_front", "image_pasport_address", "image_fase_and_pasport"}),
      *                         @OA\Property(property="url", type="string", nullable=true, description="URL документа")
      *                     )
      *                 )
@@ -79,8 +79,8 @@ class AuthController extends Controller
     public function GetUser(Request $request)
     {
         $user = Auth::guard('sanctum')->user();
-        $user->user_type = UserTypeEnum::from($user->user_type)->name;
-        $user->user_status = UserStatusEnum::from($user->user_status)->name;
+        $user->user_type = UserType::from($user->user_type)->name;
+        $user->user_status = UserStatus::from($user->user_status)->name;
         $driver = Driver::where('user_id', $user->id)->with('city')->first();
         $driverDocs = DriverDoc::where('driver_id', $driver->id)->first(['image_licence_front', 'image_licence_back', 'image_pasport_front', 'image_pasport_address', 'image_fase_and_pasport']);
 
@@ -141,9 +141,9 @@ class AuthController extends Controller
     public function loginOrRegister(Request $request)
     {
         $name = "DocumentsNotUploaded";
-        $typeValue = UserStatusEnum::{$name}->value;
+        $typeValue = UserStatus::{$name}->value;
         $value = 0;
-        $typeName = UserStatusEnum::from($value)->name;
+        $typeName = UserStatus::from($value)->name;
 
         echo $typeName;
         echo $typeValue;
@@ -155,9 +155,10 @@ class AuthController extends Controller
         $user = $this->phoneCodeAuthentication($request->phone, $request->code);
         if ($user) {
             if ($user->user_status === null) {
-                $user->user_status = UserStatusEnum::DocumentsNotUploaded->value;
+                $user->user_status = UserStatus::DocumentsNotUploaded->value;
                 $user->avatar = "users/default.png";
-                $user->user_type = UserTypeEnum::Driver->value;
+                $user->user_type = UserType::Driver->value;
+                $user->code = null;
                 $user->save();
             }
             $driver = Driver::firstOrCreate(['user_id' => $user->id]);
@@ -262,10 +263,12 @@ class AuthController extends Controller
 
     private function phoneCodeAuthentication($phone, $code)
     {
-        $user = User::where('phone', $phone)->where('code', $code)->first();
-        if ($user) {
-            Auth::login($user);
-            return $user;
+        if ($code) {
+            $user = User::where('phone', $phone)->where('code', $code)->first();
+            if ($user) {
+                Auth::login($user);
+                return $user;
+            }
         }
         return null;
     }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\UserStatusEnum;
+use App\Enums\UserStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Driver;
@@ -70,7 +70,7 @@ class DriverController extends Controller
      */
 
 
-    public function uploadFile(Request $request)
+    public function uploadDocs(Request $request)
     {
         $request->validate([
             'type' => 'required|string|in:image_licence_front,image_licence_back,image_pasport_front,image_pasport_address,image_fase_and_pasport',
@@ -96,7 +96,7 @@ class DriverController extends Controller
         $docs->save();
         $readyToVerify = $docs->image_licence_front && $docs->image_licence_back && $docs->image_pasport_front && $docs->image_pasport_address && $docs->image_fase_and_pasport;
         if ($readyToVerify) {
-            $user->user_status = UserStatusEnum::Verification->value;
+            $user->user_status = UserStatus::Verification->value;
             $user->save();
         }
         return response()->json(['success' => true]);
