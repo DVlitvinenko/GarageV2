@@ -19,15 +19,14 @@ use PHPUnit\Framework\Attributes\Group;
 */
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
-    Route::get('auth/cars', [CarsController::class, 'GetCars']);
     Route::post('auth/cars/booking', [CarsController::class, 'Booking']);
     Route::post('auth/cars/cancel-booking', [CarsController::class, 'cancelBooking']);
     Route::post('user/logout', [AuthController::class, 'logout']);
-    Route::DELETE('user', [AuthController::class, 'DeleteUser']);
+    Route::delete('user', [AuthController::class, 'DeleteUser']);
     Route::get('user', [AuthController::class, 'GetUser']);
     Route::post('driver/upload-file', [DriverController::class, 'uploadDocs']);
 });
-Route::get('cars', [CarsController::class, 'GetCars']);
+Route::post('cars', [CarsController::class, 'GetCars']);
 Route::get('car', [CarsController::class, 'GetCar']);
 Route::post('user/login', [AuthController::class, 'loginOrRegister']);
 Route::post('user/code', [AuthController::class, 'CreateAndSendCode']);

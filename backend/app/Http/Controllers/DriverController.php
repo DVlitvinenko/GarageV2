@@ -38,7 +38,7 @@ class DriverController extends Controller
      *                     format="binary"
      *                 ),
      *                 @OA\Property(
-     *                     property="type",
+     *                     property="driverDocumentType",
      *                     description="Тип файла",
      *                     type="string",
      *                     enum={"image_licence_front", "image_licence_back", "image_pasport_front", "image_pasport_address", "image_fase_and_pasport"}

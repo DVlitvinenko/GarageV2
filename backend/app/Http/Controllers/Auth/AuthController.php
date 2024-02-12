@@ -53,7 +53,7 @@ class AuthController extends Controller
      *                     description="Данные документов водителя",
      *                     @OA\Items(
      *                         type="object",
-     *                         @OA\Property(property="DriverDocumentType", type="string", description="Тип документа",enum={"image_licence_front", "image_licence_back", "image_pasport_front", "image_pasport_address", "image_fase_and_pasport"}),
+     *                         @OA\Property(property="driverDocumentType", type="string", description="Тип документа",enum={"image_licence_front", "image_licence_back", "image_pasport_front", "image_pasport_address", "image_fase_and_pasport"}),
      *                         @OA\Property(property="url", type="string", nullable=true, description="URL документа")
      *                     )
      *                 )
@@ -102,7 +102,7 @@ class AuthController extends Controller
 
         unset($user->id, $user->code, $user->role_id, $user->avatar, $user->email_verified_at, $user->settings, $user->created_at, $user->updated_at);
 
-        return response()->json([$user]);
+        return response()->json(['user' => $user]);
     }
     /**
      * Аутентификация пользователя или регистрация нового
@@ -122,9 +122,12 @@ class AuthController extends Controller
      *     @OA\Response(
      *         response=200,
      *         description="Успешная аутентификация или регистрация",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="access_token", type="string", description="Токен аутентификации")
-     *         )
+     *     @OA\MediaType(
+     *         mediaType="text/plain",
+     *         @OA\Schema(
+     *             type="string",
+     *             example="Success"
+     *         ))
      *     ),
      *     @OA\Response(
      *         response=422,

@@ -16,10 +16,10 @@ class RentTerm extends Model
     }
     public function cars()
     {
-        return $this->hasMany(Car::class, 'rent_term_id ');
+        return $this->hasMany(Car::class, 'rent_term_id');
     }
-    public function schema()
+    public function schemas()
     {
-        return $this->hasOne(Schema::class);
+        return $this->hasMany(Schema::class);
     }
 }
