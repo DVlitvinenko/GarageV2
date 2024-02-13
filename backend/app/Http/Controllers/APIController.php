@@ -17,6 +17,8 @@ use GuzzleHttp\Client;
 use App\Http\Controllers\Enums;
 
 use App\Http\Controllers\ParserController;
+use App\Models\Schema;
+use Illuminate\Database\Eloquent\Scope;
 use Illuminate\Support\Facades\File;
 
 
@@ -696,7 +698,7 @@ class APIController extends Controller
         $rentTerm = RentTerm::where('id', $rentTermId)
             ->where('park_id', $park->id)
             ->first();
-
+        $schema = Schema::where('rent_term_id', $rentTerm->id)->orderBy('daily_amount', 'asc')->select('daily_amount')->first();
         if (!$rentTerm) {
             return response()->json(['message' => 'Условие аренды не найдено'], 404);
         }
@@ -708,9 +710,8 @@ class APIController extends Controller
             return response()->json(['message' => 'Автомобиль не найден'], 404);
         }
 
-
-
         $car->rent_term_id = $rentTermId;
+        $car->price = $schema->daily_amount;
         $car->save();
 
         return response()->json(['message' => 'Условие аренды успешно привязано к автомобилю'], 200);

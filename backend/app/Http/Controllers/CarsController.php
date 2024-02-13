@@ -219,6 +219,9 @@ class CarsController extends Controller
                 }
             }],
         ]);
+        $offset = $request->offset;
+        $sorting = $request->sorting;
+        $limit = $request->limit;
         $user = Auth::guard('sanctum')->user();
         $fuelType = $request->fuel_type?FuelType::{$request->fuel_type}->value:null ;
         $transmissionType = $request->transmission_type?TransmissionType::{$request->transmission_type}->value:null;
@@ -239,7 +242,7 @@ class CarsController extends Controller
         $isBuyoutPossible = $request->is_buyout_possible;
         $comission = $request->comission;
 
-        $carsQuery = Car::query()->where('show_status','!=',0)->where('rent_term_id','!=',null)
+        $carsQuery = Car::query()->where('show_status','!=',0)->where('rent_term_id','!=',null)->where('price','!=',null)
         ->whereHas('division', function($query) use ($cityId) {
             $query->where('city_id', $cityId);
         });
@@ -343,7 +346,12 @@ class CarsController extends Controller
             'cars.id_car',
             'cars.images',
         );
-
+        if ($sorting) {
+            $car = $carsQuery->orderBy('price', $sorting)->first();
+        }else{
+            $car = $carsQuery->orderBy('price', 'asc')->first();
+        }
+    $carsQuery->offset($offset)->limit($limit);
     $cars = $carsQuery->get();
 
     foreach ($cars as $car) {
