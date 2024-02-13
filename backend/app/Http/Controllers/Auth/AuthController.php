@@ -160,7 +160,7 @@ class AuthController extends Controller
             $driverSpecification = DriverSpecification::firstOrCreate(['driver_id' => $driver->id]);
             $driverDocs = DriverDoc::firstOrCreate(['driver_id' => $driver->id]);
             $token = $user->createToken('auth_token')->plainTextToken;
-            return response()->json(['access_token' => $token]);
+            return $token;
         }
         return response()->json(null, 401);
     }
