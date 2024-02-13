@@ -30,7 +30,7 @@ export const DriverLogin = () => {
 
       localStorage.setItem("token", access_token!);
 
-      navigate("/");
+      window.location.href = "/";
     } catch (error) {
       setCodeHasError(true);
     }
