@@ -113,12 +113,7 @@ class APIController extends Controller
         // Валидация данных запроса
         $validator = Validator::make($request->all(), [
             'cars' => 'required|array',
-            'cars.*.city' => ['required', 'string', 'max:250', function ($attribute, $value, $fail) {
-                $parser = new ParserController();
-                if (!$parser->parseCity($value)) {
-                    $fail('Некорректный город.');
-                }
-            }],
+            'cars.*.city' => ['required', 'string', 'max:250', 'exists:cities,name'],
             'cars.*.division_name' => 'required|string|max:250',
             'cars.*.fuel_type' => 'required|integer|max:1',
             'cars.*.transmission_type' => 'required|integer|max:1',
@@ -245,12 +240,7 @@ class APIController extends Controller
         }
         $validator = Validator::make($request->all(), [
             'id' => 'required|string|max:20',
-            'city' => ['nullable', 'string', 'max:50', function ($attribute, $value, $fail) {
-                $parser = new ParserController();
-                if (!$parser->parseCity($value)) {
-                    $fail('Некорректный город.');
-                }
-            },],
+            'city' => ['nullable', 'string', 'max:50', 'exists:cities,name'],
             'division_name' => 'nullable|string|max:250',
             'fuel_type' => 'nullable|integer|max:1',
             'transmission_type' => 'nullable|integer|max:1',

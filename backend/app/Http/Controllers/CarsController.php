@@ -141,12 +141,7 @@ class CarsController extends Controller
         $request->validate([
             'offset'=>'required|integer',
             'limit'=>'required|integer',
-            'city' => ['required', 'string', 'max:250', function ($attribute, $value, $fail) {
-                $parser = new ParserController();
-                if (!$parser->parseCity($value)) {
-                    $fail('Некорректный город.');
-                }
-            }],
+            'city' => ['required', 'string', 'max:250', 'exists:cities,name'],
         ]);
         $offset = $request->offset;
         $sorting = $request->sorting;

@@ -164,6 +164,7 @@ class AuthController extends Controller
         }
         return response()->json(null, 401);
     }
+
     /**
      * Выход пользователя из системы
      *
