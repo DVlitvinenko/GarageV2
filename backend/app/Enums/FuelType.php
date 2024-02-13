@@ -6,7 +6,13 @@ use OpenApi\Attributes as OAT;
 
 
 
-#[OAT\Schema()]
+/**
+ * @OA\Schema(
+ *   schema="FuelType",
+ *   type="enum",
+ *   description="The unique identifier of a product in our catalog"
+ * )
+ */
 
 enum FuelType: int
 {

@@ -6,7 +6,13 @@ use OpenApi\Attributes as OAT;
 
 
 
-#[OAT\Schema()]
+/**
+ * @OA\Schema(
+ *   schema="UserStatus",
+ *   type="enum",
+ *   description="The unique identifier of a product in our catalog"
+ * )
+ */
 
 
 enum UserStatus: int

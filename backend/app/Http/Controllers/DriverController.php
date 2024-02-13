@@ -74,7 +74,7 @@ class DriverController extends Controller
     {
         $request->validate([
             'type' => 'required|string|in:image_licence_front,image_licence_back,image_pasport_front,image_pasport_address,image_fase_and_pasport',
-            'file' => 'required|file|mimes:png,jpg,jpeg|max:7168', // Максимальный размер файла 7 МБ
+            'file' => 'required|file|mimes:png,jpg,jpeg|max:7168',
         ]);
 
         $type = $request->type;

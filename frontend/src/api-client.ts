@@ -950,6 +950,7 @@ export class Client {
     }
 }
 
+/** The unique identifier of a product in our catalog */
 export enum CarClass {
     Economy = "Economy",
     Comfort = "Comfort",
@@ -966,16 +967,19 @@ export enum DriverDocumentType {
     Image_fase_and_pasport = "image_fase_and_pasport",
 }
 
+/** The unique identifier of a product in our catalog */
 export enum FuelType {
     Gas = "Gas",
     Gasoline = "Gasoline",
 }
 
+/** The unique identifier of a product in our catalog */
 export enum TransmissionType {
     Mechanics = "Mechanics",
     Automatic = "Automatic",
 }
 
+/** The unique identifier of a product in our catalog */
 export enum UserStatus {
     DocumentsNotUploaded = "DocumentsNotUploaded",
     Verification = "Verification",
@@ -4060,8 +4064,7 @@ export class CarSearchResult implements ICarSearchResult {
     tariff_id?: number;
     /** Индекс */
     rent_term_id?: number;
-    /** Тип топлива */
-    fuelType?: CarSearchResultFuelType;
+    fuelType?: FuelType;
     /** Тип трансмиссии */
     transmission_type?: number;
     /** Марка автомобиля */
@@ -4179,8 +4182,7 @@ export interface ICarSearchResult {
     tariff_id?: number;
     /** Индекс */
     rent_term_id?: number;
-    /** Тип топлива */
-    fuelType?: CarSearchResultFuelType;
+    fuelType?: FuelType;
     /** Тип трансмиссии */
     transmission_type?: number;
     /** Марка автомобиля */
@@ -4216,8 +4218,7 @@ export interface ICarSearchResult {
 }
 
 export class User implements IUser {
-    /** Статус пользователя */
-    user_status?: User_status;
+    user_status?: UserStatus;
     /** Номер телефона пользователя */
     phone?: string;
     /** Имя пользователя */
@@ -4290,8 +4291,7 @@ export class User implements IUser {
 }
 
 export interface IUser {
-    /** Статус пользователя */
-    user_status?: User_status;
+    user_status?: UserStatus;
     /** Номер телефона пользователя */
     phone?: string;
     /** Имя пользователя */
@@ -4439,11 +4439,6 @@ export interface ICar {
     [key: string]: any;
 }
 
-export enum CarSearchResultFuelType {
-    Gas = "Gas",
-    Gasoline = "Gasoline",
-}
-
 export class Division implements IDivision {
     /** Идентификатор подразделения */
     id?: number;
@@ -4533,8 +4528,7 @@ export interface IDivision {
 export class Tariff implements ITariff {
     /** Идентификатор тарифа */
     id?: number;
-    /** Класс тарифа */
-    car_class?: TariffCar_class;
+    car_class?: CarClass;
     /** Идентификатор парка */
     park_id?: number;
     /** Идентификатор города */
@@ -4628,8 +4622,7 @@ export class Tariff implements ITariff {
 export interface ITariff {
     /** Идентификатор тарифа */
     id?: number;
-    /** Класс тарифа */
-    car_class?: TariffCar_class;
+    car_class?: CarClass;
     /** Идентификатор парка */
     park_id?: number;
     /** Идентификатор города */
@@ -4840,12 +4833,6 @@ export interface ISchema {
     updated_at?: Date;
 
     [key: string]: any;
-}
-
-export enum User_status {
-    DocumentsNotUploaded = "DocumentsNotUploaded",
-    Verification = "Verification",
-    Verified = "Verified",
 }
 
 export class Docs implements IDocs {
@@ -5434,13 +5421,6 @@ export interface ICity {
     updated_at?: Date;
 
     [key: string]: any;
-}
-
-export enum TariffCar_class {
-    Economy = "Economy",
-    Comfort = "Comfort",
-    ComfortPlus = "ComfortPlus",
-    Business = "Business",
 }
 
 export class Park2 implements IPark2 {

@@ -135,12 +135,7 @@
                                                         "type": "integer"
                                                     },
                                                     "fuelType": {
-                                                        "description": "Тип топлива",
-                                                        "type": "string",
-                                                        "enum": [
-                                                            "Gas",
-                                                            "Gasoline"
-                                                        ]
+                                                        "$ref": "#/components/schemas/FuelType"
                                                     },
                                                     "transmission_type": {
                                                         "description": "Тип трансмиссии",
@@ -294,14 +289,7 @@
                                                                 "type": "integer"
                                                             },
                                                             "car_class": {
-                                                                "description": "Класс тарифа",
-                                                                "type": "string",
-                                                                "enum": [
-                                                                    "Economy",
-                                                                    "Comfort",
-                                                                    "ComfortPlus",
-                                                                    "Business"
-                                                                ]
+                                                                "$ref": "#/components/schemas/CarClass"
                                                             },
                                                             "park_id": {
                                                                 "description": "Идентификатор парка",
@@ -1233,13 +1221,7 @@
                                             "description": "Данные пользователя",
                                             "properties": {
                                                 "user_status": {
-                                                    "description": "Статус пользователя",
-                                                    "type": "string",
-                                                    "enum": [
-                                                        "DocumentsNotUploaded",
-                                                        "Verification",
-                                                        "Verified"
-                                                    ]
+                                                    "$ref": "#/components/schemas/UserStatus"
                                                 },
                                                 "phone": {
                                                     "description": "Номер телефона пользователя",
@@ -2123,6 +2105,7 @@
     "components": {
         "schemas": {
             "CarClass": {
+                "description": "The unique identifier of a product in our catalog",
                 "type": "string",
                 "enum": [
                     "Economy",
@@ -2143,6 +2126,7 @@
                 ]
             },
             "FuelType": {
+                "description": "The unique identifier of a product in our catalog",
                 "type": "string",
                 "enum": [
                     "Gas",
@@ -2150,6 +2134,7 @@
                 ]
             },
             "TransmissionType": {
+                "description": "The unique identifier of a product in our catalog",
                 "type": "string",
                 "enum": [
                     "Mechanics",
@@ -2157,6 +2142,7 @@
                 ]
             },
             "UserStatus": {
+                "description": "The unique identifier of a product in our catalog",
                 "type": "string",
                 "enum": [
                     "DocumentsNotUploaded",

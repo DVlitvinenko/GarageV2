@@ -23,13 +23,6 @@ use App\Enums\UserType;
 class AuthController extends Controller
 {
 
-    /**
-     * @OA\Schema(
-     *     schema="UserStatus",
-     *     type="string",
-     *     enum={"DocumentsNotUploaded", "Verification", "Verified"}
-     * )
-     */
 
     /**
      * Получение данных пользователя (аутентифицированный запрос)
@@ -48,7 +41,7 @@ class AuthController extends Controller
      *                 property="user",
      *                 type="object",
      *                 description="Данные пользователя",
-     *                 @OA\Property(property="user_status", type="string", description="Статус пользователя", enum={"DocumentsNotUploaded", "Verification", "Verified"}),
+     *                 @OA\Property(property="user_status", type="string", description="Статус пользователя", ref="#/components/schemas/UserStatus"),
      *                 @OA\Property(property="phone", type="string", description="Номер телефона пользователя"),
      *                 @OA\Property(property="name", type="string", nullable=true, description="Имя пользователя"),
      *                 @OA\Property(property="email", type="string", nullable=true, description="Email пользователя"),
