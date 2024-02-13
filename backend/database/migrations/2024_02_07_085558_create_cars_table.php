@@ -25,8 +25,6 @@ return new class extends Migration
             $table->integer('year_produced');
             $table->string('car_id');
             $table->text('images');
-            $table->timestamp('booking_time')->nullable();
-            $table->unsignedBigInteger('user_booked_id')->nullable();
             $table->boolean('status');
             $table->timestamps();
             $table->foreign('division_id')->references('id')->on('divisions')->onDelete('cascade');

@@ -23,4 +23,8 @@ class Car extends Model
     {
         return $this->belongsTo(RentTerm::class);
     }
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
+    }
 }

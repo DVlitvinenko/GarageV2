@@ -18,7 +18,9 @@ use App\Enums\FuelType;
 use App\Enums\TransmissionType;
 use App\Http\Controllers\ParserController;
 use App\Enums\CarClass;
+use Carbon\Carbon;
 class CarsController extends Controller
+
 {
 
     /**
@@ -163,7 +165,7 @@ class CarsController extends Controller
         $isBuyoutPossible = $request->is_buyout_possible;
         $comission = $request->comission;
 
-        $carsQuery = Car::query()->where('status','!=',0)->where('rent_term_id','!=',null)->where('price','!=',null)
+        $carsQuery = Car::query()->where('status','!=',0)->doesntHave('bookings')->where('rent_term_id','!=',null)->where('price','!=',null)
         ->whereHas('division', function($query) use ($cityId) {
             $query->where('city_id', $cityId);
         });
@@ -366,33 +368,45 @@ class CarsController extends Controller
      */
     public function Booking(Request $request)
     {
-
+        $rent_time = 3;
         $user = Auth::guard('sanctum')->user();
-        if ($user->user_status >= UserStatus::Verified->value) {
-
-            $car = Car::where('id', $request->id)->first();
+        if ($user->user_status == UserStatus::Verified->value) {
+            $car = Car::where('id', $request->id)->with('bookings')->first();
             if (!$car) {
-                return response()->json(['Машина не найдена'], 404);
+                return response()->json(['message' => 'Машина не найдена'], 404);
             }
-            if ($car->status !== 0 && $car->user_booked_id === null) {
-                $driver = Driver::where('user_id', $user->id)->first();
-                $car->user_booked_id = $driver->id;
-                $currentDateTime = new \DateTime();
-                $uts = $currentDateTime->format('U');
-                $currentDateTime->modify('+3 hours');
-                $utsUntil = $currentDateTime->format('U');
-                $car->booking_time = $uts;
-                $car->save();
-                $division = Division::where('id', $car->division_id)->first();
-                $booking = new Booking();
-                $booking->car_id = $car->id;
-                $booking->park_id = $division->park_id;
-                $booking->booked_at = $uts;
-                $booking->booked_until = $utsUntil;
-                $booking->driver_id  = $driver->id;
-                $booking->save();
-                return response()->json(['message' => 'Автомобиль успешно забронирован'], 200);
+            if ($car->bookings()->count() > 0) {
+                return response()->json(['message' => 'Машина уже забронирована'], 409);
             }
+
+            $division = Division::where('id', $car->division_id)->with('park')->first();
+            $driver = Driver::where('user_id', $user->id)->first();
+            $workingHours = json_decode($division->park->working_hours, true);
+            $currentDayOfWeek = Carbon::now()->format('l');
+
+            $currentTime = Carbon::now()->timestamp;
+
+            $endTimeOfWorkDayToday = Carbon::createFromFormat('H:i', $workingHours[strtolower($currentDayOfWeek)][0]['end'], $division->park->timezone)->timestamp;
+            $endTimeOfWorkDayToday -= $rent_time * 3600;
+
+            if ($endTimeOfWorkDayToday < $currentTime) {
+                $nextWorkingDay = Carbon::now()->addDay()->format('l');
+                $startTimeOfWorkDayTomorrow = Carbon::createFromFormat('H:i', $workingHours[strtolower($nextWorkingDay)][0]['start'], $division->park->timezone)->timestamp;
+                $newEndTime = $startTimeOfWorkDayTomorrow + $rent_time * 3600;
+            } else {
+                $remainingTime = $endTimeOfWorkDayToday - $currentTime;
+                $newEndTime = $currentTime + $remainingTime;
+            }
+
+            $booking = new Booking();
+            $booking->car_id = $car->id;
+            $booking->park_id = $division->park_id;
+            $booking->booked_at = $currentTime;
+            $booking->booked_until = $newEndTime;
+            $booking->driver_id = $driver->id;
+            $booking->save();
+
+            return response()->json(['message' => 'Автомобиль успешно забронирован'], 200);
         } else {
             return response()->json(['message' => 'Пользователь не зарегистрирован или не верифицирован'], 403);
         }
@@ -455,6 +469,9 @@ class CarsController extends Controller
      */
     public function cancelBooking(Request $request)
     {
+        $request->validate([
+        'id'=>'required|integer'
+    ]);
         $user = Auth::guard('sanctum')->user();
         $car = Car::where('id', $request->id)->first();
 
