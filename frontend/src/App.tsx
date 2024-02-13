@@ -30,12 +30,14 @@ function App() {
         (window as any).token = token;
 
         try {
-          const userData = await client.getUser(); 
+          const userData = await client.getUser();
           // WTF
           setUser(userData.user!);
         } catch (error) {
           navigate("/login/driver");
         }
+      } else {
+        navigate("/login/driver");
       }
     };
 

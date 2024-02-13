@@ -7,11 +7,7 @@ import { Button } from "@/components/ui/button";
 import FileInput from "@/components/ui/file-input";
 import { useState } from "react";
 import { client } from "./backend";
-import {
-  Docs, 
-  DriverDocumentType,
-  User,
-} from "./api-client";
+import { Docs, DriverDocumentType, User } from "./api-client";
 import {
   RecoilRoot,
   atom,
@@ -66,7 +62,7 @@ export const Account = ({ user }: { user: User }) => {
   const onFileSelected = async (
     file: File,
     documentType: DriverDocumentType
-  ) => { 
+  ) => {
     const { url } = await client.uploadFile(
       {
         fileName: "any",
@@ -85,6 +81,15 @@ export const Account = ({ user }: { user: User }) => {
     });
 
     setUser(new User({ ...user, docs: [...updatedDocs] }));
+  };
+
+  const logout = async () => {
+    try {
+      await client.logout();
+    } catch (error) {}
+
+    localStorage.clear();
+    window.location.href = "/";
   };
 
   return (
@@ -126,7 +131,10 @@ export const Account = ({ user }: { user: User }) => {
         <div className="text-center my-8">
           <Button>Y</Button>
         </div>
-        <div className="text-center my-8">
+        <div className="text-center my-8 flex flex-col">
+          <Button variant="reject" onClick={logout}>
+            Выйти
+          </Button>
           <Button variant="reject">Отменить</Button>
         </div>
       </div>
