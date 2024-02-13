@@ -50,7 +50,7 @@ class DriverController extends Controller
      *         response=200,
      *         description="Файл успешно загружен",
      *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="url", type="string"),
      *         ),
      *     ),
      *     @OA\Response(
@@ -99,6 +99,8 @@ class DriverController extends Controller
             $user->user_status = UserStatus::Verification->value;
             $user->save();
         }
-        return response()->json(['success' => true]);
+        $url = asset('uploads') . '/' . $docs->{$type};
+
+        return response()->json(['url' => $url]);
     }
 }

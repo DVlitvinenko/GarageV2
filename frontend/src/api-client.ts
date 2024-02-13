@@ -3717,7 +3717,7 @@ export interface IAnonymous43 {
 }
 
 export class Anonymous44 implements IAnonymous44 {
-    success?: boolean;
+    url?: string;
 
     [key: string]: any;
 
@@ -3736,7 +3736,7 @@ export class Anonymous44 implements IAnonymous44 {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
-            this.success = _data["success"];
+            this.url = _data["url"];
         }
     }
 
@@ -3753,13 +3753,13 @@ export class Anonymous44 implements IAnonymous44 {
             if (this.hasOwnProperty(property))
                 data[property] = this[property];
         }
-        data["success"] = this.success;
+        data["url"] = this.url;
         return data;
     }
 }
 
 export interface IAnonymous44 {
-    success?: boolean;
+    url?: string;
 
     [key: string]: any;
 }
