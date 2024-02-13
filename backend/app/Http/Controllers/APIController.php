@@ -172,7 +172,7 @@ class APIController extends Controller
             $car->images = json_encode($carData['images']);
             $car->booking_time = null;
             $car->user_booked_id = null;
-            $car->show_status = 1;
+            $car->status = 1;
             $car->save();
         }
         return response()->json(['message' => 'Автомобили успешно добавлены'], 200);
@@ -400,7 +400,7 @@ class APIController extends Controller
         }
         $booking = $car->booking_id;
         if ($booking === null || $booking === 'block') {
-            $car->show_status = $request->input('status');
+            $car->status = $request->input('status');
             $car->save();
         } else {
             return response()->json(['message' => 'Авто сейчас забронировано, изменить статус невозможно'], 409);

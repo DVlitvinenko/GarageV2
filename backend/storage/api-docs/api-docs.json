@@ -8,9 +8,7 @@
     "paths": {
         "/cars": {
             "get": {
-                "tags": [
-                    "Cars"
-                ],
+                "tags": ["Cars"],
                 "summary": "Получение списка автомобилей с учетом фильтров (аутентифицированный запрос)",
                 "description": "Получение списка автомобилей с учетом фильтров (аутентифицированный запрос)",
                 "operationId": "getCars",
@@ -175,7 +173,7 @@
                                                         "description": "Идентификатор пользователя, который забронировал",
                                                         "type": "integer"
                                                     },
-                                                    "show_status": {
+                                                    "status": {
                                                         "description": "Статус отображения",
                                                         "type": "integer"
                                                     },
@@ -463,9 +461,7 @@
                 ]
             },
             "put": {
-                "tags": [
-                    "API"
-                ],
+                "tags": ["API"],
                 "summary": "Обновление информации о машине",
                 "description": "Обновление информации о машине",
                 "operationId": "updateCar",
@@ -591,9 +587,7 @@
                 ]
             },
             "post": {
-                "tags": [
-                    "API"
-                ],
+                "tags": ["API"],
                 "summary": "Добавить несколько автомобилей",
                 "description": "Добавить несколько автомобилей",
                 "operationId": "pushCars",
@@ -745,9 +739,7 @@
         },
         "/cars/status": {
             "put": {
-                "tags": [
-                    "API"
-                ],
+                "tags": ["API"],
                 "summary": "Обновление статуса допуска к бронированию",
                 "description": "Обновление статуса допуска к бронированию автомобиля",
                 "operationId": "updateCarStatus",
@@ -870,9 +862,7 @@
         },
         "/URL_АДРЕС_ПАРКА/cars/outbound/status": {
             "put": {
-                "tags": [
-                    "API"
-                ],
+                "tags": ["API"],
                 "summary": "Изменить статус бронирования автомобиля, ОТ МОЕГО ГАРАЖА",
                 "description": "Изменить статус бронирования автомобиля\n\nЭтот метод используется для передачи данных ОТ МОЕГО ГАРАЖА.",
                 "operationId": "changedBookingStatus",
@@ -913,9 +903,7 @@
         },
         "/parks/rent-terms": {
             "post": {
-                "tags": [
-                    "API"
-                ],
+                "tags": ["API"],
                 "summary": "Создание или обновление условий аренды",
                 "description": "Создание или обновление условий аренды\n\nЭтот метод позволяет создавать новые или обновлять существующие условия аренды для парков.",
                 "operationId": "createOrUpdateRentTerm",
@@ -1092,9 +1080,7 @@
         },
         "/cars/rent-term": {
             "put": {
-                "tags": [
-                    "API"
-                ],
+                "tags": ["API"],
                 "summary": "Обновление условия аренды для автомобиля",
                 "description": "Обновление условия аренды для автомобиля\n\nЭтот метод позволяет обновлять условие аренды для конкретного автомобиля по его VIN-номеру.",
                 "operationId": "updateCarDivision",
@@ -1216,9 +1202,7 @@
         },
         "/user": {
             "get": {
-                "tags": [
-                    "Authentication"
-                ],
+                "tags": ["Authentication"],
                 "summary": "Получение данных пользователя (аутентифицированный запрос)",
                 "description": "Получение данных пользователя (аутентифицированный запрос)",
                 "operationId": "GetUser",
@@ -1326,9 +1310,7 @@
                 ]
             },
             "delete": {
-                "tags": [
-                    "Authentication"
-                ],
+                "tags": ["Authentication"],
                 "summary": "Удаление пользователя и связанных записей",
                 "description": "Удаление пользователя и связанных записей",
                 "operationId": "DeleteUser",
@@ -1375,9 +1357,7 @@
         },
         "/user/login": {
             "post": {
-                "tags": [
-                    "Authentication"
-                ],
+                "tags": ["Authentication"],
                 "summary": "Аутентификация пользователя или регистрация нового",
                 "description": "Аутентификация пользователя или регистрация нового",
                 "operationId": "loginOrRegister",
@@ -1436,9 +1416,7 @@
         },
         "/user/logout": {
             "post": {
-                "tags": [
-                    "Authentication"
-                ],
+                "tags": ["Authentication"],
                 "summary": "Выход пользователя из системы",
                 "description": "Выход пользователя из системы",
                 "operationId": "logout",
@@ -1485,9 +1463,7 @@
         },
         "/user/code": {
             "post": {
-                "tags": [
-                    "Authentication"
-                ],
+                "tags": ["Authentication"],
                 "summary": "Создание и отправка проверочного кода на указанный номер телефона",
                 "description": "Создание и отправка проверочного кода на указанный номер телефона",
                 "operationId": "CreateAndSendCode",
@@ -1547,9 +1523,7 @@
         },
         "/auth/cars/booking": {
             "post": {
-                "tags": [
-                    "Cars"
-                ],
+                "tags": ["Cars"],
                 "summary": "Бронирование автомобиля",
                 "description": "Бронирование автомобиля",
                 "operationId": "Booking",
@@ -1628,9 +1602,7 @@
         },
         "/auth/cars/cancel-booking": {
             "post": {
-                "tags": [
-                    "Cars"
-                ],
+                "tags": ["Cars"],
                 "summary": "Отмена бронирования автомобиля (аутентифицированный запрос)",
                 "description": "Отмена бронирования автомобиля (аутентифицированный запрос)",
                 "operationId": "cancelBooking",
@@ -1741,9 +1713,7 @@
         },
         "/car": {
             "get": {
-                "tags": [
-                    "Cars"
-                ],
+                "tags": ["Cars"],
                 "summary": "Получить информацию об автомобиле",
                 "description": "Получить информацию об автомобиле",
                 "operationId": "getCar",
@@ -1810,7 +1780,7 @@
                                                     "type": "integer",
                                                     "nullable": true
                                                 },
-                                                "show_status": {
+                                                "status": {
                                                     "type": "integer"
                                                 },
                                                 "created_at": {
@@ -2065,9 +2035,7 @@
         },
         "/api/upload-file": {
             "post": {
-                "tags": [
-                    "Files"
-                ],
+                "tags": ["Files"],
                 "summary": "Загрузить файл",
                 "description": "Загрузить файл и связать его с документами водителя аутентифицированного пользователя",
                 "operationId": "uploadFile",

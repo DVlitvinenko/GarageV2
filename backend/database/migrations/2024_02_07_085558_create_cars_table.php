@@ -27,9 +27,8 @@ return new class extends Migration
             $table->text('images');
             $table->timestamp('booking_time')->nullable();
             $table->unsignedBigInteger('user_booked_id')->nullable();
-            $table->boolean('show_status');
+            $table->boolean('status');
             $table->timestamps();
-
             $table->foreign('division_id')->references('id')->on('divisions')->onDelete('cascade');
             $table->foreign('tariff_id')->references('id')->on('tariffs')->onDelete('cascade');
             $table->foreign('rent_term_id')->references('id')->on('rent_terms')->onDelete('cascade');

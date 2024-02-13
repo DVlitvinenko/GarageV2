@@ -168,7 +168,7 @@ class CarsController extends Controller
         $isBuyoutPossible = $request->is_buyout_possible;
         $comission = $request->comission;
 
-        $carsQuery = Car::query()->where('show_status','!=',0)->where('rent_term_id','!=',null)->where('price','!=',null)
+        $carsQuery = Car::query()->where('status','!=',0)->where('rent_term_id','!=',null)->where('price','!=',null)
         ->whereHas('division', function($query) use ($cityId) {
             $query->where('city_id', $cityId);
         });
@@ -379,7 +379,7 @@ class CarsController extends Controller
             if (!$car) {
                 return response()->json(['Машина не найдена'], 404);
             }
-            if ($car->show_status !== 0 && $car->user_booked_id === null) {
+            if ($car->status !== 0 && $car->user_booked_id === null) {
                 $driver = Driver::where('user_id', $user->id)->first();
                 $car->user_booked_id = $driver->id;
                 $currentDateTime = new \DateTime();
