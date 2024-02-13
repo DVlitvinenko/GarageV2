@@ -9,10 +9,18 @@ import { CarFinder } from "./Finder";
 import { Account } from "./Account";
 import { DriverLogin } from "./DriverLogin";
 import { Card } from "./Card";
+import {
+  RecoilRoot,
+  atom,
+  selector,
+  useRecoilState,
+  useRecoilValue,
+} from "recoil";
+import { userAtom } from "./atoms";
 
 function App() {
-  const [count, setCount] = useState(0);
-  const [user, setUser] = useState<any>();
+  const [user, setUser] = useRecoilState(userAtom);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,8 +30,9 @@ function App() {
         (window as any).token = token;
 
         try {
-          const userData = await client.getUser();
-          setUser(userData);
+          const userData = await client.getUser(); 
+          // WTF
+          setUser(userData.user!);
         } catch (error) {
           navigate("/login/driver");
         }
@@ -34,7 +43,7 @@ function App() {
   }, []);
 
   return (
-    <>
+    <div className="p-4 max-w-sm mx-auto">
       <a>
         <img className="my-8 mx-auto" src={logo} />
       </a>
@@ -42,12 +51,12 @@ function App() {
       <Routes>
         <Route path="/" element={<CarFinder />} />
         <Route path="/card" element={<Card />} />
-        <Route path="account" element={<Account />} />
+        <Route path="account" element={<Account user={user} />} />
         <Route path="login/driver" element={<DriverLogin />} />
         <Route path="login/manager" element={<ManagerLogin />} />
         <Route path="login/admin" element={<AdminLogin />} />
       </Routes>
-    </>
+    </div>
   );
 }
 

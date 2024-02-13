@@ -6,8 +6,6 @@ const client = new Client("https://garage.development.kwol.ru/api", {
       const result = await fetch(url, {
         ...options,
         headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
           Authorization: `Bearer ${(window as any).token}`,
         },
       });

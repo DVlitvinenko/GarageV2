@@ -27,7 +27,7 @@ CheckboxShad.displayName = CheckboxPrimitive.Root.displayName;
 
 const Checkbox = (props: { title: string }) => <span className="flex items-center space-x-2">
   <CheckboxShad {...props} />
-  <p>{props.title}</p>
+  <p className="text-xs md:text-sm">{props.title}</p>
 </span>
 
 export { Checkbox }
