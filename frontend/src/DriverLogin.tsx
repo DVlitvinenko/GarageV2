@@ -24,7 +24,7 @@ export const DriverLogin = () => {
 
   const login = async () => {
     try {
-      const { access_token } = await client.loginOrRegister(
+      const access_token = await client.loginOrRegister(
         new Body8({ phone, code })
       );
 
