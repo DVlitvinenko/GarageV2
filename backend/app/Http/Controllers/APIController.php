@@ -113,12 +113,7 @@ class APIController extends Controller
         // Валидация данных запроса
         $validator = Validator::make($request->all(), [
             'cars' => 'required|array',
-            'cars.*.city' => ['required', 'string', 'max:250', function ($attribute, $value, $fail) {
-                $parser = new ParserController();
-                if (!$parser->parseCity($value)) {
-                    $fail('Некорректный город.');
-                }
-            }],
+            'cars.*.city' => ['required', 'string', 'max:250', 'exists:cities,name'],
             'cars.*.division_name' => 'required|string|max:250',
             'cars.*.fuel_type' => 'required|integer|max:1',
             'cars.*.transmission_type' => 'required|integer|max:1',
@@ -146,7 +141,7 @@ class APIController extends Controller
             ],
             'cars.*.class' => 'required|integer|between:0,4',
             'cars.*.year_produced' => 'nullable|integer',
-            'cars.*.id' => 'required|string|max:20|unique:cars,id_car',
+            'cars.*.id' => 'required|string|max:20|unique:cars,car_id',
             'cars.*.images' => 'required|array',
         ]);
         if ($validator->fails()) {
@@ -168,7 +163,7 @@ class APIController extends Controller
             $car->model = $carData['model'];
             $car->tariff_id = $this->GetTariffId($park->id, $city->id, $carData['class']);
             $car->year_produced = $carData['year_produced'];
-            $car->id_car = $carData['id'];
+            $car->car_id = $carData['id'];
             $car->images = json_encode($carData['images']);
             $car->booking_time = null;
             $car->user_booked_id = null;
@@ -245,12 +240,7 @@ class APIController extends Controller
         }
         $validator = Validator::make($request->all(), [
             'id' => 'required|string|max:20',
-            'city' => ['nullable', 'string', 'max:50', function ($attribute, $value, $fail) {
-                $parser = new ParserController();
-                if (!$parser->parseCity($value)) {
-                    $fail('Некорректный город.');
-                }
-            },],
+            'city' => ['nullable', 'string', 'max:50', 'exists:cities,name'],
             'division_name' => 'nullable|string|max:250',
             'fuel_type' => 'nullable|integer|max:1',
             'transmission_type' => 'nullable|integer|max:1',
@@ -297,7 +287,7 @@ class APIController extends Controller
         $city = City::firstOrCreate(['name' => $cityName]);
 
         $division = $this->divisionCheck($divisionName, $park->id, $city->id);
-        $car = Car::where('id_car', $carId)
+        $car = Car::where('car_id', $carId)
             ->where('park_id', $park->id)
             ->first();
         if (!$car) {
@@ -392,7 +382,7 @@ class APIController extends Controller
             return response()->json(['errors' => $validator->errors()], 400);
         }
         $carId = $request->input('id');
-        $car = Car::where('id_car', $carId)
+        $car = Car::where('car_id', $carId)
             ->where('park_id', $park->id)
             ->first();
         if (!$car) {
@@ -702,7 +692,7 @@ class APIController extends Controller
         if (!$rentTerm) {
             return response()->json(['message' => 'Условие аренды не найдено'], 404);
         }
-        $car = Car::where('id_car', $carId)
+        $car = Car::where('car_id', $carId)
             ->where('park_id', $park->id)
             ->first();
 

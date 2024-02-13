@@ -23,10 +23,8 @@ return new class extends Migration
             $table->string('brand');
             $table->string('model');
             $table->integer('year_produced');
-            $table->string('id_car');
+            $table->string('car_id');
             $table->text('images');
-            $table->timestamp('booking_time')->nullable();
-            $table->unsignedBigInteger('user_booked_id')->nullable();
             $table->boolean('status');
             $table->timestamps();
             $table->foreign('division_id')->references('id')->on('divisions')->onDelete('cascade');

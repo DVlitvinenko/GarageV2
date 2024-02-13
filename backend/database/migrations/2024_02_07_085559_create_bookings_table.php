@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('car_id');
             $table->unsignedBigInteger('driver_id');
-            $table->timestamp('booked_at');
-            $table->timestamp('booked_until');
+            $table->integer('booked_at');
+            $table->integer('booked_until');
             $table->unsignedBigInteger('park_id');
             $table->timestamps();
 

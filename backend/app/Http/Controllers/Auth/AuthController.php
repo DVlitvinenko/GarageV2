@@ -153,9 +153,9 @@ class AuthController extends Controller
                 $user->user_status = UserStatus::DocumentsNotUploaded->value;
                 $user->avatar = "users/default.png";
                 $user->user_type = UserType::Driver->value;
-                $user->code = null;
-                $user->save();
             }
+            $user->code = null;
+            $user->save();
             $driver = Driver::firstOrCreate(['user_id' => $user->id]);
             $driverSpecification = DriverSpecification::firstOrCreate(['driver_id' => $driver->id]);
             $driverDocs = DriverDoc::firstOrCreate(['driver_id' => $driver->id]);
@@ -164,6 +164,7 @@ class AuthController extends Controller
         }
         return response()->json(null, 401);
     }
+
     /**
      * Выход пользователя из системы
      *
