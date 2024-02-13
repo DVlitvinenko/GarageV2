@@ -73,11 +73,11 @@ class DriverController extends Controller
     public function uploadDocs(Request $request)
     {
         $request->validate([
-            'type' => 'required|string|in:image_licence_front,image_licence_back,image_pasport_front,image_pasport_address,image_fase_and_pasport',
+            'driverDocumentType' => 'required|string|in:image_licence_front,image_licence_back,image_pasport_front,image_pasport_address,image_fase_and_pasport',
             'file' => 'required|file|mimes:png,jpg,jpeg|max:7168',
         ]);
 
-        $type = $request->type;
+        $type = $request->driverDocumentType;
         $user = Auth::guard('sanctum')->user();
         $user_id = $user->id;
         $driver = Driver::where('user_id', $user_id)->first();

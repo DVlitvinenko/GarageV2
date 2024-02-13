@@ -154,10 +154,7 @@ class CarsController extends Controller
         $user = Auth::guard('sanctum')->user();
         $fuelType = $request->fuel_type?FuelType::{$request->fuel_type}->value:null ;
         $transmissionType = $request->transmission_type?TransmissionType::{$request->transmission_type}->value:null;
-        $city = City::firstOrCreate(
-            ['name' => $request->city],
-            ['updated_at' => now(), 'created_at' => now()]
-        );
+        $city = City::where('name',$request->city)->first();
 
         $cityId = $city->id;
         if (!$city) {
