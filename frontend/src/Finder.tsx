@@ -11,17 +11,42 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
-import { CarClass, FuelType } from "./api-client";
+import { CarClass, FuelType, TransmissionType } from "./api-client";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const DEFAULT_COMMISSION_PERCENTAGE = 4;
 
-export const CarFinder = () => {
-  const [filters, setFilters] = useState<any>({
+export const Finder = () => {
+  const [filters, setFilters] = useState<{
+    brands: string[];
+    carClass: CarClass;
+    commission: number;
+    fuelType: FuelType | null;
+    transmissionType: TransmissionType | null;
+  }>({
     carClass: CarClass.Economy,
     commission: DEFAULT_COMMISSION_PERCENTAGE,
-    fuelType: FuelType.Gas,
+    fuelType: null,
+    brands: [],
+    transmissionType: null,
   });
 
   return (
@@ -39,8 +64,9 @@ export const CarFinder = () => {
             return (
               <div key={carClass} className="flex flex-col items-center">
                 <img
-                  onClick={() => setFilters({ ...filters, carClass })}
-                  key={carClass}
+                  onClick={() =>
+                    setFilters({ ...filters, carClass: carClass as CarClass })
+                  }
                   className={`rounded mx-auto h-16 w-16 ${
                     x[0] === filters.carClass
                       ? "shadow border-2 border-yellow"
@@ -63,8 +89,8 @@ export const CarFinder = () => {
             <DropdownMenuItem>Сначала дорогие</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu> */}
-        <div className="flex justify-between my-4">
-          <DropdownMenu>
+        <div className="flex flex-col space-y-4 justify-between my-4">
+          {/* <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline">Марка авто</Button>
             </DropdownMenuTrigger>
@@ -74,8 +100,142 @@ export const CarFinder = () => {
               <DropdownMenuItem>Chery</DropdownMenuItem>
               <DropdownMenuItem>Geely</DropdownMenuItem>
             </DropdownMenuContent>
-          </DropdownMenu>
-          <DropdownMenu>
+          </DropdownMenu> */}
+
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline">
+                {!!filters.brands.length
+                  ? // ? filters.brands.join(", ")
+                    "Выбрано марок " + filters.brands.length
+                  : "Все марки"}
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[800px]">
+              <DialogHeader>
+                <DialogTitle>DialogTitle</DialogTitle>
+                <DialogDescription>DialogDescription</DialogDescription>
+              </DialogHeader>
+              <div className="grid grid-cols-3 gap-4 py-4 h-[300px] overflow-y-scroll">
+                {[
+                  "Bibika",
+                  "Bibika",
+                  "Bibika",
+                  "Bibika",
+                  "Bibika",
+                  "Bibika",
+                  "Bibika",
+                  "Bibika",
+                  "Bibika",
+                  "Bibika",
+                  "Bibika",
+                  "Bibika",
+                  "Bibika",
+                  "Bibika",
+                  "Bibika",
+                  "Bibika",
+                  "Bibika",
+                  "Bibika",
+                  "Bibika",
+                  "Bibika",
+                  "Bibika",
+                  "Bibika",
+                  "Bibika",
+                  "Bibika",
+                  "Bibika",
+                ].map((x, i) => {
+                  const title = x + i;
+                  const isActive = filters.brands.some((b) => b === title);
+
+                  return (
+                    <span
+                      className={`text-sm font-bold  ${
+                        isActive ? "text-slate-700" : "text-slate-400"
+                      }`}
+                      key={title}
+                      onClick={() =>
+                        setFilters({
+                          ...filters,
+                          brands: isActive
+                            ? filters.brands.filter((b) => b != title)
+                            : [...filters.brands, title],
+                        })
+                      }
+                    >
+                      {x + i}
+                    </span>
+                  );
+                })}
+              </div>
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button>Окей</Button>
+                </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          <Select>
+            <SelectTrigger className=" ">
+              <SelectValue placeholder="Любой тип топлива" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem
+                onClick={() =>
+                  setFilters({ ...filters, fuelType: FuelType.Gasoline })
+                }
+                value={FuelType.Gasoline}
+              >
+                Бензин
+              </SelectItem>
+              <SelectItem
+                onClick={() =>
+                  setFilters({ ...filters, fuelType: FuelType.Gas })
+                }
+                value={FuelType.Gas}
+              >
+                Газ
+              </SelectItem>
+              <SelectItem
+                onClick={() => setFilters({ ...filters, fuelType: null })}
+                value={null as any}
+              >
+                Любой тип топлива
+              </SelectItem>
+            </SelectContent>
+          </Select>
+
+
+          <Select>
+            <SelectTrigger className=" ">
+              <SelectValue placeholder="Любой тип трансмиссии" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem
+                onClick={() =>
+                  setFilters({ ...filters, transmissionType: TransmissionType.Automatic })
+                }
+                value={TransmissionType.Automatic}
+              >
+                Автомат
+              </SelectItem>
+              <SelectItem
+                onClick={() =>
+                  setFilters({ ...filters, transmissionType: TransmissionType.Mechanics })
+                }
+                value={TransmissionType.Mechanics}
+              >
+                Газ
+              </SelectItem>
+              <SelectItem
+                onClick={() => setFilters({ ...filters, transmissionType: null })}
+                value={null as any}
+              >
+                Любой тип трансмиссии
+              </SelectItem>
+            </SelectContent>
+          </Select>
+          {/* <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline">
                 {filters.fuelType || "Любой тип топлива"}
@@ -90,9 +250,9 @@ export const CarFinder = () => {
                 const [fuelType, title] = x;
 
                 return (
-                  <DropdownMenuItem
+                  <DropdownMenuItem key={title}
                     onClick={() =>
-                      setFilters({ ...filters, fuelType: fuelType })
+                      setFilters({ ...filters, fuelType })
                     }
                   >
                     {title}
@@ -100,7 +260,7 @@ export const CarFinder = () => {
                 );
               })}
             </DropdownMenuContent>
-          </DropdownMenu>
+          </DropdownMenu> */}
         </div>
 
         <div className="my-4 space-y-2">

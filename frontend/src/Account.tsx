@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import FileInput from "@/components/ui/file-input";
 import { useState } from "react";
 import { client } from "./backend";
-import { Docs, DriverDocumentType, User } from "./api-client";
+import { Docs, DriverDocumentType, User, UserStatus } from "./api-client";
 import {
   RecoilRoot,
   atom,
@@ -18,6 +18,11 @@ import {
 import { userAtom } from "./atoms";
 
 export const Account = ({ user }: { user: User }) => {
+  // lol wtf ejection
+  if (!user) {
+    return <></>;
+  }
+
   const [docs, setDocs] = useState<
     {
       type: DriverDocumentType;
@@ -71,16 +76,19 @@ export const Account = ({ user }: { user: User }) => {
       documentType
     );
 
-    const updatedDocs = user.docs!.map((x) => {
-      const shallowCopy = new Docs({ ...x });
+    const userData = await client.getUser();
+    setUser(userData.user!);
 
-      if (x.type === documentType) {
-        shallowCopy.url = url;
-      }
-      return shallowCopy;
-    });
+    // const updatedDocs = user.docs!.map((x) => {
+    //   const shallowCopy = new Docs({ ...x });
 
-    setUser(new User({ ...user, docs: [...updatedDocs] }));
+    //   if (x.type === documentType) {
+    //     shallowCopy.url = url;
+    //   }
+    //   return shallowCopy;
+    // });
+
+    // setUser(new User({ ...user, docs: [...updatedDocs] }));
   };
 
   const logout = async () => {
@@ -96,17 +104,36 @@ export const Account = ({ user }: { user: User }) => {
     <>
       <div className="w-80 mx-auto">
         <h1 className="text-center mt-8">Подтвердите свою личность</h1>
-        <p
-          className="bg-gradient-to-br from-amber-600 to-red
+
+        {user.user_status === UserStatus.DocumentsNotUploaded && (
+          <>
+            <p
+              className="bg-gradient-to-br from-amber-600 to-red
                       rounded-lg p-4
                       text-center text-white font-bold text-xs"
-        >
-          Вы не можете начать процесс бронирования пока не загрузили документы
-          или документы не прошли верификацию
-        </p>
-        <h1 className="text-center text-red text-3xl mt-4">
-          {uploadedDocumentCount}/{requiredDocumentCount}
-        </h1>
+            >
+              Вы не можете начать процесс бронирования пока не загрузили
+              документы или документы не прошли верификацию
+            </p>
+            <h1 className="text-center text-red text-3xl mt-4">
+              {uploadedDocumentCount}/{requiredDocumentCount}
+            </h1>
+          </>
+        )}
+
+        {user.user_status === UserStatus.Verification && (
+          <p
+          className="bg-gradient-to-br from-sky-300 to-sky-800
+                  rounded-lg p-4
+                  text-center text-white font-bold text-xs">Верификация в процессе</p>
+        )}
+
+        {user.user_status === UserStatus.Verified && (
+          <p
+          className="bg-gradient-to-br from-green-400 to-green-800
+                  rounded-lg p-4
+                  text-center text-white font-bold text-xs">Вы прошли верификацию</p>
+        )}
 
         {docs.map(({ title, type, placeholderImg }) => {
           const actualUrl =
@@ -129,13 +156,9 @@ export const Account = ({ user }: { user: User }) => {
           );
         })}
         <div className="text-center my-8">
-          <Button>Y</Button>
-        </div>
-        <div className="text-center my-8 flex flex-col">
           <Button variant="reject" onClick={logout}>
-            Выйти
+            Выйти из профиля
           </Button>
-          <Button variant="reject">Отменить</Button>
         </div>
       </div>
     </>

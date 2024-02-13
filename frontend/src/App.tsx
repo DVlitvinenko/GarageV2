@@ -5,7 +5,7 @@ import account from "./assets/account.svg";
 import "./App.css";
 import { Link, Route, Routes, useNavigate } from "react-router-dom";
 import { client } from "./backend";
-import { CarFinder } from "./Finder";
+import { Finder } from "./Finder";
 import { Account } from "./Account";
 import { DriverLogin } from "./DriverLogin";
 import { Card } from "./Card";
@@ -28,16 +28,11 @@ function App() {
       const token = localStorage.getItem("token");
       if (token) {
         (window as any).token = token;
-
         try {
           const userData = await client.getUser();
-          // WTF
+
           setUser(userData.user!);
-        } catch (error) {
-          navigate("/login/driver");
-        }
-      } else {
-        navigate("/login/driver");
+        } catch (error) {}
       }
     };
 
@@ -49,9 +44,9 @@ function App() {
       <a>
         <img className="my-8 mx-auto" src={logo} />
       </a>
-      <Menu />
+      {!!user && <Menu />}
       <Routes>
-        <Route path="/" element={<CarFinder />} />
+        <Route path="/" element={<Finder />} />
         <Route path="/card" element={<Card />} />
         <Route path="account" element={<Account user={user} />} />
         <Route path="login/driver" element={<DriverLogin />} />
