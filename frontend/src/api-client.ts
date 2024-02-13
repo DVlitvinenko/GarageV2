@@ -26,11 +26,12 @@ export class Client {
      * @param fuel_type (optional) Тип топлива
      * @param transmission_type (optional) Тип трансмиссии
      * @param brand (optional) Марка автомобиля
+     * @param sorting (optional) сортировка, asc или desc
      * @param model (optional) Модель автомобиля
      * @param car_class (optional) Класс автомобиля (1 - Эконом, 2 - Комфорт, 3 - Комфорт+, 4 - Бизнес)
      * @return Успешный ответ
      */
-    getCars(offset: number, limit: number, city: string | undefined, fuel_type: FuelType | undefined, transmission_type: TransmissionType | undefined, brand: string | undefined, model: string | undefined, car_class: CarClass | undefined): Promise<Anonymous> {
+    getCars(offset: number, limit: number, city: string | undefined, fuel_type: FuelType | undefined, transmission_type: TransmissionType | undefined, brand: string | undefined, sorting: string | undefined, model: string | undefined, car_class: CarClass | undefined): Promise<Anonymous> {
         let url_ = this.baseUrl + "/cars?";
         if (offset === undefined || offset === null)
             throw new Error("The parameter 'offset' must be defined and cannot be null.");
@@ -56,6 +57,10 @@ export class Client {
             throw new Error("The parameter 'brand' cannot be null.");
         else if (brand !== undefined)
             url_ += "brand=" + encodeURIComponent("" + brand) + "&";
+        if (sorting === null)
+            throw new Error("The parameter 'sorting' cannot be null.");
+        else if (sorting !== undefined)
+            url_ += "sorting=" + encodeURIComponent("" + sorting) + "&";
         if (model === null)
             throw new Error("The parameter 'model' cannot be null.");
         else if (model !== undefined)

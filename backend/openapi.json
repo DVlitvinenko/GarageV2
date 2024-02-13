@@ -70,6 +70,15 @@
                         }
                     },
                     {
+                        "name": "sorting",
+                        "in": "query",
+                        "description": "сортировка, asc или desc",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
                         "name": "model",
                         "in": "query",
                         "description": "Модель автомобиля",

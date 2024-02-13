@@ -75,6 +75,13 @@ class CarsController extends Controller
  *         @OA\Schema(type="string")
  *     ),
  *     @OA\Parameter(
+ *         name="sorting",
+ *         in="query",
+ *         description="сортировка, asc или desc",
+ *         required=false,
+ *         @OA\Schema(type="string")
+ *     ),
+ *     @OA\Parameter(
  *         name="model",
  *         in="query",
  *         description="Модель автомобиля",
