@@ -1458,6 +1458,22 @@
                             }
                         }
                     },
+                    "409": {
+                        "description": "Машина не забронирована",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "description": "Машина не забронирована",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
                     "500": {
                         "description": "Ошибка сервера",
                         "content": {
@@ -1732,6 +1748,14 @@
                     "Comfort",
                     "ComfortPlus",
                     "Business"
+                ]
+            },
+            "CarStatus": {
+                "description": "The unique identifier of a product in our catalog",
+                "type": "string",
+                "enum": [
+                    "Showed",
+                    "Hidden"
                 ]
             },
             "DriverDocumentType": {
