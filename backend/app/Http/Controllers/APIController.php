@@ -141,7 +141,7 @@ class APIController extends Controller
             ],
             'cars.*.class' => 'required|integer|between:0,4',
             'cars.*.year_produced' => 'nullable|integer',
-            'cars.*.id' => 'required|string|max:20|unique:cars,id_car',
+            'cars.*.id' => 'required|string|max:20|unique:cars,car_id',
             'cars.*.images' => 'required|array',
         ]);
         if ($validator->fails()) {
@@ -163,7 +163,7 @@ class APIController extends Controller
             $car->model = $carData['model'];
             $car->tariff_id = $this->GetTariffId($park->id, $city->id, $carData['class']);
             $car->year_produced = $carData['year_produced'];
-            $car->id_car = $carData['id'];
+            $car->car_id = $carData['id'];
             $car->images = json_encode($carData['images']);
             $car->booking_time = null;
             $car->user_booked_id = null;
@@ -287,7 +287,7 @@ class APIController extends Controller
         $city = City::firstOrCreate(['name' => $cityName]);
 
         $division = $this->divisionCheck($divisionName, $park->id, $city->id);
-        $car = Car::where('id_car', $carId)
+        $car = Car::where('car_id', $carId)
             ->where('park_id', $park->id)
             ->first();
         if (!$car) {
@@ -382,7 +382,7 @@ class APIController extends Controller
             return response()->json(['errors' => $validator->errors()], 400);
         }
         $carId = $request->input('id');
-        $car = Car::where('id_car', $carId)
+        $car = Car::where('car_id', $carId)
             ->where('park_id', $park->id)
             ->first();
         if (!$car) {
@@ -692,7 +692,7 @@ class APIController extends Controller
         if (!$rentTerm) {
             return response()->json(['message' => 'Условие аренды не найдено'], 404);
         }
-        $car = Car::where('id_car', $carId)
+        $car = Car::where('car_id', $carId)
             ->where('park_id', $park->id)
             ->first();
 

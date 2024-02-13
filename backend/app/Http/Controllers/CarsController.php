@@ -264,7 +264,7 @@ class CarsController extends Controller
             'cars.brand',
             'cars.model',
             'cars.year_produced',
-            'cars.id_car',
+            'cars.car_id',
             'cars.images',
         );
         if ($sorting) {
@@ -293,7 +293,7 @@ class CarsController extends Controller
             $car['park_id'],
             $car['tariff_id'],
             $car['rent_term_id'],
-            $car['id_car'],
+            $car['car_id'],
         );
         $car->city= $city;
         $car->CarClass= $end;
@@ -594,7 +594,7 @@ class CarsController extends Controller
             'cars.brand',
             'cars.model',
             'cars.year_produced',
-            'cars.id_car',
+            'cars.car_id',
             'cars.images','booking_time',
             'user_booked_id'
         )->first();
@@ -615,7 +615,7 @@ class CarsController extends Controller
             $car['park_id'],
             $car['tariff_id'],
             $car['rent_term_id'],
-            $car['id_car'],
+            $car['car_id'],
         );
         $car->CarClass= $end;
         $car->city= $city;

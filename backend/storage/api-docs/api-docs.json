@@ -156,7 +156,7 @@
                                                         "description": "Год производства",
                                                         "type": "integer"
                                                     },
-                                                    "id_car": {
+                                                    "car_id": {
                                                         "description": "Идентификатор автомобиля",
                                                         "type": "string"
                                                     },
@@ -1719,7 +1719,7 @@
                 "operationId": "getCar",
                 "parameters": [
                     {
-                        "name": "id_car",
+                        "name": "car_id",
                         "in": "query",
                         "description": "Идентификатор автомобиля",
                         "required": true,
@@ -1766,7 +1766,7 @@
                                                 "year_produced": {
                                                     "type": "integer"
                                                 },
-                                                "id_car": {
+                                                "car_id": {
                                                     "type": "string"
                                                 },
                                                 "images": {

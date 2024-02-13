@@ -9,7 +9,7 @@ class Car extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['division_id', 'tariff_id', 'rent_term_id', 'fuel_type', 'transmission_type', 'brand', 'model', 'year_produced', 'id_car', 'images', 'booking_time', 'user_booked_id', 'status'];
+    protected $fillable = ['division_id', 'tariff_id', 'rent_term_id', 'fuel_type', 'transmission_type', 'brand', 'model', 'year_produced', 'car_id', 'images', 'booking_time', 'user_booked_id', 'status'];
 
     public function division()
     {
