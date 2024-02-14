@@ -29,7 +29,7 @@ class CarsController extends Controller
      * Получение списка автомобилей с учетом фильтров (аутентифицированный запрос)
      *
      * @OA\Get(
-     *     path="/cars",
+     *     path="/cars/filter",
      *     operationId="getCars",
      *     summary="Получение списка автомобилей с учетом фильтров (аутентифицированный запрос)",
      *     tags={"Cars"},
