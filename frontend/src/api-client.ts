@@ -1439,7 +1439,7 @@ export class Body9 implements IBody9 {
     /** Название города */
     city?: string;
     /** Комиссия парка */
-    comission?: number;
+    commission?: number;
     fuel_type?: FuelType;
     transmission_type?: TransmissionType;
     /** Марка автомобиля */
@@ -1473,7 +1473,7 @@ export class Body9 implements IBody9 {
             this.offset = _data["offset"];
             this.limit = _data["limit"];
             this.city = _data["city"];
-            this.comission = _data["comission"];
+            this.commission = _data["commission"];
             this.fuel_type = _data["fuel_type"];
             this.transmission_type = _data["transmission_type"];
             if (Array.isArray(_data["brand"])) {
@@ -1516,7 +1516,7 @@ export class Body9 implements IBody9 {
         data["offset"] = this.offset;
         data["limit"] = this.limit;
         data["city"] = this.city;
-        data["comission"] = this.comission;
+        data["commission"] = this.commission;
         data["fuel_type"] = this.fuel_type;
         data["transmission_type"] = this.transmission_type;
         if (Array.isArray(this.brand)) {
@@ -1552,7 +1552,7 @@ export interface IBody9 {
     /** Название города */
     city?: string;
     /** Комиссия парка */
-    comission?: number;
+    commission?: number;
     fuel_type?: FuelType;
     transmission_type?: TransmissionType;
     /** Марка автомобиля */

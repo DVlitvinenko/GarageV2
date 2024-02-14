@@ -1096,7 +1096,7 @@
                                         "description": "Название города",
                                         "type": "string"
                                     },
-                                    "comission": {
+                                    "commission": {
                                         "description": "Комиссия парка",
                                         "type": "number"
                                     },
