@@ -39,9 +39,9 @@ class CarsController extends Controller
      *         @OA\JsonContent(
      *             @OA\Property(property="offset", type="integer", description="Смещение (начальная позиция) для выборки"),
      *             @OA\Property(property="limit", type="string", description="Максимальное количество записей для выборки"),
-     *             @OA\Property(property="city", type="integer", description="Название города"),
-     *             @OA\Property(property="fuel_type", type="integer", description="Тип топлива",ref="#/components/schemas/FuelType"),
-     *             @OA\Property(property="transmission_type", type="integer", description="Тип трансмиссии",ref="#/components/schemas/TransmissionType"),
+     *             @OA\Property(property="city", type="string", description="Название города"),
+     *             @OA\Property(property="fuel_type", type="string", description="Тип топлива",ref="#/components/schemas/FuelType"),
+     *             @OA\Property(property="transmission_type", type="string", description="Тип трансмиссии",ref="#/components/schemas/TransmissionType"),
      *             @OA\Property(property="brand", type="array", description="Марка автомобиля",@OA\Items()),
      *             @OA\Property(property="search", type="array", description="Марка или модель автомобиля",@OA\Items()),
      *             @OA\Property(property="sorting", type="string", description="сортировка, asc или desc"),

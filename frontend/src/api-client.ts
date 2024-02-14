@@ -1437,7 +1437,7 @@ export class Body9 implements IBody9 {
     /** Максимальное количество записей для выборки */
     limit?: string;
     /** Название города */
-    city?: number;
+    city?: string;
     fuel_type?: FuelType;
     transmission_type?: TransmissionType;
     /** Марка автомобиля */
@@ -1546,7 +1546,7 @@ export interface IBody9 {
     /** Максимальное количество записей для выборки */
     limit?: string;
     /** Название города */
-    city?: number;
+    city?: string;
     fuel_type?: FuelType;
     transmission_type?: TransmissionType;
     /** Марка автомобиля */
