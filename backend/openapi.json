@@ -1090,7 +1090,7 @@
                                     },
                                     "limit": {
                                         "description": "Максимальное количество записей для выборки",
-                                        "type": "string"
+                                        "type": "integer"
                                     },
                                     "city": {
                                         "description": "Название города",

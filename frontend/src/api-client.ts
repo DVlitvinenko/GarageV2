@@ -1435,7 +1435,7 @@ export class Body9 implements IBody9 {
     /** Смещение (начальная позиция) для выборки */
     offset?: number;
     /** Максимальное количество записей для выборки */
-    limit?: string;
+    limit?: number;
     /** Название города */
     city?: string;
     fuel_type?: FuelType;
@@ -1544,7 +1544,7 @@ export interface IBody9 {
     /** Смещение (начальная позиция) для выборки */
     offset?: number;
     /** Максимальное количество записей для выборки */
-    limit?: string;
+    limit?: number;
     /** Название города */
     city?: string;
     fuel_type?: FuelType;
