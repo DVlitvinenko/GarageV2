@@ -64,6 +64,7 @@ class CarsController extends Controller
      *                 @OA\Property(property="сar_class", type="string", description="Класс тарифа",ref="#/components/schemas/CarClass"),
      *                 @OA\Property(property="park_name", type="string", description="Название парка"),
      *                 @OA\Property(property="commission", type="number", description="Комиссия"),
+     *                 @OA\Property(property="self_employed", type="boolean", description="Работа с самозанятыми"),
      *                 @OA\Property(property="city", type="string"),
      *                 @OA\Property(property="division", type="object", description="Данные о подразделении",
      *                     @OA\Property(property="name", type="string", description="Название подразделения"),
@@ -73,7 +74,6 @@ class CarsController extends Controller
      *                     @OA\Property(property="deposit_amount_total", type="number", description="Общая сумма депозита"),
      *                     @OA\Property(property="minimum_period_days", type="integer", description="Минимальный период в днях"),
      *                     @OA\Property(property="is_buyout_possible", type="boolean", description="Возможность выкупа"),
-     *                     @OA\Property(property="self_employed", type="boolean", description="Работа с самозанятыми"),
      *                     @OA\Property(property="schemas", type="array", @OA\Items(
      *                         @OA\Property(property="daily_amount", type="integer", description="Суточная стоимость"),
      *                         @OA\Property(property="non_working_days", type="integer", description="Количество нерабочих дней"),
@@ -262,6 +262,7 @@ if (($carClassValues) > 0) {
             $classCar = $car['tariff']['class'];
             $end = CarClass::from($classCar)->name;
             $commission = $car['division']['park']['commission'];
+            $selfEmployed = $car['division']['park']['self_employed'];
             if(isset($car['division']['park']['park_name'])) {
                 $parkName = $car['division']['park']['park_name'];
             } else {
@@ -272,6 +273,7 @@ if (($carClassValues) > 0) {
             $car->city= $city;
             $car->CarClass= $end;
             $car->park_name= $parkName;
+            $car->selfEmployed= $selfEmployed;
             $car->commission = number_format($commission, 2);
         }
         foreach ($cars as $car) {

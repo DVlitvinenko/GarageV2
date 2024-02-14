@@ -1185,6 +1185,10 @@
                                                         "description": "Комиссия",
                                                         "type": "number"
                                                     },
+                                                    "self_employed": {
+                                                        "description": "Работа с самозанятыми",
+                                                        "type": "boolean"
+                                                    },
                                                     "city": {
                                                         "type": "string"
                                                     },
@@ -1215,10 +1219,6 @@
                                                             },
                                                             "is_buyout_possible": {
                                                                 "description": "Возможность выкупа",
-                                                                "type": "boolean"
-                                                            },
-                                                            "self_employed": {
-                                                                "description": "Работа с самозанятыми",
                                                                 "type": "boolean"
                                                             },
                                                             "schemas": {
