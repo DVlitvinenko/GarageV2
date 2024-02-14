@@ -396,7 +396,7 @@ class CarsController extends Controller
                     $startTimeOfWorkDayTomorrow = Carbon::createFromFormat('H:i', $workingHours[strtolower($nextWorkingDay)][0]['start'], $division->park->timezone)->timestamp;
                     $newEndTime = $startTimeOfWorkDayTomorrow + $rent_time * 3600;
                 } else {
-                    $remainingTime = $endTimeOfWorkDayToday - $currentTime;
+                    $remainingTime = $rent_time * 3600;
                     $newEndTime = $currentTime + $remainingTime;
                 }
 
