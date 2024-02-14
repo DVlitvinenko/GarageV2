@@ -4092,7 +4092,7 @@ export class Cars2 implements ICars2 {
     year_produced?: number;
     /** Ссылки на изображения */
     images?: string[];
-    сarClass?: CarClass;
+    сar_class?: CarClass;
     /** Название парка */
     park_name?: string;
     /** Комиссия */
@@ -4131,7 +4131,7 @@ export class Cars2 implements ICars2 {
                 for (let item of _data["images"])
                     this.images!.push(item);
             }
-            this.сarClass = _data["сarClass"];
+            this.сar_class = _data["сar_class"];
             this.park_name = _data["park_name"];
             this.commission = _data["commission"];
             this.city = _data["city"];
@@ -4164,7 +4164,7 @@ export class Cars2 implements ICars2 {
             for (let item of this.images)
                 data["images"].push(item);
         }
-        data["сarClass"] = this.сarClass;
+        data["сar_class"] = this.сar_class;
         data["park_name"] = this.park_name;
         data["commission"] = this.commission;
         data["city"] = this.city;
@@ -4187,7 +4187,7 @@ export interface ICars2 {
     year_produced?: number;
     /** Ссылки на изображения */
     images?: string[];
-    сarClass?: CarClass;
+    сar_class?: CarClass;
     /** Название парка */
     park_name?: string;
     /** Комиссия */

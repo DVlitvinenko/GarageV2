@@ -1174,7 +1174,7 @@
                                                             "type": "string"
                                                         }
                                                     },
-                                                    "сarClass": {
+                                                    "сar_class": {
                                                         "$ref": "#/components/schemas/CarClass"
                                                     },
                                                     "park_name": {

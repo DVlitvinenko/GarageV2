@@ -61,7 +61,7 @@ class CarsController extends Controller
      *                 @OA\Property(property="model", type="string", description="Модель автомобиля"),
      *                 @OA\Property(property="year_produced", type="integer", description="Год производства"),
      *                 @OA\Property(property="images", type="array", @OA\Items(type="string"), description="Ссылки на изображения"),
-     *                 @OA\Property(property="сarClass", type="string", description="Класс тарифа",ref="#/components/schemas/CarClass"),
+     *                 @OA\Property(property="сar_class", type="string", description="Класс тарифа",ref="#/components/schemas/CarClass"),
      *                 @OA\Property(property="park_name", type="string", description="Название парка"),
      *                 @OA\Property(property="commission", type="number", description="Комиссия"),
      *                 @OA\Property(property="city", type="string"),
