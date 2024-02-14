@@ -116,10 +116,12 @@ class CarsController extends Controller
             $carClassValues = $request->car_class;
             $translatedValues = [];
 
-            foreach ($carClassValues as $key) {
-                $keyNew = CarClass::{$key}->value;
-                    $translatedValues[$key] = $keyNew;
-            }
+if (($carClassValues) > 0) {
+    foreach ($carClassValues as $key) {
+        $keyNew = CarClass::{$key}->value;
+            $translatedValues[$key] = $keyNew;
+    }
+}
             $translatedValues= array_values($translatedValues);
             $carClass = $translatedValues;
             $selfEmployed = $request->self_employed;
@@ -170,12 +172,12 @@ class CarsController extends Controller
                 $carsQuery->where('transmission_type', $transmissionType);
             }
 
-            if ($brand) {
+            if (($brand) > 0) {
                 $brandArray = is_array($brand) ? $brand : [$brand];
                 $carsQuery->whereIn('brand', $brandArray);
             }
 
-            if ($model) {
+            if (($model) > 0) {
                 $modelArray = is_array($model) ? $model : [$model];
                 $carsQuery->whereIn('model', $modelArray);
             }
@@ -256,11 +258,20 @@ class CarsController extends Controller
             $car['transmission_type'] = TransmissionType::from($car['transmission_type'])->name;
             $classCar = $car['tariff']['class'];
             $end = CarClass::from($classCar)->name;
-            $parkName = $car['division']['park']['park_name'];
+            if(isset($car['division']['park']['park_name'])) {
+                $parkName = $car['division']['park']['park_name'];
+            } else {
+                $parkName = 'Не удалось получить название парка';
+            }
             $city = $car['division']['city']['name'];
+
+            $car->city= $city;
+            $car->CarClass= $end;
+            $car->park_name= $parkName;
+        }
+        foreach ($cars as $car) {
             unset(
                 $car['division']['park'],
-                $car['division']['park_id'],
                 $car['division']['id'],
                 $car['tariff'],
                 $car['division']['city'],
@@ -269,13 +280,9 @@ class CarsController extends Controller
                 $car['tariff_id'],
                 $car['rent_term_id'],
                 $car['car_id'],
+                $car['division']['park_id'],
             );
-            $car->city= $city;
-            $car->CarClass= $end;
-            $car->park_name= $parkName;
         }
-
-
         return response()->json(['cars' => $cars]);
 
         }
