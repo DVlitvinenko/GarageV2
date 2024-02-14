@@ -57,6 +57,8 @@ export const Finder = () => {
     fuelType: FuelType | null;
     transmissionType: TransmissionType | null;
     city: string;
+    selfEmployed: boolean;
+    buyoutPossible: boolean;
   }>({
     carClass: [CarClass.Economy],
     commission: DEFAULT_COMMISSION_PERCENTAGE,
@@ -64,6 +66,8 @@ export const Finder = () => {
     brands: [],
     transmissionType: null,
     city: "Москва",
+    selfEmployed: false,
+    buyoutPossible: false,
   });
 
   const [cars, setCars] = useState<Cars2[]>([]);
@@ -93,7 +97,9 @@ export const Finder = () => {
           limit: 50,
           offset: 0,
           sorting: "asc",
-          comission: filters.commission
+          commission: filters.commission,
+          self_employed: filters.selfEmployed,
+          is_buyout_possible: filters.buyoutPossible,
         })
       );
 
@@ -131,7 +137,7 @@ export const Finder = () => {
             return (
               <div
                 key={carClass}
-                className={`w-20 flex flex-col items-center bg-white rounded-xl ${
+                className={`w-20 flex flex-col items-center bg-white rounded-xl transition-all ${
                   isActive ? "shadow border-2 border-yellow" : " scale-75"
                 }`}
               >
@@ -153,8 +159,18 @@ export const Finder = () => {
           })}
         </div>
         <div className="flex justify-between my-4">
-          <Checkbox title="Для самозанятых" />
-          <Checkbox title="Выкуп автомобиля" />
+          <Checkbox
+            title="Для самозанятых"
+            onCheckedChange={(e: boolean) =>
+              setFilters({ ...filters, selfEmployed: e })
+            }
+          />
+          <Checkbox
+            onCheckedChange={(e: boolean) =>
+              setFilters({ ...filters, buyoutPossible: e })
+            }
+            title="Выкуп автомобиля"
+          />
         </div>
         {/* <DropdownMenu>
           <DropdownMenuTrigger>Сначала дешевые</DropdownMenuTrigger>

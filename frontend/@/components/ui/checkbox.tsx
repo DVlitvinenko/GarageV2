@@ -25,7 +25,7 @@ const CheckboxShad = React.forwardRef<
 ))
 CheckboxShad.displayName = CheckboxPrimitive.Root.displayName;
 
-const Checkbox = (props: { title: string, onClick?: any }) => <span className="flex items-center space-x-2">
+const Checkbox = (props: { title: string, onClick?: any, onCheckedChange: any }) => <span className="flex items-center space-x-2">
   <CheckboxShad {...props} />
   <p className="text-xs md:text-sm" onClick={props.onClick}>{props.title}</p>
 </span>

@@ -23,18 +23,21 @@ import {
 import { Cars2 } from "./api-client";
 import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
-import { formatRoubles, getFuelTypeDisplayName, getTransmissionDisplayName } from "@/lib/utils";
+import {
+  formatRoubles,
+  getFuelTypeDisplayName,
+  getTransmissionDisplayName,
+} from "@/lib/utils";
 
 export const ModalCard = ({ car }: { car: Cars2 }) => {
   const [phoneRequested, setPhoneRequested] = useState(false);
 
   const currentSchema = car.rent_term?.schemas![0]!;
 
-  return (
-    <>
-      <div className="flex flex-col justify-center overflow-y-auto">
+  return ( 
+      <div className="flex flex-col justify-center overflow-y-auto h-[500px] py-8">
         <img
-          className="object-cover w-full h-24 rounded-t-xl"
+          className="object-cover w-full rounded-t-xl"
           src={car.images![0]}
         />
         <div className="space-y-2">
@@ -50,6 +53,15 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
           <p className="text-base font-semibold text-gray">
             Минимальный срок аренды: {car.rent_term?.minimum_period_days}
           </p>
+          <div className=""> 
+              <div>{car!.working_hours!.monday?.start} - {car!.working_hours!.monday?.end}</div>
+              <div>{car!.working_hours!.tuesday?.start} - {car!.working_hours!.tuesday?.end}</div>
+              <div>{car!.working_hours!.wednesday?.start} - {car!.working_hours!.wednesday?.end}</div>
+              <div>{car!.working_hours!.thursday?.start} - {car!.working_hours!.thursday?.end}</div>
+              <div>{car!.working_hours!.friday?.start} - {car!.working_hours!.friday?.end}</div>
+              <div>{car!.working_hours!.saturday?.start} - {car!.working_hours!.saturday?.end}</div>
+              <div>{car!.working_hours!.sunday?.start} - {car!.working_hours!.sunday?.end}</div>
+          </div>
           <div className="text-center">
             {!phoneRequested && (
               <Button
@@ -71,13 +83,9 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
           </div>
           <div className="text-sm text-gray-700 mt-4"></div>
           <Collapsible>
-            <CollapsibleTrigger>
-              {car.about?.substring(0, 50)} ▼
-            </CollapsibleTrigger>
+            <CollapsibleTrigger>О парке ▼</CollapsibleTrigger>
             <CollapsibleContent>
-              <div className="text-sm text-gray-700">
-                {car.about?.substring(50)}
-              </div>
+              <div className="text-sm text-gray-700">{car.about}</div>
             </CollapsibleContent>
           </Collapsible>
         </div>
@@ -111,7 +119,6 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
             <Badge variant="outline">Выкуп автомобиля</Badge>
           )}
         </div>
-      </div>
-    </>
+      </div> 
   );
 };
