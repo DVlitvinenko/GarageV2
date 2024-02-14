@@ -1203,10 +1203,6 @@
                                                     "division": {
                                                         "description": "Данные о подразделении",
                                                         "properties": {
-                                                            "name": {
-                                                                "description": "Название подразделения",
-                                                                "type": "string"
-                                                            },
                                                             "address": {
                                                                 "description": "Адрес",
                                                                 "type": "string"

@@ -4274,8 +4274,6 @@ export interface IDocs {
 }
 
 export class Division implements IDivision {
-    /** Название подразделения */
-    name?: string;
     /** Адрес */
     address?: string;
     /** Координаты подразделения */
@@ -4298,7 +4296,6 @@ export class Division implements IDivision {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
-            this.name = _data["name"];
             this.address = _data["address"];
             this.coords = _data["coords"];
         }
@@ -4317,7 +4314,6 @@ export class Division implements IDivision {
             if (this.hasOwnProperty(property))
                 data[property] = this[property];
         }
-        data["name"] = this.name;
         data["address"] = this.address;
         data["coords"] = this.coords;
         return data;
@@ -4325,8 +4321,6 @@ export class Division implements IDivision {
 }
 
 export interface IDivision {
-    /** Название подразделения */
-    name?: string;
     /** Адрес */
     address?: string;
     /** Координаты подразделения */
