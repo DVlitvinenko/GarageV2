@@ -263,6 +263,13 @@ if (($carClassValues) > 0) {
             $end = CarClass::from($classCar)->name;
             $commission = $car['division']['park']['commission'];
             $selfEmployed = $car['division']['park']['self_employed'];
+            $car->price =number_format($car->price, 2, ',', ' ');
+            $car['rentTerm']->deposit_amount_daily = number_format($car['rentTerm']->deposit_amount_daily, 2, ',', ' ');
+            $car['rentTerm']->deposit_amount_total = number_format($car['rentTerm']->deposit_amount_total, 2, ',', ' ');
+            foreach ($car['rentTerm']['schemas'] as $schema) {
+                $schema['daily_amount']=number_format($schema['daily_amount'], 2, ',', ' ');
+            }
+
             if(isset($car['division']['park']['park_name'])) {
                 $parkName = $car['division']['park']['park_name'];
             } else {
