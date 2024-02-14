@@ -1078,104 +1078,62 @@
                 "summary": "Получение списка автомобилей с учетом фильтров (аутентифицированный запрос)",
                 "description": "Получение списка автомобилей с учетом фильтров (аутентифицированный запрос)",
                 "operationId": "SearchCars",
-                "parameters": [
-                    {
-                        "name": "offset",
-                        "in": "query",
-                        "description": "Смещение (начальная позиция) для выборки",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "limit",
-                        "in": "query",
-                        "description": "Максимальное количество записей для выборки",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "city",
-                        "in": "query",
-                        "description": "Название города",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "fuel_type",
-                        "in": "query",
-                        "description": "Тип топлива",
-                        "required": false,
-                        "schema": {
-                            "$ref": "#/components/schemas/FuelType"
-                        }
-                    },
-                    {
-                        "name": "transmission_type",
-                        "in": "query",
-                        "description": "Тип трансмиссии",
-                        "required": false,
-                        "schema": {
-                            "$ref": "#/components/schemas/TransmissionType"
-                        }
-                    },
-                    {
-                        "name": "brand",
-                        "in": "query",
-                        "description": "Марка автомобиля",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {}
-                        }
-                    },
-                    {
-                        "name": "search",
-                        "in": "query",
-                        "description": "Марка или модель автомобиля",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {}
-                        }
-                    },
-                    {
-                        "name": "sorting",
-                        "in": "query",
-                        "description": "сортировка, asc или desc",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "model",
-                        "in": "query",
-                        "description": "Модель автомобиля",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {}
-                        }
-                    },
-                    {
-                        "name": "car_class",
-                        "in": "query",
-                        "description": "Класс автомобиля (1 - Эконом, 2 - Комфорт, 3 - Комфорт+, 4 - Бизнес)",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/components/schemas/CarClass"
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "offset": {
+                                        "description": "Смещение (начальная позиция) для выборки",
+                                        "type": "integer"
+                                    },
+                                    "limit": {
+                                        "description": "Максимальное количество записей для выборки",
+                                        "type": "string"
+                                    },
+                                    "city": {
+                                        "description": "Название города",
+                                        "type": "integer"
+                                    },
+                                    "fuel_type": {
+                                        "$ref": "#/components/schemas/FuelType"
+                                    },
+                                    "transmission_type": {
+                                        "$ref": "#/components/schemas/TransmissionType"
+                                    },
+                                    "brand": {
+                                        "description": "Марка автомобиля",
+                                        "type": "array",
+                                        "items": {}
+                                    },
+                                    "search": {
+                                        "description": "Марка или модель автомобиля",
+                                        "type": "array",
+                                        "items": {}
+                                    },
+                                    "sorting": {
+                                        "description": "сортировка, asc или desc",
+                                        "type": "string"
+                                    },
+                                    "model": {
+                                        "description": "Модель автомобиля",
+                                        "type": "array",
+                                        "items": {}
+                                    },
+                                    "car_class": {
+                                        "description": "Класс автомобиля (1 - Эконом, 2 - Комфорт, 3 - Комфорт+, 4 - Бизнес)",
+                                        "type": "array",
+                                        "items": {
+                                            "$ref": "#/components/schemas/CarClass"
+                                        }
+                                    }
+                                },
+                                "type": "object"
                             }
                         }
                     }
-                ],
+                },
                 "responses": {
                     "200": {
                         "description": "Успешный ответ",
@@ -1513,176 +1471,6 @@
                         "bearerAuth": []
                     }
                 ]
-            }
-        },
-        "/car": {
-            "get": {
-                "tags": [
-                    "Cars"
-                ],
-                "summary": "Получить информацию об автомобиле",
-                "description": "Получить информацию об автомобиле",
-                "operationId": "getCar",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "query",
-                        "description": "Идентификатор автомобиля",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "$ref": "#/components/schemas/TransmissionType"
-                    },
-                    {
-                        "$ref": "#/components/schemas/CarClass"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Успешный ответ",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "car": {
-                                            "description": "Информация об автомобиле",
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer"
-                                                },
-                                                "fuel_type": {
-                                                    "$ref": "#/components/schemas/FuelType"
-                                                },
-                                                "transmission_type": {
-                                                    "$ref": "#/components/schemas/TransmissionType"
-                                                },
-                                                "brand": {
-                                                    "type": "string"
-                                                },
-                                                "model": {
-                                                    "type": "string"
-                                                },
-                                                "year_produced": {
-                                                    "type": "integer"
-                                                },
-                                                "images": {
-                                                    "type": "string"
-                                                },
-                                                "city": {
-                                                    "type": "string"
-                                                },
-                                                "booking_time": {
-                                                    "type": "string",
-                                                    "nullable": true
-                                                },
-                                                "user_booked_id": {
-                                                    "type": "integer",
-                                                    "nullable": true
-                                                },
-                                                "CarClass": {
-                                                    "$ref": "#/components/schemas/CarClass"
-                                                },
-                                                "rent_term": {
-                                                    "description": "Данные о сроке аренды",
-                                                    "properties": {
-                                                        "id": {
-                                                            "description": "Идентификатор срока аренды",
-                                                            "type": "integer"
-                                                        },
-                                                        "deposit_amount_daily": {
-                                                            "description": "Сумма депозита за день",
-                                                            "type": "number"
-                                                        },
-                                                        "deposit_amount_total": {
-                                                            "description": "Общая сумма депозита",
-                                                            "type": "number"
-                                                        },
-                                                        "minimum_period_days": {
-                                                            "description": "Минимальный период в днях",
-                                                            "type": "integer"
-                                                        },
-                                                        "is_buyout_possible": {
-                                                            "description": "Возможность выкупа",
-                                                            "type": "boolean"
-                                                        }
-                                                    },
-                                                    "type": "object"
-                                                },
-                                                "schema": {
-                                                    "description": "Данные о схеме аренды",
-                                                    "properties": {
-                                                        "id": {
-                                                            "description": "Идентификатор схемы аренды",
-                                                            "type": "integer"
-                                                        },
-                                                        "rent_term_id": {
-                                                            "description": "Идентификатор срока аренды",
-                                                            "type": "integer"
-                                                        },
-                                                        "daily_amount": {
-                                                            "description": "Суточная стоимость",
-                                                            "type": "integer"
-                                                        },
-                                                        "non_working_days": {
-                                                            "description": "Количество нерабочих дней",
-                                                            "type": "integer"
-                                                        },
-                                                        "working_days": {
-                                                            "description": "Количество рабочих дней",
-                                                            "type": "integer"
-                                                        }
-                                                    },
-                                                    "type": "object"
-                                                },
-                                                "division": {
-                                                    "description": "Информация о подразделении",
-                                                    "properties": {
-                                                        "coords": {
-                                                            "type": "string",
-                                                            "nullable": true
-                                                        },
-                                                        "address": {
-                                                            "type": "string",
-                                                            "nullable": true
-                                                        },
-                                                        "name": {
-                                                            "type": "string"
-                                                        },
-                                                        "park_name": {
-                                                            "type": "string"
-                                                        }
-                                                    },
-                                                    "type": "object"
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Машина не найдена",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "description": "Автомобиль с указанным идентификатором не найден",
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
             }
         },
         "/driver/upload-file": {
