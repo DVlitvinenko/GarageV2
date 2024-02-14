@@ -7,6 +7,224 @@
     },
     "paths": {
         "/cars": {
+            "get": {
+                "tags": [
+                    "Cars"
+                ],
+                "summary": "Получение списка автомобилей с учетом фильтров (аутентифицированный запрос)",
+                "description": "Получение списка автомобилей с учетом фильтров (аутентифицированный запрос)",
+                "operationId": "getCars",
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Смещение (начальная позиция) для выборки",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Максимальное количество записей для выборки",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "city",
+                        "in": "query",
+                        "description": "Название города",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "fuel_type",
+                        "in": "query",
+                        "description": "Тип топлива",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/components/schemas/FuelType"
+                        }
+                    },
+                    {
+                        "name": "transmission_type",
+                        "in": "query",
+                        "description": "Тип трансмиссии",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/components/schemas/TransmissionType"
+                        }
+                    },
+                    {
+                        "name": "brand",
+                        "in": "query",
+                        "description": "Марка автомобиля",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sorting",
+                        "in": "query",
+                        "description": "сортировка, asc или desc",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "model",
+                        "in": "query",
+                        "description": "Модель автомобиля",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "car_class",
+                        "in": "query",
+                        "description": "Класс автомобиля (1 - Эконом, 2 - Комфорт, 3 - Комфорт+, 4 - Бизнес)",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/components/schemas/CarClass"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "cars": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "description": "Идентификатор автомобиля",
+                                                        "type": "integer"
+                                                    },
+                                                    "fuel_type": {
+                                                        "$ref": "#/components/schemas/FuelType"
+                                                    },
+                                                    "transmission_type": {
+                                                        "$ref": "#/components/schemas/TransmissionType"
+                                                    },
+                                                    "brand": {
+                                                        "description": "Марка автомобиля",
+                                                        "type": "string"
+                                                    },
+                                                    "model": {
+                                                        "description": "Модель автомобиля",
+                                                        "type": "string"
+                                                    },
+                                                    "year_produced": {
+                                                        "description": "Год производства",
+                                                        "type": "integer"
+                                                    },
+                                                    "images": {
+                                                        "description": "Ссылки на изображения",
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "CarClass": {
+                                                        "$ref": "#/components/schemas/CarClass"
+                                                    },
+                                                    "park_name": {
+                                                        "description": "Название парка",
+                                                        "type": "string"
+                                                    },
+                                                    "city": {
+                                                        "type": "string"
+                                                    },
+                                                    "division": {
+                                                        "description": "Данные о подразделении",
+                                                        "properties": {
+                                                            "name": {
+                                                                "description": "Название подразделения",
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    "rent_term": {
+                                                        "description": "Данные о сроке аренды",
+                                                        "properties": {
+                                                            "deposit_amount_daily": {
+                                                                "description": "Сумма депозита за день",
+                                                                "type": "number"
+                                                            },
+                                                            "deposit_amount_total": {
+                                                                "description": "Общая сумма депозита",
+                                                                "type": "number"
+                                                            },
+                                                            "minimum_period_days": {
+                                                                "description": "Минимальный период в днях",
+                                                                "type": "integer"
+                                                            },
+                                                            "is_buyout_possible": {
+                                                                "description": "Возможность выкупа",
+                                                                "type": "boolean"
+                                                            },
+                                                            "schemas": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "properties": {
+                                                                        "daily_amount": {
+                                                                            "description": "Суточная стоимость",
+                                                                            "type": "integer"
+                                                                        },
+                                                                        "non_working_days": {
+                                                                            "description": "Количество нерабочих дней",
+                                                                            "type": "integer"
+                                                                        },
+                                                                        "working_days": {
+                                                                            "description": "Количество рабочих дней",
+                                                                            "type": "integer"
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                }
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Ошибка аутентификации"
+                    },
+                    "422": {
+                        "description": "Ошибки валидации"
+                    },
+                    "500": {
+                        "description": "Ошибка сервера"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
             "put": {
                 "tags": [
                     "API"
@@ -1068,226 +1286,6 @@
                         }
                     }
                 }
-            }
-        },
-        "/cars/filter": {
-            "get": {
-                "tags": [
-                    "Cars"
-                ],
-                "summary": "Получение списка автомобилей с учетом фильтров (аутентифицированный запрос)",
-                "description": "Получение списка автомобилей с учетом фильтров (аутентифицированный запрос)",
-                "operationId": "getCars",
-                "parameters": [
-                    {
-                        "name": "offset",
-                        "in": "query",
-                        "description": "Смещение (начальная позиция) для выборки",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "limit",
-                        "in": "query",
-                        "description": "Максимальное количество записей для выборки",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "city",
-                        "in": "query",
-                        "description": "Название города",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "fuel_type",
-                        "in": "query",
-                        "description": "Тип топлива",
-                        "required": false,
-                        "schema": {
-                            "$ref": "#/components/schemas/FuelType"
-                        }
-                    },
-                    {
-                        "name": "transmission_type",
-                        "in": "query",
-                        "description": "Тип трансмиссии",
-                        "required": false,
-                        "schema": {
-                            "$ref": "#/components/schemas/TransmissionType"
-                        }
-                    },
-                    {
-                        "name": "brand",
-                        "in": "query",
-                        "description": "Марка автомобиля",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "sorting",
-                        "in": "query",
-                        "description": "сортировка, asc или desc",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "model",
-                        "in": "query",
-                        "description": "Модель автомобиля",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "car_class",
-                        "in": "query",
-                        "description": "Класс автомобиля (1 - Эконом, 2 - Комфорт, 3 - Комфорт+, 4 - Бизнес)",
-                        "required": false,
-                        "schema": {
-                            "$ref": "#/components/schemas/CarClass"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Успешный ответ",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "cars": {
-                                            "type": "array",
-                                            "items": {
-                                                "properties": {
-                                                    "id": {
-                                                        "description": "Идентификатор автомобиля",
-                                                        "type": "integer"
-                                                    },
-                                                    "fuel_type": {
-                                                        "$ref": "#/components/schemas/FuelType"
-                                                    },
-                                                    "transmission_type": {
-                                                        "$ref": "#/components/schemas/TransmissionType"
-                                                    },
-                                                    "brand": {
-                                                        "description": "Марка автомобиля",
-                                                        "type": "string"
-                                                    },
-                                                    "model": {
-                                                        "description": "Модель автомобиля",
-                                                        "type": "string"
-                                                    },
-                                                    "year_produced": {
-                                                        "description": "Год производства",
-                                                        "type": "integer"
-                                                    },
-                                                    "images": {
-                                                        "description": "Ссылки на изображения",
-                                                        "type": "array",
-                                                        "items": {
-                                                            "type": "string"
-                                                        }
-                                                    },
-                                                    "CarClass": {
-                                                        "$ref": "#/components/schemas/CarClass"
-                                                    },
-                                                    "park_name": {
-                                                        "description": "Название парка",
-                                                        "type": "string"
-                                                    },
-                                                    "city": {
-                                                        "type": "string"
-                                                    },
-                                                    "division": {
-                                                        "description": "Данные о подразделении",
-                                                        "properties": {
-                                                            "name": {
-                                                                "description": "Название подразделения",
-                                                                "type": "string"
-                                                            }
-                                                        },
-                                                        "type": "object"
-                                                    },
-                                                    "rent_term": {
-                                                        "description": "Данные о сроке аренды",
-                                                        "properties": {
-                                                            "deposit_amount_daily": {
-                                                                "description": "Сумма депозита за день",
-                                                                "type": "number"
-                                                            },
-                                                            "deposit_amount_total": {
-                                                                "description": "Общая сумма депозита",
-                                                                "type": "number"
-                                                            },
-                                                            "minimum_period_days": {
-                                                                "description": "Минимальный период в днях",
-                                                                "type": "integer"
-                                                            },
-                                                            "is_buyout_possible": {
-                                                                "description": "Возможность выкупа",
-                                                                "type": "boolean"
-                                                            },
-                                                            "schemas": {
-                                                                "type": "array",
-                                                                "items": {
-                                                                    "properties": {
-                                                                        "daily_amount": {
-                                                                            "description": "Суточная стоимость",
-                                                                            "type": "integer"
-                                                                        },
-                                                                        "non_working_days": {
-                                                                            "description": "Количество нерабочих дней",
-                                                                            "type": "integer"
-                                                                        },
-                                                                        "working_days": {
-                                                                            "description": "Количество рабочих дней",
-                                                                            "type": "integer"
-                                                                        }
-                                                                    },
-                                                                    "type": "object"
-                                                                }
-                                                            }
-                                                        },
-                                                        "type": "object"
-                                                    }
-                                                },
-                                                "type": "object"
-                                            }
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Ошибка аутентификации"
-                    },
-                    "422": {
-                        "description": "Ошибки валидации"
-                    },
-                    "500": {
-                        "description": "Ошибка сервера"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
             }
         },
         "/auth/cars/booking": {
