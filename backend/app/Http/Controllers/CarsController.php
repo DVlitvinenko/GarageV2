@@ -172,12 +172,12 @@ if (($carClassValues) > 0) {
                 $carsQuery->where('transmission_type', $transmissionType);
             }
 
-            if (($brand) > 0) {
+            if ($brand&&count($brand) > 0 ) {
                 $brandArray = is_array($brand) ? $brand : [$brand];
                 $carsQuery->whereIn('brand', $brandArray);
             }
 
-            if (($model) > 0) {
+            if ($model&&count($model) > 0 ) {
                 $modelArray = is_array($model) ? $model : [$model];
                 $carsQuery->whereIn('model', $modelArray);
             }
@@ -230,20 +230,21 @@ if (($carClassValues) > 0) {
                     $query->select('id', 'coords', 'address', 'name','park_id','city_id');
                 }
             ])
-            ->select(
-                'cars.id',
-                'cars.division_id',
-                'cars.park_id',
-                'cars.tariff_id',
-                'cars.rent_term_id',
-                'cars.fuel_type',
-                'cars.transmission_type',
-                'cars.brand',
-                'cars.model',
-                'cars.year_produced',
-                'cars.car_id',
-                'cars.images',
-            );
+    ->select(
+        'cars.id',
+        'cars.division_id',
+        'cars.park_id',
+        'cars.tariff_id',
+        'cars.rent_term_id',
+        'cars.fuel_type',
+        'cars.transmission_type',
+        'cars.brand',
+        'cars.model',
+        'cars.year_produced',
+        'cars.car_id',
+        'cars.images',
+        'cars.price',
+    );
             if ($sorting) {
                 $car = $carsQuery->orderBy('price', $sorting)->first();
             }else{
@@ -286,23 +287,7 @@ if (($carClassValues) > 0) {
         return response()->json(['cars' => $cars]);
 
         }
-        private function tarifEng($string) {
-            $string = mb_strtolower($string);
 
-            switch ($string) {
-                case 'эконом':
-                   return CarClass::Economy->name;
-                case 'комфорт':
-                    return CarClass::Comfort->name;
-                case 'комфорт+':
-                   return CarClass::ComfortPlus->name;
-                case 'бизнес':
-                    return CarClass::Business->name;
-                default:
-
-                    return null;
-            }
-        }
 
 
         /**
