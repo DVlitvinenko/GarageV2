@@ -5,11 +5,13 @@ import comfortPlus from "./assets/car_icons/comfort-plus.png";
 import business from "./assets/car_icons/business.png";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
 import { useEffect, useState } from "react";
 import {
   Body9,
@@ -190,6 +192,45 @@ export const Finder = () => {
               <DropdownMenuItem>Geely</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu> */}
+
+<Sheet>
+  <SheetTrigger>Open</SheetTrigger>
+  <SheetContent className="overflow-y-auto">
+    <SheetHeader>
+      <SheetTitle>Are you absolutely sure?</SheetTitle>
+      <SheetDescription>
+        This action cannot be undone. This will permanently delete your account
+        and remove your data from our servers.
+      </SheetDescription>
+    </SheetHeader>
+
+
+    This action cannot be undone. This will permanently delete your account
+        and remove your data from our servers.
+
+        This action cannot be undone. This will permanently delete your account
+        and remove your data from our servers.
+    This action cannot be undone. This will permanently delete your account
+        and remove your data from our servers.
+
+        This action cannot be undone. This will permanently delete your account
+        and remove your data from our servers.
+
+
+    This action cannot be undone. This will permanently delete your account
+        and remove your data from our servers.
+
+        This action cannot be undone. This will permanently delete your account
+        and remove your data from our servers.
+
+
+    This action cannot be undone. This will permanently delete your account
+        and remove your data from our servers.
+
+        This action cannot be undone. This will permanently delete your account
+        and remove your data from our servers.
+  </SheetContent>
+</Sheet>
 
           <Dialog>
             <DialogTrigger asChild>
