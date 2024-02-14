@@ -70,6 +70,8 @@ class CarsController extends Controller
      *                 @OA\Property(property="city", type="string"),
      *                 @OA\Property(property="division", type="object", description="Данные о подразделении",
      *                     @OA\Property(property="name", type="string", description="Название подразделения"),
+     *                     @OA\Property(property="address", type="string", description="Адрес"),
+     *                     @OA\Property(property="coords", type="string", description="Координаты подразделения"),
      *                 ),
      *                 @OA\Property(property="rent_term", type="object", description="Данные о сроке аренды",
      *                     @OA\Property(property="deposit_amount_daily", type="number", description="Сумма депозита за день"),
@@ -265,6 +267,7 @@ if (($carClassValues) > 0) {
             $end = CarClass::from($classCar)->name;
             $commission = $car['division']['park']['commission'];
             $phone = $car['division']['park']['phone'];
+            $about = $car['division']['park']['about'];
             $selfEmployed = $car['division']['park']['self_employed'];
             if(isset($car['division']['park']['park_name'])) {
                 $parkName = $car['division']['park']['park_name'];
@@ -278,6 +281,7 @@ if (($carClassValues) > 0) {
             $car->park_name= $parkName;
             $car->phone= $phone;
             $car->self_employed= $selfEmployed;
+            $car->about= $about;
             $car->commission = number_format($commission, 2);
         }
         foreach ($cars as $car) {

@@ -4276,6 +4276,10 @@ export interface IDocs {
 export class Division implements IDivision {
     /** Название подразделения */
     name?: string;
+    /** Адрес */
+    address?: string;
+    /** Координаты подразделения */
+    coords?: string;
 
     [key: string]: any;
 
@@ -4295,6 +4299,8 @@ export class Division implements IDivision {
                     this[property] = _data[property];
             }
             this.name = _data["name"];
+            this.address = _data["address"];
+            this.coords = _data["coords"];
         }
     }
 
@@ -4312,6 +4318,8 @@ export class Division implements IDivision {
                 data[property] = this[property];
         }
         data["name"] = this.name;
+        data["address"] = this.address;
+        data["coords"] = this.coords;
         return data;
     }
 }
@@ -4319,6 +4327,10 @@ export class Division implements IDivision {
 export interface IDivision {
     /** Название подразделения */
     name?: string;
+    /** Адрес */
+    address?: string;
+    /** Координаты подразделения */
+    coords?: string;
 
     [key: string]: any;
 }

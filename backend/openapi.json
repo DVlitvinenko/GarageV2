@@ -1206,6 +1206,14 @@
                                                             "name": {
                                                                 "description": "Название подразделения",
                                                                 "type": "string"
+                                                            },
+                                                            "address": {
+                                                                "description": "Адрес",
+                                                                "type": "string"
+                                                            },
+                                                            "coords": {
+                                                                "description": "Координаты подразделения",
+                                                                "type": "string"
                                                             }
                                                         },
                                                         "type": "object"
