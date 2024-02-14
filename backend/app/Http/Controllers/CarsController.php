@@ -66,36 +66,17 @@ class CarsController extends Controller
      *                 @OA\Property(property="images", type="array", @OA\Items(type="string"), description="Ссылки на изображения"),
      *                 @OA\Property(property="сar_class", type="string", description="Класс тарифа", ref="#/components/schemas/CarClass"),
      *                 @OA\Property(property="park_name", type="string", description="Название парка"),
-     *                 @OA\Property(property="working_hours", type="object", description="Расписание работы парка",
-     *                      @OA\Property(property="friday", type="object",
-     *                              @OA\Property(property="end", type="string"),
-     *                              @OA\Property(property="start", type="string")
-     *                                            ),
-     *                      @OA\Property(property="monday", type="object",
-     *                              @OA\Property(property="end", type="string"),
-     *                              @OA\Property(property="start", type="string")
-     *                                            ),
-     *                      @OA\Property(property="sunday", type="object",
-     *                              @OA\Property(property="end", type="string"),
-     *                              @OA\Property(property="start", type="string")),
-     *                      @OA\Property(property="tuesday", type="object",
-     *                              @OA\Property(property="end", type="string"),
-     *                              @OA\Property(property="start", type="string")
-     *                                            ),
-     *                      @OA\Property(property="saturday", type="object",
-     *                              @OA\Property(property="end", type="string"),
-     *                              @OA\Property(property="start", type="string")
-     *                                            ),
-     *                      @OA\Property(property="thursday", type="object",
-     *                              @OA\Property(property="end", type="string"),
-     *                              @OA\Property(property="start", type="string")
-     *                                            ),
-     *                      @OA\Property(property="wednesday", type="object",
-     *                              @OA\Property(property="end", type="string"),
-     *                              @OA\Property(property="start", type="string")
-     *                                            )
-     *                                        ),
-     *                               ),
+* @OA\Property(
+*     property="working_hours",
+*     type="array",
+*     description="Расписание работы парка",
+*     @OA\Items(
+*         type="object",
+*         @OA\Property(property="start", type="string", description="Время начала"),
+*         @OA\Property(property="end", type="string", description="Время окончания"),
+*         @OA\Property(property="day", type="string", description="День недели на русском")
+*     )
+* ),
      *                 @OA\Property(property="about", type="string", description="Описание парка"),
      *                 @OA\Property(property="phone", type="string", description="Телефон парка"),
      *                 @OA\Property(property="commission", type="number", description="Комиссия"),
@@ -302,6 +283,30 @@ if (($carClassValues) > 0) {
             $about = $car['division']['park']['about'];
             $selfEmployed = $car['division']['park']['self_employed'];
             $workingHours = json_decode($car['division']['park']['working_hours'], true);
+
+            $daysOfWeek = [
+                'понедельник' => 'monday',
+                'вторник' => 'tuesday',
+                'среда' => 'wednesday',
+                'четверг' => 'thursday',
+                'пятница' => 'friday',
+                'суббота' => 'saturday',
+                'воскресенье' => 'sunday'
+            ];
+
+            $hoursToArray = [];
+
+            foreach ($daysOfWeek as $rusDay => $engDay) {
+                if (isset($workingHours[$engDay])) {
+                    foreach ($workingHours[$engDay] as $timeRange) {
+                        $hoursToArray[] = [
+                            'start' => $timeRange['start'],
+                            'end' => $timeRange['end'],
+                            'day' => $rusDay
+                        ];
+                    }
+                }
+            }
             if(isset($car['division']['park']['park_name'])) {
                 $parkName = $car['division']['park']['park_name'];
             } else {
@@ -312,7 +317,7 @@ if (($carClassValues) > 0) {
             $car->city= $city;
             $car->CarClass= $end;
             $car->park_name= $parkName;
-            $car->working_hours= $workingHours;
+            $car->working_hours= $hoursToArray;
             $car->phone= $phone;
             $car->self_employed= $selfEmployed;
             $car->about= $about;
