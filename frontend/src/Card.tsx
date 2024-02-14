@@ -48,28 +48,6 @@ export const Card = ({ car }: { car: Cars2 }) => {
       </div>
       <div className="px-4">
         <h1 className="text-center my-4">{`${car.brand} ${car.model} ${car.year_produced}`}</h1>
-        {/* <div className="text-center my-4">
-              <Button variant="secondary">Показать номер</Button>
-            </div> */}
-        {/* <p className="text-base font-semibold text-gray">Парк:</p>
-            <p className="text-base font-semibold text-gray">Адрес:</p>
-            <p className="text-base font-semibold text-gray">График работы парка:</p>
-            <div className="text-sm text-gray-700">9:00 - 17:00 </div>
-            <div className="text-sm text-gray-700">9:00 - 17:00</div>
-            <div className="text-sm text-gray-700">9:00 - 17:00</div>
-            <div className="text-sm text-gray-700">9:00 - 17:00</div>
-            <div className="text-sm text-gray-700">9:00 - 17:00</div>
-            <div className="text-sm text-gray-700">9:00 - 17:00</div>
-            <div className="text-sm text-gray-700">9:00 - 17:00</div> */}
-        {/* <div className="text-sm text-gray-700">
-              "Такси ХИЩНИК – это таксопарк и опытная команда профессионалов,
-              занимающихся подключением к агрегаторам такси с марта 2018 года. За это
-              время мы добились лучших условий работы с крупнейшими агрегаторами такси
-              – Яндекс.Такси, Gett, Ситимобил, DiDi. А сегодня приглашаем к
-              сотрудничеству водителей и готовы поручиться за Вас перед авторитетными
-              сервисами. С нашей компанией Вы не будете знать простоев и научитесь
-              зарабатывать много, сберегая своё время и силы."
-            </div> */}
         <div className="flex flex-col items-center  mx-auto space-y-2">
           <Badge
             className="font-semibold text-lg mb-2"

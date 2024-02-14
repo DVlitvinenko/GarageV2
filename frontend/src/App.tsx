@@ -1,30 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import logo from "./assets/logo.png";
-import search from "./assets/search.svg";
-import account from "./assets/account.svg";
 import "./App.css";
 import { Link, Route, Routes, useNavigate } from "react-router-dom";
 import { client } from "./backend";
 import { Finder } from "./Finder";
 import { Account } from "./Account";
 import { DriverLogin } from "./DriverLogin";
-import { Card } from "./Card";
 import {
-  RecoilRoot,
-  atom,
-  selector,
   useRecoilState,
-  useRecoilValue,
 } from "recoil";
 import { userAtom } from "./atoms";
-import { ModalCard } from "./ModalCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTaxi, faUser } from "@fortawesome/free-solid-svg-icons";
 
 function App() {
   const [user, setUser] = useRecoilState(userAtom);
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -44,7 +34,7 @@ function App() {
 
   return (
     <div className="p-4 max-w-sm mx-auto">
-      <div className="flex justify-between">
+      <div className="flex justify-between my-0">
         <a>
           <img className="mb-2 w-24" src={logo} />
         </a>

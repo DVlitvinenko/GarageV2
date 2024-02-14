@@ -24,48 +24,9 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
       <img className="object-cover w-full rounded-t-xl" src={car.images![0]} />
       <div className="space-y-2">
         <h1 className="text-center my-4">{`${car.brand} ${car.model} ${car.year_produced}`}</h1>
-        <p className="text-base font-semibold text-gray">
-          Парк: {car.park_name}
-        </p>
-        <Separator />
-        <p className="text-base font-semibold text-gray">
-          Адрес: {car.division?.address}
-        </p>
-        <Separator />
-        <p className="text-base font-semibold text-gray">
-          Минимальный срок аренды: {car.rent_term?.minimum_period_days}
-        </p>
-        <div className="">
-          <div>
-            {car!.working_hours!.monday?.start} -{" "}
-            {car!.working_hours!.monday?.end}
-          </div>
-          <div>
-            {car!.working_hours!.tuesday?.start} -{" "}
-            {car!.working_hours!.tuesday?.end}
-          </div>
-          <div>
-            {car!.working_hours!.wednesday?.start} -{" "}
-            {car!.working_hours!.wednesday?.end}
-          </div>
-          <div>
-            {car!.working_hours!.thursday?.start} -{" "}
-            {car!.working_hours!.thursday?.end}
-          </div>
-          <div>
-            {car!.working_hours!.friday?.start} -{" "}
-            {car!.working_hours!.friday?.end}
-          </div>
-          <div>
-            {car!.working_hours!.saturday?.start} -{" "}
-            {car!.working_hours!.saturday?.end}
-          </div>
-          <div>
-            {car!.working_hours!.sunday?.start} -{" "}
-            {car!.working_hours!.sunday?.end}
-          </div>
-        </div>
-        <div className="text-center">
+
+
+        <div className=" flex flex-col justify-center space-y-2 h-32">
           {!phoneRequested && (
             <Button
               size={"lg"}
@@ -80,11 +41,29 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
               <a href={"tel:" + car.phone}>{car.phone}</a>
             </Button>
           )}
-        </div>
-        <div className="text-center">
           <Button size={"lg"}>Забронировать</Button>
         </div>
-        <div className="text-sm text-gray-700 mt-4"></div>
+
+        <p className="text-base font-semibold text-gray">
+          Парк: {car.park_name}
+        </p>
+        <Separator />
+        <p className="text-base font-semibold text-gray">
+          Адрес: {car.division?.address}
+        </p>
+        <Separator />
+        <p className="text-base font-semibold text-gray">
+          Минимум дней аренды: {car.rent_term?.minimum_period_days}
+        </p>
+        <br />
+        <div className="min-h-48">
+          {car.working_hours?.map((x) => (
+            <div className="flex items-center">
+              <div className="w-28 capitalize text-sm">{x.day}</div> {x.start} -{" "}
+              {x.end}
+            </div>
+          ))}
+        </div> 
         <Collapsible>
           <CollapsibleTrigger>О парке ▼</CollapsibleTrigger>
           <CollapsibleContent>
