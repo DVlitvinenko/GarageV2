@@ -165,9 +165,8 @@ class APIController extends Controller
             $car->year_produced = $carData['year_produced'];
             $car->car_id = $carData['id'];
             $car->images = json_encode($carData['images']);
-            $car->booking_time = null;
-            $car->user_booked_id = null;
             $car->status = 1;
+            $car->park_id = $park->id;
             $car->save();
         }
         return response()->json(['message' => 'Автомобили успешно добавлены'], 200);
@@ -709,30 +708,13 @@ class APIController extends Controller
     private function GetTariffId($park_id, $city_id, $classNum)
     {
         $class = '';
-        switch ($classNum) {
-            case 1:
-                $class = 'Эконом';
-                break;
-            case 2:
-                $class = 'Комфорт';
-                break;
-            case 3:
-                $class = 'Комфорт+';
-                break;
-            case 4:
-                $class = 'Бизнес';
-                break;
-            default:
-                $class = null;
-                break;
-        }
         $tariffId = Tariff::where('class', $class)
             ->where('park_id', $park_id)
             ->where('city_id', $city_id)
             ->value('id');
         if (!$tariffId) {
             $newTariff = Tariff::create([
-                'class' => $class,
+                'class' => $classNum,
                 'park_id' => $park_id,
                 'city_id' => $city_id,
             ]);
