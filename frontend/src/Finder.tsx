@@ -10,8 +10,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useState } from "react";
-import { CarClass, FuelType, TransmissionType } from "./api-client";
+import { useEffect, useState } from "react";
+import {
+  Body9,
+  CarClass,
+  Cars,
+  Cars2,
+  FuelType,
+  TransmissionType,
+} from "./api-client";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import {
@@ -31,29 +38,86 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useNavigate } from "react-router-dom";
 import { Card } from "./Card";
+import { client } from "./backend";
+import {
+  getFuelTypeDisplayName,
+  getTransmissionDisplayName,
+} from "@/lib/utils";
+import { useDebouncedCallback } from "use-debounce";
 
 const DEFAULT_COMMISSION_PERCENTAGE = 4;
 
 export const Finder = () => {
   const [filters, setFilters] = useState<{
     brands: string[];
-    carClass: CarClass;
+    carClass: CarClass[];
     commission: number;
     fuelType: FuelType | null;
     transmissionType: TransmissionType | null;
+    city: string;
   }>({
-    carClass: CarClass.Economy,
+    carClass: [CarClass.Economy],
     commission: DEFAULT_COMMISSION_PERCENTAGE,
     fuelType: null,
     brands: [],
     transmissionType: null,
+    city: "Москва",
   });
+
+  const [cars, setCars] = useState<Cars2[]>([]);
+
+  useEffect(() => {
+    const getCars = async () => {
+      // const data = await client.searchCars(
+      //   0,
+      //   filters.city,
+      //   "BMW"
+      //   // 50,
+      //   // filters.fuelType || undefined,
+      //   // filters.transmissionType || undefined,
+      //   // filters.brands[0],
+      //   // undefined,
+      //   // undefined,
+      //   // filters.carClass[0]
+      // );
+
+      const data = await client.searchCars(
+        new Body9({
+          brand: filters.brands,
+          city: filters.city,
+          fuel_type: filters.fuelType || undefined,
+          transmission_type: filters.transmissionType || undefined,
+          car_class: filters.carClass,
+          limit: 50,
+          offset: 0,
+          sorting: "asc"
+        })
+      );
+
+      setCars(data.cars!);
+    };
+
+    getCars();
+  }, [filters]);
+
+  const navigate = useNavigate();
+
+  const debouncedCommission = useDebouncedCallback(
+    // function
+    (value) => {
+      setFilters({ ...filters, commission: value });
+    },
+    // delay in ms
+    300
+  );
 
   return (
     <>
+      {/* <div onClick={() => navigate("login/driver")} className="fixed top-5 right-5">Войти</div> */}
       <div className="">
-        <div className=" w-80 flex my-8 justify-evenly">
+        <div className="mx-auto flex my-2 justify-between h-24">
           {[
             [CarClass.Economy, econom, "Эконом"],
             [CarClass.Comfort, comfort, "Комфорт"],
@@ -61,16 +125,24 @@ export const Finder = () => {
             [CarClass.Business, business, "Бизнес"],
           ].map((x) => {
             const [carClass, img, title] = x;
+            const isActive = filters.carClass.includes(carClass as CarClass);
 
             return (
-              <div key={carClass} className={`w-full flex flex-col items-center px-2 bg-white rounded ${
-                x[0] === filters.carClass
-                  ? "shadow border-2 border-yellow "
-                  : ""
-              }`}>
+              <div
+                key={carClass}
+                className={`w-20 flex flex-col items-center bg-white rounded-xl ${
+                  isActive ? "shadow border-2 border-yellow" : " scale-75"
+                }`}
+              >
                 <img
+                  className="w-16 rounded-xl"
                   onClick={() =>
-                    setFilters({ ...filters, carClass: carClass as CarClass })
+                    setFilters({
+                      ...filters,
+                      carClass: isActive
+                        ? filters.carClass.filter((c) => c != carClass)
+                        : [...filters.carClass, carClass as CarClass],
+                    })
                   }
                   src={img}
                 />
@@ -106,9 +178,9 @@ export const Finder = () => {
             <DialogTrigger asChild>
               <Button variant="outline">
                 {!!filters.brands.length
-                  ? // ? filters.brands.join(", ")
-                    "Выбрано марок " + filters.brands.length
-                  : "Все марки"}
+                  ? filters.brands.join(", ")
+                  : // "Выбрано марок " + filters.brands.length
+                    "Все марки"}
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[800px]">
@@ -117,34 +189,8 @@ export const Finder = () => {
                 {/* <DialogDescription>DialogDescription</DialogDescription> */}
               </DialogHeader>
               <div className="grid grid-cols-3 gap-4 py-4 h-[300px] overflow-y-scroll">
-                {[
-                  "Bibika",
-                  "Bibika",
-                  "Bibika",
-                  "Bibika",
-                  "Bibika",
-                  "Bibika",
-                  "Bibika",
-                  "Bibika",
-                  "Bibika",
-                  "Bibika",
-                  "Bibika",
-                  "Bibika",
-                  "Bibika",
-                  "Bibika",
-                  "Bibika",
-                  "Bibika",
-                  "Bibika",
-                  "Bibika",
-                  "Bibika",
-                  "Bibika",
-                  "Bibika",
-                  "Bibika",
-                  "Bibika",
-                  "Bibika",
-                  "Bibika",
-                ].map((x, i) => {
-                  const title = x + i;
+                {["Audi", "BWM"].map((x) => {
+                  const title = x;
                   const isActive = filters.brands.some((b) => b === title);
 
                   return (
@@ -162,7 +208,7 @@ export const Finder = () => {
                         })
                       }
                     >
-                      {x + i}
+                      {title}
                     </span>
                   );
                 })}
@@ -175,63 +221,47 @@ export const Finder = () => {
             </DialogContent>
           </Dialog>
 
-          <Select>
+          <Select
+            onValueChange={(e) =>
+              setFilters({ ...filters, fuelType: e as FuelType })
+            }
+          >
             <SelectTrigger className=" ">
-              <SelectValue placeholder="Любой тип топлива" />
+              <SelectValue placeholder={getFuelTypeDisplayName(undefined)} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem
-                onClick={() =>
-                  setFilters({ ...filters, fuelType: FuelType.Gasoline })
-                }
-                value={FuelType.Gasoline}
-              >
-                Бензин
+              <SelectItem value={FuelType.Gasoline}>
+                {getFuelTypeDisplayName(FuelType.Gasoline)}
               </SelectItem>
-              <SelectItem
-                onClick={() =>
-                  setFilters({ ...filters, fuelType: FuelType.Gas })
-                }
-                value={FuelType.Gas}
-              >
-                Газ
+              <SelectItem value={FuelType.Gas}>
+                {getFuelTypeDisplayName(FuelType.Gas)}
               </SelectItem>
-              <SelectItem
-                onClick={() => setFilters({ ...filters, fuelType: null })}
-                value={null as any}
-              >
-                Любой тип топлива
+              <SelectItem value={null as any}>
+                {getFuelTypeDisplayName(undefined)}
               </SelectItem>
             </SelectContent>
           </Select>
 
-
-          <Select>
+          <Select
+            onValueChange={(e) => {
+              return setFilters({
+                ...filters,
+                transmissionType: e as TransmissionType,
+              });
+            }}
+          >
             <SelectTrigger className=" ">
               <SelectValue placeholder="Любой тип трансмиссии" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem
-                onClick={() =>
-                  setFilters({ ...filters, transmissionType: TransmissionType.Automatic })
-                }
-                value={TransmissionType.Automatic}
-              >
-                Автомат
+              <SelectItem value={TransmissionType.Automatic}>
+                {getTransmissionDisplayName(TransmissionType.Automatic)}
               </SelectItem>
-              <SelectItem
-                onClick={() =>
-                  setFilters({ ...filters, transmissionType: TransmissionType.Mechanics })
-                }
-                value={TransmissionType.Mechanics}
-              >
-                Ручная
+              <SelectItem value={TransmissionType.Mechanics}>
+                {getTransmissionDisplayName(TransmissionType.Mechanics)}
               </SelectItem>
-              <SelectItem
-                onClick={() => setFilters({ ...filters, transmissionType: null })}
-                value={null as any}
-              >
-                Любой тип трансмиссии
+              <SelectItem value={null as any}>
+                {getTransmissionDisplayName(undefined)}
               </SelectItem>
             </SelectContent>
           </Select>
@@ -263,19 +293,19 @@ export const Finder = () => {
           </DropdownMenu> */}
         </div>
 
-        <div className="my-4 space-y-2">
+        <div className="my-4 space-y-2 mb-4 border-b pb-8 border-gray/20">
           <Label>Комиссия парка не выше {filters.commission}%</Label>
           <Slider
-            onValueChange={(e) => setFilters({ ...filters, commission: e[0] })}
+            onValueChange={(e) => debouncedCommission(e[0])}
             defaultValue={[DEFAULT_COMMISSION_PERCENTAGE]}
             max={10}
             step={0.1}
           />
-        </div><Button variant="outline">Сбросить фильтры</Button>
-        <Card />
-        <Card />
-        <Card />
-        <Card />
+        </div>
+        {/* <Button variant="outline">Сбросить фильтры</Button> */}
+        {cars.map((car) => {
+          return <Card key={car.id} car={car} />;
+        })}
       </div>
     </>
   );

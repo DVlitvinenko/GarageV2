@@ -15,8 +15,6 @@ export const DriverLogin = () => {
   const [phone, setPhone] = useState("");
   const [code, setCode] = useState(0);
 
-  const navigate = useNavigate();
-
   const getCode = async () => {
     await client.createAndSendCode(new Body9({ phone }));
     setRequested(true);
@@ -57,7 +55,6 @@ export const DriverLogin = () => {
             <Label htmlFor="code">Введите полученную смс</Label>
             <Input
               onChange={handleCodeChange}
-              type="number"
               id="code"
               placeholder="_ _ _ _ _ _ _"
             />

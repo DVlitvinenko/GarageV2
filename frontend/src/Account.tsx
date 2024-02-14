@@ -157,7 +157,7 @@ export const Account = ({ user }: { user: User }) => {
         })}
         <div className="text-center my-8">
           <Button variant="reject" onClick={logout}>
-            Выйти из профиля
+            Выйти из приложения
           </Button>
         </div>
       </div>

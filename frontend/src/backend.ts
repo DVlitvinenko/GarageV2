@@ -13,7 +13,7 @@ const client = new Client("https://garage.development.kwol.ru/api", {
 
       return result;
     } catch (error) {
-        alert("Uh oh!")
+        console.log("Uh oh!")
         throw error;
     }
   },
