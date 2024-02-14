@@ -41,7 +41,7 @@ class APIController extends Controller
      * @OA\Post(
      *     path="/cars",
      *     operationId="pushCars",
-     *     summary="Добавить несколько автомобилей",
+     *     summary="Добавить несколько автомобилей, все добавленные автомобили будут доступны к бронированию сразу после привязки к ним Условий бронирования (метод: /cars/rent-term)",
      *     tags={"API"},
      *     security={{"api_key": {}}},
      *     @OA\RequestBody(
@@ -614,7 +614,7 @@ class APIController extends Controller
      *
      * @OA\Put(
      *     path="/cars/rent-term",
-     *     operationId="updateCarDivision",
+     *     operationId="updateCarRentTerm",
      *     summary="Обновление условия аренды для автомобиля",
      *     tags={"API"},
      *     security={{"api_key": {}}},
