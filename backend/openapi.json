@@ -1181,6 +1181,10 @@
                                                         "description": "Название парка",
                                                         "type": "string"
                                                     },
+                                                    "phone": {
+                                                        "description": "Телефон парка",
+                                                        "type": "string"
+                                                    },
                                                     "commission": {
                                                         "description": "Комиссия",
                                                         "type": "number"

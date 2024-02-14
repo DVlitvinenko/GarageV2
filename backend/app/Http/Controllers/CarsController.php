@@ -63,6 +63,7 @@ class CarsController extends Controller
      *                 @OA\Property(property="images", type="array", @OA\Items(type="string"), description="Ссылки на изображения"),
      *                 @OA\Property(property="сar_class", type="string", description="Класс тарифа",ref="#/components/schemas/CarClass"),
      *                 @OA\Property(property="park_name", type="string", description="Название парка"),
+     *                 @OA\Property(property="phone", type="string", description="Телефон парка"),
      *                 @OA\Property(property="commission", type="number", description="Комиссия"),
      *                 @OA\Property(property="self_employed", type="boolean", description="Работа с самозанятыми"),
      *                 @OA\Property(property="city", type="string"),
@@ -226,7 +227,7 @@ if (($carClassValues) > 0) {
                     $query->select('id', 'daily_amount', 'non_working_days', 'working_days','rent_term_id');
                 },
                 'division.park' => function($query) {
-                    $query->select('id', 'park_name','commission','self_employed');
+                    $query->select('id', 'park_name','commission','self_employed','phone');
                 },
                 'division' => function($query) {
                     $query->select('id', 'coords', 'address', 'name','park_id','city_id');
@@ -262,6 +263,7 @@ if (($carClassValues) > 0) {
             $classCar = $car['tariff']['class'];
             $end = CarClass::from($classCar)->name;
             $commission = $car['division']['park']['commission'];
+            $phone = $car['division']['park']['phone'];
             $selfEmployed = $car['division']['park']['self_employed'];
             if(isset($car['division']['park']['park_name'])) {
                 $parkName = $car['division']['park']['park_name'];
@@ -273,6 +275,7 @@ if (($carClassValues) > 0) {
             $car->city= $city;
             $car->CarClass= $end;
             $car->park_name= $parkName;
+            $car->phone= $phone;
             $car->self_employed= $selfEmployed;
             $car->commission = number_format($commission, 2);
         }

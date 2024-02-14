@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('url');
             $table->float('comission');
             $table->boolean('self_employed');
+            $table->string('phone');
             $table->string('park_name');
             $table->text('about');
             $table->json('working_hours');
