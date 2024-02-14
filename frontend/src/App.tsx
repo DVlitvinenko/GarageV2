@@ -17,6 +17,10 @@ import {
   useRecoilValue,
 } from "recoil";
 import { userAtom } from "./atoms";
+import { ModalCard } from "./ModalCard";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTaxi, faUser } from '@fortawesome/free-solid-svg-icons'
+
 
 function App() {
   const [user, setUser] = useRecoilState(userAtom);
@@ -48,6 +52,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Finder />} />
         <Route path="/card" element={<Card />} />
+        <Route path="/modalcard" element={<ModalCard />} />
         <Route path="account" element={<Account user={user} />} />
         <Route path="login/driver" element={<DriverLogin />} />
         <Route path="login/manager" element={<ManagerLogin />} />
@@ -62,11 +67,14 @@ export default App;
 const Menu = () => (
   <div className="w-60 mx-auto flex justify-around mb-12 cursor-pointer my-2">
     <Link className="hover:text-sky-400" to="/">
-      <img className="object-scale-down h-8 w-8" src={search} />
+      {/* <img className="object-scale-down h-8 w-8" src={search} /> */}
+      <FontAwesomeIcon icon={faTaxi} />
     </Link>
     <Link className="hover:text-sky-400" to="account">
-      <img className="object-scale-down h-8 w-8" src={account} />
+      {/* <img className="object-scale-down h-8 w-8" src={account} /> */}
+      <FontAwesomeIcon icon={faUser} />
     </Link>
+    
   </div>
 );
 

@@ -31,6 +31,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Card } from "./Card";
 
 const DEFAULT_COMMISSION_PERCENTAGE = 4;
 
@@ -52,7 +53,7 @@ export const Finder = () => {
   return (
     <>
       <div className="">
-        <div className="flex my-8 justify-evenly">
+        <div className=" w-80 flex my-8 justify-evenly">
           {[
             [CarClass.Economy, econom, "Эконом"],
             [CarClass.Comfort, comfort, "Комфорт"],
@@ -62,16 +63,15 @@ export const Finder = () => {
             const [carClass, img, title] = x;
 
             return (
-              <div key={carClass} className="flex flex-col items-center">
+              <div key={carClass} className={`w-full flex flex-col items-center px-2 bg-white rounded ${
+                x[0] === filters.carClass
+                  ? "shadow border-2 border-yellow "
+                  : ""
+              }`}>
                 <img
                   onClick={() =>
                     setFilters({ ...filters, carClass: carClass as CarClass })
                   }
-                  className={`rounded mx-auto h-16 w-16 ${
-                    x[0] === filters.carClass
-                      ? "shadow border-2 border-yellow"
-                      : ""
-                  }`}
                   src={img}
                 />
                 <span className="text-xs font-bold text-gray">{title}</span>
@@ -113,8 +113,8 @@ export const Finder = () => {
             </DialogTrigger>
             <DialogContent className="sm:max-w-[800px]">
               <DialogHeader>
-                <DialogTitle>DialogTitle</DialogTitle>
-                <DialogDescription>DialogDescription</DialogDescription>
+                <DialogTitle>Марка автомобиля</DialogTitle>
+                {/* <DialogDescription>DialogDescription</DialogDescription> */}
               </DialogHeader>
               <div className="grid grid-cols-3 gap-4 py-4 h-[300px] overflow-y-scroll">
                 {[
@@ -169,7 +169,7 @@ export const Finder = () => {
               </div>
               <DialogFooter>
                 <DialogClose asChild>
-                  <Button>Окей</Button>
+                  <Button>Выбрать</Button>
                 </DialogClose>
               </DialogFooter>
             </DialogContent>
@@ -225,7 +225,7 @@ export const Finder = () => {
                 }
                 value={TransmissionType.Mechanics}
               >
-                Газ
+                Ручная
               </SelectItem>
               <SelectItem
                 onClick={() => setFilters({ ...filters, transmissionType: null })}
@@ -269,9 +269,13 @@ export const Finder = () => {
             onValueChange={(e) => setFilters({ ...filters, commission: e[0] })}
             defaultValue={[DEFAULT_COMMISSION_PERCENTAGE]}
             max={10}
-            step={0.5}
+            step={0.1}
           />
-        </div>
+        </div><Button variant="outline">Сбросить фильтры</Button>
+        <Card />
+        <Card />
+        <Card />
+        <Card />
       </div>
     </>
   );
