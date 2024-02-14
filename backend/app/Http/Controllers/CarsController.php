@@ -226,7 +226,7 @@ if (($carClassValues) > 0) {
                     $query->select('id', 'daily_amount', 'non_working_days', 'working_days','rent_term_id');
                 },
                 'division.park' => function($query) {
-                    $query->select('id', 'park_name','commission');
+                    $query->select('id', 'park_name','commission','self_employed');
                 },
                 'division' => function($query) {
                     $query->select('id', 'coords', 'address', 'name','park_id','city_id');
