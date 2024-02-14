@@ -92,7 +92,8 @@ export const Finder = () => {
           car_class: filters.carClass,
           limit: 50,
           offset: 0,
-          sorting: "asc"
+          sorting: "asc",
+          comission: filters.commission
         })
       );
 
