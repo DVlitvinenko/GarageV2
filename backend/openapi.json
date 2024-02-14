@@ -1130,7 +1130,18 @@
                         "description": "Марка автомобиля",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {}
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Марка или модель автомобиля",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {}
                         }
                     },
                     {
@@ -1148,7 +1159,8 @@
                         "description": "Модель автомобиля",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {}
                         }
                     },
                     {
@@ -1300,7 +1312,7 @@
                 ],
                 "summary": "Бронирование автомобиля",
                 "description": "Бронирование автомобиля",
-                "operationId": "Booking",
+                "operationId": "booking",
                 "requestBody": {
                     "required": true,
                     "content": {

@@ -76,7 +76,14 @@ class CarsController extends Controller
      *         in="query",
      *         description="Марка автомобиля",
      *         required=false,
-     *         @OA\Schema(type="string")
+     *         @OA\Schema(type="array",@OA\Items())
+     *     ),
+     *     @OA\Parameter(
+     *         name="search",
+     *         in="query",
+     *         description="Марка или модель автомобиля",
+     *         required=false,
+     *         @OA\Schema(type="array",@OA\Items() )
      *     ),
      *     @OA\Parameter(
      *         name="sorting",
@@ -90,7 +97,7 @@ class CarsController extends Controller
      *         in="query",
      *         description="Модель автомобиля",
      *         required=false,
-     *         @OA\Schema(type="string")
+     *         @OA\Schema(type="array",@OA\Items())
      *     ),
      *     @OA\Parameter(
      *         name="car_class",
@@ -98,7 +105,8 @@ class CarsController extends Controller
      *         description="Класс автомобиля (1 - Эконом, 2 - Комфорт, 3 - Комфорт+, 4 - Бизнес)",
      *         required=false,
      *     @OA\Schema(
-     *  type="array",@OA\Items(
+     *  type="array",
+     * @OA\Items(
      * ref="#/components/schemas/CarClass")
      *     )),
      *     @OA\Response(
@@ -156,7 +164,7 @@ class CarsController extends Controller
             $fuelType = $request->fuel_type?FuelType::{$request->fuel_type}->value:null ;
             $transmissionType = $request->transmission_type?TransmissionType::{$request->transmission_type}->value:null;
             $city = City::where('name',$request->city)->first();
-
+            $search = $request->search;
             $cityId = $city->id;
             if (!$city) {
                 return response()->json(['error' => 'Город не найден'], 404);
@@ -223,13 +231,23 @@ class CarsController extends Controller
             }
 
             if ($brand) {
-                $carsQuery->where('brand', 'like', '%' . $brand . '%');
+                $brandArray = is_array($brand) ? $brand : [$brand];
+                $carsQuery->whereIn('brand', $brandArray);
             }
 
             if ($model) {
-                $carsQuery->where('model', 'like', '%' . $model . '%');
+                $modelArray = is_array($model) ? $model : [$model];
+                $carsQuery->whereIn('model', $modelArray);
             }
-
+          if ($search) {
+             $keywords = explode(' ', $search);
+             $carsQuery->where(function($query) use ($keywords) {
+                 foreach ($keywords as $keyword) {
+                     $query->orWhere('brand', 'like', '%' . str_replace(' ', '%', $keyword) . '%')
+                           ->orWhere('model', 'like', '%' . str_replace(' ', '%', $keyword) . '%');
+                 }
+             });
+         }
             if (count($carClass) > 0) {
             $carsQuery->whereHas('tariff', function($query) use ($carClass) {
                     $query->whereIn('class', $carClass);
@@ -345,7 +363,7 @@ class CarsController extends Controller
          *
          * @OA\Post(
          *     path="/auth/cars/booking",
-         *     operationId="Booking",
+         *     operationId="booking",
          *     summary="Бронирование автомобиля",
          *     tags={"Cars"},
          *     security={{"bearerAuth": {}}},
@@ -381,7 +399,7 @@ class CarsController extends Controller
          * @param \Illuminate\Http\Request $request Объект запроса, содержащий идентификатор автомобиля для бронирования
          * @return \Illuminate\Http\JsonResponse JSON-ответ с результатом бронирования
          */
-        public function Booking(Request $request)
+        public function booking(Request $request)
         {
             $rent_time = 3;
             $user = Auth::guard('sanctum')->user();

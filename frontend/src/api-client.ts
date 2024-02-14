@@ -638,12 +638,13 @@ export class Client {
      * @param fuel_type (optional) Тип топлива
      * @param transmission_type (optional) Тип трансмиссии
      * @param brand (optional) Марка автомобиля
+     * @param search (optional) Марка или модель автомобиля
      * @param sorting (optional) сортировка, asc или desc
      * @param model (optional) Модель автомобиля
      * @param car_class (optional) Класс автомобиля (1 - Эконом, 2 - Комфорт, 3 - Комфорт+, 4 - Бизнес)
      * @return Успешный ответ
      */
-    searchCars(offset: number, limit: number, city: string, fuel_type: FuelType | undefined, transmission_type: TransmissionType | undefined, brand: string | undefined, sorting: string | undefined, model: string | undefined, car_class: CarClass[] | undefined): Promise<Anonymous33> {
+    searchCars(offset: number, limit: number, city: string, fuel_type: FuelType | undefined, transmission_type: TransmissionType | undefined, brand: any[] | undefined, search: any[] | undefined, sorting: string | undefined, model: any[] | undefined, car_class: CarClass[] | undefined): Promise<Anonymous33> {
         let url_ = this.baseUrl + "/cars/search?";
         if (offset === undefined || offset === null)
             throw new Error("The parameter 'offset' must be defined and cannot be null.");
@@ -668,7 +669,21 @@ export class Client {
         if (brand === null)
             throw new Error("The parameter 'brand' cannot be null.");
         else if (brand !== undefined)
-            url_ += "brand=" + encodeURIComponent("" + brand) + "&";
+            brand && brand.forEach((item, index) => {
+                for (let attr in item)
+        			if (item.hasOwnProperty(attr)) {
+        				url_ += "brand[" + index + "]." + attr + "=" + encodeURIComponent("" + (item as any)[attr]) + "&";
+        			}
+            });
+        if (search === null)
+            throw new Error("The parameter 'search' cannot be null.");
+        else if (search !== undefined)
+            search && search.forEach((item, index) => {
+                for (let attr in item)
+        			if (item.hasOwnProperty(attr)) {
+        				url_ += "search[" + index + "]." + attr + "=" + encodeURIComponent("" + (item as any)[attr]) + "&";
+        			}
+            });
         if (sorting === null)
             throw new Error("The parameter 'sorting' cannot be null.");
         else if (sorting !== undefined)
@@ -676,7 +691,12 @@ export class Client {
         if (model === null)
             throw new Error("The parameter 'model' cannot be null.");
         else if (model !== undefined)
-            url_ += "model=" + encodeURIComponent("" + model) + "&";
+            model && model.forEach((item, index) => {
+                for (let attr in item)
+        			if (item.hasOwnProperty(attr)) {
+        				url_ += "model[" + index + "]." + attr + "=" + encodeURIComponent("" + (item as any)[attr]) + "&";
+        			}
+            });
         if (car_class === null)
             throw new Error("The parameter 'car_class' cannot be null.");
         else if (car_class !== undefined)
