@@ -4314,6 +4314,8 @@ export class Rent_term implements IRent_term {
     minimum_period_days?: number;
     /** Возможность выкупа */
     is_buyout_possible?: boolean;
+    /** Работа с самозанятыми */
+    self_employed?: boolean;
     schemas?: Schemas2[];
 
     [key: string]: any;
@@ -4337,6 +4339,7 @@ export class Rent_term implements IRent_term {
             this.deposit_amount_total = _data["deposit_amount_total"];
             this.minimum_period_days = _data["minimum_period_days"];
             this.is_buyout_possible = _data["is_buyout_possible"];
+            this.self_employed = _data["self_employed"];
             if (Array.isArray(_data["schemas"])) {
                 this.schemas = [] as any;
                 for (let item of _data["schemas"])
@@ -4362,6 +4365,7 @@ export class Rent_term implements IRent_term {
         data["deposit_amount_total"] = this.deposit_amount_total;
         data["minimum_period_days"] = this.minimum_period_days;
         data["is_buyout_possible"] = this.is_buyout_possible;
+        data["self_employed"] = this.self_employed;
         if (Array.isArray(this.schemas)) {
             data["schemas"] = [];
             for (let item of this.schemas)
@@ -4380,6 +4384,8 @@ export interface IRent_term {
     minimum_period_days?: number;
     /** Возможность выкупа */
     is_buyout_possible?: boolean;
+    /** Работа с самозанятыми */
+    self_employed?: boolean;
     schemas?: Schemas2[];
 
     [key: string]: any;

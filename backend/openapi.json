@@ -1217,6 +1217,10 @@
                                                                 "description": "Возможность выкупа",
                                                                 "type": "boolean"
                                                             },
+                                                            "self_employed": {
+                                                                "description": "Работа с самозанятыми",
+                                                                "type": "boolean"
+                                                            },
                                                             "schemas": {
                                                                 "type": "array",
                                                                 "items": {

@@ -73,6 +73,7 @@ class CarsController extends Controller
      *                     @OA\Property(property="deposit_amount_total", type="number", description="Общая сумма депозита"),
      *                     @OA\Property(property="minimum_period_days", type="integer", description="Минимальный период в днях"),
      *                     @OA\Property(property="is_buyout_possible", type="boolean", description="Возможность выкупа"),
+     *                     @OA\Property(property="self_employed", type="boolean", description="Работа с самозанятыми"),
      *                     @OA\Property(property="schemas", type="array", @OA\Items(
      *                         @OA\Property(property="daily_amount", type="integer", description="Суточная стоимость"),
      *                         @OA\Property(property="non_working_days", type="integer", description="Количество нерабочих дней"),
