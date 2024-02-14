@@ -4095,6 +4095,8 @@ export class Cars2 implements ICars2 {
     сar_class?: CarClass;
     /** Название парка */
     park_name?: string;
+    /** Описание парка */
+    about?: string;
     /** Телефон парка */
     phone?: string;
     /** Комиссия */
@@ -4137,6 +4139,7 @@ export class Cars2 implements ICars2 {
             }
             this.сar_class = _data["сar_class"];
             this.park_name = _data["park_name"];
+            this.about = _data["about"];
             this.phone = _data["phone"];
             this.commission = _data["commission"];
             this.self_employed = _data["self_employed"];
@@ -4172,6 +4175,7 @@ export class Cars2 implements ICars2 {
         }
         data["сar_class"] = this.сar_class;
         data["park_name"] = this.park_name;
+        data["about"] = this.about;
         data["phone"] = this.phone;
         data["commission"] = this.commission;
         data["self_employed"] = this.self_employed;
@@ -4198,6 +4202,8 @@ export interface ICars2 {
     сar_class?: CarClass;
     /** Название парка */
     park_name?: string;
+    /** Описание парка */
+    about?: string;
     /** Телефон парка */
     phone?: string;
     /** Комиссия */

@@ -63,6 +63,7 @@ class CarsController extends Controller
      *                 @OA\Property(property="images", type="array", @OA\Items(type="string"), description="Ссылки на изображения"),
      *                 @OA\Property(property="сar_class", type="string", description="Класс тарифа",ref="#/components/schemas/CarClass"),
      *                 @OA\Property(property="park_name", type="string", description="Название парка"),
+     *                 @OA\Property(property="about", type="string", description="Описание парка"),
      *                 @OA\Property(property="phone", type="string", description="Телефон парка"),
      *                 @OA\Property(property="commission", type="number", description="Комиссия"),
      *                 @OA\Property(property="self_employed", type="boolean", description="Работа с самозанятыми"),
@@ -227,7 +228,7 @@ if (($carClassValues) > 0) {
                     $query->select('id', 'daily_amount', 'non_working_days', 'working_days','rent_term_id');
                 },
                 'division.park' => function($query) {
-                    $query->select('id', 'park_name','commission','self_employed','phone');
+                    $query->select('id', 'park_name','commission','self_employed','phone', 'about');
                 },
                 'division' => function($query) {
                     $query->select('id', 'coords', 'address', 'name','park_id','city_id');
