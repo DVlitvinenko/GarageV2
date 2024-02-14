@@ -653,12 +653,12 @@ class CarsController extends Controller
 
 
        /**
-     * Получение списка автомобилей с учетом фильтров (аутентифицированный запрос)
+     * Получение списка автомобилей по поиску
      *
      * @OA\Get(
      *     path="/cars/search",
      *     operationId="SearchCars",
-     *     summary="Получение списка автомобилей с учетом фильтров (аутентифицированный запрос)",
+     *     summary="Получение списка автомобилей по поиску",
      *     tags={"Cars"},
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
