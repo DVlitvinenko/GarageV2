@@ -1174,12 +1174,16 @@
                                                             "type": "string"
                                                         }
                                                     },
-                                                    "CarClass": {
+                                                    "сarClass": {
                                                         "$ref": "#/components/schemas/CarClass"
                                                     },
                                                     "park_name": {
                                                         "description": "Название парка",
                                                         "type": "string"
+                                                    },
+                                                    "commission": {
+                                                        "description": "Комиссия",
+                                                        "type": "number"
                                                     },
                                                     "city": {
                                                         "type": "string"

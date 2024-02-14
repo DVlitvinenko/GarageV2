@@ -4092,9 +4092,11 @@ export class Cars2 implements ICars2 {
     year_produced?: number;
     /** Ссылки на изображения */
     images?: string[];
-    carClass?: CarClass;
+    сarClass?: CarClass;
     /** Название парка */
     park_name?: string;
+    /** Комиссия */
+    commission?: number;
     city?: string;
     /** Данные о подразделении */
     division?: Division;
@@ -4129,8 +4131,9 @@ export class Cars2 implements ICars2 {
                 for (let item of _data["images"])
                     this.images!.push(item);
             }
-            this.carClass = _data["CarClass"];
+            this.сarClass = _data["сarClass"];
             this.park_name = _data["park_name"];
+            this.commission = _data["commission"];
             this.city = _data["city"];
             this.division = _data["division"] ? Division.fromJS(_data["division"]) : <any>undefined;
             this.rent_term = _data["rent_term"] ? Rent_term.fromJS(_data["rent_term"]) : <any>undefined;
@@ -4161,8 +4164,9 @@ export class Cars2 implements ICars2 {
             for (let item of this.images)
                 data["images"].push(item);
         }
-        data["CarClass"] = this.carClass;
+        data["сarClass"] = this.сarClass;
         data["park_name"] = this.park_name;
+        data["commission"] = this.commission;
         data["city"] = this.city;
         data["division"] = this.division ? this.division.toJSON() : <any>undefined;
         data["rent_term"] = this.rent_term ? this.rent_term.toJSON() : <any>undefined;
@@ -4183,9 +4187,11 @@ export interface ICars2 {
     year_produced?: number;
     /** Ссылки на изображения */
     images?: string[];
-    carClass?: CarClass;
+    сarClass?: CarClass;
     /** Название парка */
     park_name?: string;
+    /** Комиссия */
+    commission?: number;
     city?: string;
     /** Данные о подразделении */
     division?: Division;
