@@ -1436,6 +1436,10 @@ export class Body9 implements IBody9 {
     search?: any[];
     /** сортировка, asc или desc */
     sorting?: string;
+    /** Работа с самозанятыми */
+    self_employed?: boolean;
+    /** Возможность выкупа */
+    is_buyout_possible?: boolean;
     /** Модель автомобиля */
     model?: any[];
     /** Класс автомобиля (1 - Эконом, 2 - Комфорт, 3 - Комфорт+, 4 - Бизнес) */
@@ -1475,6 +1479,8 @@ export class Body9 implements IBody9 {
                     this.search!.push(item);
             }
             this.sorting = _data["sorting"];
+            this.self_employed = _data["self_employed"];
+            this.is_buyout_possible = _data["is_buyout_possible"];
             if (Array.isArray(_data["model"])) {
                 this.model = [] as any;
                 for (let item of _data["model"])
@@ -1518,6 +1524,8 @@ export class Body9 implements IBody9 {
                 data["search"].push(item);
         }
         data["sorting"] = this.sorting;
+        data["self_employed"] = this.self_employed;
+        data["is_buyout_possible"] = this.is_buyout_possible;
         if (Array.isArray(this.model)) {
             data["model"] = [];
             for (let item of this.model)
@@ -1549,6 +1557,10 @@ export interface IBody9 {
     search?: any[];
     /** сортировка, asc или desc */
     sorting?: string;
+    /** Работа с самозанятыми */
+    self_employed?: boolean;
+    /** Возможность выкупа */
+    is_buyout_possible?: boolean;
     /** Модель автомобиля */
     model?: any[];
     /** Класс автомобиля (1 - Эконом, 2 - Комфорт, 3 - Комфорт+, 4 - Бизнес) */

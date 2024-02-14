@@ -46,6 +46,8 @@ class CarsController extends Controller
      *             @OA\Property(property="brand", type="array", description="Марка автомобиля",@OA\Items()),
      *             @OA\Property(property="search", type="array", description="Марка или модель автомобиля",@OA\Items()),
      *             @OA\Property(property="sorting", type="string", description="сортировка, asc или desc"),
+     *             @OA\Property(property="self_employed", type="boolean", description="Работа с самозанятыми"),
+     *             @OA\Property(property="is_buyout_possible", type="boolean", description="Возможность выкупа"),
      *             @OA\Property(property="model", type="array", description="Модель автомобиля",@OA\Items()),
      *             @OA\Property(property="car_class", type="array", description="Класс автомобиля (1 - Эконом, 2 - Комфорт, 3 - Комфорт+, 4 - Бизнес)",@OA\Items(ref="#/components/schemas/CarClass"))
      *         )
@@ -62,7 +64,7 @@ class CarsController extends Controller
      *                 @OA\Property(property="model", type="string", description="Модель автомобиля"),
      *                 @OA\Property(property="year_produced", type="integer", description="Год производства"),
      *                 @OA\Property(property="images", type="array", @OA\Items(type="string"), description="Ссылки на изображения"),
-     *                 @OA\Property(property="сar_class", type="string", description="Класс тарифа",ref="#/components/schemas/CarClass"),
+     *                 @OA\Property(property="сar_class", type="string", description="Класс тарифа", ref="#/components/schemas/CarClass"),
      *                 @OA\Property(property="park_name", type="string", description="Название парка"),
      *                 @OA\Property(property="working_hours", type="object", description="Расписание работы парка",
      *                      @OA\Property(property="friday", type="object",
@@ -309,7 +311,7 @@ if (($carClassValues) > 0) {
 
             $car->city= $city;
             $car->CarClass= $end;
-            $car->CarClass= $end;
+            $car->park_name= $parkName;
             $car->working_hours= $workingHours;
             $car->phone= $phone;
             $car->self_employed= $selfEmployed;

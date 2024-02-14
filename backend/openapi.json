@@ -1120,6 +1120,14 @@
                                         "description": "сортировка, asc или desc",
                                         "type": "string"
                                     },
+                                    "self_employed": {
+                                        "description": "Работа с самозанятыми",
+                                        "type": "boolean"
+                                    },
+                                    "is_buyout_possible": {
+                                        "description": "Возможность выкупа",
+                                        "type": "boolean"
+                                    },
                                     "model": {
                                         "description": "Модель автомобиля",
                                         "type": "array",
