@@ -224,7 +224,7 @@ if (($carClassValues) > 0) {
                     $query->select('id', 'daily_amount', 'non_working_days', 'working_days','rent_term_id');
                 },
                 'division.park' => function($query) {
-                    $query->select('id', 'park_name');
+                    $query->select('id', 'park_name','commission');
                 },
                 'division' => function($query) {
                     $query->select('id', 'coords', 'address', 'name','park_id','city_id');
@@ -259,6 +259,7 @@ if (($carClassValues) > 0) {
             $car['transmission_type'] = TransmissionType::from($car['transmission_type'])->name;
             $classCar = $car['tariff']['class'];
             $end = CarClass::from($classCar)->name;
+            $commission = $car['division']['park']['commission'];
             if(isset($car['division']['park']['park_name'])) {
                 $parkName = $car['division']['park']['park_name'];
             } else {
@@ -269,6 +270,7 @@ if (($carClassValues) > 0) {
             $car->city= $city;
             $car->CarClass= $end;
             $car->park_name= $parkName;
+            $car->commission = number_format($commission, 2);
         }
         foreach ($cars as $car) {
             unset(
