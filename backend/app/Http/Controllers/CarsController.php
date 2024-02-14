@@ -273,7 +273,7 @@ if (($carClassValues) > 0) {
             $car->city= $city;
             $car->CarClass= $end;
             $car->park_name= $parkName;
-            $car->selfEmployed= $selfEmployed;
+            $car->self_employed= $selfEmployed;
             $car->commission = number_format($commission, 2);
         }
         foreach ($cars as $car) {
