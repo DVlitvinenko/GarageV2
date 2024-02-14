@@ -1146,6 +1146,83 @@
                                 "schema": {
                                     "properties": {
                                         "cars": {
+                                            "properties": {
+                                                "about": {
+                                                    "description": "Описание парка",
+                                                    "type": "string"
+                                                },
+                                                "phone": {
+                                                    "description": "Телефон парка",
+                                                    "type": "string"
+                                                },
+                                                "commission": {
+                                                    "description": "Комиссия",
+                                                    "type": "number"
+                                                },
+                                                "self_employed": {
+                                                    "description": "Работа с самозанятыми",
+                                                    "type": "boolean"
+                                                },
+                                                "city": {
+                                                    "type": "string"
+                                                },
+                                                "division": {
+                                                    "description": "Данные о подразделении",
+                                                    "properties": {
+                                                        "address": {
+                                                            "description": "Адрес",
+                                                            "type": "string"
+                                                        },
+                                                        "coords": {
+                                                            "description": "Координаты подразделения",
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "rent_term": {
+                                                    "description": "Данные о сроке аренды",
+                                                    "properties": {
+                                                        "deposit_amount_daily": {
+                                                            "description": "Сумма депозита за день",
+                                                            "type": "number"
+                                                        },
+                                                        "deposit_amount_total": {
+                                                            "description": "Общая сумма депозита",
+                                                            "type": "number"
+                                                        },
+                                                        "minimum_period_days": {
+                                                            "description": "Минимальный период в днях",
+                                                            "type": "integer"
+                                                        },
+                                                        "is_buyout_possible": {
+                                                            "description": "Возможность выкупа",
+                                                            "type": "boolean"
+                                                        },
+                                                        "schemas": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "properties": {
+                                                                    "daily_amount": {
+                                                                        "description": "Суточная стоимость",
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "non_working_days": {
+                                                                        "description": "Количество нерабочих дней",
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "working_days": {
+                                                                        "description": "Количество рабочих дней",
+                                                                        "type": "integer"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            }
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
                                             "type": "array",
                                             "items": {
                                                 "properties": {
@@ -1185,77 +1262,85 @@
                                                         "description": "Название парка",
                                                         "type": "string"
                                                     },
-                                                    "about": {
-                                                        "description": "Описание парка",
-                                                        "type": "string"
-                                                    },
-                                                    "phone": {
-                                                        "description": "Телефон парка",
-                                                        "type": "string"
-                                                    },
-                                                    "commission": {
-                                                        "description": "Комиссия",
-                                                        "type": "number"
-                                                    },
-                                                    "self_employed": {
-                                                        "description": "Работа с самозанятыми",
-                                                        "type": "boolean"
-                                                    },
-                                                    "city": {
-                                                        "type": "string"
-                                                    },
-                                                    "division": {
-                                                        "description": "Данные о подразделении",
+                                                    "working_hours": {
+                                                        "description": "Расписание работы парка",
                                                         "properties": {
-                                                            "address": {
-                                                                "description": "Адрес",
-                                                                "type": "string"
-                                                            },
-                                                            "coords": {
-                                                                "description": "Координаты подразделения",
-                                                                "type": "string"
-                                                            }
-                                                        },
-                                                        "type": "object"
-                                                    },
-                                                    "rent_term": {
-                                                        "description": "Данные о сроке аренды",
-                                                        "properties": {
-                                                            "deposit_amount_daily": {
-                                                                "description": "Сумма депозита за день",
-                                                                "type": "number"
-                                                            },
-                                                            "deposit_amount_total": {
-                                                                "description": "Общая сумма депозита",
-                                                                "type": "number"
-                                                            },
-                                                            "minimum_period_days": {
-                                                                "description": "Минимальный период в днях",
-                                                                "type": "integer"
-                                                            },
-                                                            "is_buyout_possible": {
-                                                                "description": "Возможность выкупа",
-                                                                "type": "boolean"
-                                                            },
-                                                            "schemas": {
-                                                                "type": "array",
-                                                                "items": {
-                                                                    "properties": {
-                                                                        "daily_amount": {
-                                                                            "description": "Суточная стоимость",
-                                                                            "type": "integer"
-                                                                        },
-                                                                        "non_working_days": {
-                                                                            "description": "Количество нерабочих дней",
-                                                                            "type": "integer"
-                                                                        },
-                                                                        "working_days": {
-                                                                            "description": "Количество рабочих дней",
-                                                                            "type": "integer"
-                                                                        }
+                                                            "friday": {
+                                                                "properties": {
+                                                                    "end": {
+                                                                        "type": "string"
                                                                     },
-                                                                    "type": "object"
-                                                                }
+                                                                    "start": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            },
+                                                            "monday": {
+                                                                "properties": {
+                                                                    "end": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "start": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            },
+                                                            "sunday": {
+                                                                "properties": {
+                                                                    "end": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "start": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            },
+                                                            "tuesday": {
+                                                                "properties": {
+                                                                    "end": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "start": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            },
+                                                            "saturday": {
+                                                                "properties": {
+                                                                    "end": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "start": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            },
+                                                            "thursday": {
+                                                                "properties": {
+                                                                    "end": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "start": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            },
+                                                            "wednesday": {
+                                                                "properties": {
+                                                                    "end": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "start": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "type": "object"
                                                             }
                                                         },
                                                         "type": "object"
@@ -1269,15 +1354,6 @@
                                 }
                             }
                         }
-                    },
-                    "401": {
-                        "description": "Ошибка аутентификации"
-                    },
-                    "422": {
-                        "description": "Ошибки валидации"
-                    },
-                    "500": {
-                        "description": "Ошибка сервера"
                     }
                 },
                 "security": [
@@ -1631,6 +1707,17 @@
                     "Manager",
                     "Admin"
                 ]
+            }
+        },
+        "responses": {
+            "401": {
+                "description": "Ошибка аутентификации"
+            },
+            "422": {
+                "description": "Ошибки валидации"
+            },
+            "500": {
+                "description": "Ошибка сервера"
             }
         }
     }

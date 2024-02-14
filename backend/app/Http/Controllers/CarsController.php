@@ -64,6 +64,36 @@ class CarsController extends Controller
      *                 @OA\Property(property="images", type="array", @OA\Items(type="string"), description="Ссылки на изображения"),
      *                 @OA\Property(property="сar_class", type="string", description="Класс тарифа",ref="#/components/schemas/CarClass"),
      *                 @OA\Property(property="park_name", type="string", description="Название парка"),
+     *                 @OA\Property(property="working_hours", type="object", description="Расписание работы парка",
+     *                      @OA\Property(property="friday", type="object",
+     *                              @OA\Property(property="end", type="string"),
+     *                              @OA\Property(property="start", type="string")
+     *                                            ),
+     *                      @OA\Property(property="monday", type="object",
+     *                              @OA\Property(property="end", type="string"),
+     *                              @OA\Property(property="start", type="string")
+     *                                            ),
+     *                      @OA\Property(property="sunday", type="object",
+     *                              @OA\Property(property="end", type="string"),
+     *                              @OA\Property(property="start", type="string")),
+     *                      @OA\Property(property="tuesday", type="object",
+     *                              @OA\Property(property="end", type="string"),
+     *                              @OA\Property(property="start", type="string")
+     *                                            ),
+     *                      @OA\Property(property="saturday", type="object",
+     *                              @OA\Property(property="end", type="string"),
+     *                              @OA\Property(property="start", type="string")
+     *                                            ),
+     *                      @OA\Property(property="thursday", type="object",
+     *                              @OA\Property(property="end", type="string"),
+     *                              @OA\Property(property="start", type="string")
+     *                                            ),
+     *                      @OA\Property(property="wednesday", type="object",
+     *                              @OA\Property(property="end", type="string"),
+     *                              @OA\Property(property="start", type="string")
+     *                                            )
+     *                                        ),
+     *                               ),
      *                 @OA\Property(property="about", type="string", description="Описание парка"),
      *                 @OA\Property(property="phone", type="string", description="Телефон парка"),
      *                 @OA\Property(property="commission", type="number", description="Комиссия"),
@@ -230,7 +260,7 @@ if (($carClassValues) > 0) {
                     $query->select('id', 'daily_amount', 'non_working_days', 'working_days','rent_term_id');
                 },
                 'division.park' => function($query) {
-                    $query->select('id', 'park_name','commission','self_employed','phone', 'about');
+                    $query->select('id', 'park_name','commission','self_employed','phone', 'about','working_hours');
                 },
                 'division' => function($query) {
                     $query->select('id', 'coords', 'address', 'name','park_id','city_id');
@@ -269,6 +299,7 @@ if (($carClassValues) > 0) {
             $phone = $car['division']['park']['phone'];
             $about = $car['division']['park']['about'];
             $selfEmployed = $car['division']['park']['self_employed'];
+            $workingHours = json_decode($car['division']['park']['working_hours'], true);
             if(isset($car['division']['park']['park_name'])) {
                 $parkName = $car['division']['park']['park_name'];
             } else {
@@ -278,7 +309,8 @@ if (($carClassValues) > 0) {
 
             $car->city= $city;
             $car->CarClass= $end;
-            $car->park_name= $parkName;
+            $car->CarClass= $end;
+            $car->working_hours= $workingHours;
             $car->phone= $phone;
             $car->self_employed= $selfEmployed;
             $car->about= $about;
