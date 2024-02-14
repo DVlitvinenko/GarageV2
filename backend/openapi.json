@@ -1096,6 +1096,10 @@
                                         "description": "Название города",
                                         "type": "string"
                                     },
+                                    "comission": {
+                                        "description": "Комиссия парка",
+                                        "type": "number"
+                                    },
                                     "fuel_type": {
                                         "$ref": "#/components/schemas/FuelType"
                                     },
