@@ -40,7 +40,7 @@ class CarsController extends Controller
      *             @OA\Property(property="offset", type="integer", description="Смещение (начальная позиция) для выборки"),
      *             @OA\Property(property="limit", type="integer", description="Максимальное количество записей для выборки"),
      *             @OA\Property(property="city", type="string", description="Название города"),
-     *             @OA\Property(property="comission", type="number", description="Комиссия парка"),
+     *             @OA\Property(property="commission", type="number", description="Комиссия парка"),
      *             @OA\Property(property="fuel_type", type="string", description="Тип топлива",ref="#/components/schemas/FuelType"),
      *             @OA\Property(property="transmission_type", type="string", description="Тип трансмиссии",ref="#/components/schemas/TransmissionType"),
      *             @OA\Property(property="brand", type="array", description="Марка автомобиля",@OA\Items()),
@@ -132,7 +132,7 @@ if (($carClassValues) > 0) {
             $carClass = $translatedValues;
             $selfEmployed = $request->self_employed;
             $isBuyoutPossible = $request->is_buyout_possible;
-            $comission = $request->comission;
+            $commission = $request->commission;
 
             $carsQuery = Car::query()->where('status','!=',0)->doesntHave('booking')->where('rent_term_id','!=',null)->where('price','!=',null)
             ->whereHas('division', function($query) use ($cityId) {
@@ -206,9 +206,9 @@ if (($carClassValues) > 0) {
                     $query->where('self_employed', $selfEmployed);
                 });
             }
-            if ($comission) {
-                $carsQuery->whereHas('division.park', function($query) use ($comission) {
-                    $query->where('comission','<=', $comission);
+            if ($commission) {
+                $carsQuery->whereHas('division.park', function($query) use ($commission) {
+                    $query->where('commission','<=', $commission);
                 });
             }
             if ($isBuyoutPossible) {
