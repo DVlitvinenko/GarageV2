@@ -1157,7 +1157,10 @@
                         "description": "Класс автомобиля (1 - Эконом, 2 - Комфорт, 3 - Комфорт+, 4 - Бизнес)",
                         "required": false,
                         "schema": {
-                            "$ref": "#/components/schemas/CarClass"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/CarClass"
+                            }
                         }
                     }
                 ],

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('tariffs', function (Blueprint $table) {
             $table->id();
-            $table->string('class');
+            $table->integer('class');
             $table->unsignedBigInteger('park_id');
             $table->unsignedBigInteger('city_id');
             $table->string('criminal_ids');

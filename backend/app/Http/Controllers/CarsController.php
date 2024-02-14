@@ -69,7 +69,7 @@ class CarsController extends Controller
      *         description="Тип трансмиссии",
      *         required=false,
      *     @OA\Schema(
-     *         ref="#/components/schemas/TransmissionType"
+     *         ref="#/components/schemas/TransmissionType",
      *     )),
      *     @OA\Parameter(
      *         name="brand",
@@ -97,7 +97,9 @@ class CarsController extends Controller
      *         in="query",
      *         description="Класс автомобиля (1 - Эконом, 2 - Комфорт, 3 - Комфорт+, 4 - Бизнес)",
      *         required=false,
-     *     @OA\Schema(ref="#/components/schemas/CarClass"
+     *     @OA\Schema(
+     *  type="array",@OA\Items(
+     * ref="#/components/schemas/CarClass")
      *     )),
      *     @OA\Response(
      *         response="200",
@@ -162,7 +164,16 @@ class CarsController extends Controller
 
             $brand = $request->brand;
             $model = $request->model;
-            $carClass = $request->car_class?CarClass::{$request->car_class}->value:null;
+
+            $carClassValues = $request->car_class;
+            $translatedValues = [];
+
+            foreach ($carClassValues as $key) {
+                $keyNew = CarClass::{$key}->value;
+                    $translatedValues[$key] = $keyNew;
+            }
+            $translatedValues= array_values($translatedValues);
+            $carClass = $translatedValues;
             $selfEmployed = $request->self_employed;
             $isBuyoutPossible = $request->is_buyout_possible;
             $comission = $request->comission;
@@ -219,8 +230,10 @@ class CarsController extends Controller
                 $carsQuery->where('model', 'like', '%' . $model . '%');
             }
 
-            if ($carClass) {
-                $carsQuery->where('car_class', $carClass);
+            if (count($carClass) > 0) {
+            $carsQuery->whereHas('tariff', function($query) use ($carClass) {
+                    $query->whereIn('class', $carClass);
+                });
             }
             if ($selfEmployed) {
                 $carsQuery->whereHas('division.park', function($query) use ($selfEmployed) {
@@ -283,8 +296,8 @@ class CarsController extends Controller
             $car['images'] = json_decode($car['images']);
             $car['fuel_type'] = FuelType::from($car['fuel_type'])->name;
             $car['transmission_type'] = TransmissionType::from($car['transmission_type'])->name;
-            $end =$this->tarifEng($car['tariff']['class']);
-            $car['tariff']['class'] =  $end;
+            $classCar = $car['tariff']['class'];
+            $end = CarClass::from($classCar)->name;
             $parkName = $car['division']['park']['park_name'];
             $city = $car['division']['city']['name'];
             unset(

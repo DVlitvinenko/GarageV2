@@ -643,7 +643,7 @@ export class Client {
      * @param car_class (optional) Класс автомобиля (1 - Эконом, 2 - Комфорт, 3 - Комфорт+, 4 - Бизнес)
      * @return Успешный ответ
      */
-    searchCars(offset: number, limit: number, city: string, fuel_type: FuelType | undefined, transmission_type: TransmissionType | undefined, brand: string | undefined, sorting: string | undefined, model: string | undefined, car_class: CarClass | undefined): Promise<Anonymous33> {
+    searchCars(offset: number, limit: number, city: string, fuel_type: FuelType | undefined, transmission_type: TransmissionType | undefined, brand: string | undefined, sorting: string | undefined, model: string | undefined, car_class: CarClass[] | undefined): Promise<Anonymous33> {
         let url_ = this.baseUrl + "/cars/search?";
         if (offset === undefined || offset === null)
             throw new Error("The parameter 'offset' must be defined and cannot be null.");
@@ -680,7 +680,7 @@ export class Client {
         if (car_class === null)
             throw new Error("The parameter 'car_class' cannot be null.");
         else if (car_class !== undefined)
-            url_ += "car_class=" + encodeURIComponent("" + car_class) + "&";
+            car_class && car_class.forEach(item => { url_ += "car_class=" + encodeURIComponent("" + item) + "&"; });
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
