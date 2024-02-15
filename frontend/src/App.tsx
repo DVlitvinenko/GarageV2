@@ -11,6 +11,7 @@ import { userAtom } from "./atoms";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTaxi, faUser } from "@fortawesome/free-solid-svg-icons";
 import { User } from "./api-client";
+import { CityPicker } from "./CityPicker";
 
 function App() {
   const [user, setUser] = useRecoilState(userAtom);
@@ -38,8 +39,10 @@ function App() {
           <img className="w-24 mb-2" src={logo} alt="logo" />
         </a>
         <Menu user={user} />
-        <span className="font-bold text-md text-gray">Москва</span>
+        <span className="font-bold text-md text-gray"></span>
+        <CityPicker />
       </div>
+      
       <Routes>
         <Route path="/" element={<Finder />} />
         <Route path="account" element={<Account user={user} />} />
