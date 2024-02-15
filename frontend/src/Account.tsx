@@ -142,7 +142,7 @@ export const Account = ({ user }: { user: User }) => {
           return (
             <div
               key={type}
-              className="text-center my-4 p-4 shadow rounded-lg bg-slate-300"
+              className="text-center my-4 p-4 shadow rounded-lg"
             >
               <p className="">{title}</p>
               <img className="my-8 mx-auto" src={actualUrl} />
