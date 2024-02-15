@@ -39,7 +39,7 @@ import {
 } from "@/lib/utils";
 import { useDebouncedCallback } from "use-debounce";
 
-const DEFAULT_COMMISSION_PERCENTAGE = 4;
+const DEFAULT_COMMISSION_PERCENTAGE = 0;
 
 export const Finder = () => {
   const [filters, setFilters] = useState<{
