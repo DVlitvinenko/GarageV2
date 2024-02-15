@@ -10,6 +10,7 @@ import { useRecoilState } from "recoil";
 import { userAtom } from "./atoms";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTaxi, faUser } from "@fortawesome/free-solid-svg-icons";
+import { User } from "./api-client";
 
 function App() {
   const [user, setUser] = useRecoilState(userAtom);
@@ -52,7 +53,7 @@ function App() {
 
 export default App;
 
-const Menu = ({ user }) => (
+const Menu = ({ user }: { user: User }) => (
   <div className="flex mx-auto cursor-pointer justify-evenly w-60">
     <Link className="hover:text-sky-400" to="/">
       <FontAwesomeIcon icon={faTaxi} />
