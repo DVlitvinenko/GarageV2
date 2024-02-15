@@ -70,7 +70,7 @@ export const Card = ({ car }: { car: Cars2 }) => {
             </Badge>
           </div>
 
-          {car.self_employed && (
+          {!!car.self_employed && (
             <Badge variant="outline">Для самозанятых</Badge>
           )}
           {!!car.rent_term?.is_buyout_possible && (

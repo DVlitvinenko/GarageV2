@@ -11,7 +11,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet"
+} from "@/components/ui/sheet";
 import { useEffect, useState } from "react";
 import {
   Body9,
@@ -76,19 +76,6 @@ export const Finder = () => {
 
   useEffect(() => {
     const getCars = async () => {
-      // const data = await client.searchCars(
-      //   0,
-      //   filters.city,
-      //   "BMW"
-      //   // 50,
-      //   // filters.fuelType || undefined,
-      //   // filters.transmissionType || undefined,
-      //   // filters.brands[0],
-      //   // undefined,
-      //   // undefined,
-      //   // filters.carClass[0]
-      // );
-
       const data = await client.searchCars(
         new Body9({
           brand: filters.brands,
@@ -111,16 +98,9 @@ export const Finder = () => {
     getCars();
   }, [filters]);
 
-  const navigate = useNavigate();
-
-  const debouncedCommission = useDebouncedCallback(
-    // function
-    (value) => {
-      setFilters({ ...filters, commission: value });
-    },
-    // delay in ms
-    300
-  );
+  const debouncedCommission = useDebouncedCallback((value) => {
+    setFilters({ ...filters, commission: value });
+  }, 300);
 
   return (
     <>
@@ -192,45 +172,33 @@ export const Finder = () => {
               <DropdownMenuItem>Geely</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu> */}
-
-<Sheet>
-  <SheetTrigger>Open</SheetTrigger>
-  <SheetContent className="overflow-y-auto">
-    <SheetHeader>
-      <SheetTitle>Are you absolutely sure?</SheetTitle>
-      <SheetDescription>
-        This action cannot be undone. This will permanently delete your account
-        and remove your data from our servers.
-      </SheetDescription>
-    </SheetHeader>
-
-
-    This action cannot be undone. This will permanently delete your account
-        and remove your data from our servers.
-
-        This action cannot be undone. This will permanently delete your account
-        and remove your data from our servers.
-    This action cannot be undone. This will permanently delete your account
-        and remove your data from our servers.
-
-        This action cannot be undone. This will permanently delete your account
-        and remove your data from our servers.
-
-
-    This action cannot be undone. This will permanently delete your account
-        and remove your data from our servers.
-
-        This action cannot be undone. This will permanently delete your account
-        and remove your data from our servers.
-
-
-    This action cannot be undone. This will permanently delete your account
-        and remove your data from our servers.
-
-        This action cannot be undone. This will permanently delete your account
-        and remove your data from our servers.
-  </SheetContent>
-</Sheet>
+          {/* 
+          <Sheet>
+            <SheetTrigger>Open</SheetTrigger>
+            <SheetContent className="overflow-y-auto">
+              <SheetHeader>
+                <SheetTitle>Are you absolutely sure?</SheetTitle>
+                <SheetDescription>
+                  This action cannot be undone. This will permanently delete
+                  your account and remove your data from our servers.
+                </SheetDescription>
+              </SheetHeader>
+              This action cannot be undone. This will permanently delete your
+              account and remove your data from our servers. This action cannot
+              be undone. This will permanently delete your account and remove
+              your data from our servers. This action cannot be undone. This
+              will permanently delete your account and remove your data from our
+              servers. This action cannot be undone. This will permanently
+              delete your account and remove your data from our servers. This
+              action cannot be undone. This will permanently delete your account
+              and remove your data from our servers. This action cannot be
+              undone. This will permanently delete your account and remove your
+              data from our servers. This action cannot be undone. This will
+              permanently delete your account and remove your data from our
+              servers. This action cannot be undone. This will permanently
+              delete your account and remove your data from our servers.
+            </SheetContent>
+          </Sheet> */}
 
           <Dialog>
             <DialogTrigger asChild>
@@ -323,32 +291,6 @@ export const Finder = () => {
               </SelectItem>
             </SelectContent>
           </Select>
-          {/* <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline">
-                {filters.fuelType || "Любой тип топлива"}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              {[
-                [FuelType.Gasoline, "Бензин"],
-                [FuelType.Gas, "Газ"],
-                [undefined, "Любой тип топлива"],
-              ].map((x) => {
-                const [fuelType, title] = x;
-
-                return (
-                  <DropdownMenuItem key={title}
-                    onClick={() =>
-                      setFilters({ ...filters, fuelType })
-                    }
-                  >
-                    {title}
-                  </DropdownMenuItem>
-                );
-              })}
-            </DropdownMenuContent>
-          </DropdownMenu> */}
         </div>
 
         <div className="my-4 space-y-2 mb-4 border-b pb-8 border-gray/20">
