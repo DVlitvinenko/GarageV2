@@ -106,7 +106,7 @@ export const Finder = () => {
     <>
       {/* <div onClick={() => navigate("login/driver")} className="fixed top-5 right-5">Войти</div> */}
       <div className="">
-        <div className="mx-auto flex my-2 justify-between h-24">
+        <div className="flex justify-between h-24 mx-auto my-2">
           {[
             [CarClass.Economy, econom, "Эконом"],
             [CarClass.Comfort, comfort, "Комфорт"],
@@ -160,7 +160,7 @@ export const Finder = () => {
             <DropdownMenuItem>Сначала дорогие</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu> */}
-        <div className="flex flex-col space-y-4 justify-between my-4">
+        <div className="flex flex-col justify-between my-4 space-y-4">
           {/* <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline">Марка авто</Button>
@@ -215,7 +215,7 @@ export const Finder = () => {
                 {/* <DialogDescription>DialogDescription</DialogDescription> */}
               </DialogHeader>
               <div className="grid grid-cols-3 gap-4 py-4 h-[300px] overflow-y-scroll">
-                {["Audi", "BWM"].map((x) => {
+                {["Audi", "BMW", "Kia", "Hyundai"].map((x) => {
                   const title = x;
                   const isActive = filters.brands.some((b) => b === title);
 
@@ -252,7 +252,7 @@ export const Finder = () => {
               setFilters({ ...filters, fuelType: e as FuelType })
             }
           >
-            <SelectTrigger className=" ">
+            <SelectTrigger className="">
               <SelectValue placeholder={getFuelTypeDisplayName(undefined)} />
             </SelectTrigger>
             <SelectContent>
@@ -276,7 +276,7 @@ export const Finder = () => {
               });
             }}
           >
-            <SelectTrigger className=" ">
+            <SelectTrigger className="">
               <SelectValue placeholder="Любой тип трансмиссии" />
             </SelectTrigger>
             <SelectContent>
@@ -293,7 +293,7 @@ export const Finder = () => {
           </Select>
         </div>
 
-        <div className="my-4 space-y-2 mb-4 border-b pb-8 border-gray/20">
+        <div className="pb-8 my-4 mb-4 space-y-2 border-b border-gray/20">
           <Label>Комиссия парка не выше {filters.commission}%</Label>
           <Slider
             onValueChange={(e) => debouncedCommission(e[0])}
