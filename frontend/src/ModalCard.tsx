@@ -13,9 +13,22 @@ import {
   getFuelTypeDisplayName,
   getTransmissionDisplayName,
 } from "@/lib/utils";
+import { userAtom } from "./atoms";
+import { useNavigate } from "react-router-dom";
+import { useRecoilValue } from "recoil";
 
 export const ModalCard = ({ car }: { car: Cars2 }) => {
   const [phoneRequested, setPhoneRequested] = useState(false);
+
+  const user = useRecoilValue(userAtom);
+
+  const navigate = useNavigate();
+
+  const book = () => {
+    if (!user) {
+      navigate("login/driver");
+    }
+  };
 
   const currentSchema = car.rent_term?.schemas![0]!;
 
@@ -24,7 +37,6 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
       <img className="object-cover w-full rounded-t-xl" src={car.images![0]} />
       <div className="space-y-2">
         <h1 className="text-center my-4">{`${car.brand} ${car.model} ${car.year_produced}`}</h1>
-
 
         <div className=" flex flex-col justify-center space-y-2 h-32">
           {!phoneRequested && (
@@ -41,7 +53,9 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
               <a href={"tel:" + car.phone}>{car.phone}</a>
             </Button>
           )}
-          <Button size={"lg"}>Забронировать</Button>
+          <Button onClick={book} size={"lg"}>
+            Забронировать
+          </Button>
         </div>
 
         <p className="text-base font-semibold text-gray">
@@ -63,7 +77,7 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
               {x.end}
             </div>
           ))}
-        </div> 
+        </div>
         <Collapsible>
           <CollapsibleTrigger>О парке ▼</CollapsibleTrigger>
           <CollapsibleContent>
