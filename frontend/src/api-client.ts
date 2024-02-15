@@ -688,7 +688,7 @@ export class Client {
      * Бронирование автомобиля
      * @return Успешное бронирование
      */
-    booking(body: Body10): Promise<Anonymous34> {
+    booking(body: Body10): Promise<number> {
         let url_ = this.baseUrl + "/auth/cars/booking";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -699,7 +699,7 @@ export class Client {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Accept": "application/json"
+                "Accept": "text/plain"
             }
         };
 
@@ -708,43 +708,30 @@ export class Client {
         });
     }
 
-    protected processBooking(response: Response): Promise<Anonymous34> {
+    protected processBooking(response: Response): Promise<number> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Anonymous34.fromJS(resultData200);
+            let resultData200 = _responseText === "" ? null : _responseText;
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
             return result200;
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            let result403: any = null;
-            let resultData403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result403 = Anonymous35.fromJS(resultData403);
-            return throwException("\u041f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c \u043d\u0435 \u0437\u0430\u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0438\u0440\u043e\u0432\u0430\u043d \u0438\u043b\u0438 \u043d\u0435 \u0432\u0435\u0440\u0438\u0444\u0438\u0446\u0438\u0440\u043e\u0432\u0430\u043d", status, _responseText, _headers, result403);
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = Anonymous36.fromJS(resultData404);
-            return throwException("\u041c\u0430\u0448\u0438\u043d\u0430 \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u0430", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<Anonymous34>(null as any);
+        return Promise.resolve<number>(null as any);
     }
 
     /**
      * Отмена бронирования автомобиля (аутентифицированный запрос)
      * @return Успешный ответ
      */
-    cancelBooking(body: Body11): Promise<Anonymous37> {
+    cancelBooking(body: Body11): Promise<Anonymous34> {
         let url_ = this.baseUrl + "/auth/cars/cancel-booking";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -764,49 +751,49 @@ export class Client {
         });
     }
 
-    protected processCancelBooking(response: Response): Promise<Anonymous37> {
+    protected processCancelBooking(response: Response): Promise<Anonymous34> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Anonymous37.fromJS(resultData200);
+            result200 = Anonymous34.fromJS(resultData200);
             return result200;
             });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
             let result401: any = null;
             let resultData401 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result401 = Anonymous38.fromJS(resultData401);
+            result401 = Anonymous35.fromJS(resultData401);
             return throwException("\u041e\u0448\u0438\u0431\u043a\u0430 \u0430\u0443\u0442\u0435\u043d\u0442\u0438\u0444\u0438\u043a\u0430\u0446\u0438\u0438", status, _responseText, _headers, result401);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
             let result403: any = null;
             let resultData403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result403 = Anonymous39.fromJS(resultData403);
+            result403 = Anonymous36.fromJS(resultData403);
             return throwException("\u041e\u0448\u0438\u0431\u043a\u0430 \u0434\u043e\u0441\u0442\u0443\u043f\u0430", status, _responseText, _headers, result403);
             });
         } else if (status === 404) {
             return response.text().then((_responseText) => {
             let result404: any = null;
             let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = Anonymous40.fromJS(resultData404);
+            result404 = Anonymous37.fromJS(resultData404);
             return throwException("\u041c\u0430\u0448\u0438\u043d\u0430 \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u0430", status, _responseText, _headers, result404);
             });
         } else if (status === 409) {
             return response.text().then((_responseText) => {
             let result409: any = null;
             let resultData409 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result409 = Anonymous41.fromJS(resultData409);
+            result409 = Anonymous38.fromJS(resultData409);
             return throwException("\u041c\u0430\u0448\u0438\u043d\u0430 \u043d\u0435 \u0437\u0430\u0431\u0440\u043e\u043d\u0438\u0440\u043e\u0432\u0430\u043d\u0430", status, _responseText, _headers, result409);
             });
         } else if (status === 500) {
             return response.text().then((_responseText) => {
             let result500: any = null;
             let resultData500 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result500 = Anonymous42.fromJS(resultData500);
+            result500 = Anonymous39.fromJS(resultData500);
             return throwException("\u041e\u0448\u0438\u0431\u043a\u0430 \u0441\u0435\u0440\u0432\u0435\u0440\u0430", status, _responseText, _headers, result500);
             });
         } else if (status !== 200 && status !== 204) {
@@ -814,7 +801,7 @@ export class Client {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<Anonymous37>(null as any);
+        return Promise.resolve<Anonymous34>(null as any);
     }
 
     /**
@@ -823,7 +810,7 @@ export class Client {
      * @param driverDocumentType (optional) 
      * @return Файл успешно загружен
      */
-    uploadFile(file: FileParameter | undefined, driverDocumentType: DriverDocumentType | undefined): Promise<Anonymous43> {
+    uploadFile(file: FileParameter | undefined, driverDocumentType: DriverDocumentType | undefined): Promise<Anonymous40> {
         let url_ = this.baseUrl + "/driver/upload-file";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -850,21 +837,21 @@ export class Client {
         });
     }
 
-    protected processUploadFile(response: Response): Promise<Anonymous43> {
+    protected processUploadFile(response: Response): Promise<Anonymous40> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Anonymous43.fromJS(resultData200);
+            result200 = Anonymous40.fromJS(resultData200);
             return result200;
             });
         } else if (status === 400) {
             return response.text().then((_responseText) => {
             let result400: any = null;
             let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result400 = Anonymous44.fromJS(resultData400);
+            result400 = Anonymous41.fromJS(resultData400);
             return throwException("\u041d\u0435\u0432\u0435\u0440\u043d\u044b\u0439 \u0437\u0430\u043f\u0440\u043e\u0441", status, _responseText, _headers, result400);
             });
         } else if (status !== 200 && status !== 204) {
@@ -872,7 +859,7 @@ export class Client {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<Anonymous43>(null as any);
+        return Promise.resolve<Anonymous40>(null as any);
     }
 }
 
@@ -3294,6 +3281,7 @@ export interface IAnonymous33 {
 }
 
 export class Anonymous34 implements IAnonymous34 {
+    /** Сообщение об успешной отмене бронирования */
     message?: string;
 
     [key: string]: any;
@@ -3336,12 +3324,14 @@ export class Anonymous34 implements IAnonymous34 {
 }
 
 export interface IAnonymous34 {
+    /** Сообщение об успешной отмене бронирования */
     message?: string;
 
     [key: string]: any;
 }
 
 export class Anonymous35 implements IAnonymous35 {
+    /** Требуется аутентификация для выполнения запроса */
     message?: string;
 
     [key: string]: any;
@@ -3384,12 +3374,14 @@ export class Anonymous35 implements IAnonymous35 {
 }
 
 export interface IAnonymous35 {
+    /** Требуется аутентификация для выполнения запроса */
     message?: string;
 
     [key: string]: any;
 }
 
 export class Anonymous36 implements IAnonymous36 {
+    /** У вас нет разрешения на выполнение этого действия */
     message?: string;
 
     [key: string]: any;
@@ -3432,13 +3424,14 @@ export class Anonymous36 implements IAnonymous36 {
 }
 
 export interface IAnonymous36 {
+    /** У вас нет разрешения на выполнение этого действия */
     message?: string;
 
     [key: string]: any;
 }
 
 export class Anonymous37 implements IAnonymous37 {
-    /** Сообщение об успешной отмене бронирования */
+    /** Автомобиль с указанным идентификатором не найден */
     message?: string;
 
     [key: string]: any;
@@ -3481,14 +3474,14 @@ export class Anonymous37 implements IAnonymous37 {
 }
 
 export interface IAnonymous37 {
-    /** Сообщение об успешной отмене бронирования */
+    /** Автомобиль с указанным идентификатором не найден */
     message?: string;
 
     [key: string]: any;
 }
 
 export class Anonymous38 implements IAnonymous38 {
-    /** Требуется аутентификация для выполнения запроса */
+    /** Машина не забронирована */
     message?: string;
 
     [key: string]: any;
@@ -3531,14 +3524,14 @@ export class Anonymous38 implements IAnonymous38 {
 }
 
 export interface IAnonymous38 {
-    /** Требуется аутентификация для выполнения запроса */
+    /** Машина не забронирована */
     message?: string;
 
     [key: string]: any;
 }
 
 export class Anonymous39 implements IAnonymous39 {
-    /** У вас нет разрешения на выполнение этого действия */
+    /** Внутренняя ошибка сервера */
     message?: string;
 
     [key: string]: any;
@@ -3581,15 +3574,14 @@ export class Anonymous39 implements IAnonymous39 {
 }
 
 export interface IAnonymous39 {
-    /** У вас нет разрешения на выполнение этого действия */
+    /** Внутренняя ошибка сервера */
     message?: string;
 
     [key: string]: any;
 }
 
 export class Anonymous40 implements IAnonymous40 {
-    /** Автомобиль с указанным идентификатором не найден */
-    message?: string;
+    url?: string;
 
     [key: string]: any;
 
@@ -3608,7 +3600,7 @@ export class Anonymous40 implements IAnonymous40 {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
-            this.message = _data["message"];
+            this.url = _data["url"];
         }
     }
 
@@ -3625,21 +3617,19 @@ export class Anonymous40 implements IAnonymous40 {
             if (this.hasOwnProperty(property))
                 data[property] = this[property];
         }
-        data["message"] = this.message;
+        data["url"] = this.url;
         return data;
     }
 }
 
 export interface IAnonymous40 {
-    /** Автомобиль с указанным идентификатором не найден */
-    message?: string;
+    url?: string;
 
     [key: string]: any;
 }
 
 export class Anonymous41 implements IAnonymous41 {
-    /** Машина не забронирована */
-    message?: string;
+    error?: string;
 
     [key: string]: any;
 
@@ -3658,7 +3648,7 @@ export class Anonymous41 implements IAnonymous41 {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
-            this.message = _data["message"];
+            this.error = _data["error"];
         }
     }
 
@@ -3675,159 +3665,12 @@ export class Anonymous41 implements IAnonymous41 {
             if (this.hasOwnProperty(property))
                 data[property] = this[property];
         }
-        data["message"] = this.message;
-        return data;
-    }
-}
-
-export interface IAnonymous41 {
-    /** Машина не забронирована */
-    message?: string;
-
-    [key: string]: any;
-}
-
-export class Anonymous42 implements IAnonymous42 {
-    /** Внутренняя ошибка сервера */
-    message?: string;
-
-    [key: string]: any;
-
-    constructor(data?: IAnonymous42) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.message = _data["message"];
-        }
-    }
-
-    static fromJS(data: any): Anonymous42 {
-        data = typeof data === 'object' ? data : {};
-        let result = new Anonymous42();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["message"] = this.message;
-        return data;
-    }
-}
-
-export interface IAnonymous42 {
-    /** Внутренняя ошибка сервера */
-    message?: string;
-
-    [key: string]: any;
-}
-
-export class Anonymous43 implements IAnonymous43 {
-    url?: string;
-
-    [key: string]: any;
-
-    constructor(data?: IAnonymous43) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.url = _data["url"];
-        }
-    }
-
-    static fromJS(data: any): Anonymous43 {
-        data = typeof data === 'object' ? data : {};
-        let result = new Anonymous43();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["url"] = this.url;
-        return data;
-    }
-}
-
-export interface IAnonymous43 {
-    url?: string;
-
-    [key: string]: any;
-}
-
-export class Anonymous44 implements IAnonymous44 {
-    error?: string;
-
-    [key: string]: any;
-
-    constructor(data?: IAnonymous44) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.error = _data["error"];
-        }
-    }
-
-    static fromJS(data: any): Anonymous44 {
-        data = typeof data === 'object' ? data : {};
-        let result = new Anonymous44();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
         data["error"] = this.error;
         return data;
     }
 }
 
-export interface IAnonymous44 {
+export interface IAnonymous41 {
     error?: string;
 
     [key: string]: any;

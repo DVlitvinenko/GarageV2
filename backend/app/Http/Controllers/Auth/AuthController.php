@@ -78,6 +78,7 @@ class AuthController extends Controller
      */
     public function GetUser(Request $request)
     {
+
         $user = Auth::guard('sanctum')->user();
         $user->user_type = UserType::from($user->user_type)->name;
         $user->user_status = UserStatus::from($user->user_status)->name;
@@ -97,7 +98,11 @@ class AuthController extends Controller
             $user->city_name = $driver->city->name;
         }
 
+        $booking =  $driver->booking;
+        if ($booking) {
 
+            unset($booking->id, $booking->code, $user->role_id, $user->avatar, $user->email_verified_at, $user->settings, $user->created_at, $user->updated_at);
+        }
         $user->docs = $docs;
 
         unset($user->id, $user->code, $user->role_id, $user->avatar, $user->email_verified_at, $user->settings, $user->created_at, $user->updated_at);
