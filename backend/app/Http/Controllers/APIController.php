@@ -5,17 +5,21 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Park;
 use App\Models\Division;
+use App\Models\Driver;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Car;
 use App\Models\City;
 use App\Models\Tariff;
 use App\Models\RentTerm;
+use App\Models\Booking;
+use App\Enums\BookingStatus;
 use App\Enums\SuitEnum;
+use App\Enums\CarStatus;
 use Illuminate\Support\Str;
 use GuzzleHttp\Client;
 use App\Http\Controllers\Enums;
-
+use Carbon\Carbon;
 use App\Http\Controllers\ParserController;
 use App\Models\Schema;
 use Illuminate\Database\Eloquent\Scope;
@@ -409,13 +413,15 @@ class APIController extends Controller
      *     path="/URL_АДРЕС_ПАРКА/cars/outbound/status",
      *     summary="Изменить статус бронирования автомобиля, ОТ МОЕГО ГАРАЖА",
      *     tags={"API"},
-     *     operationId="changedBookingStatus",
+     *     operationId="notifyParkOnBookingStatusChanged",
      *     security={{"api_key": {}}},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
      *             @OA\Property(property="id", type="string", description="VIN-номер автомобиля"),
-     *             @OA\Property(property="is_booked", type="integer", description="Статус бронирования. 1 - забронировано, 0 - бронь отменена")
+     *             @OA\Property(property="is_booked", type="integer", description="Статус бронирования. 1 - забронировано, 0 - бронь отменена"),
+     *             @OA\Property(property="driver_name", type="string", description="ФИО водителя"),
+     *             @OA\Property(property="phone", type="string", description="Телефон водителя")
      *         )
      *     ),
      *     @OA\Response(
@@ -432,36 +438,34 @@ class APIController extends Controller
      * @return \Illuminate\Http\JsonResponse JSON-ответ с результатом изменения статуса бронирования
      */
 
-    public function changedBookingStatus($car)
+    public function notifyParkOnBookingStatusChanged($booking_id, $is_booked)
     {
-        $booking = $car->booking_id !== null ? false : true;
-        $park = Park::where('user_id', $car->seller_id)->first();
-        if (!$park) {
-            // Обработка ошибки, если парк не найден
-            return;
-        }
+        $booking = Booking::where('id', $booking_id)->first();
+        $car = $booking->car;
+        $user = $booking->driver->user;
+        $park = $car->division->park;
         $apiKey = $park->API_key;
-        $url = $park->url;
-        $carId = $car->id;
-        if ($url !== null) {
-            $client = new Client();
-            $response = $client->put($url, [
-                'headers' => [
-                    'X-API-Key' => $apiKey,
-                ],
-                'json' => [
-                    'is_booked' => $booking,
-                    'car_id' => $carId,
-                ],
-                'http_errors' => false, // Отключаем обработку ошибок
-            ]);
-            $statusCode = $response->getStatusCode();
-            if ($statusCode === 204) {
-                // Успешная передача
-            } else {
-                // Обработка ошибки, если необходимо
-            }
-        }
+        $url = $park->url; 
+
+        // if ($url !== null) {
+        //     $client = new Client();
+        //     $response = $client->put($url, [
+        //         'headers' => [
+        //             'X-API-Key' => $apiKey,
+        //         ],
+        //         'json' => [
+        //             'is_booked' => $is_booked,
+        //             'car_id' =>  $car->car_id,
+        //             'driver_name' => $user->name,
+        //             'phone' => $user->phone,
+        //         ],
+        //         'http_errors' => false,
+        //     ]);
+        //     $statusCode = $response->getStatusCode();
+        //     if ($statusCode === 204) {
+        //     } else {
+        //     }
+        // }
     }
 
     /**
@@ -735,5 +739,151 @@ class APIController extends Controller
             $division->save();
         }
         return  $division;
+    }
+
+    /**
+     * Обновление условия аренды для автомобиля
+     *
+     * Этот метод позволяет обновлять статус брони для конкретного автомобиля по его VIN-номеру.
+     *
+     * @OA\Put(
+     *     path="/cars/booking",
+     *     operationId="updateCarBookingStatus",
+     *     summary="Обновление статуса брони автомобиля",
+     *     tags={"API"},
+     *     security={{"api_key": {}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="id", type="string", description="VIN-номер автомобиля"),
+     *             @OA\Property(property="status", type="string", description="Статус бронирования: Booked - авто забронировано, UnBooked - бронь снята и авто может быть доступно к бронированию, RentStart - автомобиль выдан водителю в аренду, RentOver - аренда авто закончена и авто может быть доступно к бронированию", ref="#/components/schemas/BookingStatus"),
+     *             @OA\Property(property="driver_name", type="string", description="ФИО водителя"),
+     *             @OA\Property(property="phone", type="string", description="Телефон водителя")
+     * )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Успешное обновление статуса брони автомобиля",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="статуса брони автомобиля")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Ошибка аутентификации",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Ошибка аутентификации")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Ошибки валидации",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="errors", type="object", example={
+     *                 "status": {"Поле status обязательно для заполнения и должно быть строкой."},
+     *                 "id": {"Поле id обязательно для заполнения и должно быть строкой."}
+     *             })
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Автомобиль не найден",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Автомобиль не найден или бронирование не найдено")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Ошибка сервера",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Ошибка сервера")
+     *         )
+     *     )
+     * )
+     *
+     * @param \Illuminate\Http\Request $request Объект запроса с данными для обновления условия аренды для автомобиля
+     * @return \Illuminate\Http\JsonResponse JSON-ответ с результатом операции
+     */
+    public function updateCarBookingStatus(Request $request)
+    {
+        $apiKey = $request->header('X-API-Key');
+        $park = Park::where('API_key', $apiKey)->firstOrFail();
+
+        $validator = Validator::make($request->all(), [
+            'status' => 'required|string',
+            'id' => 'required|string',
+            'driver_name' => 'required|string',
+            'phone' => 'required|string',
+        ]);
+
+        $status = BookingStatus::{$request->input('status')}->value;
+        $carId = $request->input('id');
+        $driverName = $request->input('driver_name');
+        $phone = $request->input('phone');
+
+        $car = Car::where('car_id', $carId)
+                ->where('park_id', $park->id)
+                ->with('booking')
+                ->first();
+
+        $user = User::where('phone', $phone)->where('name', $driverName)->first();
+
+        if (!$car) {
+            return response()->json([
+                'message' => 'Автомобиль не найден',
+            ], 404);
+        }
+if ($status == BookingStatus::Booked->value) {
+    $rent_time = 3;
+    $car = Car::where('car_id', $request->id)
+    ->where('status', CarStatus::AvailableForBooking->value)
+    ->whereDoesntHave('booking', function($query) {
+        $query->where('status', 1);
+    })
+    ->with('booking')
+    ->first();
+    if (!$car) {
+        return response()->json(['message' => 'Машина не найдена'], 404);
+    }
+
+    $division = Division::where('id', $car->division_id)->with('park')->first();
+    $driver = Driver::where('user_id', $user->id)->first();
+    $workingHours = json_decode($division->park->working_hours, true);
+    $currentDayOfWeek = Carbon::now()->format('l');
+
+    $currentTime = Carbon::now()->timestamp;
+
+    $endTimeOfWorkDayToday = Carbon::createFromFormat('H:i', $workingHours[strtolower($currentDayOfWeek)][0]['end'], $division->park->timezone)->timestamp;
+    $endTimeOfWorkDayToday -= $rent_time * 3600;
+
+    if ($endTimeOfWorkDayToday < $currentTime) {
+        $nextWorkingDay = Carbon::now()->addDay()->format('l');
+        $startTimeOfWorkDayTomorrow = Carbon::createFromFormat('H:i', $workingHours[strtolower($nextWorkingDay)][0]['start'], $division->park->timezone)->timestamp;
+        $newEndTime = $startTimeOfWorkDayTomorrow + $rent_time * 3600;
+    } else {
+        $remainingTime = $rent_time * 3600;
+        $newEndTime = $currentTime + $remainingTime;
+    }
+
+    $booking = new Booking();
+    $booking->car_id = $car->id;
+    $booking->park_id = $division->park_id;
+    $booking->booked_at = $currentTime;
+    $booking->booked_until = $newEndTime;
+    $booking->status = BookingStatus::Booked->value;
+    $booking->driver_id = $driver->id;
+    $booking->save();
+    return response()->json($newEndTime, 200);
+} else {
+    $booked = $car->booking->where('status', BookingStatus::Booked->value)->first();
+    if (!$booked) {
+        return response()->json([
+            'message' => 'Бронирование со статусом Booked не найдено для данного автомобиля',
+        ], 404);
+    }
+    $booked->status = BookingStatus::UnBooked->value;
+    $booked->save();
+    return response()->json(['message' => 'Статус бронирования успешно изменен'], 200);
+}
     }
 }

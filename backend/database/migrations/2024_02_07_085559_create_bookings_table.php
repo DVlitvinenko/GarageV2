@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('booked_at');
             $table->integer('booked_until');
             $table->unsignedBigInteger('park_id');
+            $table->integer('status');
             $table->timestamps();
 
             $table->foreign('car_id')->references('id')->on('cars')->onDelete('cascade');

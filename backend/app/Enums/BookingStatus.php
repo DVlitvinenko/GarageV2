@@ -8,16 +8,17 @@ use OpenApi\Attributes as OAT;
 
 /**
  * @OA\Schema(
- *   schema="CarStatus",
+ *   schema="BookingStatus",
  *   type="enum",
  *   description="The unique identifier of a product in our catalog"
  * )
  */
 
-enum CarStatus: int
+enum BookingStatus: int
 {
-    case AvailableForBooking = 1;
-    case Hidden = 0;
-    case Booked = 2;
-    case Rented = 3;
+    case Booked = 1;
+    case UnBooked = 2;
+    case BookingTimeOver = 3;
+    case RentOver = 4;
+    case RentStart = 5;
 }

@@ -20,7 +20,8 @@ use App\Enums\CarStatus;
 use App\Http\Controllers\ParserController;
 use App\Enums\CarClass;
 use Carbon\Carbon;
-
+use App\Http\Controllers\APIController;
+use App\Enums\BookingStatus;
 class CarsController extends Controller
 
 {
@@ -395,17 +396,17 @@ if (($carClassValues) > 0) {
         {
             $rent_time = 3;
             $user = Auth::guard('sanctum')->user();
-            if ($user->user_status == UserStatus::Verified->value) {
-                $car = Car::where('id', $request->id)->with('booking')->first();
+            if ($user->user_status !== UserStatus::Verified->value) {return response()->json(['message' => 'Пользователь не зарегистрирован или не верифицирован'], 403);}
+                $car = Car::where('id', $request->id)
+                ->with('booking', 'division', 'division.park')->first();
                 if (!$car) {
                     return response()->json(['message' => 'Машина не найдена'], 404);
                 }
-                if ($car->booking()->count() > 0) {
+                if ($car->status!==CarStatus::AvailableForBooking->value) {
                     return response()->json(['message' => 'Машина уже забронирована'], 409);
                 }
-
-                $division = Division::where('id', $car->division_id)->with('park')->first();
-                $driver = Driver::where('user_id', $user->id)->first();
+                $division = $car->division;
+                $driver = $user->driver;
                 $workingHours = json_decode($division->park->working_hours, true);
                 $currentDayOfWeek = Carbon::now()->format('l');
 
@@ -428,13 +429,12 @@ if (($carClassValues) > 0) {
                 $booking->park_id = $division->park_id;
                 $booking->booked_at = $currentTime;
                 $booking->booked_until = $newEndTime;
+                $booking->status = BookingStatus::Booked->value;
                 $booking->driver_id = $driver->id;
                 $booking->save();
-
+                $api = new APIController;
+                $api->notifyParkOnBookingStatusChanged($booking->id, true);
                 return response()->json($newEndTime, 200);
-            } else {
-                return response()->json(['message' => 'Пользователь не зарегистрирован или не верифицирован'], 403);
-            }
         }
 
     /**
@@ -505,15 +505,24 @@ if (($carClassValues) > 0) {
             'id' => 'required|integer'
         ]);
         $user = Auth::guard('sanctum')->user();
-        $car = Car::where('id', $request->id)->with('booking')->first();
+        $car = Car::where('id', $request->id)
+        ->with(['booking' => function($query) {
+            $query->where('status', BookingStatus::Booked->value);
+        }])
+        ->first();
 
         if (!$car) {
             return response()->json(['message' => 'Машина не найдена'], 404);
         }
-        if ($car->booking()->count() == 0) {
+        $booking = $car->booking->first();
+        if (!$booking) {
             return response()->json(['message' => 'Машина не забронирована'], 409);
         }
-        $car->booking->delete();
+
+        $booking->status = BookingStatus::UnBooked->value;
+        $booking->save();
+        $api = new APIController;
+        $api->notifyParkOnBookingStatusChanged($booking->id, false);
         return response()->json(['message' => 'Бронирование автомобиля успешно отменено'], 200);
     }
     // /**
