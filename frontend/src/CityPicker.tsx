@@ -37,7 +37,7 @@ export function CityPicker() {
           {city}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button> */}
-        <div className="w-48 capitalize text-[10px] font-bold">{city}</div>
+        <div className=" flex items-center w-48 capitalize text-[10px] font-bold justify-end">{city}</div>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
         <Command>
