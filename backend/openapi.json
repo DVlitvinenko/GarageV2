@@ -1344,47 +1344,10 @@
                     "200": {
                         "description": "Успешное бронирование",
                         "content": {
-                            "application/json": {
+                            "text/plain": {
                                 "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Автомобиль успешно забронирован"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "Пользователь не зарегистрирован или не верифицирован",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Пользователь не зарегистрирован или не верифицирован"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Машина не найдена",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Машина не найдена"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "type": "integer",
+                                    "example": "1708006209"
                                 }
                             }
                         }
@@ -1660,6 +1623,40 @@
                     "Manager",
                     "Admin"
                 ]
+            }
+        },
+        "responses": {
+            "403": {
+                "description": "Пользователь не зарегистрирован или не верифицирован",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Пользователь не зарегистрирован или не верифицирован"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "404": {
+                "description": "Машина не найдена",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Машина не найдена"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
             }
         }
     }

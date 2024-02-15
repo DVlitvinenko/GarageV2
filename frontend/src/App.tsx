@@ -10,6 +10,7 @@ import { useRecoilState } from "recoil";
 import { userAtom } from "./atoms";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTaxi, faUser } from "@fortawesome/free-solid-svg-icons";
+import { User } from "./api-client";
 
 function App() {
   const [user, setUser] = useRecoilState(userAtom);
@@ -34,12 +35,11 @@ function App() {
     <div className="max-w-sm p-4 mx-auto">
       <div className="flex justify-between my-0">
         <a>
-          <img className="w-24 mb-2" src={logo} />
+          <img className="w-24 mb-2" src={logo} alt="logo" />
         </a>
+        <Menu user={user} />
         <span className="font-bold text-md text-gray">Москва</span>
       </div>
-
-      {!!user && <Menu />}
       <Routes>
         <Route path="/" element={<Finder />} />
         <Route path="account" element={<Account user={user} />} />
@@ -53,14 +53,12 @@ function App() {
 
 export default App;
 
-const Menu = () => (
-  <div className="flex justify-around mx-auto my-2 mb-12 cursor-pointer w-60">
+const Menu = ({ user }: { user: User }) => (
+  <div className="flex mx-auto cursor-pointer justify-evenly w-60">
     <Link className="hover:text-sky-400" to="/">
-      {/* <img className="object-scale-down w-8 h-8" src={search} /> */}
       <FontAwesomeIcon icon={faTaxi} />
     </Link>
-    <Link className="hover:text-sky-400" to="account">
-      {/* <img className="object-scale-down w-8 h-8" src={account} /> */}
+    <Link className="hover:text-sky-400" to={user ? "account" : "login/driver"}>
       <FontAwesomeIcon icon={faUser} />
     </Link>
   </div>

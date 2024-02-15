@@ -29,4 +29,8 @@ class Driver extends Model
     {
         return $this->hasOne(DriverSpecification::class);
     }
+    public function booking()
+    {
+        return $this->hasMany(Booking::class);
+    }
 }

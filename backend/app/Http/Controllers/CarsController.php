@@ -363,9 +363,14 @@ if (($carClassValues) > 0) {
          *     @OA\Response(
          *         response="200",
          *         description="Успешное бронирование",
-         *         @OA\JsonContent(
-         *             @OA\Property(property="message", type="string", example="Автомобиль успешно забронирован")
+         *         @OA\MediaType(
+         *             mediaType="text/plain",
+         *             @OA\Schema(
+         *                 type="integer",
+         *                 example="1708006209"
+         *             )
          *         )
+         *     ),
          *     ),
          *     @OA\Response(
          *         response="403",
@@ -419,14 +424,14 @@ if (($carClassValues) > 0) {
                 }
 
                 $booking = new Booking();
-                $booking->car_id = $car->id;
+                $booking->car_id = $request->id;
                 $booking->park_id = $division->park_id;
                 $booking->booked_at = $currentTime;
                 $booking->booked_until = $newEndTime;
                 $booking->driver_id = $driver->id;
                 $booking->save();
 
-                return response()->json(['message' => 'Автомобиль успешно забронирован'], 200);
+                return response()->json($newEndTime, 200);
             } else {
                 return response()->json(['message' => 'Пользователь не зарегистрирован или не верифицирован'], 403);
             }
@@ -647,7 +652,7 @@ if (($carClassValues) > 0) {
     //     $car['tariff']['class'] =  $end;
     //     $parkName = $car['division']['park']['park_name'];
     //     $city = $car['division']['city']['name'];
-    //     unset(
+    //     c
     //         $car['division']['park'],
     //         $car['division']['park_id'],
     //         $car['division']['id'],
