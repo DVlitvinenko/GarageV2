@@ -1,14 +1,12 @@
 import { useEffect } from "react";
 import logo from "./assets/logo.png";
 import "./App.css";
-import { Link, Route, Routes, useNavigate } from "react-router-dom";
+import { Link, Route, Routes } from "react-router-dom";
 import { client } from "./backend";
 import { Finder } from "./Finder";
 import { Account } from "./Account";
 import { DriverLogin } from "./DriverLogin";
-import {
-  useRecoilState,
-} from "recoil";
+import { useRecoilState } from "recoil";
 import { userAtom } from "./atoms";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTaxi, faUser } from "@fortawesome/free-solid-svg-icons";
@@ -33,12 +31,12 @@ function App() {
   }, []);
 
   return (
-    <div className="p-4 max-w-sm mx-auto">
+    <div className="max-w-sm p-4 mx-auto">
       <div className="flex justify-between my-0">
         <a>
-          <img className="mb-2 w-24" src={logo} />
+          <img className="w-24 mb-2" src={logo} />
         </a>
-        <span className="text-md font-bold text-gray">Москва</span>
+        <span className="font-bold text-md text-gray">Москва</span>
       </div>
 
       {!!user && <Menu />}
@@ -56,13 +54,13 @@ function App() {
 export default App;
 
 const Menu = () => (
-  <div className="w-60 mx-auto flex justify-around mb-12 cursor-pointer my-2">
+  <div className="flex justify-around mx-auto my-2 mb-12 cursor-pointer w-60">
     <Link className="hover:text-sky-400" to="/">
-      {/* <img className="object-scale-down h-8 w-8" src={search} /> */}
+      {/* <img className="object-scale-down w-8 h-8" src={search} /> */}
       <FontAwesomeIcon icon={faTaxi} />
     </Link>
     <Link className="hover:text-sky-400" to="account">
-      {/* <img className="object-scale-down h-8 w-8" src={account} /> */}
+      {/* <img className="object-scale-down w-8 h-8" src={account} /> */}
       <FontAwesomeIcon icon={faUser} />
     </Link>
   </div>

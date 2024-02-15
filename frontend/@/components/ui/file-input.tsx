@@ -1,5 +1,3 @@
-import * as React from "react";
-
 const FileInput = (props: {
   title: string;
   onChange: (files: FileList) => void;

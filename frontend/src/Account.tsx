@@ -7,14 +7,8 @@ import { Button } from "@/components/ui/button";
 import FileInput from "@/components/ui/file-input";
 import { useState } from "react";
 import { client } from "./backend";
-import { Docs, DriverDocumentType, User, UserStatus } from "./api-client";
-import {
-  RecoilRoot,
-  atom,
-  selector,
-  useSetRecoilState,
-  useRecoilValue,
-} from "recoil";
+import { DriverDocumentType, User, UserStatus } from "./api-client";
+import { useSetRecoilState } from "recoil";
 import { userAtom } from "./atoms";
 
 export const Account = ({ user }: { user: User }) => {
@@ -23,7 +17,7 @@ export const Account = ({ user }: { user: User }) => {
     return <></>;
   }
 
-  const [docs, setDocs] = useState<
+  const [docs] = useState<
     {
       type: DriverDocumentType;
       url?: string;
@@ -68,7 +62,7 @@ export const Account = ({ user }: { user: User }) => {
     file: File,
     documentType: DriverDocumentType
   ) => {
-    const { url } = await client.uploadFile(
+    await client.uploadFile(
       {
         fileName: "any",
         data: file,
@@ -102,37 +96,31 @@ export const Account = ({ user }: { user: User }) => {
 
   return (
     <>
-      <div className="w-80 mx-auto">
-        <h1 className="text-center mt-8">Подтвердите свою личность</h1>
+      <div className="mx-auto w-80">
+        <h1 className="mt-8 text-center">Подтвердите свою личность</h1>
 
         {user.user_status === UserStatus.DocumentsNotUploaded && (
           <>
-            <p
-              className="bg-gradient-to-br from-amber-600 to-red
-                      rounded-lg p-4
-                      text-center text-white font-bold text-xs"
-            >
+            <p className="p-4 text-xs font-bold text-center text-white rounded-lg bg-gradient-to-br from-amber-600 to-red">
               Вы не можете начать процесс бронирования пока не загрузили
               документы или документы не прошли верификацию
             </p>
-            <h1 className="text-center text-red text-3xl mt-4">
+            <h1 className="mt-4 text-3xl text-center text-red">
               {uploadedDocumentCount}/{requiredDocumentCount}
             </h1>
           </>
         )}
 
         {user.user_status === UserStatus.Verification && (
-          <p
-          className="bg-gradient-to-br from-sky-300 to-sky-800
-                  rounded-lg p-4
-                  text-center text-white font-bold text-xs">Верификация в процессе</p>
+          <p className="p-4 text-xs font-bold text-center text-white rounded-lg bg-gradient-to-br from-sky-300 to-sky-800">
+            Верификация в процессе
+          </p>
         )}
 
         {user.user_status === UserStatus.Verified && (
-          <p
-          className="bg-gradient-to-br from-green-400 to-green-800
-                  rounded-lg p-4
-                  text-center text-white font-bold text-xs">Вы прошли верификацию</p>
+          <p className="p-4 text-xs font-bold text-center text-white rounded-lg bg-gradient-to-br from-green-400 to-green-800">
+            Вы прошли верификацию
+          </p>
         )}
 
         {docs.map(({ title, type, placeholderImg }) => {
@@ -140,12 +128,9 @@ export const Account = ({ user }: { user: User }) => {
             user.docs?.find((doc) => doc.type === type)?.url || placeholderImg;
 
           return (
-            <div
-              key={type}
-              className="text-center my-4 p-4 shadow rounded-lg"
-            >
+            <div key={type} className="p-4 my-4 text-center rounded-lg shadow">
               <p className="">{title}</p>
-              <img className="my-8 mx-auto" src={actualUrl} />
+              <img className="mx-auto my-8" src={actualUrl} />
               <div className="text-center">
                 <FileInput
                   title="Загрузить"
@@ -155,7 +140,7 @@ export const Account = ({ user }: { user: User }) => {
             </div>
           );
         })}
-        <div className="text-center my-8">
+        <div className="my-8 text-center">
           <Button variant="reject" onClick={logout}>
             Выйти из приложения
           </Button>

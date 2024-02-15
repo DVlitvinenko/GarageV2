@@ -1,4 +1,4 @@
-import { ApiException, Client } from "./api-client";
+import {  Client } from "./api-client";
 
 const client = new Client("https://garage.development.kwol.ru/api", {
   fetch: async (url, options) => {

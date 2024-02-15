@@ -1,20 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import econom from "./assets/car_icons/econom.png";
-import comfort from "./assets/car_icons/comfort.png";
-import comfortPlus from "./assets/car_icons/comfort-plus.png";
-import business from "./assets/car_icons/business.png";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Cars2 } from "./api-client";
 import {
   formatRoubles,
@@ -27,8 +12,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
-  DialogClose,
 } from "@/components/ui/dialog";
 import { ModalCard } from "./ModalCard";
 
@@ -36,9 +19,9 @@ export const Card = ({ car }: { car: Cars2 }) => {
   const currentSchema = car.rent_term?.schemas![0]!;
 
   return (
-    <div className="w-80 mx-auto text-gray-700 bg-white shadow-md rounded-xl mb-8 pb-4">
+    <div className="pb-4 mx-auto mb-8 text-gray-700 bg-white shadow-md w-80 rounded-xl">
       <div>
-        <div className="absolute z-50 text-gray p-2 bg-yellow rounded-tl-lg rounded-br-lg font-medium shadow">
+        <div className="absolute z-50 p-2 font-medium rounded-tl-lg rounded-br-lg shadow text-gray bg-yellow">
           {car.park_name}
         </div>
         <img
@@ -47,10 +30,10 @@ export const Card = ({ car }: { car: Cars2 }) => {
         />
       </div>
       <div className="px-4">
-        <h1 className="text-center my-4">{`${car.brand} ${car.model} ${car.year_produced}`}</h1>
-        <div className="flex flex-col items-center  mx-auto space-y-2">
+        <h1 className="my-4 text-center">{`${car.brand} ${car.model} ${car.year_produced}`}</h1>
+        <div className="flex flex-col items-center mx-auto space-y-2">
           <Badge
-            className="font-semibold text-lg mb-2"
+            className="mb-2 text-lg font-semibold"
             variant="outline"
           >{`${formatRoubles(currentSchema.daily_amount!)} ${
             currentSchema.working_days
@@ -77,7 +60,7 @@ export const Card = ({ car }: { car: Cars2 }) => {
             <Badge variant="outline">Выкуп автомобиля</Badge>
           )}
         </div>
-        <div className="text-center mt-4">
+        <div className="mt-4 text-center">
           <Dialog>
             <DialogTrigger asChild>
               <Button size={"lg"}>Подробнее</Button>
