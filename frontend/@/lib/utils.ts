@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function getFuelTypeDisplayName(x: FuelType | undefined) {
+export function getFuelTypeDisplayName(x: FuelType | undefined | null) {
   if (!x) {
     return "Любой тип топлива";
   }
@@ -19,7 +19,7 @@ export function getFuelTypeDisplayName(x: FuelType | undefined) {
   return dict[x];
 }
 
-export function getTransmissionDisplayName(x: TransmissionType | undefined) {
+export function getTransmissionDisplayName(x: TransmissionType | undefined | null) {
   if (!x) {
     return "Любой тип трансмиссии";
   }
