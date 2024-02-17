@@ -1222,4 +1222,130 @@ public function updateParkDivision(Request $request)
     $division->save();
     return response()->json(['message' => 'Подразделение обновлено'], 200);
 }
+
+
+
+/**
+ * Создание или обновление условий аренды
+ *
+ * Этот метод позволяет создавать новые или обновлять существующие условия аренды для парков.
+ *
+ * @OA\Post(
+ *     path="/parks/tariff",
+ *     operationId="createOrUpdateTariff",
+ *     summary="Создание или обновление условий аренды",
+ *     tags={"API"},
+ *     security={{"api_key": {}}},
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             @OA\Property(property="id", type="integer", nullable=true, description="Идентификатор существующего тарифа (для обновления)"),
+ *             @OA\Property(property="class", type="integer", nullable=true, description="Тариф машины (1 - эконом, 2 - комфорт, 3 - комфорт+, 4 - бизнес)",
+ *             @OA\Property(property="city", type="string", description="Город тарифа"),
+ *             @OA\Property(property="participation_accident", type="bool", description="Участие в ДТП, true/false"),
+ *             @OA\Property(property="experience", type="integer", description="Минимальный опыт вождения"),
+ *             @OA\Property(property="max_cont_seams", type="integer", description="Максимальное количество штрафов"),
+ *             @OA\Property(property="abandoned_car", type="bool", description="Бросал ли машину, true/false"),
+ *             @OA\Property(property="min_scoring", type="integer", description="минимальный скоринг"),
+ *             @OA\Property(property="forbidden_republic_ids", type="array", description="Массив запрещенных статей"),
+ *             @OA\Property(property="criminal_ids", type="array", description="Массив запрещенных республик"),
+ *             @OA\Property(property="alcohol", type="bool", description="Принимает ли что-то водитель, алкоголь/иное, true/false")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Успешное создание или обновление тарифа",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Тариф успешно создан или изменен"),
+ *             @OA\Property(property="id", type="integer", example="Идентификатор тарифа")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="Ошибка аутентификации",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Ошибка аутентификации")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Парк с указанным API ключом не найден",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Парк не найден")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=500,
+ *         description="Ошибка сервера",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Ошибка сервера")
+ *         )
+ *     )
+ * )
+ *
+ * @param \Illuminate\Http\Request $request Объект запроса с данными для создания или обновления условий аренды
+ * @return \Illuminate\Http\JsonResponse JSON-ответ с результатом операции
+ */
+
+
+     public function createOrUpdateTariff(Request $request)
+     {
+         $apiKey = $request->header('X-API-Key');
+         $park = Park::where('API_key', $apiKey)->firstOrFail();
+
+         $validator = Validator::make($request->all(), [
+            'id' => 'integer',
+            'class' => 'required|integer',
+            'city' => 'required|string|max:250|exists:cities,name',
+            'criminal_ids' => 'required|array',
+            'participation_accident' => 'required|bool',
+            'experience' => 'required|integer',
+            'max_cont_seams' => 'required|integer',
+            'abandoned_car' => 'required|bool',
+            'min_scoring' => 'required|integer',
+            'forbidden_republic_ids' => 'required|array',
+            'alcohol' => 'required|bool',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => 'Validation error', 'errors' => $validator->errors()], 400);
+        }
+         $tariffId = $request->id;
+         $data = [
+             'class' => $request->class,
+             'park_id' => $park->id,
+             'city_id' => City::where('name',$request->city)->select('id')->first()->id,
+             'criminal_ids' => json_encode($request->criminal_ids),
+             'participation_accident' => $request->participation_accident,
+             'experience' => $request->experience,
+             'max_cont_seams' => $request->max_cont_seams,
+             'abandoned_car' => $request->abandoned_car,
+             'min_scoring' => $request->min_scoring,
+             'forbidden_republic_ids' => json_encode($request->forbidden_republic_ids),
+             'alcohol' => $request->alcohol,
+         ];
+
+         if ($tariffId) {
+             $tariff = Tariff::where('id', $tariffId)
+                 ->where('park_id', $park->id)
+                 ->first();
+             if ($tariff) {
+                 $tariff->update($data);
+                 return response()->json(['message' => 'Тариф успешно изменён'], 200);
+             }
+             return response()->json(['message' => 'Тариф не найден'], 404);
+         }
+
+         $tariff = new Tariff($data);
+         $tariff->save();
+         return response()->json([
+             'message' => 'Тариф успешно создан.',
+             'id' => $tariff->id
+         ], 200);
+     }
+
+
+
+
+
 }
