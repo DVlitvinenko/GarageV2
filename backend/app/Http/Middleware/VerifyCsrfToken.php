@@ -16,6 +16,7 @@ class VerifyCsrfToken extends Middleware
         'cars/*',
         'cars',
         'parks/*',
+        'parks',
 
     ];
 }
