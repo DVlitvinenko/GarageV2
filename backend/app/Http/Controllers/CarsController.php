@@ -432,6 +432,8 @@ if (($carClassValues) > 0) {
                 $booking->status = BookingStatus::Booked->value;
                 $booking->driver_id = $driver->id;
                 $booking->save();
+                $car = $car->status = CarStatus::Booked->value;
+                $car->save();
                 $api = new APIController;
                 $api->notifyParkOnBookingStatusChanged($booking->id, true);
                 return response()->json($newEndTime, 200);
@@ -506,13 +508,13 @@ if (($carClassValues) > 0) {
         ]);
         $user = Auth::guard('sanctum')->user();
         $car = Car::where('id', $request->id)
-        ->with(['booking' => function($query) {
-            $query->where('status', BookingStatus::Booked->value);
-        }])
-        ->first();
+        ->with('booking')->first();
 
         if (!$car) {
             return response()->json(['message' => 'Машина не найдена'], 404);
+        }
+        if (!$car->status == CarStatus::Booked->value) {
+            return response()->json(['message' => 'Машина не забронирована'], 409);
         }
         $booking = $car->booking->first();
         if (!$booking) {
@@ -521,6 +523,8 @@ if (($carClassValues) > 0) {
 
         $booking->status = BookingStatus::UnBooked->value;
         $booking->save();
+        $car->status = CarStatus::AvailableForBooking->value;
+        $car->save();
         $api = new APIController;
         $api->notifyParkOnBookingStatusChanged($booking->id, false);
         return response()->json(['message' => 'Бронирование автомобиля успешно отменено'], 200);

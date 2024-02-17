@@ -445,7 +445,7 @@ class APIController extends Controller
         $user = $booking->driver->user;
         $park = $car->division->park;
         $apiKey = $park->API_key;
-        $url = $park->url; 
+        $url = $park->url;
 
         // if ($url !== null) {
         //     $client = new Client();
@@ -836,16 +836,14 @@ class APIController extends Controller
 if ($status == BookingStatus::Booked->value) {
     $rent_time = 3;
     $car = Car::where('car_id', $request->id)
-    ->where('status', CarStatus::AvailableForBooking->value)
-    ->whereDoesntHave('booking', function($query) {
-        $query->where('status', 1);
-    })
     ->with('booking')
     ->first();
     if (!$car) {
         return response()->json(['message' => 'Машина не найдена'], 404);
     }
-
+    if ($car->status!==CarStatus::AvailableForBooking->value) {
+        return response()->json(['message' => 'Машина уже забронирована'], 409);
+    }
     $division = Division::where('id', $car->division_id)->with('park')->first();
     $driver = Driver::where('user_id', $user->id)->first();
     $workingHours = json_decode($division->park->working_hours, true);
@@ -873,17 +871,47 @@ if ($status == BookingStatus::Booked->value) {
     $booking->status = BookingStatus::Booked->value;
     $booking->driver_id = $driver->id;
     $booking->save();
+    $car->status = CarStatus::Booked->value;
+    $car->save();
     return response()->json($newEndTime, 200);
-} else {
-    $booked = $car->booking->where('status', BookingStatus::Booked->value)->first();
-    if (!$booked) {
+} elseif($status === BookingStatus::UnBooked->value) {
+    $booking = $car->booking()
+    ->where('status', BookingStatus::Booked)
+    ->first();
+    if (!$booking) {
         return response()->json([
-            'message' => 'Бронирование со статусом Booked не найдено для данного автомобиля',
+            'message' => 'Бронирование не найдено для данного автомобиля',
         ], 404);
     }
-    $booked->status = BookingStatus::UnBooked->value;
-    $booked->save();
-    return response()->json(['message' => 'Статус бронирования успешно изменен'], 200);
+    $booking->status = $status;
+    $booking->save();
+        $car->status = CarStatus::AvailableForBooking->value;
+        $car->save();
+    return response()->json(['message' => 'Статус бронирования успешно изменен, авто доступно для брони'], 200);
 }
+elseif($status === BookingStatus::RentOver->value) {
+    $booking = $car->booking()
+    ->Where('status', BookingStatus::RentStart)
+    ->first();
+    if (!$booking) {
+        return response()->json([
+            'message' => 'Аренда не найдена для данного автомобиля',
+        ], 404);
+    }
+    $booking->status = $status;
+    $booking->save();
+        $car->status = CarStatus::AvailableForBooking->value;
+        $car->save();
+    return response()->json(['message' => 'Статус бронирования успешно изменен, аренда закончена'], 200);
+}
+else{ $booking = $car->booking->where('status', BookingStatus::Booked->value)->first();
+    if (!$booking) {
+        return response()->json([
+            'message' => 'Бронирование не найдено для данного автомобиля',
+        ], 404);
+    }
+    $booking->status = $status;
+    $booking->save();
+    return response()->json(['message' => 'Статус бронирования успешно изменен, аренда начата'], 200);}
     }
 }
