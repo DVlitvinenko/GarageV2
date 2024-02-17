@@ -24,7 +24,7 @@ use App\Http\Controllers\ParserController;
 use App\Models\Schema;
 use Illuminate\Database\Eloquent\Scope;
 use Illuminate\Support\Facades\File;
-
+use Illuminate\Validation\Rule;
 
 /**
  * @OA\Info(
@@ -56,8 +56,7 @@ class APIController extends Controller
      *                 type="array",
      *                 @OA\Items(
      *                     @OA\Property(property="id", type="string", maxLength=17, description="VIN-номер автомобиля"),
-     *                     @OA\Property(property="city", type="string", maxLength=50, description="Город колонны"),
-     *                     @OA\Property(property="division_name", type="string", maxLength=250, description="Название колонны"),
+     *                     @OA\Property(property="division_id", type="integer", maxLength=250, description="id подразделения"),
      *                     @OA\Property(property="fuel_type", type="integer", description="Вид топлива (1 - газ, 0 - бензин)"),
      *                     @OA\Property(property="transmission_type", type="integer", description="КПП ТС (1 - автомат, 0 - механика)"),
      *                     @OA\Property(property="brand", type="string", maxLength=50, description="Бренд автомобиля"),
@@ -109,16 +108,14 @@ class APIController extends Controller
     {
         $apiKey = $request->header('X-API-Key');
 
-        // Проверка ключа авторизации
         $park = Park::where('API_key', $apiKey)->first();
         if (!$park) {
             return response()->json(['message' => 'Неверный ключ авторизации'], 401);
         }
-        // Валидация данных запроса
+
         $validator = Validator::make($request->all(), [
             'cars' => 'required|array',
-            'cars.*.city' => ['required', 'string', 'max:250', 'exists:cities,name'],
-            'cars.*.division_name' => 'required|string|max:250',
+            'cars.*.division_id' => 'required|integer',
             'cars.*.fuel_type' => 'required|integer|max:1',
             'cars.*.transmission_type' => 'required|integer|max:1',
             'cars.*.brand' => [
@@ -153,19 +150,14 @@ class APIController extends Controller
         }
         $cars = $request->input('cars');
         foreach ($cars as $index => $carData) {
-            $cityName = $carData['city'];
-            $divisionName = $carData['division_name'];
-            $city = City::firstOrCreate(['name' => $cityName]);
-
-            $division = $this->divisionCheck($divisionName, $park->id, $city->id);
-
+            $division = Division::where('id',$request->division_id);
             $car = new Car;
             $car->division_id = $division->id;
             $car->fuel_type = $carData['fuel_type'];
             $car->transmission_type = $carData['transmission_type'];
             $car->brand = $carData['brand'];
             $car->model = $carData['model'];
-            $car->tariff_id = $this->GetTariffId($park->id, $city->id, $carData['class']);
+            $car->tariff_id = $this->GetTariffId($park->id, $division->city_id, $carData['class']);
             $car->year_produced = $carData['year_produced'];
             $car->car_id = $carData['id'];
             $car->images = json_encode($carData['images']);
@@ -381,6 +373,7 @@ class APIController extends Controller
             'id' => 'required|string|max:20',
             'status' => 'integer|max:1',
         ]);
+
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
         }
@@ -559,7 +552,9 @@ class APIController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-
+        if ($validator->fails()) {
+            return response()->json(['message' => 'Ошибка валидации', 'errors' => $validator->errors()], 400);
+        }
         $rentTermId = $request->input('rent_term_id');
         $data = [
             'park_id' => $park->id,
@@ -815,7 +810,9 @@ class APIController extends Controller
             'driver_name' => 'required|string',
             'phone' => 'required|string',
         ]);
-
+        if ($validator->fails()) {
+            return response()->json(['message' => 'Ошибка валидации', 'errors' => $validator->errors()], 400);
+        }
         $status = BookingStatus::{$request->input('status')}->value;
         $carId = $request->input('id');
         $driverName = $request->input('driver_name');
@@ -833,47 +830,47 @@ class APIController extends Controller
                 'message' => 'Автомобиль не найден',
             ], 404);
         }
-if ($status == BookingStatus::Booked->value) {
-    $rent_time = 3;
-    $car = Car::where('car_id', $request->id)
-    ->with('booking')
-    ->first();
-    if (!$car) {
-        return response()->json(['message' => 'Машина не найдена'], 404);
-    }
-    if ($car->status!==CarStatus::AvailableForBooking->value) {
-        return response()->json(['message' => 'Машина уже забронирована'], 409);
-    }
-    $division = Division::where('id', $car->division_id)->with('park')->first();
-    $driver = Driver::where('user_id', $user->id)->first();
-    $workingHours = json_decode($division->park->working_hours, true);
-    $currentDayOfWeek = Carbon::now()->format('l');
+        if ($status == BookingStatus::Booked->value) {
+        $rent_time = 3;
+        $car = Car::where('car_id', $request->id)
+        ->with('booking')
+        ->first();
+        if (!$car) {
+            return response()->json(['message' => 'Машина не найдена'], 404);
+        }
+        if ($car->status!==CarStatus::AvailableForBooking->value) {
+            return response()->json(['message' => 'Машина уже забронирована'], 409);
+        }
+        $division = Division::where('id', $car->division_id)->with('park')->first();
+        $driver = Driver::where('user_id', $user->id)->first();
+        $workingHours = json_decode($division->park->working_hours, true);
+        $currentDayOfWeek = Carbon::now()->format('l');
 
-    $currentTime = Carbon::now()->timestamp;
+        $currentTime = Carbon::now()->timestamp;
 
-    $endTimeOfWorkDayToday = Carbon::createFromFormat('H:i', $workingHours[strtolower($currentDayOfWeek)][0]['end'], $division->park->timezone)->timestamp;
-    $endTimeOfWorkDayToday -= $rent_time * 3600;
+        $endTimeOfWorkDayToday = Carbon::createFromFormat('H:i', $workingHours[strtolower($currentDayOfWeek)][0]['end'], $division->park->timezone)->timestamp;
+        $endTimeOfWorkDayToday -= $rent_time * 3600;
 
-    if ($endTimeOfWorkDayToday < $currentTime) {
+     if ($endTimeOfWorkDayToday < $currentTime) {
         $nextWorkingDay = Carbon::now()->addDay()->format('l');
         $startTimeOfWorkDayTomorrow = Carbon::createFromFormat('H:i', $workingHours[strtolower($nextWorkingDay)][0]['start'], $division->park->timezone)->timestamp;
         $newEndTime = $startTimeOfWorkDayTomorrow + $rent_time * 3600;
-    } else {
+     } else {
         $remainingTime = $rent_time * 3600;
         $newEndTime = $currentTime + $remainingTime;
     }
 
-    $booking = new Booking();
-    $booking->car_id = $car->id;
-    $booking->park_id = $division->park_id;
-    $booking->booked_at = $currentTime;
-    $booking->booked_until = $newEndTime;
-    $booking->status = BookingStatus::Booked->value;
-    $booking->driver_id = $driver->id;
-    $booking->save();
-    $car->status = CarStatus::Booked->value;
-    $car->save();
-    return response()->json($newEndTime, 200);
+        $booking = new Booking();
+        $booking->car_id = $car->id;
+        $booking->park_id = $division->park_id;
+        $booking->booked_at = $currentTime;
+        $booking->booked_until = $newEndTime;
+        $booking->status = BookingStatus::Booked->value;
+        $booking->driver_id = $driver->id;
+        $booking->save();
+        $car->status = CarStatus::Booked->value;
+        $car->save();
+        return response()->json($newEndTime, 200);
 } elseif($status === BookingStatus::UnBooked->value) {
     $booking = $car->booking()
     ->where('status', BookingStatus::Booked)
@@ -914,4 +911,315 @@ else{ $booking = $car->booking->where('status', BookingStatus::Booked->value)->f
     $booking->save();
     return response()->json(['message' => 'Статус бронирования успешно изменен, аренда начата'], 200);}
     }
+
+/**
+ * Обновление информации о парке
+ *
+ * Этот метод позволяет обновлять информацию о парке.
+ *
+ * @OA\Put(
+ *     path="/parks",
+ *     operationId="updateParkInfo",
+ *     summary="Обновление информации о парке",
+ *     tags={"API"},
+ *     security={{"api_key": {}}},
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             @OA\Property(property="url", type="string", description="URL парка"),
+ *             @OA\Property(property="commission", type="number", description="Комиссия"),
+ *             @OA\Property(property="self_employed", type="boolean", description="Работает ли парк с самозанятыми, true - если работает"),
+ *             @OA\Property(property="park_name", type="string", description="Название парка"),
+ *             @OA\Property(property="about", type="string", description="Описание парка"),
+* @OA\Property(
+ *     property="working_hours",
+ *     type="object",
+ *     description="Время работы",
+ *     @OA\Property(property="monday", type="array", description="Время работы в понедельник"),
+ *     @OA\Property(property="tuesday", type="array", description="Время работы во вторник"),
+ *     @OA\Property(property="wednesday", type="array", description="Время работы в среду"),
+ *     @OA\Property(property="thursday", type="array", description="Время работы в четверг"),
+ *     @OA\Property(property="friday", type="array", description="Время работы в пятницу"),
+ *     @OA\Property(property="saturday", type="array", description="Время работы в субботу"),
+ *     @OA\Property(property="sunday", type="array", description="Время работы в воскресенье"),
+ *     @OA\Items(
+ *         type="object",
+ *         @OA\Property(property="start", type="string", description="Время начала работы"),
+ *         @OA\Property(property="end", type="string", description="Время окончания работы")
+ *     )
+ * ),
+ *             @OA\Property(property="phone", type="string", description="Телефон парка")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Успешное обновление информации о парке",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Парк обновлен")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="Ошибка аутентификации",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Неверный ключ авторизации")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Ошибки валидации",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Ошибка валидации"),
+ *             @OA\Property(property="errors", type="object", example={
+ *                 "url": {"Поле url должно быть строкой."},
+ *                 "commission": {"Поле commission должно быть числом."},
+ *                 "self_employed": {"Поле self_employed должно быть булевым значением."},
+ *                 "park_name": {"Поле park_name должно быть строкой."},
+ *                 "about": {"Поле about должно быть строкой."},
+ *                 "working_hours": {"Поле working_hours должно быть в формате JSON."},
+ *                 "phone": {"Поле phone должно быть строкой."},
+ *             })
+ *         )
+ *     )
+ * )
+ *
+ * @param \Illuminate\Http\Request $request Объект запроса с данными для обновления информации о парке
+ * @return \Illuminate\Http\JsonResponse JSON-ответ с результатом операции
+ */
+    public function updateParkInfo(Request $request)
+{
+    $apiKey = $request->header('X-API-Key');
+    $park = Park::where('API_key', $apiKey)->first();
+    if (!$park) {
+        return response()->json(['message' => 'Неверный ключ авторизации'], 401);
+    }
+    $validator = Validator::make($request->all(), [
+        'url' => 'string',
+        'commission' => 'numeric',
+        'self_employed' => 'boolean',
+        'park_name' => 'string',
+        'about' => 'string',
+        'working_hours' => [
+            'required',
+            'json',
+            function ($attribute, $value, $fail) {
+                $daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+                $decodedValue = json_decode($value, true);
+                if ($decodedValue === null) {
+                    $fail('The '.$attribute.' field must be a valid JSON object.');
+                    return;
+                }
+                foreach ($daysOfWeek as $day) {
+                    if (!array_key_exists($day, $decodedValue)) {
+                        $fail('The '.$attribute.' field must contain '.$day.' working hours.');
+                        return;
+                    }
+                }
+            },
+        ],
+        'phone' => 'string',
+    ]);
+        if ($validator->fails()) {
+            return response()->json(['message' => 'Ошибка валидации', 'errors' => $validator->errors()], 400);
+        }
+    if ($request->url) {
+        $park->url = $request->url;
+    }if ($request->commission) {
+        $park->commission = $request->commission;
+    }if ($request->self_employed) {
+        $park->self_employed = $request->self_employed;
+    }if ($request->park_name) {
+        $park->park_name = $request->park_name;
+    }if ($request->about) {
+        $park->about = $request->about;
+    }if ($request->working_hours) {
+        $park->working_hours = $request->working_hours;
+    }if ($request->phone) {
+        $park->phone = $request->phone;
+    }
+    $park->save();
+        return response()->json(['message' => 'Парк обновлен'], 200);
+}
+/**
+ * Создание подразделения парка
+ *
+ * Этот метод позволяет создавать подразделение в парке.
+ *
+ * @OA\Post(
+ *     path="/parks/division",
+ *     operationId="createParkDivision",
+ *     summary="Создание подразделения парка",
+ *     tags={"API"},
+ *     security={{"api_key": {}}},
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             @OA\Property(property="city", type="string", description="Город подразделения"),
+ *             @OA\Property(property="coords", type="string", description="Координаты подразделения"),
+ *             @OA\Property(property="address", type="string", description="Адрес подразделения"),
+ *             @OA\Property(property="name", type="string", description="Название подразделения")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Успешное создание подразделения",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Подразделение создано"),
+ *             @OA\Property(property="id", type="integer", example="Идентификатор созданного подразделения")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="Ошибка аутентификации",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Неверный ключ авторизации")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Ошибки валидации",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Ошибка валидации"),
+ *             @OA\Property(property="errors", type="object", example={
+ *                 "city": {"Поле city обязательно для заполнения и должно быть строкой."},
+ *                 "coords": {"Поле coords обязательно для заполнения и должно быть строкой."},
+ *                 "address": {"Поле address обязательно для заполнения и должно быть строкой."},
+ *                 "name": {"Поле name обязательно для заполнения и должно быть строкой."},
+ *             })
+ *         )
+ *     )
+ * )
+ *
+ * @param \Illuminate\Http\Request $request Объект запроса с данными для создания подразделения
+ * @return \Illuminate\Http\JsonResponse JSON-ответ с результатом операции
+ */
+public function createParkDivision(Request $request)
+{
+    $apiKey = $request->header('X-API-Key');
+    $park = Park::where('API_key', $apiKey)->first();
+    if (!$park) {
+        return response()->json(['message' => 'Неверный ключ авторизации'], 401);
+    }
+    $validator = Validator::make($request->all(), [
+        'city' => 'required|string|max:250|exists:cities,name',
+        'coords' => 'required|string',
+        'address' => 'required|string',
+        'name' => [
+            'required',
+            'string',
+            Rule::unique('divisions', 'name')->where(function ($query) use ($park) {
+                return $query->where('park_id', $park->id);
+            }),
+        ],
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json(['message' => 'Ошибка валидации', 'errors' => $validator->errors()], 400);
+    }
+    $city = City::where("name",$request->city)->first();
+    $division = new Division;
+    $division->city_id = $city->id;
+    $division->park_id = $park->id;
+    $division->coords = $request->coords;
+    $division->address = $request->address;
+    $division->name = $request->name;
+    $division->save();
+    return response()->json(['message' => 'Подразделение создано', 'id'=>$division->id], 200);
+}
+/**
+ * Обновление подразделения парка
+ *
+ * Этот метод позволяет обновлять подразделение в парке.
+ *
+ * @OA\Put(
+ *     path="/parks/division",
+ *     operationId="updateParkDivision",
+ *     summary="Обновление подразделения парка",
+ *     tags={"API"},
+ *     security={{"api_key": {}}},
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             @OA\Property(property="id", type="integer", description="Идентификатор подразделения"),
+ *             @OA\Property(property="coords", type="string", description="Координаты подразделения"),
+ *             @OA\Property(property="address", type="string", description="Адрес подразделения"),
+ *             @OA\Property(property="name", type="string", description="Название подразделения")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Успешное обновление подразделения",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Подразделение успешно обновлено")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="Ошибка аутентификации",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Неверный ключ авторизации")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Ошибки валидации",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Ошибка валидации"),
+ *             @OA\Property(property="errors", type="object", example={
+ *                 "coords": {"Поле coords должно быть строкой."},
+ *                 "address": {"Поле address должно быть строкой."},
+ *                 "name": {"Поле name должно быть строкой и уникальным в пределах парка."},
+ *             })
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Подразделение не найдено",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Подразделение не найдено")
+ *         )
+ *     )
+ * )
+ *
+ * @param \Illuminate\Http\Request $request Объект запроса с данными для обновления подразделения
+ * @return \Illuminate\Http\JsonResponse JSON-ответ с результатом операции
+ */
+public function updateParkDivision(Request $request)
+{
+    $apiKey = $request->header('X-API-Key');
+    $park = Park::where('API_key', $apiKey)->first();
+    if (!$park) {
+        return response()->json(['message' => 'Неверный ключ авторизации'], 401);
+    }
+    $validator = Validator::make($request->all(), [
+        'id' => 'required|integer',
+        'coords' => 'string',
+        'address' => 'string',
+        'name' => [
+            'required',
+            'string',
+            Rule::unique('divisions', 'name')->where(function ($query) use ($park) {
+                return $query->where('park_id', $park->id);
+            })->ignore($request->id),
+        ],
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json(['message' => 'Validation error', 'errors' => $validator->errors()], 400);
+    }
+
+    // Update the division with the provided data
+    $division = Division::findOrFail($request->id);
+    if ($request->coords) {
+        $division->coords = $request->coords;
+    }
+    if ($request->address) {
+        $division->address = $request->address;
+    }
+    if ($request->name) {
+        $division->name = $request->name;
+    }
+    $division->save();
+    return response()->json(['message' => 'Подразделение обновлено'], 200);
+}
 }
