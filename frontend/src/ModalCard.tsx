@@ -33,92 +33,87 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
   const currentSchema = car.rent_term?.schemas![0]!;
 
   return (
-    <div className="flex flex-col justify-center py-8 overflow-y-auto">
-      <img
-        className="object-cover w-full rounded-t-xl"
-        src={car.images![0]}
-        alt=""
-      />
-      <div className="space-y-2">
-        <h1 className="my-4 text-center">{`${car.brand} ${car.model} ${car.year_produced}`}</h1>
+    <>
+      <div className="flex flex-col justify-center py-8 overflow-y-auto ">
+        <img
+          className="object-cover w-full rounded-t-xl"
+          src={car.images![0]}
+          alt=""
+        />
+        <div className="space-y-2">
+          <h1 className="my-4 text-center">{`${car.brand} ${car.model} ${car.year_produced}`}</h1>
 
-        <div className="flex flex-col justify-center h-32 space-y-2 ">
-          {!phoneRequested && (
-            <Button
-              size={"lg"}
-              onClick={() => setPhoneRequested(true)}
-              variant="secondary"
-            >
-              Показать номер
-            </Button>
+          <p className="text-base font-semibold text-gray">
+            Парк: {car.park_name}
+          </p>
+          <Separator />
+          <p className="text-base font-semibold text-gray">
+            Адрес: {car.division?.address}
+          </p>
+          <Separator />
+          <p className="text-base font-semibold text-gray">
+            Минимум дней аренды: {car.rent_term?.minimum_period_days}
+          </p>
+          <br />
+          <div className="min-h-48">
+            {car.working_hours?.map((x) => (
+              <div className="flex items-center" key={x.day}>
+                <div className="text-sm capitalize w-28">{x.day}</div> {x.start}{" "}
+                - {x.end}
+              </div>
+            ))}
+          </div>
+          <Collapsible>
+            <CollapsibleTrigger>О парке ▼</CollapsibleTrigger>
+            <CollapsibleContent>
+              <div className="text-sm text-gray-700">{car.about}</div>
+            </CollapsibleContent>
+          </Collapsible>
+        </div>
+
+        <div className="flex flex-col items-center pb-10 mx-auto space-y-2">
+          <Badge
+            className="mb-2 text-lg font-semibold"
+            variant="outline"
+          >{`${formatRoubles(currentSchema.daily_amount!)} ${
+            currentSchema.working_days
+          } раб./${currentSchema.non_working_days} вых`}</Badge>
+          <Badge variant="outline">
+            Депозит {formatRoubles(car.rent_term?.deposit_amount_total!)} (
+            {formatRoubles(car.rent_term?.deposit_amount_daily!)}
+            /день)
+          </Badge>
+          <Badge variant="outline">Комиссия {car.commission}</Badge>
+          <div className="flex justify-around w-full">
+            <Badge variant="outline">
+              {getFuelTypeDisplayName(car.fuel_type)}
+            </Badge>
+            <Badge variant="outline">
+              {getTransmissionDisplayName(car.transmission_type)}
+            </Badge>
+          </div>
+
+          {!!car.self_employed && (
+            <Badge variant="outline">Для самозанятых</Badge>
           )}
-          {phoneRequested && (
-            <Button size={"lg"} variant="secondary">
-              <a href={"tel:" + car.phone}>{car.phone}</a>
-            </Button>
+          {!!car.rent_term?.is_buyout_possible && (
+            <Badge variant="outline">Выкуп автомобиля</Badge>
           )}
-          <Button onClick={book} size={"lg"}>
-            Забронировать
+        </div>
+      </div>
+      <div className="fixed bottom-0 left-0 flex justify-center w-full py-4 space-x-2 bg-white border-t border-pale">
+        {!phoneRequested && (
+          <Button onClick={() => setPhoneRequested(true)} variant="secondary">
+            Показать номер
           </Button>
-        </div>
-
-        <p className="text-base font-semibold text-gray">
-          Парк: {car.park_name}
-        </p>
-        <Separator />
-        <p className="text-base font-semibold text-gray">
-          Адрес: {car.division?.address}
-        </p>
-        <Separator />
-        <p className="text-base font-semibold text-gray">
-          Минимум дней аренды: {car.rent_term?.minimum_period_days}
-        </p>
-        <br />
-        <div className="min-h-48">
-          {car.working_hours?.map((x) => (
-            <div className="flex items-center" key={x.day}>
-              <div className="text-sm capitalize w-28">{x.day}</div> {x.start} -{" "}
-              {x.end}
-            </div>
-          ))}
-        </div>
-        <Collapsible>
-          <CollapsibleTrigger>О парке ▼</CollapsibleTrigger>
-          <CollapsibleContent>
-            <div className="text-sm text-gray-700">{car.about}</div>
-          </CollapsibleContent>
-        </Collapsible>
-      </div>
-
-      <div className="flex flex-col items-center mx-auto space-y-2">
-        <Badge
-          className="mb-2 text-lg font-semibold"
-          variant="outline"
-        >{`${formatRoubles(currentSchema.daily_amount!)} ${
-          currentSchema.working_days
-        } раб./${currentSchema.non_working_days} вых`}</Badge>
-        <Badge variant="outline">
-          Депозит {formatRoubles(car.rent_term?.deposit_amount_total!)} (
-          {formatRoubles(car.rent_term?.deposit_amount_daily!)}
-          /день)
-        </Badge>
-        <Badge variant="outline">Комиссия {car.commission}</Badge>
-        <div className="flex justify-around w-full">
-          <Badge variant="outline">
-            {getFuelTypeDisplayName(car.fuel_type)}
-          </Badge>
-          <Badge variant="outline">
-            {getTransmissionDisplayName(car.transmission_type)}
-          </Badge>
-        </div>
-
-        {!!car.self_employed && (
-          <Badge variant="outline">Для самозанятых</Badge>
         )}
-        {!!car.rent_term?.is_buyout_possible && (
-          <Badge variant="outline">Выкуп автомобиля</Badge>
+        {phoneRequested && (
+          <Button variant="secondary">
+            <a href={"tel:" + car.phone}>{car.phone}</a>
+          </Button>
         )}
+        <Button onClick={book}>Забронировать</Button>
       </div>
-    </div>
+    </>
   );
 };

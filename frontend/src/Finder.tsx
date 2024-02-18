@@ -215,9 +215,9 @@ export const Finder = () => {
                     </span>
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-[800px]">
-                    {/* <DialogHeader>
+                    <DialogHeader>
                       <DialogTitle>Марка автомобиля</DialogTitle>
-                    </DialogHeader> */}
+                    </DialogHeader>
                     <div className="grid grid-cols-3 gap-4 py-4 h-[300px] overflow-y-scroll">
                       {["Audi", "BMW", "Kia", "Hyundai"].map((x) => {
                         const title = x;

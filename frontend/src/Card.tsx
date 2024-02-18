@@ -66,10 +66,10 @@ export const Card = ({ car }: { car: Cars2 }) => {
               <Button size={"lg"}>Подробнее</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[800px]">
-              <DialogHeader>
-                <DialogTitle></DialogTitle>
-                {/* <DialogDescription>DialogDescription</DialogDescription> */}
-              </DialogHeader>
+              {/* <DialogHeader>
+                <DialogTitle></DialogTitle> */}
+              {/* <DialogDescription>DialogDescription</DialogDescription> */}
+              {/* </DialogHeader> */}
               <ModalCard car={car} />
               {/* <DialogFooter>
                 <DialogClose asChild>
