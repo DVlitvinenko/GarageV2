@@ -22,11 +22,12 @@ use App\Enums\CarClass;
 use Carbon\Carbon;
 use App\Http\Controllers\APIController;
 use App\Enums\BookingStatus;
+
 class CarsController extends Controller
 
 {
 
-        /**
+    /**
      * Получение списка автомобилей с учетом фильтров (аутентифицированный запрос)
      *
      * @OA\Post(
@@ -67,17 +68,17 @@ class CarsController extends Controller
      *                 @OA\Property(property="images", type="array", @OA\Items(type="string"), description="Ссылки на изображения"),
      *                 @OA\Property(property="сar_class", type="string", description="Класс тарифа", ref="#/components/schemas/CarClass"),
      *                 @OA\Property(property="park_name", type="string", description="Название парка"),
-* @OA\Property(
-*     property="working_hours",
-*     type="array",
-*     description="Расписание работы парка",
-*     @OA\Items(
-*         type="object",
-*         @OA\Property(property="start", type="string", description="Время начала"),
-*         @OA\Property(property="end", type="string", description="Время окончания"),
-*         @OA\Property(property="day", type="string", description="День недели на русском")
-*     )
-* ),
+     * @OA\Property(
+     *     property="working_hours",
+     *     type="array",
+     *     description="Расписание работы парка",
+     *     @OA\Items(
+     *         type="object",
+     *         @OA\Property(property="start", type="string", description="Время начала"),
+     *         @OA\Property(property="end", type="string", description="Время окончания"),
+     *         @OA\Property(property="day", type="string", description="День недели на русском")
+     *     )
+     * ),
      *                 @OA\Property(property="about", type="string", description="Описание парка"),
      *                 @OA\Property(property="phone", type="string", description="Телефон парка"),
      *                 @OA\Property(property="commission", type="number", description="Комиссия"),
@@ -110,166 +111,166 @@ class CarsController extends Controller
      */
 
 
-        public function SearchCars(Request $request)
-        {
-            $request->validate([
-                'offset'=>'required|integer',
-                'limit'=>'required|integer',
-                'city' => ['required', 'string', 'max:250', 'exists:cities,name'],
-            ]);
-            $offset = $request->offset;
-            $sorting = $request->sorting;
-            $limit = $request->limit;
-            $user = Auth::guard('sanctum')->user();
-            $fuelType = $request->fuel_type?FuelType::{$request->fuel_type}->value:null ;
-            $transmissionType = $request->transmission_type?TransmissionType::{$request->transmission_type}->value:null;
-            $city = City::where('name',$request->city)->first();
-            $search = $request->search;
-            $cityId = $city->id;
-            if (!$city) {
-                return response()->json(['error' => 'Город не найден'], 404);
+    public function SearchCars(Request $request)
+    {
+        $request->validate([
+            'offset' => 'required|integer',
+            'limit' => 'required|integer',
+            'city' => ['required', 'string', 'max:250', 'exists:cities,name'],
+        ]);
+        $offset = $request->offset;
+        $sorting = $request->sorting;
+        $limit = $request->limit;
+        $user = Auth::guard('sanctum')->user();
+        $fuelType = $request->fuel_type ? FuelType::{$request->fuel_type}()->value : null;
+        $transmissionType = $request->transmission_type ? TransmissionType::{$request->transmission_type}()->value : null;
+        $city = City::where('name', $request->city)->first();
+        $search = $request->search;
+        $cityId = $city->id;
+        if (!$city) {
+            return response()->json(['error' => 'Город не найден'], 404);
+        }
+
+        $brand = $request->brand;
+        $model = $request->model;
+
+        $carClassValues = $request->car_class;
+        $translatedValues = [];
+
+        if (($carClassValues) > 0) {
+            foreach ($carClassValues as $key) {
+                $keyNew = CarClass::{$key}()->value;
+                $translatedValues[$key] = $keyNew;
             }
+        }
+        $translatedValues = array_values($translatedValues);
+        $carClass = $translatedValues;
+        $selfEmployed = $request->self_employed;
+        $isBuyoutPossible = $request->is_buyout_possible;
+        $commission = $request->commission;
 
-            $brand = $request->brand;
-            $model = $request->model;
-
-            $carClassValues = $request->car_class;
-            $translatedValues = [];
-
-if (($carClassValues) > 0) {
-    foreach ($carClassValues as $key) {
-        $keyNew = CarClass::{$key}->value;
-            $translatedValues[$key] = $keyNew;
-    }
-}
-            $translatedValues= array_values($translatedValues);
-            $carClass = $translatedValues;
-            $selfEmployed = $request->self_employed;
-            $isBuyoutPossible = $request->is_buyout_possible;
-            $commission = $request->commission;
-
-            $carsQuery = Car::query()->where('status','!=',0)->doesntHave('booking')->where('rent_term_id','!=',null)->where('price','!=',null)
-            ->whereHas('division', function($query) use ($cityId) {
+        $carsQuery = Car::query()->where('status', '!=', 0)->doesntHave('booking')->where('rent_term_id', '!=', null)->where('price', '!=', null)
+            ->whereHas('division', function ($query) use ($cityId) {
                 $query->where('city_id', $cityId);
             });
-            if ($user && $user->user_status == UserStatus::Verified->value) {
-                $driverSpecifications = $user->driver->driverSpecification;
-                if ($driverSpecifications) {
-                    $carsQuery->whereHas('tariff', function($query) use ($driverSpecifications) {
-                        $criminalIds = explode(',', $driverSpecifications->criminal_ids);
-                $criminalIds = array_map('intval', $criminalIds);
-                if (!empty(array_filter($criminalIds, 'is_numeric'))) {
-                    $query->whereNotIn('criminal_ids', $criminalIds);
-                }
-                $forbiddenRepublicIds = explode(',', $driverSpecifications->republick_id);
-                $forbiddenRepublicIds = array_map('intval', $forbiddenRepublicIds);
-                if (!empty(array_filter($forbiddenRepublicIds, 'is_numeric'))) {
-                    $query->whereNotIn('forbidden_republic_ids', $forbiddenRepublicIds);
-                }
-                        $query->where('experience', '<=', $driverSpecifications->experience);
-                        $query->where('max_cont_seams', '>=', $driverSpecifications->count_seams);
-                        $query->where('min_scoring', '<=', $driverSpecifications->scoring);
-                        if ($driverSpecifications->participation_accident == 1) {
-                            $query->where('participation_accident', 0);
-                        }
-                        if ($driverSpecifications->abandoned_car == 1) {
-                            $query->where('abandoned_car', 0);
-                        }
-                        if ($driverSpecifications->participation_accident == 1) {
-                            $query->where('participation_accident', 0);
-                        }
-                        if ($driverSpecifications->alcohol == 1) {
-                            $query->where('alcohol', 0);
-                        }
-                    });
-                }
+        if ($user && $user->user_status == UserStatus::Verified->value) {
+            $driverSpecifications = $user->driver->driverSpecification;
+            if ($driverSpecifications) {
+                $carsQuery->whereHas('tariff', function ($query) use ($driverSpecifications) {
+                    $criminalIds = explode(',', $driverSpecifications->criminal_ids);
+                    $criminalIds = array_map('intval', $criminalIds);
+                    if (!empty(array_filter($criminalIds, 'is_numeric'))) {
+                        $query->whereNotIn('criminal_ids', $criminalIds);
+                    }
+                    $forbiddenRepublicIds = explode(',', $driverSpecifications->republick_id);
+                    $forbiddenRepublicIds = array_map('intval', $forbiddenRepublicIds);
+                    if (!empty(array_filter($forbiddenRepublicIds, 'is_numeric'))) {
+                        $query->whereNotIn('forbidden_republic_ids', $forbiddenRepublicIds);
+                    }
+                    $query->where('experience', '<=', $driverSpecifications->experience);
+                    $query->where('max_cont_seams', '>=', $driverSpecifications->count_seams);
+                    $query->where('min_scoring', '<=', $driverSpecifications->scoring);
+                    if ($driverSpecifications->participation_accident == 1) {
+                        $query->where('participation_accident', 0);
+                    }
+                    if ($driverSpecifications->abandoned_car == 1) {
+                        $query->where('abandoned_car', 0);
+                    }
+                    if ($driverSpecifications->participation_accident == 1) {
+                        $query->where('participation_accident', 0);
+                    }
+                    if ($driverSpecifications->alcohol == 1) {
+                        $query->where('alcohol', 0);
+                    }
+                });
             }
-            if ($fuelType) {
-                $carsQuery->where('fuel_type', $fuelType);
-            }
+        }
+        if ($fuelType) {
+            $carsQuery->where('fuel_type', $fuelType);
+        }
 
-            if ($transmissionType) {
-                $carsQuery->where('transmission_type', $transmissionType);
-            }
+        if ($transmissionType) {
+            $carsQuery->where('transmission_type', $transmissionType);
+        }
 
-            if ($brand&&count($brand) > 0 ) {
-                $brandArray = is_array($brand) ? $brand : [$brand];
-                $carsQuery->whereIn('brand', $brandArray);
-            }
+        if ($brand && count($brand) > 0) {
+            $brandArray = is_array($brand) ? $brand : [$brand];
+            $carsQuery->whereIn('brand', $brandArray);
+        }
 
-            if ($model&&count($model) > 0 ) {
-                $modelArray = is_array($model) ? $model : [$model];
-                $carsQuery->whereIn('model', $modelArray);
-            }
-          if ($search) {
-             $keywords = explode(' ', $search);
-             $carsQuery->where(function($query) use ($keywords) {
-                 foreach ($keywords as $keyword) {
-                     $query->orWhere('brand', 'like', '%' . str_replace(' ', '%', $keyword) . '%')
-                           ->orWhere('model', 'like', '%' . str_replace(' ', '%', $keyword) . '%');
-                 }
-             });
-         }
-            if (count($carClass) > 0) {
-            $carsQuery->whereHas('tariff', function($query) use ($carClass) {
-                    $query->whereIn('class', $carClass);
-                });
-            }
-            if ($selfEmployed) {
-                $carsQuery->whereHas('division.park', function($query) use ($selfEmployed) {
-                    $query->where('self_employed', $selfEmployed);
-                });
-            }
-            if ($commission) {
-                $carsQuery->whereHas('division.park', function($query) use ($commission) {
-                    $query->where('commission','<=', $commission);
-                });
-            }
-            if ($isBuyoutPossible) {
-                $carsQuery->whereHas('rentTerm', function($query) use ($isBuyoutPossible) {
-                    $query->where('is_buyout_possible', $isBuyoutPossible);
-                });
-            }
-            $carsQuery->with([
-                'division.city' => function($query) {
-                    $query->select('id', 'name');
-                },
-                'tariff' => function($query) {
-                    $query->select('id', 'class');
-                },
-                'rentTerm' => function($query) {
-                    $query->select('id', 'deposit_amount_daily', 'deposit_amount_total', 'minimum_period_days', 'is_buyout_possible');
-                },
-                'rentTerm.schemas' => function($query) {
-                    $query->select('id', 'daily_amount', 'non_working_days', 'working_days','rent_term_id');
-                },
-                'division.park' => function($query) {
-                    $query->select('id', 'park_name','commission','self_employed','phone', 'about','working_hours');
-                },
-                'division' => function($query) {
-                    $query->select('id', 'coords', 'address', 'name','park_id','city_id');
+        if ($model && count($model) > 0) {
+            $modelArray = is_array($model) ? $model : [$model];
+            $carsQuery->whereIn('model', $modelArray);
+        }
+        if ($search) {
+            $keywords = explode(' ', $search);
+            $carsQuery->where(function ($query) use ($keywords) {
+                foreach ($keywords as $keyword) {
+                    $query->orWhere('brand', 'like', '%' . str_replace(' ', '%', $keyword) . '%')
+                        ->orWhere('model', 'like', '%' . str_replace(' ', '%', $keyword) . '%');
                 }
-            ])
-    ->select(
-        'cars.id',
-        'cars.division_id',
-        'cars.park_id',
-        'cars.tariff_id',
-        'cars.rent_term_id',
-        'cars.fuel_type',
-        'cars.transmission_type',
-        'cars.brand',
-        'cars.model',
-        'cars.year_produced',
-        'cars.car_id',
-        'cars.images',
-        'cars.price',
-    );
-            if ($sorting) {
-                $car = $carsQuery->orderBy('price', $sorting)->first();
-            }else{
-                $car = $carsQuery->orderBy('price', 'asc')->first();
+            });
+        }
+        if (count($carClass) > 0) {
+            $carsQuery->whereHas('tariff', function ($query) use ($carClass) {
+                $query->whereIn('class', $carClass);
+            });
+        }
+        if ($selfEmployed) {
+            $carsQuery->whereHas('division.park', function ($query) use ($selfEmployed) {
+                $query->where('self_employed', $selfEmployed);
+            });
+        }
+        if ($commission) {
+            $carsQuery->whereHas('division.park', function ($query) use ($commission) {
+                $query->where('commission', '<=', $commission);
+            });
+        }
+        if ($isBuyoutPossible) {
+            $carsQuery->whereHas('rentTerm', function ($query) use ($isBuyoutPossible) {
+                $query->where('is_buyout_possible', $isBuyoutPossible);
+            });
+        }
+        $carsQuery->with([
+            'division.city' => function ($query) {
+                $query->select('id', 'name');
+            },
+            'tariff' => function ($query) {
+                $query->select('id', 'class');
+            },
+            'rentTerm' => function ($query) {
+                $query->select('id', 'deposit_amount_daily', 'deposit_amount_total', 'minimum_period_days', 'is_buyout_possible');
+            },
+            'rentTerm.schemas' => function ($query) {
+                $query->select('id', 'daily_amount', 'non_working_days', 'working_days', 'rent_term_id');
+            },
+            'division.park' => function ($query) {
+                $query->select('id', 'park_name', 'commission', 'self_employed', 'phone', 'about', 'working_hours');
+            },
+            'division' => function ($query) {
+                $query->select('id', 'coords', 'address', 'name', 'park_id', 'city_id');
             }
+        ])
+            ->select(
+                'cars.id',
+                'cars.division_id',
+                'cars.park_id',
+                'cars.tariff_id',
+                'cars.rent_term_id',
+                'cars.fuel_type',
+                'cars.transmission_type',
+                'cars.brand',
+                'cars.model',
+                'cars.year_produced',
+                'cars.car_id',
+                'cars.images',
+                'cars.price',
+            );
+        if ($sorting) {
+            $car = $carsQuery->orderBy('price', $sorting)->first();
+        } else {
+            $car = $carsQuery->orderBy('price', 'asc')->first();
+        }
         $carsQuery->offset($offset)->limit($limit);
         $cars = $carsQuery->get();
 
@@ -308,21 +309,20 @@ if (($carClassValues) > 0) {
                     }
                 }
             }
-            if(isset($car['division']['park']['park_name'])) {
+            if (isset($car['division']['park']['park_name'])) {
                 $parkName = $car['division']['park']['park_name'];
             } else {
                 $parkName = 'Не удалось получить название парка';
             }
             $city = $car['division']['city']['name'];
-
-            $car->city= $city;
-            $car->CarClass= $end;
-            $car->park_name= $parkName;
-            $car->working_hours= $hoursToArray;
-            $car->phone= $phone;
-            $car->self_employed= $selfEmployed;
-            $car->about= $about;
-            $car->commission = number_format($commission, 2);
+            $car['city'] = $city;
+            $car['CarClass'] = $end;
+            $car['park_name'] = $parkName;
+            $car['working_hours'] = $hoursToArray;
+            $car['phone'] = $phone;
+            $car['self_employed'] = $selfEmployed;
+            $car['about'] = $about;
+            $car['commission'] = number_format($commission, 2);
         }
         foreach ($cars as $car) {
             unset(
@@ -341,103 +341,104 @@ if (($carClassValues) > 0) {
             );
         }
         return response()->json(['cars' => $cars]);
+    }
 
+
+
+    /**
+     * Бронирование автомобиля
+     *
+     * @OA\Post(
+     *     path="/auth/cars/booking",
+     *     operationId="booking",
+     *     summary="Бронирование автомобиля",
+     *     tags={"Cars"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="id", type="integer", description="Идентификатор автомобиля, который необходимо забронировать")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Успешное бронирование",
+     *         @OA\MediaType(
+     *             mediaType="text/plain",
+     *             @OA\Schema(
+     *                 type="integer",
+     *                 example="1708006209"
+     *             )
+     *         )
+     *     ),
+     *     ),
+     *     @OA\Response(
+     *         response="403",
+     *         description="Пользователь не зарегистрирован или не верифицирован",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Пользователь не зарегистрирован или не верифицирован")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Машина не найдена",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Машина не найдена")
+     *         )
+     *     )
+     * )
+     *
+     * @param \Illuminate\Http\Request $request Объект запроса, содержащий идентификатор автомобиля для бронирования
+     * @return \Illuminate\Http\JsonResponse JSON-ответ с результатом бронирования
+     */
+    public function booking(Request $request)
+    {
+        $rent_time = 3;
+        $user = Auth::guard('sanctum')->user();
+        if ($user->user_status !== UserStatus::Verified->value) {
+            return response()->json(['message' => 'Пользователь не зарегистрирован или не верифицирован'], 403);
+        }
+        $car = Car::where('id', $request->id)
+            ->with('booking', 'division', 'division.park')->first();
+        if (!$car) {
+            return response()->json(['message' => 'Машина не найдена'], 404);
+        }
+        if ($car->status !== CarStatus::AvailableForBooking->value) {
+            return response()->json(['message' => 'Машина уже забронирована'], 409);
+        }
+        $division = $car->division;
+        $driver = $user->driver;
+        $workingHours = json_decode($division->park->working_hours, true);
+        $currentDayOfWeek = Carbon::now()->format('l');
+
+        $currentTime = Carbon::now()->timestamp;
+
+        $endTimeOfWorkDayToday = Carbon::createFromFormat('H:i', $workingHours[strtolower($currentDayOfWeek)][0]['end'], $division->park->timezone)->timestamp;
+        $endTimeOfWorkDayToday -= $rent_time * 3600;
+
+        if ($endTimeOfWorkDayToday < $currentTime) {
+            $nextWorkingDay = Carbon::now()->addDay()->format('l');
+            $startTimeOfWorkDayTomorrow = Carbon::createFromFormat('H:i', $workingHours[strtolower($nextWorkingDay)][0]['start'], $division->park->timezone)->timestamp;
+            $newEndTime = $startTimeOfWorkDayTomorrow + $rent_time * 3600;
+        } else {
+            $remainingTime = $rent_time * 3600;
+            $newEndTime = $currentTime + $remainingTime;
         }
 
-
-
-        /**
-         * Бронирование автомобиля
-         *
-         * @OA\Post(
-         *     path="/auth/cars/booking",
-         *     operationId="booking",
-         *     summary="Бронирование автомобиля",
-         *     tags={"Cars"},
-         *     security={{"bearerAuth": {}}},
-         *     @OA\RequestBody(
-         *         required=true,
-         *         @OA\JsonContent(
-         *             @OA\Property(property="id", type="integer", description="Идентификатор автомобиля, который необходимо забронировать")
-         *         )
-         *     ),
-         *     @OA\Response(
-         *         response="200",
-         *         description="Успешное бронирование",
-         *         @OA\MediaType(
-         *             mediaType="text/plain",
-         *             @OA\Schema(
-         *                 type="integer",
-         *                 example="1708006209"
-         *             )
-         *         )
-         *     ),
-         *     ),
-         *     @OA\Response(
-         *         response="403",
-         *         description="Пользователь не зарегистрирован или не верифицирован",
-         *         @OA\JsonContent(
-         *             @OA\Property(property="message", type="string", example="Пользователь не зарегистрирован или не верифицирован")
-         *         )
-         *     ),
-         *     @OA\Response(
-         *         response="404",
-         *         description="Машина не найдена",
-         *         @OA\JsonContent(
-         *             @OA\Property(property="message", type="string", example="Машина не найдена")
-         *         )
-         *     )
-         * )
-         *
-         * @param \Illuminate\Http\Request $request Объект запроса, содержащий идентификатор автомобиля для бронирования
-         * @return \Illuminate\Http\JsonResponse JSON-ответ с результатом бронирования
-         */
-        public function booking(Request $request)
-        {
-            $rent_time = 3;
-            $user = Auth::guard('sanctum')->user();
-            if ($user->user_status !== UserStatus::Verified->value) {return response()->json(['message' => 'Пользователь не зарегистрирован или не верифицирован'], 403);}
-                $car = Car::where('id', $request->id)
-                ->with('booking', 'division', 'division.park')->first();
-                if (!$car) {
-                    return response()->json(['message' => 'Машина не найдена'], 404);
-                }
-                if ($car->status!==CarStatus::AvailableForBooking->value) {
-                    return response()->json(['message' => 'Машина уже забронирована'], 409);
-                }
-                $division = $car->division;
-                $driver = $user->driver;
-                $workingHours = json_decode($division->park->working_hours, true);
-                $currentDayOfWeek = Carbon::now()->format('l');
-
-                $currentTime = Carbon::now()->timestamp;
-
-                $endTimeOfWorkDayToday = Carbon::createFromFormat('H:i', $workingHours[strtolower($currentDayOfWeek)][0]['end'], $division->park->timezone)->timestamp;
-                $endTimeOfWorkDayToday -= $rent_time * 3600;
-
-                if ($endTimeOfWorkDayToday < $currentTime) {
-                    $nextWorkingDay = Carbon::now()->addDay()->format('l');
-                    $startTimeOfWorkDayTomorrow = Carbon::createFromFormat('H:i', $workingHours[strtolower($nextWorkingDay)][0]['start'], $division->park->timezone)->timestamp;
-                    $newEndTime = $startTimeOfWorkDayTomorrow + $rent_time * 3600;
-                } else {
-                    $remainingTime = $rent_time * 3600;
-                    $newEndTime = $currentTime + $remainingTime;
-                }
-
-                $booking = new Booking();
-                $booking->car_id = $request->id;
-                $booking->park_id = $division->park_id;
-                $booking->booked_at = $currentTime;
-                $booking->booked_until = $newEndTime;
-                $booking->status = BookingStatus::Booked->value;
-                $booking->driver_id = $driver->id;
-                $booking->save();
-                $car = $car->status = CarStatus::Booked->value;
-                $car->save();
-                $api = new APIController;
-                $api->notifyParkOnBookingStatusChanged($booking->id, true);
-                return response()->json($newEndTime, 200);
-        }
+        $booking = new Booking();
+        $booking->car_id = $request->id;
+        $booking->park_id = $division->park_id;
+        $booking->booked_at = $currentTime;
+        $booking->booked_until = $newEndTime;
+        $booking->status = BookingStatus::Booked->value;
+        $booking->driver_id = $driver->id;
+        $booking->save();
+        $car->status = CarStatus::Booked->value;
+        $car->save();
+        $api = new APIController;
+        $api->notifyParkOnBookingStatusChanged($booking->id, true);
+        return response()->json($newEndTime, 200);
+    }
 
     /**
      * Отмена бронирования автомобиля (аутентифицированный запрос)
@@ -508,7 +509,7 @@ if (($carClassValues) > 0) {
         ]);
         $user = Auth::guard('sanctum')->user();
         $car = Car::where('id', $request->id)
-        ->with('booking')->first();
+            ->with('booking')->first();
 
         if (!$car) {
             return response()->json(['message' => 'Машина не найдена'], 404);
