@@ -48,11 +48,10 @@ class CarsController extends Controller
      *             @OA\Property(property="brand", type="array", description="Марка автомобиля",@OA\Items()),
      *             @OA\Property(property="search", type="array", description="Марка или модель автомобиля",@OA\Items()),
      *             @OA\Property(property="sorting", type="string", description="сортировка, asc или desc"),
-     *                 @OA\Property(property="rent_term", type="object", description="Данные о сроке аренды",
-     *                         @OA\Property(property="non_working_days", type="integer", description="Количество нерабочих дней"),
-     *                         @OA\Property(property="working_days", type="integer", description="Количество рабочих дней"),
-     *                     )),
-     *                 ),
+     *             @OA\Property(property="rent_term", type="object", description="Данные о сроке аренды",
+     *                 @OA\Property(property="non_working_days", type="integer", description="Количество нерабочих дней"),
+     *                 @OA\Property(property="working_days", type="integer", description="Количество рабочих дней"),
+     *             ),
      *             @OA\Property(property="self_employed", type="boolean", description="Работа с самозанятыми"),
      *             @OA\Property(property="is_buyout_possible", type="boolean", description="Возможность выкупа"),
      *             @OA\Property(property="model", type="array", description="Модель автомобиля",@OA\Items()),
@@ -73,17 +72,17 @@ class CarsController extends Controller
      *                 @OA\Property(property="images", type="array", @OA\Items(type="string"), description="Ссылки на изображения"),
      *                 @OA\Property(property="сar_class", type="string", description="Класс тарифа", ref="#/components/schemas/CarClass"),
      *                 @OA\Property(property="park_name", type="string", description="Название парка"),
-     * @OA\Property(
-     *     property="working_hours",
-     *     type="array",
-     *     description="Расписание работы парка",
-     *     @OA\Items(
-     *         type="object",
-     *         @OA\Property(property="start", type="string", description="Время начала"),
-     *         @OA\Property(property="end", type="string", description="Время окончания"),
-     *         @OA\Property(property="day", type="string", description="День недели на русском")
-     *     )
-     * ),
+     *                 @OA\Property(
+     *                     property="working_hours",
+     *                     type="array",
+     *                     description="Расписание работы парка",
+     *                     @OA\Items(
+     *                         type="object",
+     *                         @OA\Property(property="start", type="string", description="Время начала"),
+     *                         @OA\Property(property="end", type="string", description="Время окончания"),
+     *                         @OA\Property(property="day", type="string", description="День недели на русском")
+     *                     )
+     *                 ),
      *                 @OA\Property(property="about", type="string", description="Описание парка"),
      *                 @OA\Property(property="phone", type="string", description="Телефон парка"),
      *                 @OA\Property(property="commission", type="number", description="Комиссия"),
