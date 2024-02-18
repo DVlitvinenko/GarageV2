@@ -7,11 +7,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 import { useEffect, useState } from "react";
 import {
+  Body15,
   Body9,
   CarClass,
   Cars2,
   FuelType,
   Schemas,
+  Schemas2,
   TransmissionType,
 } from "./api-client";
 import { Slider } from "@/components/ui/slider";
@@ -56,15 +58,15 @@ type CarFilter = {
   transmissionType: TransmissionType | null;
   selfEmployed: boolean;
   buyoutPossible: boolean;
-  rentTerm: Schemas | null;
+  schema: Schemas2 | null;
   sorting: "asc" | "desc";
 };
 
 enum ActiveFilter {
-  FuelType,
-  TransmissionType,
-  RentTerm,
-  Sorting,
+  FuelType = 1,
+  TransmissionType = 2,
+  RentTerm = 3,
+  Sorting = 4,
 }
 
 const staticSchemas = [
@@ -83,20 +85,18 @@ export const Finder = () => {
     selfEmployed: false,
     buyoutPossible: false,
     sorting: "asc",
-    rentTerm: null,
+    schema: null,
   });
 
   const [cars, setCars] = useState<Cars2[]>([]);
-  const [activeFilter, setActiveFilter] = useState<ActiveFilter>(
-    ActiveFilter.Sorting
-  );
+  const [activeFilter, setActiveFilter] = useState<ActiveFilter | null>(null);
 
   const city = useRecoilValue(cityAtom);
 
   useEffect(() => {
     const getCars = async () => {
       const data = await client.searchCars(
-        new Body9({
+        new Body15({
           brand: filters.brands,
           city,
           fuel_type: filters.fuelType || undefined,
@@ -108,6 +108,7 @@ export const Finder = () => {
           commission: filters.commission,
           self_employed: filters.selfEmployed,
           is_buyout_possible: filters.buyoutPossible,
+          schemas: filters.schema || undefined,
         })
       );
 
@@ -159,83 +160,102 @@ export const Finder = () => {
             );
           })}
         </div>
-        <div className="flex justify-between my-4 space-x-4 overflow-x-auto">
+        <div className="flex justify-between mt-4 mb-2 space-x-1 overflow-x-auto">
           {[
             {
               title: (
                 <FontAwesomeIcon
                   icon={faArrowRightArrowLeft}
-                  className="rotate-90"
+                  className="px-1 rotate-90"
                 />
               ),
               filter: ActiveFilter.Sorting,
+              isEngaged: filters.sorting === "desc",
             },
             {
               title: "Любой график аренды",
               filter: ActiveFilter.RentTerm,
+              isEngaged: filters.schema !== null,
             },
+            { isEngaged: filters.brands.length > 0 },
             {
               title: "Трансмиссия",
               filter: ActiveFilter.TransmissionType,
+              isEngaged: filters.transmissionType !== null,
             },
             {
               title: "Топливо",
               filter: ActiveFilter.FuelType,
+              isEngaged: filters.fuelType !== null,
             },
-          ].map(({ filter, title }) => (
-            <Badge
-              className={`${activeFilter === filter ? "bg-white" : ""} `}
-              onClick={() => setActiveFilter(filter)}
-            >
-              {title}
-            </Badge>
-          ))}
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="outline">
-                {filters.brands.length
-                  ? filters.brands.join(", ")
-                  : "Все марки"}
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[800px]">
-              <DialogHeader>
-                <DialogTitle>Марка автомобиля</DialogTitle>
-              </DialogHeader>
-              <div className="grid grid-cols-3 gap-4 py-4 h-[300px] overflow-y-scroll">
-                {["Audi", "BMW", "Kia", "Hyundai"].map((x) => {
-                  const title = x;
-                  const isActive = filters.brands.some((b) => b === title);
+          ].map(({ filter, title, isEngaged }) => (
+            <div className="relative">
+              {isEngaged && (
+                <div className="absolute top-0 right-0 w-3 h-3 rounded-full bg-red"></div>
+              )}
+              {!!filter && (
+                <Badge
+                  className={`${activeFilter === filter ? "bg-white" : ""} `}
+                  onClick={() =>
+                    setActiveFilter(activeFilter === filter ? null : filter)
+                  }
+                >
+                  {title}
+                </Badge>
+              )}
 
-                  return (
-                    <span
-                      className={`text-sm font-bold  ${
-                        isActive ? "text-slate-700" : "text-slate-400"
-                      }`}
-                      key={title}
-                      onClick={() =>
-                        setFilters({
-                          ...filters,
-                          brands: isActive
-                            ? filters.brands.filter((b) => b != title)
-                            : [...filters.brands, title],
-                        })
-                      }
-                    >
-                      {title}
-                    </span>
-                  );
-                })}
-              </div>
-              <DialogFooter>
-                <DialogClose asChild>
-                  <Button>Выбрать</Button>
-                </DialogClose>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+              {!filter && (
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline">
+                      {filters.brands.length
+                        ? filters.brands.join(", ")
+                        : "Все марки"}
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[800px]">
+                    <DialogHeader>
+                      <DialogTitle>Марка автомобиля</DialogTitle>
+                    </DialogHeader>
+                    <div className="grid grid-cols-3 gap-4 py-4 h-[300px] overflow-y-scroll">
+                      {["Audi", "BMW", "Kia", "Hyundai"].map((x) => {
+                        const title = x;
+                        const isActive = filters.brands.some(
+                          (b) => b === title
+                        );
+
+                        return (
+                          <span
+                            className={`text-sm font-bold  ${
+                              isActive ? "text-slate-700" : "text-slate-400"
+                            }`}
+                            key={title}
+                            onClick={() =>
+                              setFilters({
+                                ...filters,
+                                brands: isActive
+                                  ? filters.brands.filter((b) => b != title)
+                                  : [...filters.brands, title],
+                              })
+                            }
+                          >
+                            {title}
+                          </span>
+                        );
+                      })}
+                    </div>
+                    <DialogFooter>
+                      <DialogClose asChild>
+                        <Button>Выбрать</Button>
+                      </DialogClose>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              )}
+            </div>
+          ))}
         </div>
-        <div className="">
+        <div className="flex justify-between my-2 mb-4 space-x-1 overflow-x-auto">
           {activeFilter === ActiveFilter.Sorting &&
             ["asc", "desc"].map((sorting) => (
               <Badge
@@ -252,20 +272,18 @@ export const Finder = () => {
               </Badge>
             ))}
           {activeFilter === ActiveFilter.RentTerm &&
-            [null, ...staticSchemas].map((rentTerm) => (
+            [null, ...staticSchemas].map((schema) => (
               <Badge
-                className={`${
-                  filters.rentTerm === rentTerm ? "bg-white" : ""
-                } `}
+                className={`${filters.schema === schema ? "bg-white" : ""} `}
                 onClick={() =>
                   setFilters({
                     ...filters,
-                    rentTerm,
+                    schema,
                   })
                 }
               >
-                {rentTerm
-                  ? `${rentTerm?.working_days}/${rentTerm?.non_working_days}`
+                {schema
+                  ? `${schema?.working_days}/${schema?.non_working_days}`
                   : "Любой график аренды"}
               </Badge>
             ))}

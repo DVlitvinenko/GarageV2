@@ -642,7 +642,7 @@ export class Client {
     }
 
     /**
-     * Обновление условий аренды
+     * Обновление тарифа авто с критериями блокерами
      * @return Успешное обновление тарифа
      */
     upfateTariff(body: Body11): Promise<Anonymous39> {
@@ -705,7 +705,7 @@ export class Client {
     }
 
     /**
-     * Создание условий аренды
+     * Создание тарифа авто с критериями блокерами
      * @return Успешное создание  тарифа
      */
     createTariff(body: Body12): Promise<Anonymous43> {
@@ -1709,12 +1709,8 @@ export interface IBody6 {
 
 export class Body7 implements IBody7 {
     /** VIN-номер автомобиля */
-    id?: string;
+    car_id?: string;
     status?: BookingStatus;
-    /** ФИО водителя */
-    driver_name?: string;
-    /** Телефон водителя */
-    phone?: string;
 
     [key: string]: any;
 
@@ -1733,10 +1729,8 @@ export class Body7 implements IBody7 {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
-            this.id = _data["id"];
+            this.car_id = _data["car_id"];
             this.status = _data["status"];
-            this.driver_name = _data["driver_name"];
-            this.phone = _data["phone"];
         }
     }
 
@@ -1753,22 +1747,16 @@ export class Body7 implements IBody7 {
             if (this.hasOwnProperty(property))
                 data[property] = this[property];
         }
-        data["id"] = this.id;
+        data["car_id"] = this.car_id;
         data["status"] = this.status;
-        data["driver_name"] = this.driver_name;
-        data["phone"] = this.phone;
         return data;
     }
 }
 
 export interface IBody7 {
     /** VIN-номер автомобиля */
-    id?: string;
+    car_id?: string;
     status?: BookingStatus;
-    /** ФИО водителя */
-    driver_name?: string;
-    /** Телефон водителя */
-    phone?: string;
 
     [key: string]: any;
 }
@@ -1784,6 +1772,8 @@ export class Body8 implements IBody8 {
     park_name?: string;
     /** Описание парка */
     about?: string;
+    /** Телефон парка */
+    phone?: string;
     /** Время работы */
     working_hours?: Working_hours;
 
@@ -1809,6 +1799,7 @@ export class Body8 implements IBody8 {
             this.self_employed = _data["self_employed"];
             this.park_name = _data["park_name"];
             this.about = _data["about"];
+            this.phone = _data["phone"];
             this.working_hours = _data["working_hours"] ? Working_hours.fromJS(_data["working_hours"]) : <any>undefined;
         }
     }
@@ -1831,6 +1822,7 @@ export class Body8 implements IBody8 {
         data["self_employed"] = this.self_employed;
         data["park_name"] = this.park_name;
         data["about"] = this.about;
+        data["phone"] = this.phone;
         data["working_hours"] = this.working_hours ? this.working_hours.toJSON() : <any>undefined;
         return data;
     }
@@ -1847,6 +1839,8 @@ export interface IBody8 {
     park_name?: string;
     /** Описание парка */
     about?: string;
+    /** Телефон парка */
+    phone?: string;
     /** Время работы */
     working_hours?: Working_hours;
 
@@ -1993,7 +1987,7 @@ export class Body11 implements IBody11 {
     /** id тарифа */
     id?: number;
     /** Участие в ДТП, true/false */
-    participation_accident?: boolean | undefined;
+    has_caused_accident?: boolean | undefined;
     /** Минимальный опыт вождения */
     experience?: number | undefined;
     /** Максимальное количество штрафов */
@@ -2027,7 +2021,7 @@ export class Body11 implements IBody11 {
                     this[property] = _data[property];
             }
             this.id = _data["id"];
-            this.participation_accident = _data["participation_accident"];
+            this.has_caused_accident = _data["has_caused_accident"];
             this.experience = _data["experience"];
             this.max_fine_count = _data["max_fine_count"];
             this.abandoned_car = _data["abandoned_car"];
@@ -2052,7 +2046,7 @@ export class Body11 implements IBody11 {
                 data[property] = this[property];
         }
         data["id"] = this.id;
-        data["participation_accident"] = this.participation_accident;
+        data["has_caused_accident"] = this.has_caused_accident;
         data["experience"] = this.experience;
         data["max_fine_count"] = this.max_fine_count;
         data["abandoned_car"] = this.abandoned_car;
@@ -2068,7 +2062,7 @@ export interface IBody11 {
     /** id тарифа */
     id?: number;
     /** Участие в ДТП, true/false */
-    participation_accident?: boolean | undefined;
+    has_caused_accident?: boolean | undefined;
     /** Минимальный опыт вождения */
     experience?: number | undefined;
     /** Максимальное количество штрафов */
@@ -2093,7 +2087,7 @@ export class Body12 implements IBody12 {
     /** Город тарифа */
     city?: string;
     /** Участие в ДТП, true/false */
-    participation_accident?: boolean;
+    has_caused_accident?: boolean;
     /** Минимальный опыт вождения */
     experience?: number;
     /** Максимальное количество штрафов */
@@ -2103,9 +2097,9 @@ export class Body12 implements IBody12 {
     /** минимальный скоринг */
     min_scoring?: number;
     /** Массив запрещенных статей */
-    forbidden_republic_ids?: string;
+    forbidden_republic_ids?: string[];
     /** Массив запрещенных республик */
-    criminal_ids?: string;
+    criminal_ids?: string[];
     /** Принимает ли что-то водитель, алкоголь/иное, true/false */
     alcohol?: boolean;
 
@@ -2128,13 +2122,21 @@ export class Body12 implements IBody12 {
             }
             this.class = _data["class"];
             this.city = _data["city"];
-            this.participation_accident = _data["participation_accident"];
+            this.has_caused_accident = _data["has_caused_accident"];
             this.experience = _data["experience"];
             this.max_fine_count = _data["max_fine_count"];
             this.abandoned_car = _data["abandoned_car"];
             this.min_scoring = _data["min_scoring"];
-            this.forbidden_republic_ids = _data["forbidden_republic_ids"];
-            this.criminal_ids = _data["criminal_ids"];
+            if (Array.isArray(_data["forbidden_republic_ids"])) {
+                this.forbidden_republic_ids = [] as any;
+                for (let item of _data["forbidden_republic_ids"])
+                    this.forbidden_republic_ids!.push(item);
+            }
+            if (Array.isArray(_data["criminal_ids"])) {
+                this.criminal_ids = [] as any;
+                for (let item of _data["criminal_ids"])
+                    this.criminal_ids!.push(item);
+            }
             this.alcohol = _data["alcohol"];
         }
     }
@@ -2154,13 +2156,21 @@ export class Body12 implements IBody12 {
         }
         data["class"] = this.class;
         data["city"] = this.city;
-        data["participation_accident"] = this.participation_accident;
+        data["has_caused_accident"] = this.has_caused_accident;
         data["experience"] = this.experience;
         data["max_fine_count"] = this.max_fine_count;
         data["abandoned_car"] = this.abandoned_car;
         data["min_scoring"] = this.min_scoring;
-        data["forbidden_republic_ids"] = this.forbidden_republic_ids;
-        data["criminal_ids"] = this.criminal_ids;
+        if (Array.isArray(this.forbidden_republic_ids)) {
+            data["forbidden_republic_ids"] = [];
+            for (let item of this.forbidden_republic_ids)
+                data["forbidden_republic_ids"].push(item);
+        }
+        if (Array.isArray(this.criminal_ids)) {
+            data["criminal_ids"] = [];
+            for (let item of this.criminal_ids)
+                data["criminal_ids"].push(item);
+        }
         data["alcohol"] = this.alcohol;
         return data;
     }
@@ -2172,7 +2182,7 @@ export interface IBody12 {
     /** Город тарифа */
     city?: string;
     /** Участие в ДТП, true/false */
-    participation_accident?: boolean;
+    has_caused_accident?: boolean;
     /** Минимальный опыт вождения */
     experience?: number;
     /** Максимальное количество штрафов */
@@ -2182,9 +2192,9 @@ export interface IBody12 {
     /** минимальный скоринг */
     min_scoring?: number;
     /** Массив запрещенных статей */
-    forbidden_republic_ids?: string;
+    forbidden_republic_ids?: string[];
     /** Массив запрещенных республик */
-    criminal_ids?: string;
+    criminal_ids?: string[];
     /** Принимает ли что-то водитель, алкоголь/иное, true/false */
     alcohol?: boolean;
 
@@ -2315,7 +2325,7 @@ export class Body15 implements IBody15 {
     /** сортировка, asc или desc */
     sorting?: string;
     /** Данные о сроке аренды */
-    rent_term?: Rent_term;
+    schemas?: Schemas2;
     /** Работа с самозанятыми */
     self_employed?: boolean;
     /** Возможность выкупа */
@@ -2359,7 +2369,7 @@ export class Body15 implements IBody15 {
                     this.search!.push(item);
             }
             this.sorting = _data["sorting"];
-            this.rent_term = _data["rent_term"] ? Rent_term.fromJS(_data["rent_term"]) : <any>undefined;
+            this.schemas = _data["Schemas"] ? Schemas2.fromJS(_data["Schemas"]) : <any>undefined;
             this.self_employed = _data["self_employed"];
             this.is_buyout_possible = _data["is_buyout_possible"];
             if (Array.isArray(_data["model"])) {
@@ -2405,7 +2415,7 @@ export class Body15 implements IBody15 {
                 data["search"].push(item);
         }
         data["sorting"] = this.sorting;
-        data["rent_term"] = this.rent_term ? this.rent_term.toJSON() : <any>undefined;
+        data["Schemas"] = this.schemas ? this.schemas.toJSON() : <any>undefined;
         data["self_employed"] = this.self_employed;
         data["is_buyout_possible"] = this.is_buyout_possible;
         if (Array.isArray(this.model)) {
@@ -2440,7 +2450,7 @@ export interface IBody15 {
     /** сортировка, asc или desc */
     sorting?: string;
     /** Данные о сроке аренды */
-    rent_term?: Rent_term;
+    schemas?: Schemas2;
     /** Работа с самозанятыми */
     self_employed?: boolean;
     /** Возможность выкупа */
@@ -5916,8 +5926,6 @@ export class Working_hours implements IWorking_hours {
     saturday?: any;
     /** Время работы в воскресенье */
     sunday?: any;
-    /** Телефон парка */
-    phone?: string;
 
     [key: string]: any;
 
@@ -5943,7 +5951,6 @@ export class Working_hours implements IWorking_hours {
             this.friday = _data["friday"];
             this.saturday = _data["saturday"];
             this.sunday = _data["sunday"];
-            this.phone = _data["phone"];
         }
     }
 
@@ -5967,7 +5974,6 @@ export class Working_hours implements IWorking_hours {
         data["friday"] = this.friday;
         data["saturday"] = this.saturday;
         data["sunday"] = this.sunday;
-        data["phone"] = this.phone;
         return data;
     }
 }
@@ -5987,13 +5993,11 @@ export interface IWorking_hours {
     saturday?: any;
     /** Время работы в воскресенье */
     sunday?: any;
-    /** Телефон парка */
-    phone?: string;
 
     [key: string]: any;
 }
 
-export class Rent_term implements IRent_term {
+export class Schemas2 implements ISchemas2 {
     /** Количество нерабочих дней */
     non_working_days?: number;
     /** Количество рабочих дней */
@@ -6001,7 +6005,7 @@ export class Rent_term implements IRent_term {
 
     [key: string]: any;
 
-    constructor(data?: IRent_term) {
+    constructor(data?: ISchemas2) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -6021,9 +6025,9 @@ export class Rent_term implements IRent_term {
         }
     }
 
-    static fromJS(data: any): Rent_term {
+    static fromJS(data: any): Schemas2 {
         data = typeof data === 'object' ? data : {};
-        let result = new Rent_term();
+        let result = new Schemas2();
         result.init(data);
         return result;
     }
@@ -6040,7 +6044,7 @@ export class Rent_term implements IRent_term {
     }
 }
 
-export interface IRent_term {
+export interface ISchemas2 {
     /** Количество нерабочих дней */
     non_working_days?: number;
     /** Количество рабочих дней */
@@ -6169,7 +6173,7 @@ export class Cars2 implements ICars2 {
     /** Данные о подразделении */
     division?: Division;
     /** Данные о сроке аренды */
-    rent_term?: Rent_term2;
+    rent_term?: Rent_term;
 
     [key: string]: any;
 
@@ -6212,7 +6216,7 @@ export class Cars2 implements ICars2 {
             this.self_employed = _data["self_employed"];
             this.city = _data["city"];
             this.division = _data["division"] ? Division.fromJS(_data["division"]) : <any>undefined;
-            this.rent_term = _data["rent_term"] ? Rent_term2.fromJS(_data["rent_term"]) : <any>undefined;
+            this.rent_term = _data["rent_term"] ? Rent_term.fromJS(_data["rent_term"]) : <any>undefined;
         }
     }
 
@@ -6288,7 +6292,7 @@ export interface ICars2 {
     /** Данные о подразделении */
     division?: Division;
     /** Данные о сроке аренды */
-    rent_term?: Rent_term2;
+    rent_term?: Rent_term;
 
     [key: string]: any;
 }
@@ -6465,7 +6469,7 @@ export interface IDivision {
     [key: string]: any;
 }
 
-export class Rent_term2 implements IRent_term2 {
+export class Rent_term implements IRent_term {
     /** Сумма депозита за день */
     deposit_amount_daily?: number;
     /** Общая сумма депозита */
@@ -6474,11 +6478,11 @@ export class Rent_term2 implements IRent_term2 {
     minimum_period_days?: number;
     /** Возможность выкупа */
     is_buyout_possible?: boolean;
-    schemas?: Schemas2[];
+    schemas?: Schemas3[];
 
     [key: string]: any;
 
-    constructor(data?: IRent_term2) {
+    constructor(data?: IRent_term) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -6500,14 +6504,14 @@ export class Rent_term2 implements IRent_term2 {
             if (Array.isArray(_data["schemas"])) {
                 this.schemas = [] as any;
                 for (let item of _data["schemas"])
-                    this.schemas!.push(Schemas2.fromJS(item));
+                    this.schemas!.push(Schemas3.fromJS(item));
             }
         }
     }
 
-    static fromJS(data: any): Rent_term2 {
+    static fromJS(data: any): Rent_term {
         data = typeof data === 'object' ? data : {};
-        let result = new Rent_term2();
+        let result = new Rent_term();
         result.init(data);
         return result;
     }
@@ -6531,7 +6535,7 @@ export class Rent_term2 implements IRent_term2 {
     }
 }
 
-export interface IRent_term2 {
+export interface IRent_term {
     /** Сумма депозита за день */
     deposit_amount_daily?: number;
     /** Общая сумма депозита */
@@ -6540,12 +6544,12 @@ export interface IRent_term2 {
     minimum_period_days?: number;
     /** Возможность выкупа */
     is_buyout_possible?: boolean;
-    schemas?: Schemas2[];
+    schemas?: Schemas3[];
 
     [key: string]: any;
 }
 
-export class Schemas2 implements ISchemas2 {
+export class Schemas3 implements ISchemas3 {
     /** Суточная стоимость */
     daily_amount?: number;
     /** Количество нерабочих дней */
@@ -6555,7 +6559,7 @@ export class Schemas2 implements ISchemas2 {
 
     [key: string]: any;
 
-    constructor(data?: ISchemas2) {
+    constructor(data?: ISchemas3) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -6576,9 +6580,9 @@ export class Schemas2 implements ISchemas2 {
         }
     }
 
-    static fromJS(data: any): Schemas2 {
+    static fromJS(data: any): Schemas3 {
         data = typeof data === 'object' ? data : {};
-        let result = new Schemas2();
+        let result = new Schemas3();
         result.init(data);
         return result;
     }
@@ -6596,7 +6600,7 @@ export class Schemas2 implements ISchemas2 {
     }
 }
 
-export interface ISchemas2 {
+export interface ISchemas3 {
     /** Суточная стоимость */
     daily_amount?: number;
     /** Количество нерабочих дней */

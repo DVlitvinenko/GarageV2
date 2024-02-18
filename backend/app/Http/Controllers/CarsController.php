@@ -48,7 +48,7 @@ class CarsController extends Controller
      *             @OA\Property(property="brand", type="array", description="Марка автомобиля",@OA\Items()),
      *             @OA\Property(property="search", type="array", description="Марка или модель автомобиля",@OA\Items()),
      *             @OA\Property(property="sorting", type="string", description="сортировка, asc или desc"),
-     *             @OA\Property(property="rent_term", type="object", description="Данные о сроке аренды",
+     *             @OA\Property(property="Schemas", type="object", description="Данные о сроке аренды",
      *                 @OA\Property(property="non_working_days", type="integer", description="Количество нерабочих дней"),
      *                 @OA\Property(property="working_days", type="integer", description="Количество рабочих дней"),
      *             ),
@@ -131,7 +131,7 @@ class CarsController extends Controller
         $city = City::where('name', $request->city)->first();
         $search = $request->search;
         $cityId = $city->id;
-        $rentTerm = $request->rent_term;
+        $rentTerm = $request->Schemas;
         if (!$city) {
             return response()->json(['error' => 'Город не найден'], 404);
         }
@@ -142,9 +142,9 @@ class CarsController extends Controller
         $carClassValues = $request->car_class;
         $translatedValues = [];
 
-        if (($carClassValues) > 0) {
+        if (count($carClassValues) > 0) {
             foreach ($carClassValues as $key) {
-                $keyNew = CarClass::{$key}()->value;
+                $keyNew = CarClass::{$key}->value;
                 $translatedValues[$key] = $keyNew;
             }
         }

@@ -8,7 +8,9 @@
     "paths": {
         "/cars": {
             "put": {
-                "tags": ["API"],
+                "tags": [
+                    "API"
+                ],
                 "summary": "Обновление информации о машине",
                 "description": "Обновление информации о машине",
                 "operationId": "updateCar",
@@ -127,7 +129,9 @@
                 ]
             },
             "post": {
-                "tags": ["API"],
+                "tags": [
+                    "API"
+                ],
                 "summary": "Добавить несколько автомобилей, все добавленные автомобили будут доступны к бронированию сразу после привязки к ним Условий бронирования (метод: /cars/rent-term)",
                 "description": "Добавить несколько автомобилей",
                 "operationId": "pushCars",
@@ -274,7 +278,9 @@
         },
         "/cars/status": {
             "put": {
-                "tags": ["API"],
+                "tags": [
+                    "API"
+                ],
                 "summary": "Обновление статуса допуска к бронированию",
                 "description": "Обновление статуса допуска к бронированию автомобиля",
                 "operationId": "updateCarStatus",
@@ -397,7 +403,9 @@
         },
         "/URL_АДРЕС_ПАРКА/cars/outbound/status": {
             "put": {
-                "tags": ["API"],
+                "tags": [
+                    "API"
+                ],
                 "summary": "Изменить статус бронирования автомобиля, ОТ МОЕГО ГАРАЖА",
                 "description": "Изменить статус бронирования автомобиля\n\nЭтот метод используется для передачи данных ОТ МОЕГО ГАРАЖА.",
                 "operationId": "notifyParkOnBookingStatusChanged",
@@ -446,7 +454,9 @@
         },
         "/parks/rent-terms": {
             "post": {
-                "tags": ["API"],
+                "tags": [
+                    "API"
+                ],
                 "summary": "Создание или обновление условий аренды",
                 "description": "Создание или обновление условий аренды\n\nЭтот метод позволяет создавать новые или обновлять существующие условия аренды для парков.",
                 "operationId": "createOrUpdateRentTerm",
@@ -623,7 +633,9 @@
         },
         "/cars/rent-term": {
             "put": {
-                "tags": ["API"],
+                "tags": [
+                    "API"
+                ],
                 "summary": "Обновление условия аренды для автомобиля",
                 "description": "Обновление условия аренды для автомобиля\n\nЭтот метод позволяет обновлять условие аренды для конкретного автомобиля по его VIN-номеру.",
                 "operationId": "updateCarRentTerm",
@@ -745,7 +757,9 @@
         },
         "/cars/booking": {
             "put": {
-                "tags": ["API"],
+                "tags": [
+                    "API"
+                ],
                 "summary": "Обновление статуса брони автомобиля",
                 "description": "Обновление условия аренды для автомобиля\n\nЭтот метод позволяет обновлять статус брони для конкретного автомобиля по его VIN-номеру.",
                 "operationId": "updateCarBookingStatus",
@@ -755,20 +769,12 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "id": {
+                                    "car_id": {
                                         "description": "VIN-номер автомобиля",
                                         "type": "string"
                                     },
                                     "status": {
                                         "$ref": "#/components/schemas/BookingStatus"
-                                    },
-                                    "driver_name": {
-                                        "description": "ФИО водителя",
-                                        "type": "string"
-                                    },
-                                    "phone": {
-                                        "description": "Телефон водителя",
-                                        "type": "string"
                                     }
                                 },
                                 "type": "object"
@@ -874,7 +880,9 @@
         },
         "/parks": {
             "put": {
-                "tags": ["API"],
+                "tags": [
+                    "API"
+                ],
                 "summary": "Обновление информации о парке",
                 "description": "Обновление информации о парке\n\nЭтот метод позволяет обновлять информацию о парке.",
                 "operationId": "updateParkInfo",
@@ -902,6 +910,10 @@
                                     },
                                     "about": {
                                         "description": "Описание парка",
+                                        "type": "string"
+                                    },
+                                    "phone": {
+                                        "description": "Телефон парка",
                                         "type": "string"
                                     },
                                     "working_hours": {
@@ -934,10 +946,6 @@
                                             "sunday": {
                                                 "description": "Время работы в воскресенье",
                                                 "type": "object"
-                                            },
-                                            "phone": {
-                                                "description": "Телефон парка",
-                                                "type": "string"
                                             }
                                         },
                                         "type": "object"
@@ -1033,7 +1041,9 @@
         },
         "/parks/division": {
             "put": {
-                "tags": ["API"],
+                "tags": [
+                    "API"
+                ],
                 "summary": "Обновление подразделения парка",
                 "description": "Обновление подразделения парка\n\nЭтот метод позволяет обновлять подразделение в парке.",
                 "operationId": "updateParkDivision",
@@ -1152,7 +1162,9 @@
                 ]
             },
             "post": {
-                "tags": ["API"],
+                "tags": [
+                    "API"
+                ],
                 "summary": "Создание подразделения парка",
                 "description": "Создание подразделения парка\n\nЭтот метод позволяет создавать подразделение в парке.",
                 "operationId": "createParkDivision",
@@ -1264,9 +1276,11 @@
         },
         "/parks/tariff": {
             "put": {
-                "tags": ["API"],
-                "summary": "Обновление условий аренды",
-                "description": "Обновление условий аренды\n\nЭтот метод позволяет обновлять условия аренды для парков.",
+                "tags": [
+                    "API"
+                ],
+                "summary": "Обновление тарифа авто с критериями блокерами",
+                "description": "Обновление тарифа авто с критериями блокерами\n\nЭтот метод позволяет обновлять тарифы авто с критериями блокерами для парков.",
                 "operationId": "upfateTariff",
                 "requestBody": {
                     "required": true,
@@ -1278,7 +1292,7 @@
                                         "description": "id тарифа",
                                         "type": "integer"
                                     },
-                                    "participation_accident": {
+                                    "has_caused_accident": {
                                         "description": "Участие в ДТП, true/false",
                                         "type": "boolean",
                                         "nullable": true
@@ -1397,9 +1411,11 @@
                 ]
             },
             "post": {
-                "tags": ["API"],
-                "summary": "Создание условий аренды",
-                "description": "Создание условий аренды\n\nЭтот метод позволяет создавать новые условия аренды для парков. В одном гоороде для парка может быть толкьо один тариф заданного класса.",
+                "tags": [
+                    "API"
+                ],
+                "summary": "Создание тарифа авто с критериями блокерами",
+                "description": "Создание тарифа авто с критериями блокерами\n\nЭтот метод позволяет создавать новые тарифы авто с критериями блокерами для парков. В одном городе для парка может быть толкьо один тариф заданного класса.",
                 "operationId": "createTariff",
                 "requestBody": {
                     "required": true,
@@ -1416,7 +1432,7 @@
                                         "description": "Город тарифа",
                                         "type": "string"
                                     },
-                                    "participation_accident": {
+                                    "has_caused_accident": {
                                         "description": "Участие в ДТП, true/false",
                                         "type": "boolean"
                                     },
@@ -1438,11 +1454,17 @@
                                     },
                                     "forbidden_republic_ids": {
                                         "description": "Массив запрещенных статей",
-                                        "type": "string"
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
                                     },
                                     "criminal_ids": {
                                         "description": "Массив запрещенных республик",
-                                        "type": "string"
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
                                     },
                                     "alcohol": {
                                         "description": "Принимает ли что-то водитель, алкоголь/иное, true/false",
@@ -1549,7 +1571,9 @@
         },
         "/user": {
             "get": {
-                "tags": ["Authentication"],
+                "tags": [
+                    "Authentication"
+                ],
                 "summary": "Получение данных пользователя (аутентифицированный запрос)",
                 "description": "Получение данных пользователя (аутентифицированный запрос)",
                 "operationId": "GetUser",
@@ -1637,7 +1661,9 @@
                 ]
             },
             "delete": {
-                "tags": ["Authentication"],
+                "tags": [
+                    "Authentication"
+                ],
                 "summary": "Удаление пользователя и связанных записей",
                 "description": "Удаление пользователя и связанных записей",
                 "operationId": "DeleteUser",
@@ -1684,7 +1710,9 @@
         },
         "/user/login": {
             "post": {
-                "tags": ["Authentication"],
+                "tags": [
+                    "Authentication"
+                ],
                 "summary": "Аутентификация пользователя или регистрация нового",
                 "description": "Аутентификация пользователя или регистрация нового",
                 "operationId": "loginOrRegister",
@@ -1743,7 +1771,9 @@
         },
         "/user/logout": {
             "post": {
-                "tags": ["Authentication"],
+                "tags": [
+                    "Authentication"
+                ],
                 "summary": "Выход пользователя из системы",
                 "description": "Выход пользователя из системы",
                 "operationId": "logout",
@@ -1790,7 +1820,9 @@
         },
         "/user/code": {
             "post": {
-                "tags": ["Authentication"],
+                "tags": [
+                    "Authentication"
+                ],
                 "summary": "Создание и отправка проверочного кода на указанный номер телефона",
                 "description": "Создание и отправка проверочного кода на указанный номер телефона",
                 "operationId": "CreateAndSendCode",
@@ -1850,7 +1882,9 @@
         },
         "/cars/search": {
             "post": {
-                "tags": ["Cars"],
+                "tags": [
+                    "Cars"
+                ],
                 "summary": "Получение списка автомобилей с учетом фильтров (аутентифицированный запрос)",
                 "description": "Получение списка автомобилей с учетом фильтров (аутентифицированный запрос)",
                 "operationId": "SearchCars",
@@ -1896,7 +1930,7 @@
                                         "description": "сортировка, asc или desc",
                                         "type": "string"
                                     },
-                                    "rent_term": {
+                                    "Schemas": {
                                         "description": "Данные о сроке аренды",
                                         "properties": {
                                             "non_working_days": {
@@ -2108,7 +2142,9 @@
         },
         "/auth/cars/booking": {
             "post": {
-                "tags": ["Cars"],
+                "tags": [
+                    "Cars"
+                ],
                 "summary": "Бронирование автомобиля",
                 "description": "Бронирование автомобиля",
                 "operationId": "booking",
@@ -2150,7 +2186,9 @@
         },
         "/auth/cars/cancel-booking": {
             "post": {
-                "tags": ["Cars"],
+                "tags": [
+                    "Cars"
+                ],
                 "summary": "Отмена бронирования автомобиля (аутентифицированный запрос)",
                 "description": "Отмена бронирования автомобиля (аутентифицированный запрос)",
                 "operationId": "cancelBooking",
@@ -2277,7 +2315,9 @@
         },
         "/driver/upload-file": {
             "post": {
-                "tags": ["Files"],
+                "tags": [
+                    "Files"
+                ],
                 "summary": "Загрузить файл",
                 "description": "Загрузить файл и связать его с документами водителя аутентифицированного пользователя",
                 "operationId": "uploadFile",
@@ -2359,12 +2399,22 @@
             "CarClass": {
                 "description": "The unique identifier of a product in our catalog",
                 "type": "string",
-                "enum": ["Economy", "Comfort", "ComfortPlus", "Business"]
+                "enum": [
+                    "Economy",
+                    "Comfort",
+                    "ComfortPlus",
+                    "Business"
+                ]
             },
             "CarStatus": {
                 "description": "The unique identifier of a product in our catalog",
                 "type": "string",
-                "enum": ["AvailableForBooking", "Hidden", "Booked", "Rented"]
+                "enum": [
+                    "AvailableForBooking",
+                    "Hidden",
+                    "Booked",
+                    "Rented"
+                ]
             },
             "DriverDocumentType": {
                 "description": "The unique identifier of a product in our catalog",
@@ -2380,22 +2430,36 @@
             "FuelType": {
                 "description": "The unique identifier of a product in our catalog",
                 "type": "string",
-                "enum": ["Gas", "Gasoline"]
+                "enum": [
+                    "Gas",
+                    "Gasoline"
+                ]
             },
             "TransmissionType": {
                 "description": "The unique identifier of a product in our catalog",
                 "type": "string",
-                "enum": ["Mechanics", "Automatic"]
+                "enum": [
+                    "Mechanics",
+                    "Automatic"
+                ]
             },
             "UserStatus": {
                 "description": "The unique identifier of a product in our catalog",
                 "type": "string",
-                "enum": ["DocumentsNotUploaded", "Verification", "Verified"]
+                "enum": [
+                    "DocumentsNotUploaded",
+                    "Verification",
+                    "Verified"
+                ]
             },
             "UserType": {
                 "description": "The unique identifier of a product in our catalog",
                 "type": "string",
-                "enum": ["Driver", "Manager", "Admin"]
+                "enum": [
+                    "Driver",
+                    "Manager",
+                    "Admin"
+                ]
             }
         },
         "responses": {
