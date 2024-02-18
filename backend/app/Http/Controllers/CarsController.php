@@ -277,7 +277,6 @@ class CarsController extends Controller
                 'cars.year_produced',
                 'cars.car_id',
                 'cars.images',
-                'cars.price',
             );
 
         $carsQuery->orderBy(function ($query) use ($sorting) {

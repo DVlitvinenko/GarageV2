@@ -724,7 +724,6 @@ class APIController extends Controller
         }
 
         $car->rent_term_id = $rentTermId;
-        $car->price = $schema->daily_amount;
         $car->save();
 
         return response()->json(['message' => 'Условие аренды успешно привязано к автомобилю'], 200);
