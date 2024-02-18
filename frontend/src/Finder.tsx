@@ -126,7 +126,7 @@ export const Finder = () => {
     <>
       {/* <div onClick={() => navigate("login/driver")} className="fixed top-5 right-5">Войти</div> */}
       <div className="">
-        <div className="flex justify-between h-24 mx-auto my-2">
+        <div className="flex justify-between mx-auto my-2 h-fit">
           {[
             [CarClass.Economy, econom, "Эконом"],
             [CarClass.Comfort, comfort, "Комфорт"],
@@ -139,12 +139,12 @@ export const Finder = () => {
             return (
               <div
                 key={carClass}
-                className={`w-20 flex flex-col items-center bg-white rounded-xl transition-all ${
-                  isActive ? "shadow border-2 border-yellow" : " scale-75"
+                className={`w-20 flex flex-col items-center bg-white rounded-xl transition-all h-fit pb-2 ${
+                  isActive ? "shadow border-2 border-yellow" : " scale-90"
                 }`}
               >
                 <img
-                  className="w-16 rounded-xl"
+                  className="w-12 rounded-xl"
                   onClick={() =>
                     setFilters({
                       ...filters,
@@ -160,7 +160,7 @@ export const Finder = () => {
             );
           })}
         </div>
-        <div className="flex justify-between mt-4 mb-2 space-x-1 overflow-x-auto">
+        <div className="flex my-2 space-x-1 overflow-scroll overflow-x-auto scrollbar-hide">
           {[
             {
               title: (
@@ -178,6 +178,7 @@ export const Finder = () => {
               isEngaged: filters.schema !== null,
             },
             { isEngaged: filters.brands.length > 0 },
+
             {
               title: "Трансмиссия",
               filter: ActiveFilter.TransmissionType,
@@ -188,8 +189,8 @@ export const Finder = () => {
               filter: ActiveFilter.FuelType,
               isEngaged: filters.fuelType !== null,
             },
-          ].map(({ filter, title, isEngaged }) => (
-            <div className="relative">
+          ].map(({ filter, title, isEngaged }, i) => (
+            <div className="relative" key={`filters ${i}`}>
               {isEngaged && (
                 <div className="absolute top-0 right-0 w-3 h-3 rounded-full bg-red"></div>
               )}
@@ -207,16 +208,16 @@ export const Finder = () => {
               {!filter && (
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button variant="outline">
+                    <span className="bg-grey text-nowrap rounded-xl px-2.5 py-0.5 h-10 flex items-center">
                       {filters.brands.length
                         ? filters.brands.join(", ")
                         : "Все марки"}
-                    </Button>
+                    </span>
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-[800px]">
-                    <DialogHeader>
+                    {/* <DialogHeader>
                       <DialogTitle>Марка автомобиля</DialogTitle>
-                    </DialogHeader>
+                    </DialogHeader> */}
                     <div className="grid grid-cols-3 gap-4 py-4 h-[300px] overflow-y-scroll">
                       {["Audi", "BMW", "Kia", "Hyundai"].map((x) => {
                         const title = x;
@@ -255,10 +256,11 @@ export const Finder = () => {
             </div>
           ))}
         </div>
-        <div className="flex justify-between my-2 mb-4 space-x-1 overflow-x-auto">
+        <div className="flex my-2 mb-4 space-x-1 overflow-scroll overflow-x-auto scrollbar-hide">
           {activeFilter === ActiveFilter.Sorting &&
-            ["asc", "desc"].map((sorting) => (
+            ["asc", "desc"].map((sorting, i) => (
               <Badge
+                key={`sorting ${i}`}
                 className={`${filters.sorting === sorting ? "bg-white" : ""} `}
                 onClick={() =>
                   setFilters({
@@ -272,8 +274,9 @@ export const Finder = () => {
               </Badge>
             ))}
           {activeFilter === ActiveFilter.RentTerm &&
-            [null, ...staticSchemas].map((schema) => (
+            [null, ...staticSchemas].map((schema, i) => (
               <Badge
+                key={`schema ${i}`}
                 className={`${filters.schema === schema ? "bg-white" : ""} `}
                 onClick={() =>
                   setFilters({
@@ -289,8 +292,9 @@ export const Finder = () => {
             ))}
           {activeFilter === ActiveFilter.TransmissionType &&
             [TransmissionType.Automatic, TransmissionType.Mechanics, null].map(
-              (transmissionType) => (
+              (transmissionType, i) => (
                 <Badge
+                  key={`transmissionType ${i}`}
                   className={`${
                     filters.transmissionType === transmissionType
                       ? "bg-white"
@@ -308,8 +312,9 @@ export const Finder = () => {
               )
             )}
           {activeFilter === ActiveFilter.FuelType &&
-            [FuelType.Gasoline, FuelType.Gas, null].map((fuelType) => (
+            [FuelType.Gasoline, FuelType.Gas, null].map((fuelType, i) => (
               <Badge
+                key={`fuelType ${i}`}
                 className={`${
                   filters.fuelType === fuelType ? "bg-white" : ""
                 } `}

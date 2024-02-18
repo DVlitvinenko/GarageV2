@@ -36,30 +36,28 @@ export const Card = ({ car }: { car: Cars2 }) => {
         <div className="flex flex-col items-center mx-auto space-y-2">
           <Badge
             className="mb-2 text-lg font-semibold"
-            variant="outline"
+            variant="card"
           >{`${formatRoubles(currentSchema.daily_amount!)} ${
             currentSchema.working_days
           } раб./${currentSchema.non_working_days} вых`}</Badge>
-          <Badge variant="outline">
+          <Badge variant="card">
             Депозит {formatRoubles(car.rent_term?.deposit_amount_total!)} (
             {formatRoubles(car.rent_term?.deposit_amount_daily!)}
             /день)
           </Badge>
-          <Badge variant="outline">Комиссия {car.commission}</Badge>
+          <Badge variant="card">Комиссия {car.commission}</Badge>
           <div className="flex justify-around w-full">
-            <Badge variant="outline">
+            <Badge variant="card">
               {getFuelTypeDisplayName(car.fuel_type)}
             </Badge>
-            <Badge variant="outline">
+            <Badge variant="card">
               {getTransmissionDisplayName(car.transmission_type)}
             </Badge>
           </div>
 
-          {!!car.self_employed && (
-            <Badge variant="outline">Для самозанятых</Badge>
-          )}
+          {!!car.self_employed && <Badge variant="card">Для самозанятых</Badge>}
           {!!car.rent_term?.is_buyout_possible && (
-            <Badge variant="outline">Выкуп автомобиля</Badge>
+            <Badge variant="card">Выкуп автомобиля</Badge>
           )}
         </div>
         <div className="mt-4 text-center">

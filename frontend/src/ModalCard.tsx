@@ -33,12 +33,16 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
   const currentSchema = car.rent_term?.schemas![0]!;
 
   return (
-    <div className="flex flex-col justify-center overflow-y-auto h-[500px] py-8">
-      <img className="object-cover w-full rounded-t-xl" src={car.images![0]} />
+    <div className="flex flex-col justify-center py-8 overflow-y-auto">
+      <img
+        className="object-cover w-full rounded-t-xl"
+        src={car.images![0]}
+        alt=""
+      />
       <div className="space-y-2">
-        <h1 className="text-center my-4">{`${car.brand} ${car.model} ${car.year_produced}`}</h1>
+        <h1 className="my-4 text-center">{`${car.brand} ${car.model} ${car.year_produced}`}</h1>
 
-        <div className=" flex flex-col justify-center space-y-2 h-32">
+        <div className="flex flex-col justify-center h-32 space-y-2 ">
           {!phoneRequested && (
             <Button
               size={"lg"}
@@ -72,8 +76,8 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
         <br />
         <div className="min-h-48">
           {car.working_hours?.map((x) => (
-            <div className="flex items-center">
-              <div className="w-28 capitalize text-sm">{x.day}</div> {x.start} -{" "}
+            <div className="flex items-center" key={x.day}>
+              <div className="text-sm capitalize w-28">{x.day}</div> {x.start} -{" "}
               {x.end}
             </div>
           ))}
@@ -86,9 +90,9 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
         </Collapsible>
       </div>
 
-      <div className="flex flex-col items-center  mx-auto space-y-2">
+      <div className="flex flex-col items-center mx-auto space-y-2">
         <Badge
-          className="font-semibold text-lg mb-2"
+          className="mb-2 text-lg font-semibold"
           variant="outline"
         >{`${formatRoubles(currentSchema.daily_amount!)} ${
           currentSchema.working_days
@@ -108,7 +112,9 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
           </Badge>
         </div>
 
-        {!!car.self_employed && <Badge variant="outline">Для самозанятых</Badge>}
+        {!!car.self_employed && (
+          <Badge variant="outline">Для самозанятых</Badge>
+        )}
         {!!car.rent_term?.is_buyout_possible && (
           <Badge variant="outline">Выкуп автомобиля</Badge>
         )}
