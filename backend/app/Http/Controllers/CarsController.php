@@ -48,6 +48,11 @@ class CarsController extends Controller
      *             @OA\Property(property="brand", type="array", description="Марка автомобиля",@OA\Items()),
      *             @OA\Property(property="search", type="array", description="Марка или модель автомобиля",@OA\Items()),
      *             @OA\Property(property="sorting", type="string", description="сортировка, asc или desc"),
+     *                 @OA\Property(property="rent_term", type="object", description="Данные о сроке аренды",
+     *                         @OA\Property(property="non_working_days", type="integer", description="Количество нерабочих дней"),
+     *                         @OA\Property(property="working_days", type="integer", description="Количество рабочих дней"),
+     *                     )),
+     *                 ),
      *             @OA\Property(property="self_employed", type="boolean", description="Работа с самозанятыми"),
      *             @OA\Property(property="is_buyout_possible", type="boolean", description="Возможность выкупа"),
      *             @OA\Property(property="model", type="array", description="Модель автомобиля",@OA\Items()),
@@ -119,7 +124,7 @@ class CarsController extends Controller
             'city' => ['required', 'string', 'max:250', 'exists:cities,name'],
         ]);
         $offset = $request->offset;
-        $sorting = $request->sorting;
+        $sorting = $request->sorting ?? 'asc';
         $limit = $request->limit;
         $user = Auth::guard('sanctum')->user();
         $fuelType = $request->fuel_type ? FuelType::{$request->fuel_type}()->value : null;
@@ -127,6 +132,7 @@ class CarsController extends Controller
         $city = City::where('name', $request->city)->first();
         $search = $request->search;
         $cityId = $city->id;
+        $rentTerm = $request->rent_term;
         if (!$city) {
             return response()->json(['error' => 'Город не найден'], 404);
         }
@@ -149,7 +155,8 @@ class CarsController extends Controller
         $isBuyoutPossible = $request->is_buyout_possible;
         $commission = $request->commission;
 
-        $carsQuery = Car::query()->where('status', '!=', 0)->doesntHave('booking')->where('rent_term_id', '!=', null)->where('price', '!=', null)
+        $carsQuery = Car::query()->where('status', '!=', 0)
+            ->where('rent_term_id', '!=', null)->where('status', CarStatus::AvailableForBooking->value)
             ->whereHas('division', function ($query) use ($cityId) {
                 $query->where('city_id', $cityId);
             });
@@ -231,6 +238,12 @@ class CarsController extends Controller
                 $query->where('is_buyout_possible', $isBuyoutPossible);
             });
         }
+        if ($rentTerm) {
+            $carsQuery->whereHas('rentTerm.schemas', function ($query) use ($rentTerm) {
+                $query->where('non_working_days', $rentTerm['non_working_days'])
+                    ->where('working_days', $rentTerm['working_days']);
+            });
+        }
         $carsQuery->with([
             'division.city' => function ($query) {
                 $query->select('id', 'name');
@@ -241,8 +254,8 @@ class CarsController extends Controller
             'rentTerm' => function ($query) {
                 $query->select('id', 'deposit_amount_daily', 'deposit_amount_total', 'minimum_period_days', 'is_buyout_possible');
             },
-            'rentTerm.schemas' => function ($query) {
-                $query->select('id', 'daily_amount', 'non_working_days', 'working_days', 'rent_term_id');
+            'rentTerm.schemas' => function ($query) use ($sorting) {
+                $query->select('id', 'daily_amount', 'non_working_days', 'working_days', 'rent_term_id')->orderBy('daily_amount', $sorting);
             },
             'division.park' => function ($query) {
                 $query->select('id', 'park_name', 'commission', 'self_employed', 'phone', 'about', 'working_hours');
@@ -266,11 +279,14 @@ class CarsController extends Controller
                 'cars.images',
                 'cars.price',
             );
-        if ($sorting) {
-            $car = $carsQuery->orderBy('price', $sorting)->first();
-        } else {
-            $car = $carsQuery->orderBy('price', 'asc')->first();
-        }
+
+        $carsQuery->orderBy(function ($query) use ($sorting) {
+            $query->selectRaw('MIN(schemas.daily_amount)')
+                ->from('schemas')
+                ->whereColumn('schemas.rent_term_id', 'cars.rent_term_id')
+                ->orderBy('schemas.daily_amount', $sorting)
+                ->limit(1);
+        }, $sorting);
         $carsQuery->offset($offset)->limit($limit);
         $cars = $carsQuery->get();
 
