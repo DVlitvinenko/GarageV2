@@ -30,7 +30,7 @@ use Illuminate\Validation\Rule;
  * @OA\Info(
  *      title="API Мой гараж",
  *      version="1.0.2",
- *      description="Это список методов для интеграции с Мой гараж, в заголовках всех запросов должен присутствоваться API-ключ, который будет предоставлен администратором на почку клиента после регистрации клиента в сервисе администратором",
+ *      description="Это список методов для интеграции с Мой гараж, в заголовках всех запросов должен присутствоваться API-ключ, который будет предоставлен администратором на почту клиента после регистрации клиента в сервисе администратором",
  * )
  */
 
@@ -140,7 +140,22 @@ class APIController extends Controller
                     }
                 },
             ],
-            'cars.*.class' => 'required|integer|between:0,4',
+            'cars.*.class' => [
+                'required',
+                'integer',
+                'between:0,4',
+                function ($attribute, $value, $fail) use ($park, $request) {
+                    $divisionId = $request->input('cars.*.division_id');
+                    $tariffExists = Tariff::where('class', $value)
+                        ->where('city_id', Division::where('id', $divisionId)->value('city_id'))
+                        ->where('park_id', $park->id)
+                        ->exists();
+
+                    if (!$tariffExists) {
+                        $fail('Класса не существует');
+                    }
+                },
+            ],
             'cars.*.year_produced' => 'nullable|integer',
             'cars.*.id' => 'required|string|max:20|unique:cars,car_id',
             'cars.*.images' => 'required|array',
@@ -150,9 +165,9 @@ class APIController extends Controller
         }
         $cars = $request->input('cars');
         foreach ($cars as $index => $carData) {
-            $division = Division::where('id', $request->division_id);
+            $division = Division::where('id', $carData['division_id'])->first();
             $car = new Car;
-            $car->division_id = $division->id;
+            $car->division_id = $carData['division_id'];
             $car->fuel_type = $carData['fuel_type'];
             $car->transmission_type = $carData['transmission_type'];
             $car->brand = $carData['brand'];
@@ -259,7 +274,11 @@ class APIController extends Controller
                     }
                 },
             ],
-            'class' => 'nullable|integer|between:0,4',
+            'class' => [
+                'required',
+                'integer',
+                'between:0,4'
+            ],
             'year_produced' => 'nullable|integer',
             'description' => 'nullable|string|max:500',
             'images' => 'nullable|array',
@@ -269,21 +288,32 @@ class APIController extends Controller
             return response()->json(['errors' => $validator->errors()], 400);
         }
 
-        $carId = $request->input('id');
+        $carId = $request->id;
 
         $park = Park::where('API_key', $apiKey)->first();
         if (!$park) {
             return response()->json(['message' => 'Неверный ключ авторизации'], 401);
         }
 
-        $division = Division::where('id', $request->division_id);
+        $division = Division::where('id', $request->division_id)->first();
+        if (!$division) {
+            return response()->json(['message' => 'Подразделение не найдено'], 404);
+        }
+        $tariff = Tariff::where('class', $request->class)
+            ->where('park_id', $park->id)
+            ->where('city_id', $division->city_id)
+            ->first();
+
+        if (!$tariff) {
+            return response()->json(['message' => 'Класса не существует для этого города'], 409);
+        }
         $car = Car::where('car_id', $carId)
             ->where('park_id', $park->id)
             ->first();
         if (!$car) {
             return response()->json(['message' => 'Автомобиль не найден'], 404);
         }
-        $car->tariff_id = $this->GetTariffId($park->id, $$division->city_id, $request->input('class'));
+        $car->tariff_id = $tariff->id;
         $car->division_id = $division->id;
         $car->park_id = $park->id;
         $car->fuel_type = $request->input('fuel_type');
