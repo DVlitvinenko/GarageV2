@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
         "title": "API Мой гараж",
-        "description": "Это список методов для интеграции с Мой гараж, в заголовках всех запросов должен присутствоваться API-ключ, который будет предоставлен администратором на почку клиента после регистрации клиента в сервисе администратором",
+        "description": "Это список методов для интеграции с Мой гараж, в заголовках всех запросов должен присутствоваться API-ключ, который будет предоставлен администратором на почту клиента после регистрации клиента в сервисе администратором",
         "version": "1.0.2"
     },
     "paths": {
@@ -1265,8 +1265,8 @@
         "/parks/tariff": {
             "put": {
                 "tags": ["API"],
-                "summary": "Обновление условий аренды",
-                "description": "Обновление условий аренды\n\nЭтот метод позволяет обновлять условия аренды для парков.",
+                "summary": "Обновление тарифа авто с критериями блокерами",
+                "description": "Обновление тарифа авто с критериями блокерами\n\nЭтот метод позволяет обновлять тарифы авто с критериями блокерами для парков.",
                 "operationId": "upfateTariff",
                 "requestBody": {
                     "required": true,
@@ -1398,8 +1398,8 @@
             },
             "post": {
                 "tags": ["API"],
-                "summary": "Создание условий аренды",
-                "description": "Создание условий аренды\n\nЭтот метод позволяет создавать новые условия аренды для парков. В одном гоороде для парка может быть толкьо один тариф заданного класса.",
+                "summary": "Создание тарифа авто с критериями блокерами",
+                "description": "Создание тарифа авто с критериями блокерами\n\nЭтот метод позволяет создавать новые тарифы авто с критериями блокерами для парков. В одном городе для парка может быть толкьо один тариф заданного класса.",
                 "operationId": "createTariff",
                 "requestBody": {
                     "required": true,
@@ -1546,25 +1546,20 @@
                     }
                 ]
             }
-        },
-        "components": {
-            "schemas": {
-                "BookingStatus": {
-                    "description": "The unique identifier of a product in our catalog",
-                    "type": "string",
-                    "enum": [
-                        "Booked",
-                        "UnBooked",
-                        "BookingTimeOver",
-                        "RentOver",
-                        "RentStart"
-                    ]
-                },
-                "CarClass": {
-                    "description": "The unique identifier of a product in our catalog",
-                    "type": "string",
-                    "enum": ["Economy", "Comfort", "ComfortPlus", "Business"]
-                }
+        }
+    },
+    "components": {
+        "schemas": {
+            "BookingStatus": {
+                "description": "The unique identifier of a product in our catalog",
+                "type": "string",
+                "enum": [
+                    "Booked",
+                    "UnBooked",
+                    "BookingTimeOver",
+                    "RentOver",
+                    "RentStart"
+                ]
             }
         },
         "responses": {
