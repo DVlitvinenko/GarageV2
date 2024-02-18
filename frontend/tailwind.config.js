@@ -23,15 +23,15 @@ module.exports = {
           },
         },
       }),
-     colors: {
+      colors: {
         red: "#b91c1c",
-        yellow: "#fbbf24",         
+        yellow: "#fbbf24",
         black: "#0c0a09",
         gray: "#1f2937",
         pale: "#D9D9D9",
-        grey: "#e8e8e8",
+        grey: "#e8e7e6",
         white: "#ffffff",
-        },
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },

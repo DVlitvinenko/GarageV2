@@ -42,7 +42,7 @@ function App() {
         <span className="font-bold text-md text-gray"></span>
         <CityPicker />
       </div>
-      
+
       <Routes>
         <Route path="/" element={<Finder />} />
         <Route path="account" element={<Account user={user} />} />

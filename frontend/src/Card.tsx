@@ -16,7 +16,9 @@ import {
 import { ModalCard } from "./ModalCard";
 
 export const Card = ({ car }: { car: Cars2 }) => {
-  const currentSchema = car.rent_term?.schemas![0]!;
+  const currentSchema = car.rent_term!.schemas!.sort(
+    (a, b) => a.daily_amount! - b.daily_amount!
+  )[0];
 
   return (
     <div className="pb-4 mx-auto mb-8 text-gray-700 bg-white shadow-md w-80 rounded-xl">

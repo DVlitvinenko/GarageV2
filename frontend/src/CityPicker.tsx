@@ -32,12 +32,14 @@ export function CityPicker() {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-full justify-between"
+          className="justify-between w-full"
         >
           {city}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <ChevronsUpDown className="w-4 h-4 ml-2 opacity-50 shrink-0" />
         </Button> */}
-        <div className=" flex items-center w-48 capitalize text-[10px] font-bold justify-end">{city}</div>
+        <div className=" flex items-center w-48 capitalize text-[10px] font-bold justify-end">
+          {city}
+        </div>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
         <Command>

@@ -11,6 +11,7 @@ import {
   CarClass,
   Cars2,
   FuelType,
+  Schemas,
   TransmissionType,
 } from "./api-client";
 import { Slider } from "@/components/ui/slider";
@@ -38,44 +39,72 @@ import {
   getTransmissionDisplayName,
 } from "@/lib/utils";
 import { useDebouncedCallback } from "use-debounce";
+import { type } from "os";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { cityAtom } from "./atoms";
+import { Badge } from "@/components/ui/badge";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRightArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 const DEFAULT_COMMISSION_PERCENTAGE = 0;
 
+type CarFilter = {
+  brands: string[];
+  carClass: CarClass[];
+  commission: number;
+  fuelType: FuelType | null;
+  transmissionType: TransmissionType | null;
+  selfEmployed: boolean;
+  buyoutPossible: boolean;
+  rentTerm: Schemas | null;
+  sorting: "asc" | "desc";
+};
+
+enum ActiveFilter {
+  FuelType,
+  TransmissionType,
+  RentTerm,
+  Sorting,
+}
+
+const staticSchemas = [
+  new Schemas({ working_days: 7, non_working_days: 0 }),
+  new Schemas({ working_days: 6, non_working_days: 1 }),
+  new Schemas({ working_days: 14, non_working_days: 1 }),
+];
+
 export const Finder = () => {
-  const [filters, setFilters] = useState<{
-    brands: string[];
-    carClass: CarClass[];
-    commission: number;
-    fuelType: FuelType | null;
-    transmissionType: TransmissionType | null;
-    city: string;
-    selfEmployed: boolean;
-    buyoutPossible: boolean;
-  }>({
+  const [filters, setFilters] = useState<CarFilter>({
     carClass: [CarClass.Economy],
     commission: DEFAULT_COMMISSION_PERCENTAGE,
     fuelType: null,
     brands: [],
     transmissionType: null,
-    city: "Москва",
     selfEmployed: false,
     buyoutPossible: false,
+    sorting: "asc",
+    rentTerm: null,
   });
 
   const [cars, setCars] = useState<Cars2[]>([]);
+  const [activeFilter, setActiveFilter] = useState<ActiveFilter>(
+    ActiveFilter.Sorting
+  );
+
+  const city = useRecoilValue(cityAtom);
 
   useEffect(() => {
     const getCars = async () => {
       const data = await client.searchCars(
         new Body9({
           brand: filters.brands,
-          city: filters.city,
+          city,
           fuel_type: filters.fuelType || undefined,
           transmission_type: filters.transmissionType || undefined,
           car_class: filters.carClass,
           limit: 50,
           offset: 0,
-          sorting: "asc",
+          sorting: filters.sorting,
           commission: filters.commission,
           self_employed: filters.selfEmployed,
           is_buyout_possible: filters.buyoutPossible,
@@ -86,7 +115,7 @@ export const Finder = () => {
     };
 
     getCars();
-  }, [filters]);
+  }, [filters, city]);
 
   const debouncedCommission = useDebouncedCallback((value) => {
     setFilters({ ...filters, commission: value });
@@ -130,79 +159,48 @@ export const Finder = () => {
             );
           })}
         </div>
-        <div className="flex justify-between my-4">
-          <Checkbox
-            title="Для самозанятых"
-            onCheckedChange={(e: boolean) =>
-              setFilters({ ...filters, selfEmployed: e })
-            }
-          />
-          <Checkbox
-            onCheckedChange={(e: boolean) =>
-              setFilters({ ...filters, buyoutPossible: e })
-            }
-            title="Выкуп автомобиля"
-          />
-        </div>
-        {/* <DropdownMenu>
-          <DropdownMenuTrigger>Сначала дешевые</DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem>Сначала дорогие</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu> */}
-        <div className="flex flex-col justify-between my-4 space-y-4">
-          {/* <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline">Марка авто</Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem>BMW</DropdownMenuItem>
-              <DropdownMenuItem>Lada</DropdownMenuItem>
-              <DropdownMenuItem>Chery</DropdownMenuItem>
-              <DropdownMenuItem>Geely</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu> */}
-          {/* 
-          <Sheet>
-            <SheetTrigger>Open</SheetTrigger>
-            <SheetContent className="overflow-y-auto">
-              <SheetHeader>
-                <SheetTitle>Are you absolutely sure?</SheetTitle>
-                <SheetDescription>
-                  This action cannot be undone. This will permanently delete
-                  your account and remove your data from our servers.
-                </SheetDescription>
-              </SheetHeader>
-              This action cannot be undone. This will permanently delete your
-              account and remove your data from our servers. This action cannot
-              be undone. This will permanently delete your account and remove
-              your data from our servers. This action cannot be undone. This
-              will permanently delete your account and remove your data from our
-              servers. This action cannot be undone. This will permanently
-              delete your account and remove your data from our servers. This
-              action cannot be undone. This will permanently delete your account
-              and remove your data from our servers. This action cannot be
-              undone. This will permanently delete your account and remove your
-              data from our servers. This action cannot be undone. This will
-              permanently delete your account and remove your data from our
-              servers. This action cannot be undone. This will permanently
-              delete your account and remove your data from our servers.
-            </SheetContent>
-          </Sheet> */}
-
+        <div className="flex justify-between my-4 space-x-4 overflow-x-auto">
+          {[
+            {
+              title: (
+                <FontAwesomeIcon
+                  icon={faArrowRightArrowLeft}
+                  className="rotate-90"
+                />
+              ),
+              filter: ActiveFilter.Sorting,
+            },
+            {
+              title: "Любой график аренды",
+              filter: ActiveFilter.RentTerm,
+            },
+            {
+              title: "Трансмиссия",
+              filter: ActiveFilter.TransmissionType,
+            },
+            {
+              title: "Топливо",
+              filter: ActiveFilter.FuelType,
+            },
+          ].map(({ filter, title }) => (
+            <Badge
+              className={`${activeFilter === filter ? "bg-white" : ""} `}
+              onClick={() => setActiveFilter(filter)}
+            >
+              {title}
+            </Badge>
+          ))}
           <Dialog>
             <DialogTrigger asChild>
               <Button variant="outline">
-                {!!filters.brands.length
+                {filters.brands.length
                   ? filters.brands.join(", ")
-                  : // "Выбрано марок " + filters.brands.length
-                    "Все марки"}
+                  : "Все марки"}
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[800px]">
               <DialogHeader>
                 <DialogTitle>Марка автомобиля</DialogTitle>
-                {/* <DialogDescription>DialogDescription</DialogDescription> */}
               </DialogHeader>
               <div className="grid grid-cols-3 gap-4 py-4 h-[300px] overflow-y-scroll">
                 {["Audi", "BMW", "Kia", "Hyundai"].map((x) => {
@@ -236,54 +234,79 @@ export const Finder = () => {
               </DialogFooter>
             </DialogContent>
           </Dialog>
-
-          <Select
-            onValueChange={(e) =>
-              setFilters({ ...filters, fuelType: e as FuelType })
-            }
-          >
-            <SelectTrigger className="">
-              <SelectValue placeholder={getFuelTypeDisplayName(undefined)} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value={FuelType.Gasoline}>
-                {getFuelTypeDisplayName(FuelType.Gasoline)}
-              </SelectItem>
-              <SelectItem value={FuelType.Gas}>
-                {getFuelTypeDisplayName(FuelType.Gas)}
-              </SelectItem>
-              <SelectItem value={null as any}>
-                {getFuelTypeDisplayName(undefined)}
-              </SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select
-            onValueChange={(e) => {
-              return setFilters({
-                ...filters,
-                transmissionType: e as TransmissionType,
-              });
-            }}
-          >
-            <SelectTrigger className="">
-              <SelectValue placeholder="Любой тип трансмиссии" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value={TransmissionType.Automatic}>
-                {getTransmissionDisplayName(TransmissionType.Automatic)}
-              </SelectItem>
-              <SelectItem value={TransmissionType.Mechanics}>
-                {getTransmissionDisplayName(TransmissionType.Mechanics)}
-              </SelectItem>
-              <SelectItem value={null as any}>
-                {getTransmissionDisplayName(undefined)}
-              </SelectItem>
-            </SelectContent>
-          </Select>
         </div>
-
-        <div className="pb-8 my-4 mb-4 space-y-2 border-b border-gray/20">
+        <div className="">
+          {activeFilter === ActiveFilter.Sorting &&
+            ["asc", "desc"].map((sorting) => (
+              <Badge
+                className={`${filters.sorting === sorting ? "bg-white" : ""} `}
+                onClick={() =>
+                  setFilters({
+                    ...filters,
+                    sorting: sorting as CarFilter["sorting"],
+                  })
+                }
+              >
+                {sorting === "asc" && "Сначала самые дешевые"}
+                {sorting === "desc" && "Сначала самые дорогие"}
+              </Badge>
+            ))}
+          {activeFilter === ActiveFilter.RentTerm &&
+            [null, ...staticSchemas].map((rentTerm) => (
+              <Badge
+                className={`${
+                  filters.rentTerm === rentTerm ? "bg-white" : ""
+                } `}
+                onClick={() =>
+                  setFilters({
+                    ...filters,
+                    rentTerm,
+                  })
+                }
+              >
+                {rentTerm
+                  ? `${rentTerm?.working_days}/${rentTerm?.non_working_days}`
+                  : "Любой график аренды"}
+              </Badge>
+            ))}
+          {activeFilter === ActiveFilter.TransmissionType &&
+            [TransmissionType.Automatic, TransmissionType.Mechanics, null].map(
+              (transmissionType) => (
+                <Badge
+                  className={`${
+                    filters.transmissionType === transmissionType
+                      ? "bg-white"
+                      : ""
+                  } `}
+                  onClick={() =>
+                    setFilters({
+                      ...filters,
+                      transmissionType,
+                    })
+                  }
+                >
+                  {getTransmissionDisplayName(transmissionType)}
+                </Badge>
+              )
+            )}
+          {activeFilter === ActiveFilter.FuelType &&
+            [FuelType.Gasoline, FuelType.Gas, null].map((fuelType) => (
+              <Badge
+                className={`${
+                  filters.fuelType === fuelType ? "bg-white" : ""
+                } `}
+                onClick={() =>
+                  setFilters({
+                    ...filters,
+                    fuelType,
+                  })
+                }
+              >
+                {getFuelTypeDisplayName(fuelType)}
+              </Badge>
+            ))}
+        </div>
+        {/* <div className="pb-8 my-4 mb-4 space-y-2 border-b border-gray/20">
           <Label>Комиссия парка не выше {filters.commission}%</Label>
           <Slider
             onValueChange={(e) => debouncedCommission(e[0])}
@@ -291,7 +314,7 @@ export const Finder = () => {
             max={10}
             step={0.1}
           />
-        </div>
+        </div> */}
         {/* <Button variant="outline">Сбросить фильтры</Button> */}
         {cars.map((car) => {
           return <Card key={car.id} car={car} />;
