@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class DriverSpecification extends Model
 {
     use HasFactory;
-    protected $fillable = ['driver_id', 'rent_story', 'criminal_ids', 'participation_accident', 'experience', 'count_seams', 'abandoned_car', 'republick_id', 'scoring', 'alcohol'];
+    protected $fillable = ['driver_id', 'rent_story', 'criminal_ids', 'has_caused_accident', 'experience', 'count_seams', 'abandoned_car', 'republick_id', 'scoring', 'alcohol'];
 
     public function driver()
     {

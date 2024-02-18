@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('driver_id');
             $table->text('rent_story');
             $table->string('criminal_ids');
-            $table->boolean('participation_accident');
+            $table->boolean('has_caused_accident');
             $table->integer('experience');
             $table->integer('count_seams');
             $table->boolean('abandoned_car');

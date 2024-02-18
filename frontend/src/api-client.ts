@@ -1997,7 +1997,7 @@ export class Body11 implements IBody11 {
     /** Минимальный опыт вождения */
     experience?: number | undefined;
     /** Максимальное количество штрафов */
-    max_cont_seams?: number | undefined;
+    max_fine_count?: number | undefined;
     /** Бросал ли машину, true/false */
     abandoned_car?: boolean | undefined;
     /** минимальный скоринг */
@@ -2029,7 +2029,7 @@ export class Body11 implements IBody11 {
             this.id = _data["id"];
             this.participation_accident = _data["participation_accident"];
             this.experience = _data["experience"];
-            this.max_cont_seams = _data["max_cont_seams"];
+            this.max_fine_count = _data["max_fine_count"];
             this.abandoned_car = _data["abandoned_car"];
             this.min_scoring = _data["min_scoring"];
             this.forbidden_republic_ids = _data["forbidden_republic_ids"];
@@ -2054,7 +2054,7 @@ export class Body11 implements IBody11 {
         data["id"] = this.id;
         data["participation_accident"] = this.participation_accident;
         data["experience"] = this.experience;
-        data["max_cont_seams"] = this.max_cont_seams;
+        data["max_fine_count"] = this.max_fine_count;
         data["abandoned_car"] = this.abandoned_car;
         data["min_scoring"] = this.min_scoring;
         data["forbidden_republic_ids"] = this.forbidden_republic_ids;
@@ -2072,7 +2072,7 @@ export interface IBody11 {
     /** Минимальный опыт вождения */
     experience?: number | undefined;
     /** Максимальное количество штрафов */
-    max_cont_seams?: number | undefined;
+    max_fine_count?: number | undefined;
     /** Бросал ли машину, true/false */
     abandoned_car?: boolean | undefined;
     /** минимальный скоринг */
@@ -2097,7 +2097,7 @@ export class Body12 implements IBody12 {
     /** Минимальный опыт вождения */
     experience?: number;
     /** Максимальное количество штрафов */
-    max_cont_seams?: number;
+    max_fine_count?: number;
     /** Бросал ли машину, true/false */
     abandoned_car?: boolean;
     /** минимальный скоринг */
@@ -2130,7 +2130,7 @@ export class Body12 implements IBody12 {
             this.city = _data["city"];
             this.participation_accident = _data["participation_accident"];
             this.experience = _data["experience"];
-            this.max_cont_seams = _data["max_cont_seams"];
+            this.max_fine_count = _data["max_fine_count"];
             this.abandoned_car = _data["abandoned_car"];
             this.min_scoring = _data["min_scoring"];
             this.forbidden_republic_ids = _data["forbidden_republic_ids"];
@@ -2156,7 +2156,7 @@ export class Body12 implements IBody12 {
         data["city"] = this.city;
         data["participation_accident"] = this.participation_accident;
         data["experience"] = this.experience;
-        data["max_cont_seams"] = this.max_cont_seams;
+        data["max_fine_count"] = this.max_fine_count;
         data["abandoned_car"] = this.abandoned_car;
         data["min_scoring"] = this.min_scoring;
         data["forbidden_republic_ids"] = this.forbidden_republic_ids;
@@ -2176,7 +2176,7 @@ export interface IBody12 {
     /** Минимальный опыт вождения */
     experience?: number;
     /** Максимальное количество штрафов */
-    max_cont_seams?: number;
+    max_fine_count?: number;
     /** Бросал ли машину, true/false */
     abandoned_car?: boolean;
     /** минимальный скоринг */

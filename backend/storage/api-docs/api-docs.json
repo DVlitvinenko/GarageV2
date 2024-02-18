@@ -755,20 +755,12 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "id": {
+                                    "car_id": {
                                         "description": "VIN-номер автомобиля",
                                         "type": "string"
                                     },
                                     "status": {
                                         "$ref": "#/components/schemas/BookingStatus"
-                                    },
-                                    "driver_name": {
-                                        "description": "ФИО водителя",
-                                        "type": "string"
-                                    },
-                                    "phone": {
-                                        "description": "Телефон водителя",
-                                        "type": "string"
                                     }
                                 },
                                 "type": "object"
@@ -904,6 +896,10 @@
                                         "description": "Описание парка",
                                         "type": "string"
                                     },
+                                    "phone": {
+                                        "description": "Телефон парка",
+                                        "type": "string"
+                                    },
                                     "working_hours": {
                                         "description": "Время работы",
                                         "properties": {
@@ -934,10 +930,6 @@
                                             "sunday": {
                                                 "description": "Время работы в воскресенье",
                                                 "type": "object"
-                                            },
-                                            "phone": {
-                                                "description": "Телефон парка",
-                                                "type": "string"
                                             }
                                         },
                                         "type": "object"
@@ -1278,7 +1270,7 @@
                                         "description": "id тарифа",
                                         "type": "integer"
                                     },
-                                    "participation_accident": {
+                                    "has_caused_accident": {
                                         "description": "Участие в ДТП, true/false",
                                         "type": "boolean",
                                         "nullable": true
@@ -1288,7 +1280,7 @@
                                         "type": "integer",
                                         "nullable": true
                                     },
-                                    "max_cont_seams": {
+                                    "max_fine_count": {
                                         "description": "Максимальное количество штрафов",
                                         "type": "integer",
                                         "nullable": true
@@ -1416,7 +1408,7 @@
                                         "description": "Город тарифа",
                                         "type": "string"
                                     },
-                                    "participation_accident": {
+                                    "has_caused_accident": {
                                         "description": "Участие в ДТП, true/false",
                                         "type": "boolean"
                                     },
@@ -1424,7 +1416,7 @@
                                         "description": "Минимальный опыт вождения",
                                         "type": "integer"
                                     },
-                                    "max_cont_seams": {
+                                    "max_fine_count": {
                                         "description": "Максимальное количество штрафов",
                                         "type": "integer"
                                     },
@@ -1438,11 +1430,17 @@
                                     },
                                     "forbidden_republic_ids": {
                                         "description": "Массив запрещенных статей",
-                                        "type": "string"
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
                                     },
                                     "criminal_ids": {
                                         "description": "Массив запрещенных республик",
-                                        "type": "string"
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
                                     },
                                     "alcohol": {
                                         "description": "Принимает ли что-то водитель, алкоголь/иное, true/false",

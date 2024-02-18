@@ -174,16 +174,16 @@ class CarsController extends Controller
                         $query->whereNotIn('forbidden_republic_ids', $forbiddenRepublicIds);
                     }
                     $query->where('experience', '<=', $driverSpecifications->experience);
-                    $query->where('max_cont_seams', '>=', $driverSpecifications->count_seams);
+                    $query->where('max_fine_count', '>=', $driverSpecifications->count_seams);
                     $query->where('min_scoring', '<=', $driverSpecifications->scoring);
-                    if ($driverSpecifications->participation_accident == 1) {
-                        $query->where('participation_accident', 0);
+                    if ($driverSpecifications->has_caused_accident == 1) {
+                        $query->where('has_caused_accident', 0);
                     }
                     if ($driverSpecifications->abandoned_car == 1) {
                         $query->where('abandoned_car', 0);
                     }
-                    if ($driverSpecifications->participation_accident == 1) {
-                        $query->where('participation_accident', 0);
+                    if ($driverSpecifications->has_caused_accident == 1) {
+                        $query->where('has_caused_accident', 0);
                     }
                     if ($driverSpecifications->alcohol == 1) {
                         $query->where('alcohol', 0);
@@ -810,16 +810,16 @@ class CarsController extends Controller
     //              $query->whereNotIn('forbidden_republic_ids', $forbiddenRepublicIds);
     //          }
     //                  $query->where('experience', '<=', $driverSpecifications->experience);
-    //                  $query->where('max_cont_seams', '>=', $driverSpecifications->count_seams);
+    //                  $query->where('max_fine_count', '>=', $driverSpecifications->count_seams);
     //                  $query->where('min_scoring', '<=', $driverSpecifications->scoring);
-    //                  if ($driverSpecifications->participation_accident == 1) {
-    //                      $query->where('participation_accident', 0);
+    //                  if ($driverSpecifications->has_caused_accident == 1) {
+    //                      $query->where('has_caused_accident', 0);
     //                  }
     //                  if ($driverSpecifications->abandoned_car == 1) {
     //                      $query->where('abandoned_car', 0);
     //                  }
-    //                  if ($driverSpecifications->participation_accident == 1) {
-    //                      $query->where('participation_accident', 0);
+    //                  if ($driverSpecifications->has_caused_accident == 1) {
+    //                      $query->where('has_caused_accident', 0);
     //                  }
     //                  if ($driverSpecifications->alcohol == 1) {
     //                      $query->where('alcohol', 0);

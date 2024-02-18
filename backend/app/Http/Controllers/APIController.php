@@ -774,10 +774,9 @@ class APIController extends Controller
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             @OA\Property(property="id", type="string", description="VIN-номер автомобиля"),
-     *             @OA\Property(property="status", type="string", description="Статус бронирования: Booked - авто забронировано, UnBooked - бронь снята и авто может быть доступно к бронированию, RentStart - автомобиль выдан водителю в аренду, RentOver - аренда авто закончена и авто может быть доступно к бронированию", ref="#/components/schemas/BookingStatus"),
-     *             @OA\Property(property="driver_name", type="string", description="ФИО водителя"),
-     *             @OA\Property(property="phone", type="string", description="Телефон водителя")
+     *             @OA\Property(property="car_id", type="string", description="VIN-номер автомобиля"),
+     *             @OA\Property(property="status", type="string", description="Статус бронирования: UnBooked - бронь снята и авто может быть доступно к бронированию, RentStart - автомобиль выдан водителю в аренду, RentOver - аренда авто закончена и авто может быть доступно к бронированию", ref="#/components/schemas/BookingStatus")
+
      * )
      *     ),
      *     @OA\Response(
@@ -829,10 +828,8 @@ class APIController extends Controller
         $park = Park::where('API_key', $apiKey)->firstOrFail();
 
         $validator = Validator::make($request->all(), [
-            'status' => 'required|string',
-            'id' => 'required|string',
-            'driver_name' => 'required|string',
-            'phone' => 'required|string',
+            'status' => 'in:UnBooked,RentOver,RentStart',
+            'car_id' => 'required|string'
         ]);
         if ($validator->fails()) {
             return response()->json(['message' => 'Ошибка валидации', 'errors' => $validator->errors()], 400);
@@ -840,64 +837,19 @@ class APIController extends Controller
 
         $status = BookingStatus::{$request->input('status')}()->value;
 
-        $carId = $request->input('id');
-        $driverName = $request->input('driver_name');
-        $phone = $request->input('phone');
+        $carId = $request->input('car_id');
 
         $car = Car::where('car_id', $carId)
             ->where('park_id', $park->id)
             ->with('booking')
             ->first();
 
-        $user = User::where('phone', $phone)->where('name', $driverName)->first();
-
         if (!$car) {
             return response()->json([
                 'message' => 'Автомобиль не найден',
             ], 404);
         }
-        if ($status == BookingStatus::Booked->value) {
-            $rent_time = 3;
-            $car = Car::where('car_id', $request->id)
-                ->with('booking')
-                ->first();
-            if (!$car) {
-                return response()->json(['message' => 'Машина не найдена'], 404);
-            }
-            if ($car->status !== CarStatus::AvailableForBooking->value) {
-                return response()->json(['message' => 'Машина уже забронирована'], 409);
-            }
-            $division = Division::where('id', $car->division_id)->with('park')->first();
-            $driver = Driver::where('user_id', $user->id)->first();
-            $workingHours = json_decode($division->park->working_hours, true);
-            $currentDayOfWeek = Carbon::now()->format('l');
-
-            $currentTime = Carbon::now()->timestamp;
-
-            $endTimeOfWorkDayToday = Carbon::createFromFormat('H:i', $workingHours[strtolower($currentDayOfWeek)][0]['end'], $division->park->timezone)->timestamp;
-            $endTimeOfWorkDayToday -= $rent_time * 3600;
-
-            if ($endTimeOfWorkDayToday < $currentTime) {
-                $nextWorkingDay = Carbon::now()->addDay()->format('l');
-                $startTimeOfWorkDayTomorrow = Carbon::createFromFormat('H:i', $workingHours[strtolower($nextWorkingDay)][0]['start'], $division->park->timezone)->timestamp;
-                $newEndTime = $startTimeOfWorkDayTomorrow + $rent_time * 3600;
-            } else {
-                $remainingTime = $rent_time * 3600;
-                $newEndTime = $currentTime + $remainingTime;
-            }
-
-            $booking = new Booking();
-            $booking->car_id = $car->id;
-            $booking->park_id = $division->park_id;
-            $booking->booked_at = $currentTime;
-            $booking->booked_until = $newEndTime;
-            $booking->status = BookingStatus::Booked->value;
-            $booking->driver_id = $driver->id;
-            $booking->save();
-            $car->status = CarStatus::Booked->value;
-            $car->save();
-            return response()->json($newEndTime, 200);
-        } elseif ($status === BookingStatus::UnBooked->value) {
+        if ($status === BookingStatus::UnBooked->value) {
             $booking = $car->booking()
                 ->where('status', BookingStatus::Booked)
                 ->first();
@@ -911,7 +863,19 @@ class APIController extends Controller
             $car->status = CarStatus::AvailableForBooking->value;
             $car->save();
             return response()->json(['message' => 'Статус бронирования успешно изменен, авто доступно для брони'], 200);
-        } elseif ($status === BookingStatus::RentOver->value) {
+        }
+        if ($status === BookingStatus::RentStart->value) {
+            $booking = $car->booking->where('status', BookingStatus::Booked->value)->first();
+            if (!$booking) {
+                return response()->json([
+                    'message' => 'Бронирование не найдено для данного автомобиля',
+                ], 404);
+            }
+            $booking->status = $status;
+            $booking->save();
+            return response()->json(['message' => 'Статус бронирования успешно изменен, аренда начата'], 200);
+        }
+        if ($status === BookingStatus::RentOver->value) {
             $booking = $car->booking()
                 ->Where('status', BookingStatus::RentStart)
                 ->first();
@@ -925,17 +889,8 @@ class APIController extends Controller
             $car->status = CarStatus::AvailableForBooking->value;
             $car->save();
             return response()->json(['message' => 'Статус бронирования успешно изменен, аренда закончена'], 200);
-        } else {
-            $booking = $car->booking->where('status', BookingStatus::Booked->value)->first();
-            if (!$booking) {
-                return response()->json([
-                    'message' => 'Бронирование не найдено для данного автомобиля',
-                ], 404);
-            }
-            $booking->status = $status;
-            $booking->save();
-            return response()->json(['message' => 'Статус бронирования успешно изменен, аренда начата'], 200);
         }
+        return response()->json(['message' => 'Статус не найден'], 404);
     }
 
     /**
@@ -957,6 +912,7 @@ class APIController extends Controller
      *             @OA\Property(property="self_employed", type="boolean", description="Работает ли парк с самозанятыми, true - если работает"),
      *             @OA\Property(property="park_name", type="string", description="Название парка"),
      *             @OA\Property(property="about", type="string", description="Описание парка"),
+     *                 @OA\Property(property="phone", type="string", description="Телефон парка"),
      *             @OA\Property(
      *                 property="working_hours",
      *                 type="object",
@@ -967,8 +923,7 @@ class APIController extends Controller
      *                 @OA\Property(property="thursday", type="object", description="Время работы в четверг"),
      *                 @OA\Property(property="friday", type="object", description="Время работы в пятницу"),
      *                 @OA\Property(property="saturday", type="object", description="Время работы в субботу"),
-     *                 @OA\Property(property="sunday", type="object", description="Время работы в воскресенье"),
-     *                 @OA\Property(property="phone", type="string", description="Телефон парка")
+     *                 @OA\Property(property="sunday", type="object", description="Время работы в воскресенье")
      *             )
      *         )
      *     ),
@@ -1268,13 +1223,13 @@ class APIController extends Controller
      *         @OA\JsonContent(
      *             @OA\Property(property="class", type="integer", nullable=true, description="Тариф машины (1 - эконом, 2 - комфорт, 3 - комфорт+, 4 - бизнес)"),
      *             @OA\Property(property="city", type="string", description="Город тарифа"),
-     *             @OA\Property(property="participation_accident", type="bool", description="Участие в ДТП, true/false"),
+     *             @OA\Property(property="has_caused_accident", type="bool", description="Участие в ДТП, true/false"),
      *             @OA\Property(property="experience", type="integer", description="Минимальный опыт вождения"),
-     *             @OA\Property(property="max_cont_seams", type="integer", description="Максимальное количество штрафов"),
+     *             @OA\Property(property="max_fine_count", type="integer", description="Максимальное количество штрафов"),
      *             @OA\Property(property="abandoned_car", type="bool", description="Бросал ли машину, true/false"),
      *             @OA\Property(property="min_scoring", type="integer", description="минимальный скоринг"),
-     *             @OA\Property(property="forbidden_republic_ids", type="string", description="Массив запрещенных статей"),
-     *             @OA\Property(property="criminal_ids", type="string", description="Массив запрещенных республик"),
+     *             @OA\Property(property="forbidden_republic_ids", type="array", description="Массив запрещенных статей", @OA\Items(type="string")),
+     *             @OA\Property(property="criminal_ids", type="array", description="Массив запрещенных республик", @OA\Items(type="string")),
      *             @OA\Property(property="alcohol", type="bool", description="Принимает ли что-то водитель, алкоголь/иное, true/false")
      *         )
      *     ),
@@ -1330,9 +1285,9 @@ class APIController extends Controller
             'class' => 'required|integer',
             'city' => 'required|string|max:250|exists:cities,name',
             'criminal_ids' => 'required|array',
-            'participation_accident' => 'required|bool',
+            'has_caused_accident' => 'required|bool',
             'experience' => 'required|integer',
-            'max_cont_seams' => 'required|integer',
+            'max_fine_count' => 'required|integer',
             'abandoned_car' => 'required|bool',
             'min_scoring' => 'required|integer',
             'forbidden_republic_ids' => 'required|array',
@@ -1353,9 +1308,9 @@ class APIController extends Controller
             'park_id' => $park->id,
             'city_id' => $city_id,
             'criminal_ids' => json_encode($request->criminal_ids),
-            'participation_accident' => $request->participation_accident,
+            'has_caused_accident' => $request->has_caused_accident,
             'experience' => $request->experience,
-            'max_cont_seams' => $request->max_cont_seams,
+            'max_fine_count' => $request->max_fine_count,
             'abandoned_car' => $request->abandoned_car,
             'min_scoring' => $request->min_scoring,
             'forbidden_republic_ids' => json_encode($request->forbidden_republic_ids),
@@ -1383,9 +1338,9 @@ class APIController extends Controller
      *         required=true,
      *         @OA\JsonContent(
      *             @OA\Property(property="id", type="integer", description="id тарифа"),
-     *             @OA\Property(property="participation_accident", nullable=true, type="bool", description="Участие в ДТП, true/false"),
+     *             @OA\Property(property="has_caused_accident", nullable=true, type="bool", description="Участие в ДТП, true/false"),
      *             @OA\Property(property="experience", type="integer", nullable=true, description="Минимальный опыт вождения"),
-     *             @OA\Property(property="max_cont_seams", type="integer", nullable=true, description="Максимальное количество штрафов"),
+     *             @OA\Property(property="max_fine_count", type="integer", nullable=true, description="Максимальное количество штрафов"),
      *             @OA\Property(property="abandoned_car", type="bool", nullable=true, description="Бросал ли машину, true/false"),
      *             @OA\Property(property="min_scoring", type="integer", nullable=true, description="минимальный скоринг"),
      *             @OA\Property(property="forbidden_republic_ids", nullable=true, type="string", description="Массив запрещенных статей"),
@@ -1434,9 +1389,9 @@ class APIController extends Controller
         $validator = Validator::make($request->all(), [
             'id' => 'required|integer',
             'criminal_ids' => 'array',
-            'participation_accident' => 'boolean',
+            'has_caused_accident' => 'boolean',
             'experience' => 'integer',
-            'max_cont_seams' => 'integer',
+            'max_fine_count' => 'integer',
             'abandoned_car' => 'boolean',
             'min_scoring' => 'integer',
             'forbidden_republic_ids' => 'array',
@@ -1451,7 +1406,7 @@ class APIController extends Controller
         $tariff = Tariff::where('id', $tariffId)->where('park_id', $park->id)->first();
 
         if ($tariff) {
-            $data = $request->only(['criminal_ids', 'participation_accident', 'experience', 'max_cont_seams', 'abandoned_car', 'min_scoring', 'forbidden_republic_ids', 'alcohol']);
+            $data = $request->only(['criminal_ids', 'has_caused_accident', 'experience', 'max_fine_count', 'abandoned_car', 'min_scoring', 'forbidden_republic_ids', 'alcohol']);
 
             foreach ($data as $key => $value) {
                 if (is_null($value)) {
