@@ -90,8 +90,19 @@ export const Finder = () => {
 
   const [cars, setCars] = useState<Cars2[]>([]);
   const [activeFilter, setActiveFilter] = useState<ActiveFilter | null>(null);
+  const [brands, setBrands] = useState<string[]>([]);
 
   const city = useRecoilValue(cityAtom);
+
+  useEffect(() => {
+    const getBrandList = async () => {
+      const data = await client.getBrandList();
+
+      setBrands(data.brands!);
+    };
+
+    getBrandList();
+  }, [filters, city]);
 
   useEffect(() => {
     const getCars = async () => {
@@ -219,7 +230,7 @@ export const Finder = () => {
                       <DialogTitle>Марка автомобиля</DialogTitle>
                     </DialogHeader>
                     <div className="grid grid-cols-3 gap-4 py-4 h-[300px] overflow-y-scroll">
-                      {["Audi", "BMW", "Kia", "Hyundai"].map((x) => {
+                      {brands.map((x: string) => {
                         const title = x;
                         const isActive = filters.brands.some(
                           (b) => b === title
@@ -255,6 +266,35 @@ export const Finder = () => {
               )}
             </div>
           ))}
+          <Dialog>
+            <DialogTrigger asChild>
+              <span className="bg-grey text-nowrap rounded-xl px-2.5 py-0.5 h-10 flex items-center">
+                Еще
+              </span>
+            </DialogTrigger>
+            <DialogContent>
+              <Checkbox
+                title="Для самозанятых"
+                isChecked={filters.selfEmployed}
+                onCheckedChange={(e: boolean) =>
+                  setFilters({ ...filters, selfEmployed: e })
+                }
+              />
+
+              <Checkbox
+                isChecked={filters.buyoutPossible}
+                onCheckedChange={(e: boolean) =>
+                  setFilters({ ...filters, buyoutPossible: e })
+                }
+                title="Выкуп автомобиля"
+              />
+              {/* <DialogFooter>
+                <DialogClose asChild>
+                  <Button>Выбрать</Button>
+                </DialogClose>
+              </DialogFooter> */}
+            </DialogContent>
+          </Dialog>
         </div>
         <div className="flex my-2 mb-4 space-x-1 overflow-scroll overflow-x-auto scrollbar-hide">
           {activeFilter === ActiveFilter.Sorting &&

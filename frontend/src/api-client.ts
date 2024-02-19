@@ -5694,7 +5694,7 @@ export interface IAnonymous63 {
 
 export class Anonymous64 implements IAnonymous64 {
     /** Список брендов */
-    message?: string[];
+    brands?: string[];
 
     [key: string]: any;
 
@@ -5713,10 +5713,10 @@ export class Anonymous64 implements IAnonymous64 {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
-            if (Array.isArray(_data["message"])) {
-                this.message = [] as any;
-                for (let item of _data["message"])
-                    this.message!.push(item);
+            if (Array.isArray(_data["brands"])) {
+                this.brands = [] as any;
+                for (let item of _data["brands"])
+                    this.brands!.push(item);
             }
         }
     }
@@ -5734,10 +5734,10 @@ export class Anonymous64 implements IAnonymous64 {
             if (this.hasOwnProperty(property))
                 data[property] = this[property];
         }
-        if (Array.isArray(this.message)) {
-            data["message"] = [];
-            for (let item of this.message)
-                data["message"].push(item);
+        if (Array.isArray(this.brands)) {
+            data["brands"] = [];
+            for (let item of this.brands)
+                data["brands"].push(item);
         }
         return data;
     }
@@ -5745,7 +5745,7 @@ export class Anonymous64 implements IAnonymous64 {
 
 export interface IAnonymous64 {
     /** Список брендов */
-    message?: string[];
+    brands?: string[];
 
     [key: string]: any;
 }

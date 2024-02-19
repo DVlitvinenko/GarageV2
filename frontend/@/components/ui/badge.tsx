@@ -10,7 +10,9 @@ const badgeVariants = cva(
       variant: {
         default: "bg-grey",
         secondary: "bg-white",
-        card: "bg-white border border-pale px-3",
+        card: "bg-white border border-pale px-3 ",
+        schema:
+          "bg-white border border-pale flex-col items-start justify-start flex-grow h-full px-2 text-lg font-bold text-wrap",
       },
     },
     defaultVariants: {

@@ -2328,7 +2328,7 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "message": {
+                                        "brands": {
                                             "description": "Список брендов",
                                             "type": "array",
                                             "items": {

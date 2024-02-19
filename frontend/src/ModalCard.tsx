@@ -75,61 +75,57 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
           </Collapsible>
         </div>
 
-        <div className="flex flex-wrap items-center justify-center pb-10 space-x-1 space-y-1">
-          <div className="flex flex-wrap items-center justify-center space-x-1 space-y-1">
-            {currentSchemas?.map((currentSchema, i) => (
-              <Badge
-                key={`${currentSchema.working_days}/${currentSchema.non_working_days}${i}`}
-                className="mt-1 text-lg font-semibold"
-                variant="card"
-              >
-                {`${formatRoubles(currentSchema.daily_amount!)} ${
-                  currentSchema.working_days
-                }/${currentSchema.non_working_days}`}
-              </Badge>
-            ))}
-          </div>
-          <Badge variant="card">
-            Депозит {formatRoubles(car.rent_term?.deposit_amount_total!)}
-            {/* (
-            {formatRoubles(car.rent_term?.deposit_amount_daily!)}
-            /день) */}
+        <div className="flex flex-wrap items-center justify-start gap-1 mb-3">
+          <Badge variant="card" className="px-0 py-0 bg-grey ">
+            <span className="flex items-center h-full px-2 bg-white rounded-xl">
+              Депозит {formatRoubles(car.rent_term?.deposit_amount_total!)}
+            </span>
+            <span className="flex items-center h-full px-2 ">
+              {formatRoubles(car.rent_term?.deposit_amount_daily!)}
+              /день
+            </span>
           </Badge>
           <Badge variant="card">Комиссия {car.commission}</Badge>
-          <div className="flex justify-around">
-            <Badge variant="card">
-              {getFuelTypeDisplayName(car.fuel_type)}
-            </Badge>
-          </div>
-          <div className="flex justify-around">
-            <Badge variant="card">
-              {getTransmissionDisplayName(car.transmission_type)}
-            </Badge>
-          </div>
+          <Badge variant="card">{getFuelTypeDisplayName(car.fuel_type)}</Badge>
+          <Badge variant="card">
+            {getTransmissionDisplayName(car.transmission_type)}
+          </Badge>
 
           {!!car.self_employed && <Badge variant="card">Для самозанятых</Badge>}
           {!!car.rent_term?.is_buyout_possible && (
             <Badge variant="card">Выкуп автомобиля</Badge>
           )}
         </div>
+        <div className="flex flex-wrap gap-1 pb-10">
+          {currentSchemas?.map((currentSchema, i) => (
+            <Badge
+              key={`${currentSchema.working_days}/${currentSchema.non_working_days}${i}`}
+              className="flex-col items-start justify-start flex-grow h-full px-2 text-lg font-bold text-wrap"
+              variant="schema"
+            >
+              {`${formatRoubles(currentSchema.daily_amount!)}`}
+              <div className="text-xs font-medium text-black">{`${currentSchema.working_days}раб. /${currentSchema.non_working_days}вых.`}</div>
+            </Badge>
+          ))}
+        </div>
       </div>
-      <div className="fixed bottom-0 left-0 flex justify-center w-full py-4 space-x-2 bg-white border-t border-pale">
+      <div className="fixed bottom-0 left-0 flex justify-center w-full px-4 py-4 space-x-2 bg-white border-t border-pale">
         {!phoneRequested && (
-          <Badge
-            variant="card"
-            className="h-auto font-bold border-none bg-grey"
-          >
-            {`${formatRoubles(car.rent_term?.schemas![0]!.daily_amount)} ${
+          <Badge variant="schema" className="w-1/2 h-auto border-none  bg-grey">
+            {`${formatRoubles(car.rent_term?.schemas![0]!.daily_amount)}`}
+            <div className="text-xs font-medium text-black">{`${
               car.rent_term?.schemas![0]!.working_days
-            }/${car.rent_term?.schemas![0]!.non_working_days}`}
+            }раб. /${car.rent_term?.schemas![0]!.non_working_days}вых.`}</div>
           </Badge>
         )}
         {phoneRequested && (
-          <Button variant="secondary">
+          <Button variant="secondary" className="w-1/2">
             <a href={"tel:" + car.phone}>{car.phone}</a>
           </Button>
         )}
-        <Button onClick={book}>Забронировать</Button>
+        <Button onClick={book} className="w-1/2">
+          Забронировать
+        </Button>
       </div>
     </>
   );

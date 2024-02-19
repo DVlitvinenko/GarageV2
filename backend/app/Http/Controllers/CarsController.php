@@ -565,9 +565,8 @@ $car['commission'] = rtrim(rtrim($commissionFormatted, '0'), '.');
      *         response="200",
      *         description="Успешный ответ",
      *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="array", @OA\Items(type="string"), description="Список брендов")
-     *         ),
-     *     ),
+     * @OA\Property(property="brands", type="array",@OA\Items(type="string"), description="Список брендов"),
+     *     )),
      *     @OA\Response(
      *         response="500",
      *         description="Ошибка сервера",
@@ -582,6 +581,6 @@ $car['commission'] = rtrim(rtrim($commissionFormatted, '0'), '.');
      */
     public function GetBrandList() {
         $brandList = Car::select('brand')->distinct()->get()->pluck('brand')->toArray();
-        return $brandList;
+        return response()->json(['brands' => $brandList]);
     }
 }
