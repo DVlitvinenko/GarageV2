@@ -139,7 +139,7 @@ class CarsController extends Controller
         $brand = $request->brand;
         $model = $request->model;
 
-        $carClassValues = $request->car_class;
+        $carClassValues = $request->car_class?$request->car_class:[];
         $translatedValues = [];
 
         if (count($carClassValues) > 0) {
@@ -285,8 +285,15 @@ class CarsController extends Controller
                 ->orderBy('schemas.daily_amount', $sorting)
                 ->limit(1);
         }, $sorting);
+
         $carsQuery->offset($offset)->limit($limit);
         $cars = $carsQuery->get();
+
+        $uniqueCars = $cars->unique(function ($item) {
+            return $item->division_id . $item->park_id . $item->tariff_id . $item->rent_term_id .
+            $item->fuel_type . $item->transmission_type . $item->brand . $item->model . $item->year_produced;
+        });
+        $cars = collect($uniqueCars)->values()->all();
 
         foreach ($cars as $car) {
             $car['images'] = json_decode($car['images']);
@@ -544,366 +551,36 @@ class CarsController extends Controller
         $api->notifyParkOnBookingStatusChanged($booking->id, false);
         return response()->json(['message' => 'Бронирование автомобиля успешно отменено'], 200);
     }
-    // /**
-    //  * Получить информацию об автомобиле
-    //  *
-    //  * @param \Illuminate\Http\Request $request Объект запроса, содержащий идентификатор автомобиля
-    //  * @return \Illuminate\Http\JsonResponse JSON-ответ с информацией об автомобиле
-    //  *
-    //  * @OA\Get(
-    //  *     path="/car",
-    //  *     operationId="getCar",
-    //  *     summary="Получить информацию об автомобиле",
-    //  *     tags={"Cars"},
-    //  *     @OA\Parameter(
-    //  *         name="id",
-    //  *         in="query",
-    //  *         description="Идентификатор автомобиля",
-    //  *         required=true,
-    //  *         @OA\Schema(
-    //  *             type="integer"
-    //  *         )
-    //  *     ),
-    //  *     @OA\Parameter(
-    //  *         name="transmission_type",
-    //  *         in="query",
-    //  *         description="Тип трансмиссии",
-    //  *         required=false,
-    //  *         ref="#/components/schemas/TransmissionType"
-    //  *     ),
-    //  *     @OA\Parameter(
-    //  *         name="car_class",
-    //  *         in="query",
-    //  *         description="Класс автомобиля (1 - Эконом, 2 - Комфорт, 3 - Комфорт+, 4 - Бизнес)",
-    //  *         required=false,
-    //  *         ref="#/components/schemas/CarClass"),
-    //  *     @OA\Response(
-    //  *         response="200",
-    //  *         description="Успешный ответ",
-    //  *         @OA\JsonContent(
-    //  *             @OA\Property(
-    //  *                 property="car",
-    //  *                 type="object",
-    //  *                 description="Информация об автомобиле",
-    //  *                 @OA\Property(property="id", type="integer"),
-    //  *                 @OA\Property(property="fuel_type", type="string", ref="#/components/schemas/FuelType"),
-    //  *                 @OA\Property(property="transmission_type", type="string", ref="#/components/schemas/TransmissionType"),
-    //  *                 @OA\Property(property="brand", type="string"),
-    //  *                 @OA\Property(property="model", type="string"),
-    //  *                 @OA\Property(property="year_produced", type="integer"),
-    //  *                 @OA\Property(property="images", type="string"),
-    //  *                 @OA\Property(property="city", type="string"),
-    //  *                 @OA\Property(property="booking_time", type="string", nullable=true),
-    //  *                 @OA\Property(property="user_booked_id", type="integer", nullable=true),
-    //  *                 @OA\Property(property="CarClass",type="string", ref="#/components/schemas/CarClass"),
-    //  *                 @OA\Property(property="rent_term", type="object", description="Данные о сроке аренды",
-    //  *                     @OA\Property(property="id", type="integer", description="Идентификатор срока аренды"),
-    //  *                     @OA\Property(property="deposit_amount_daily", type="number", description="Сумма депозита за день"),
-    //  *                     @OA\Property(property="deposit_amount_total", type="number", description="Общая сумма депозита"),
-    //  *                     @OA\Property(property="minimum_period_days", type="integer", description="Минимальный период в днях"),
-    //  *                     @OA\Property(property="is_buyout_possible", type="boolean", description="Возможность выкупа"),
-    //  *                 ),
-    //  *                 @OA\Property(property="schema", type="object", description="Данные о схеме аренды",
-    //  *                     @OA\Property(property="id", type="integer", description="Идентификатор схемы аренды"),
-    //  *                     @OA\Property(property="rent_term_id", type="integer", description="Идентификатор срока аренды"),
-    //  *                     @OA\Property(property="daily_amount", type="integer", description="Суточная стоимость"),
-    //  *                     @OA\Property(property="non_working_days", type="integer", description="Количество нерабочих дней"),
-    //  *                     @OA\Property(property="working_days", type="integer", description="Количество рабочих дней"),
-    //  *                 ),
-    //  *                 @OA\Property(
-    //  *                     property="division",
-    //  *                     type="object",
-    //  *                     description="Информация о подразделении",
-    //  *                     @OA\Property(property="coords", type="string", nullable=true),
-    //  *                     @OA\Property(property="address", type="string", nullable=true),
-    //  *                     @OA\Property(property="name", type="string"),
-    //  *                     @OA\Property(property="park_name", type="string")
-    //  *                 )
-    //  *             )
-    //  *         )
-    //  *     ),
-    //  *     @OA\Response(
-    //  *         response="404",
-    //  *         description="Машина не найдена",
-    //  *         @OA\JsonContent(
-    //  *             @OA\Property(property="message", type="string", description="Автомобиль с указанным идентификатором не найден")
-    //  *         )
-    //  *     )
-    //  * )
-    //  */
-    // public function GetCar(Request $request)
-    // {
-    //     $request->validate([
-    //         'id' => 'required|integer',
-    //     ]);
-    //     $car = Car::where('id', $request->id)->with([
-    //         'division.city' => function ($query) {
-    //             $query->select('id', 'name');
-    //         },
-    //         'tariff' => function ($query) {
-    //             $query->select('id', 'class');
-    //         },
-    //         'rentTerm' => function ($query) {
-    //             $query->select('id', 'deposit_amount_daily', 'deposit_amount_total', 'minimum_period_days', 'is_buyout_possible');
-    //         },
-    //         'rentTerm.schemas' => function ($query) {
-    //             $query->select('id', 'daily_amount', 'non_working_days', 'working_days', 'rent_term_id');
-    //         },
-    //         'division.park' => function ($query) {
-    //             $query->select('id', 'park_name');
-    //         },
-    //         'division' => function ($query) {
-    //             $query->select('id', 'coords', 'address', 'name', 'park_id', 'city_id');
-    //         }
-    //     ])
-    //         ->select(
-    //             'cars.id',
-    //             'cars.division_id',
-    //             'cars.park_id',
-    //             'cars.tariff_id',
-    //             'cars.rent_term_id',
-    //             'cars.fuel_type',
-    //             'cars.transmission_type',
-    //             'cars.brand',
-    //             'cars.model',
-    //             'cars.year_produced',
-    //             'cars.car_id',
-    //             'cars.images',
-    //             'booking_time',
-    //             'user_booked_id'
-    //         )->first();
 
-    //     $car['images'] = json_decode($car['images']);
-    //     $car['fuel_type'] = FuelType::from($car['fuel_type'])->name;
-    //     $car['transmission_type'] = TransmissionType::from($car['transmission_type'])->name;
-    //     $end = $this->tarifEng($car['tariff']['class']);
-    //     $car['tariff']['class'] =  $end;
-    //     $parkName = $car['division']['park']['park_name'];
-    //     $city = $car['division']['city']['name'];
-    //     c
-    //         $car['division']['park'],
-    //         $car['division']['park_id'],
-    //         $car['division']['id'],
-    //         $car['tariff'],
-    //         $car['division_id'],
-    //         $car['park_id'],
-    //         $car['tariff_id'],
-    //         $car['rent_term_id'],
-    //         $car['car_id'],
-    //     );
-    //     $car->CarClass = $end;
-    //     $car->city = $city;
-    //     $car->park_name = $parkName;
-    //     if (!$car) {
-    //         return response()->json(['message' => 'Машина не найдена'], 404);
-    //     }
-
-    //     return response()->json(['car' => $car]);
-    // }
-
-
-
-    //    /**
-    //  * Получение списка автомобилей по поиску
-    //  *
-    //  * @OA\Get(
-    //  *     path="/cars/search",
-    //  *     operationId="SearchCars",
-    //  *     summary="Получение списка автомобилей по поиску",
-    //  *     tags={"Cars"},
-    //  *     security={{"bearerAuth": {}}},
-    //  *     @OA\Parameter(
-    //  *         name="limit",
-    //  *         in="query",
-    //  *         description="Максимальное количество записей для выборки",
-    //  *         required=false,
-    //  *         @OA\Schema(type="integer")
-    //  *     ),
-    //  *     @OA\Parameter(
-    //  *         name="city",
-    //  *         in="query",
-    //  *         description="Название города",
-    //  *         required=true,
-    //  *         @OA\Schema(type="string")
-    //  *     ),
-    //  *     @OA\Parameter(
-    //  *         name="search",
-    //  *         in="query",
-    //  *         description="Модель или марка автомобиля",
-    //  *         required=true,
-    //  *         @OA\Schema(type="string")
-    //  *     ),
-    //  *     @OA\Response(
-    //  *         response="200",
-    //  *         description="Успешный ответ",
-    //  *         @OA\JsonContent(
-    //  *             @OA\Property(property="cars", type="array", @OA\Items(
-    //  *                 @OA\Property(property="id", type="integer", description="Идентификатор автомобиля"),
-    //  *                 @OA\Property(property="fuel_type", type="string", description="Тип топлива",ref="#/components/schemas/FuelType"),
-    //  *                 @OA\Property(property="transmission_type", type="string", description="Тип трансмиссии",ref="#/components/schemas/TransmissionType"),
-    //  *                 @OA\Property(property="brand", type="string", description="Марка автомобиля"),
-    //  *                 @OA\Property(property="model", type="string", description="Модель автомобиля"),
-    //  *                 @OA\Property(property="year_produced", type="integer", description="Год производства"),
-    //  *                 @OA\Property(property="images", type="array", @OA\Items(type="string"), description="Ссылки на изображения"),
-    //  *                 @OA\Property(property="CarClass", type="string", description="Класс тарифа",ref="#/components/schemas/CarClass"),
-    //  *                 @OA\Property(property="park_name", type="string", description="Название парка"),
-    //  *                 @OA\Property(property="city", type="string"),
-    //  *                 @OA\Property(property="division", type="object", description="Данные о подразделении",
-    //  *                     @OA\Property(property="name", type="string", description="Название подразделения"),
-    //  *                 ),
-    //  *                 @OA\Property(property="rent_term", type="object", description="Данные о сроке аренды",
-    //  *                     @OA\Property(property="deposit_amount_daily", type="number", description="Сумма депозита за день"),
-    //  *                     @OA\Property(property="deposit_amount_total", type="number", description="Общая сумма депозита"),
-    //  *                     @OA\Property(property="minimum_period_days", type="integer", description="Минимальный период в днях"),
-    //  *                     @OA\Property(property="is_buyout_possible", type="boolean", description="Возможность выкупа"),
-    //  *                     @OA\Property(property="schemas", type="array", @OA\Items(
-    //  *                         @OA\Property(property="daily_amount", type="integer", description="Суточная стоимость"),
-    //  *                         @OA\Property(property="non_working_days", type="integer", description="Количество нерабочих дней"),
-    //  *                         @OA\Property(property="working_days", type="integer", description="Количество рабочих дней"),
-    //  *                     )),
-    //  *                 ),
-    //  *             )),
-    //  *         ),
-    //  *     ),
-    //  *     @OA\Response(response="401", description="Ошибка аутентификации"),
-    //  *     @OA\Response(response="422", description="Ошибки валидации"),
-    //  *     @OA\Response(response="500", description="Ошибка сервера"),
-    //  * )
-    //  * @param \Illuminate\Http\Request $request
-    //  * @return \Illuminate\Http\JsonResponse
-    //  */
-
-
-    //  public function SearchCars(Request $request)
-    //  {
-    //      $request->validate([
-    //          'search'=>'required|string',
-    //          'city' => ['required', 'string', 'max:250', 'exists:cities,name'],
-    //          'limit'=>'integer'
-    //      ]);
-    //      $limit = $request->limit;
-    //      $user = Auth::guard('sanctum')->user();
-    //      $city = City::where('name',$request->city)->first();
-    //      $cityId = $city->id;
-    //      if (!$city) {
-    //          return response()->json(['error' => 'Город не найден'], 404);
-    //      }
-
-    //      $search = $request->search;
-
-    //      $carsQuery = Car::query()->where('status','!=',CarStatus::Hidden->value)->doesntHave('booking')->where('rent_term_id','!=',null)->where('price','!=',null)
-    //      ->whereHas('division', function($query) use ($cityId) {
-    //          $query->where('city_id', $cityId);
-    //      });
-    //      if ($user && $user->user_status == UserStatus::Verified->value) {
-    //          $driverSpecifications = $user->driver->driverSpecification;
-    //          if ($driverSpecifications) {
-    //              $carsQuery->whereHas('tariff', function($query) use ($driverSpecifications) {
-    //                  $criminalIds = explode(',', $driverSpecifications->criminal_ids);
-    //          $criminalIds = array_map('intval', $criminalIds);
-    //          if (!empty(array_filter($criminalIds, 'is_numeric'))) {
-    //              $query->whereNotIn('criminal_ids', $criminalIds);
-    //          }
-    //          $forbiddenRepublicIds = explode(',', $driverSpecifications->republick_id);
-    //          $forbiddenRepublicIds = array_map('intval', $forbiddenRepublicIds);
-    //          if (!empty(array_filter($forbiddenRepublicIds, 'is_numeric'))) {
-    //              $query->whereNotIn('forbidden_republic_ids', $forbiddenRepublicIds);
-    //          }
-    //                  $query->where('experience', '<=', $driverSpecifications->experience);
-    //                  $query->where('max_fine_count', '>=', $driverSpecifications->count_seams);
-    //                  $query->where('min_scoring', '<=', $driverSpecifications->scoring);
-    //                  if ($driverSpecifications->has_caused_accident == 1) {
-    //                      $query->where('has_caused_accident', 0);
-    //                  }
-    //                  if ($driverSpecifications->abandoned_car == 1) {
-    //                      $query->where('abandoned_car', 0);
-    //                  }
-    //                  if ($driverSpecifications->has_caused_accident == 1) {
-    //                      $query->where('has_caused_accident', 0);
-    //                  }
-    //                  if ($driverSpecifications->alcohol == 1) {
-    //                      $query->where('alcohol', 0);
-    //                  }
-    //              });
-    //          }
-    //      }
-
-    //      if ($search) {
-    //         $keywords = explode(' ', $search);
-    //         $carsQuery->where(function($query) use ($keywords) {
-    //             foreach ($keywords as $keyword) {
-    //                 $query->orWhere('brand', 'like', '%' . str_replace(' ', '%', $keyword) . '%')
-    //                       ->orWhere('model', 'like', '%' . str_replace(' ', '%', $keyword) . '%');
-    //             }
-    //         });
-    //     }
-
-    //      $carsQuery->with([
-    //          'division.city' => function($query) {
-    //              $query->select('id', 'name');
-    //          },
-    //          'tariff' => function($query) {
-    //              $query->select('id', 'class');
-    //          },
-    //          'rentTerm' => function($query) {
-    //              $query->select('id', 'deposit_amount_daily', 'deposit_amount_total', 'minimum_period_days', 'is_buyout_possible');
-    //          },
-    //          'rentTerm.schemas' => function($query) {
-    //              $query->select('id', 'daily_amount', 'non_working_days', 'working_days','rent_term_id');
-    //          },
-    //          'division.park' => function($query) {
-    //              $query->select('id', 'park_name');
-    //          },
-    //          'division' => function($query) {
-    //              $query->select('id', 'coords', 'address', 'name','park_id','city_id');
-    //          }
-    //      ])
-    //      ->select(
-    //          'cars.id',
-    //          'cars.division_id',
-    //          'cars.park_id',
-    //          'cars.tariff_id',
-    //          'cars.rent_term_id',
-    //          'cars.fuel_type',
-    //          'cars.transmission_type',
-    //          'cars.brand',
-    //          'cars.model',
-    //          'cars.year_produced',
-    //          'cars.car_id',
-    //          'cars.images',
-    //      );
-    //          $car = $carsQuery->orderBy('price', 'asc')->first();
-    // if ($limit) {
-    //     $carsQuery->limit($limit);
-    // }
-    //  $cars = $carsQuery->get();
-
-    //  foreach ($cars as $car) {
-    //      $car['images'] = json_decode($car['images']);
-    //      $car['fuel_type'] = FuelType::from($car['fuel_type'])->name;
-    //      $car['transmission_type'] = TransmissionType::from($car['transmission_type'])->name;
-    //      $end =$this->tarifEng($car['tariff']['class']);
-    //      $car['tariff']['class'] =  $end;
-    //      $parkName = $car['division']['park']['park_name'];
-    //      $city = $car['division']['city']['name'];
-    //      unset(
-    //          $car['division']['park'],
-    //          $car['division']['park_id'],
-    //          $car['division']['id'],
-    //          $car['tariff'],
-    //          $car['division']['city'],
-    //          $car['division_id'],
-    //          $car['park_id'],
-    //          $car['tariff_id'],
-    //          $car['rent_term_id'],
-    //          $car['car_id'],
-    //      );
-    //      $car->city= $city;
-    //      $car->CarClass= $end;
-    //      $car->park_name= $parkName;
-    //  }
-
-
-    //  return response()->json(['cars' => $cars]);
-    // }
+    /**
+     * Показать список брендов
+     *
+     * @OA\Post(
+     *     path="/cars/brand-list",
+     *     operationId="GetBrandList",
+     *     summary="Показать список брендов",
+     *     tags={"Cars"},
+     *     @OA\Response(
+     *         response="200",
+     *         description="Успешный ответ",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="array", @OA\Items(type="string"), description="Список брендов")
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Ошибка сервера",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", description="Внутренняя ошибка сервера")
+     *         )
+     *     )
+     * )
+     *
+     * @param \Illuminate\Http\Request $request Объект запроса, содержащий идентификатор автомобиля для отмены бронирования
+     * @return \Illuminate\Http\JsonResponse JSON-ответ с результатом отмены бронирования
+     */
+    public function GetBrandList() {
+        $brandList = Car::select('brand')->distinct()->get()->pluck('brand')->toArray();
+        return $brandList;
+    }
 }

@@ -2313,6 +2313,53 @@
                 ]
             }
         },
+        "/cars/brand-list": {
+            "post": {
+                "tags": [
+                    "Cars"
+                ],
+                "summary": "Показать список брендов",
+                "description": "Показать список брендов",
+                "operationId": "GetBrandList",
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "description": "Список брендов",
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "description": "Внутренняя ошибка сервера",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/driver/upload-file": {
             "post": {
                 "tags": [
