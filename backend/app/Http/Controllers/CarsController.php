@@ -126,8 +126,8 @@ class CarsController extends Controller
         $sorting = $request->sorting ?? 'asc';
         $limit = $request->limit;
         $user = Auth::guard('sanctum')->user();
-        $fuelType = $request->fuel_type ? FuelType::{$request->fuel_type}()->value : null;
-        $transmissionType = $request->transmission_type ? TransmissionType::{$request->transmission_type}()->value : null;
+        $fuelType = $request->fuel_type ? FuelType::{$request->fuel_type}->value : null;
+        $transmissionType = $request->transmission_type ? TransmissionType::{$request->transmission_type}->value : null;
         $city = City::where('name', $request->city)->first();
         $search = $request->search;
         $cityId = $city->id;

@@ -835,7 +835,7 @@ class APIController extends Controller
             return response()->json(['message' => 'Ошибка валидации', 'errors' => $validator->errors()], 400);
         }
 
-        $status = BookingStatus::{$request->input('status')}()->value;
+        $status = BookingStatus::{$request->input('status')}->value;
 
         $carId = $request->input('car_id');
 
