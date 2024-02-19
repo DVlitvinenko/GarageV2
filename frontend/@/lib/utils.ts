@@ -38,3 +38,5 @@ export const formatRoubles = (amount: number) =>
     maximumSignificantDigits: 3,
     currency: "RUB",
   }).format(amount);
+
+

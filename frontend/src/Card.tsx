@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Cars2 } from "./api-client";
 import {
+  formatCommission,
   formatRoubles,
   getFuelTypeDisplayName,
   getTransmissionDisplayName,
@@ -16,9 +17,9 @@ import {
 import { ModalCard } from "./ModalCard";
 
 export const Card = ({ car }: { car: Cars2 }) => {
-  const currentSchema = car.rent_term!.schemas!.sort(
+  const currentSchemas = car.rent_term!.schemas!.sort(
     (a, b) => a.daily_amount! - b.daily_amount!
-  )[0];
+  );
 
   return (
     <div className="pb-4 mx-auto mb-8 text-gray-700 bg-white shadow-md w-80 rounded-xl">
@@ -32,24 +33,31 @@ export const Card = ({ car }: { car: Cars2 }) => {
         />
       </div>
       <div className="px-4">
-        <h1 className="my-4 text-center">{`${car.brand} ${car.model} ${car.year_produced}`}</h1>
-        <div className="flex flex-col items-center mx-auto space-y-2">
-          <Badge
-            className="mb-2 text-lg font-semibold"
-            variant="card"
-          >{`${formatRoubles(currentSchema.daily_amount!)} ${
-            currentSchema.working_days
-          } раб./${currentSchema.non_working_days} вых`}</Badge>
+        <h1 className="my-2 text-center">{`${car.brand} ${car.model} ${car.year_produced}`}</h1>
+        <div className="flex flex-wrap items-center justify-center space-x-1 space-y-1">
+          {currentSchemas?.map((currentSchema, i) => (
+            <Badge
+              key={`${currentSchema.working_days}/${currentSchema.non_working_days}${i}`}
+              className="mt-1 text-lg font-semibold"
+              variant="card"
+            >
+              {`${formatRoubles(currentSchema.daily_amount!)} ${
+                currentSchema.working_days
+              }/${currentSchema.non_working_days}`}
+            </Badge>
+          ))}
           <Badge variant="card">
-            Депозит {formatRoubles(car.rent_term?.deposit_amount_total!)} (
-            {formatRoubles(car.rent_term?.deposit_amount_daily!)}
-            /день)
+            Депозит {formatRoubles(car.rent_term?.deposit_amount_total!)}
+            {/* ({formatRoubles(car.rent_term?.deposit_amount_daily!)}
+            /день) */}
           </Badge>
-          <Badge variant="card">Комиссия {car.commission}</Badge>
-          <div className="flex justify-around w-full">
+          <Badge variant="card">Комиссия {car.commission}%</Badge>
+          <div className="flex justify-around">
             <Badge variant="card">
               {getFuelTypeDisplayName(car.fuel_type)}
             </Badge>
+          </div>
+          <div className="flex justify-around">
             <Badge variant="card">
               {getTransmissionDisplayName(car.transmission_type)}
             </Badge>

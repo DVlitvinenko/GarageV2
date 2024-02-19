@@ -343,7 +343,8 @@ class CarsController extends Controller
             $car['phone'] = $phone;
             $car['self_employed'] = $selfEmployed;
             $car['about'] = $about;
-            $car['commission'] = number_format($commission, 2);
+            $commissionFormatted = number_format($commission, 2);
+$car['commission'] = rtrim(rtrim($commissionFormatted, '0'), '.');
         }
         foreach ($cars as $car) {
             unset(

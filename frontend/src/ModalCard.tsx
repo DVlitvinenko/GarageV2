@@ -30,7 +30,7 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
     }
   };
 
-  const currentSchema = car.rent_term?.schemas![0]!;
+  const currentSchemas = car.rent_term?.schemas;
 
   return (
     <>
@@ -49,6 +49,10 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
           <Separator />
           <p className="text-base font-semibold text-gray">
             Адрес: {car.division?.address}
+          </p>
+          <Separator />
+          <p className="text-base font-semibold text-gray">
+            Телефон: {car.phone}
           </p>
           <Separator />
           <p className="text-base font-semibold text-gray">
@@ -71,41 +75,54 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
           </Collapsible>
         </div>
 
-        <div className="flex flex-col items-center pb-10 mx-auto space-y-2">
-          <Badge
-            className="mb-2 text-lg font-semibold"
-            variant="outline"
-          >{`${formatRoubles(currentSchema.daily_amount!)} ${
-            currentSchema.working_days
-          } раб./${currentSchema.non_working_days} вых`}</Badge>
-          <Badge variant="outline">
-            Депозит {formatRoubles(car.rent_term?.deposit_amount_total!)} (
+        <div className="flex flex-wrap items-center justify-center pb-10 space-x-1 space-y-1">
+          <div className="flex flex-wrap items-center justify-center space-x-1 space-y-1">
+            {currentSchemas?.map((currentSchema, i) => (
+              <Badge
+                key={`${currentSchema.working_days}/${currentSchema.non_working_days}${i}`}
+                className="mt-1 text-lg font-semibold"
+                variant="card"
+              >
+                {`${formatRoubles(currentSchema.daily_amount!)} ${
+                  currentSchema.working_days
+                }/${currentSchema.non_working_days}`}
+              </Badge>
+            ))}
+          </div>
+          <Badge variant="card">
+            Депозит {formatRoubles(car.rent_term?.deposit_amount_total!)}
+            {/* (
             {formatRoubles(car.rent_term?.deposit_amount_daily!)}
-            /день)
+            /день) */}
           </Badge>
-          <Badge variant="outline">Комиссия {car.commission}</Badge>
-          <div className="flex justify-around w-full">
-            <Badge variant="outline">
+          <Badge variant="card">Комиссия {car.commission}</Badge>
+          <div className="flex justify-around">
+            <Badge variant="card">
               {getFuelTypeDisplayName(car.fuel_type)}
             </Badge>
-            <Badge variant="outline">
+          </div>
+          <div className="flex justify-around">
+            <Badge variant="card">
               {getTransmissionDisplayName(car.transmission_type)}
             </Badge>
           </div>
 
-          {!!car.self_employed && (
-            <Badge variant="outline">Для самозанятых</Badge>
-          )}
+          {!!car.self_employed && <Badge variant="card">Для самозанятых</Badge>}
           {!!car.rent_term?.is_buyout_possible && (
-            <Badge variant="outline">Выкуп автомобиля</Badge>
+            <Badge variant="card">Выкуп автомобиля</Badge>
           )}
         </div>
       </div>
       <div className="fixed bottom-0 left-0 flex justify-center w-full py-4 space-x-2 bg-white border-t border-pale">
         {!phoneRequested && (
-          <Button onClick={() => setPhoneRequested(true)} variant="secondary">
-            Показать номер
-          </Button>
+          <Badge
+            variant="card"
+            className="h-auto font-bold border-none bg-grey"
+          >
+            {`${formatRoubles(car.rent_term?.schemas![0]!.daily_amount)} ${
+              car.rent_term?.schemas![0]!.working_days
+            }/${car.rent_term?.schemas![0]!.non_working_days}`}
+          </Badge>
         )}
         {phoneRequested && (
           <Button variant="secondary">
