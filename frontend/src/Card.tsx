@@ -24,15 +24,20 @@ export const Card = ({ car }: { car: Cars2 }) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <div className="pb-4 mx-auto mb-8 text-gray-700 bg-white shadow-md w-80 rounded-xl">
+        <div className="p-1 pb-4 mx-auto mb-8 text-gray-700 bg-white shadow-md w-100 rounded-xl">
           <div>
             <div className="absolute z-50 p-2 font-medium rounded-tl-lg rounded-br-lg shadow text-gray bg-yellow">
               {car.park_name}
             </div>
-            <img
-              className="object-cover w-full h-52 rounded-t-xl"
-              src={car.images![0]!}
-            />
+            <div className="flex space-x-1 overflow-x-auto scrollbar-hide rounded-xl">
+              {car.images?.map((x, i) => (
+                <img
+                  key={`${x}${i}`}
+                  className="object-cover w-full rounded-sm h-52"
+                  src={x}
+                />
+              ))}
+            </div>
           </div>
           <div className="px-4">
             <h1 className="my-2 text-center">{`${car.brand} ${car.model} ${car.year_produced}`}</h1>

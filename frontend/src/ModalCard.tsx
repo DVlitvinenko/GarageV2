@@ -5,9 +5,9 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { Cars2 } from "./api-client";
+import { Body, Body16, Cars2, UserStatus } from "./api-client";
 import { Separator } from "@/components/ui/separator";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   formatRoubles,
   getFuelTypeDisplayName,
@@ -16,9 +16,11 @@ import {
 import { userAtom } from "./atoms";
 import { useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
+import { client } from "./backend";
 
 export const ModalCard = ({ car }: { car: Cars2 }) => {
   const [phoneRequested, setPhoneRequested] = useState(false);
+  const [booking, setBooking] = useState(false);
 
   const user = useRecoilValue(userAtom);
 
@@ -28,7 +30,24 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
     if (!user) {
       navigate("login/driver");
     }
+    if (user.user_status === UserStatus.Verified) {
+      setBooking(true);
+    } else {
+      navigate("account");
+    }
   };
+
+  // useEffect(() => {
+  //   const booking = async () => {
+  //     const data = await client.booking(new Body16({
+  // id=car.id;
+  //  }));
+
+  //     setBooking();
+  //   };
+
+  //   setBooking();
+  // }, [car]);
 
   const currentSchemas = car.rent_term?.schemas;
 
@@ -111,7 +130,7 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
       </div>
       <div className="fixed bottom-0 left-0 flex justify-center w-full px-4 py-4 space-x-2 bg-white border-t border-pale">
         {!phoneRequested && (
-          <Badge variant="schema" className="w-1/2 h-auto border-none  bg-grey">
+          <Badge variant="schema" className="w-1/2 h-auto border-none bg-grey">
             {`${formatRoubles(car.rent_term?.schemas![0]!.daily_amount)}`}
             <div className="text-xs font-medium text-black">{`${
               car.rent_term?.schemas![0]!.working_days
