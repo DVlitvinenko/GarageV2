@@ -9,9 +9,15 @@ import { DriverLogin } from "./DriverLogin";
 import { useRecoilState } from "recoil";
 import { userAtom } from "./atoms";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTaxi, faUser } from "@fortawesome/free-solid-svg-icons";
+import {
+  faRightFromBracket,
+  faRightToBracket,
+  faTaxi,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
 import { User } from "./api-client";
 import { CityPicker } from "./CityPicker";
+import { LogOut } from "lucide-react";
 
 function App() {
   const [user, setUser] = useRecoilState(userAtom);
@@ -56,6 +62,12 @@ function App() {
 
 export default App;
 
+const LogoutHandler = () => {
+  client.logout();
+  localStorage.clear();
+  window.location.href = "/";
+};
+
 const Menu = ({ user }: { user: User }) => (
   <div className="flex mx-auto cursor-pointer justify-evenly w-60">
     <Link className="hover:text-sky-400" to="/">
@@ -64,6 +76,16 @@ const Menu = ({ user }: { user: User }) => (
     <Link className="hover:text-sky-400" to={user ? "account" : "login/driver"}>
       <FontAwesomeIcon icon={faUser} />
     </Link>
+    {user && (
+      <div className="hover:text-sky-400" onClick={LogoutHandler}>
+        <FontAwesomeIcon icon={faRightFromBracket} />
+      </div>
+    )}
+    {!user && (
+      <Link className="hover:text-sky-400" to="login/driver">
+        <FontAwesomeIcon icon={faRightToBracket} />
+      </Link>
+    )}
   </div>
 );
 

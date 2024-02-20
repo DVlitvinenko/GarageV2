@@ -47,7 +47,7 @@ import { cityAtom } from "./atoms";
 import { Badge } from "@/components/ui/badge";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRightArrowLeft } from "@fortawesome/free-solid-svg-icons";
-
+import { Separator } from "@/components/ui/separator";
 const DEFAULT_COMMISSION_PERCENTAGE = 0;
 
 type CarFilter = {
@@ -280,7 +280,7 @@ export const Finder = () => {
                   setFilters({ ...filters, selfEmployed: e })
                 }
               />
-
+              <Separator className="mb-4" />
               <Checkbox
                 isChecked={filters.buyoutPossible}
                 onCheckedChange={(e: boolean) =>
@@ -288,6 +288,7 @@ export const Finder = () => {
                 }
                 title="Выкуп автомобиля"
               />
+              <Separator className="mb-4" />
               {/* <DialogFooter>
                 <DialogClose asChild>
                   <Button>Выбрать</Button>
