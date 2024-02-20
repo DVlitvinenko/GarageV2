@@ -289,11 +289,12 @@ export const Finder = () => {
                 title="Выкуп автомобиля"
               />
               <Separator className="mb-4" />
-              {/* <DialogFooter>
+              <p className="mb-4 text-xl font-bold">Комиссия</p>
+              <DialogFooter>
                 <DialogClose asChild>
                   <Button>Выбрать</Button>
                 </DialogClose>
-              </DialogFooter> */}
+              </DialogFooter>
             </DialogContent>
           </Dialog>
         </div>
