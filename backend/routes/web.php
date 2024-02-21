@@ -30,7 +30,8 @@ Route::middleware('api.key')->put('/cars/status', [APIController::class, 'update
 Route::middleware('api.key')->post('/parks/rent-terms', [APIController::class, 'createOrUpdateRentTerm']);
 Route::middleware('api.key')->put('/parks', [APIController::class, 'updateParkInfo']);
 Route::middleware('api.key')->post('/parks/division', [APIController::class, 'createParkDivision']);
-Route::middleware('api.key')->post('/parks/tariff', [APIController::class, 'createOrUpdateTariff']);
+Route::middleware('api.key')->post('/parks/tariff', [APIController::class, 'createTariff']);
+Route::middleware('api.key')->put('/parks/tariff', [APIController::class, 'updateTariff']);
 Route::middleware('api.key')->put('/parks/division', [APIController::class, 'updateParkDivision']);
 Route::middleware('api.key')->put('/cars/booking', [APIController::class, 'updateCarBookingStatus']);
 

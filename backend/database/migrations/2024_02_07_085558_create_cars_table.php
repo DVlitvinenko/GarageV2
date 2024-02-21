@@ -18,7 +18,6 @@ return new class extends Migration
             $table->unsignedBigInteger('tariff_id');
             $table->unsignedBigInteger('rent_term_id');
             $table->integer('fuel_type');
-            $table->integer('price');
             $table->integer('transmission_type');
             $table->string('brand');
             $table->string('model');

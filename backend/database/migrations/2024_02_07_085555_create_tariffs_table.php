@@ -17,9 +17,9 @@ return new class extends Migration
             $table->unsignedBigInteger('park_id');
             $table->unsignedBigInteger('city_id');
             $table->string('criminal_ids');
-            $table->boolean('participation_accident');
+            $table->boolean('has_caused_accident');
             $table->integer('experience');
-            $table->integer('max_cont_seams');
+            $table->integer('max_fine_count');
             $table->boolean('abandoned_car');
             $table->integer('min_scoring');
             $table->string('forbidden_republic_ids');

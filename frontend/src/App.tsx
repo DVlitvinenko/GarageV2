@@ -9,9 +9,26 @@ import { DriverLogin } from "./DriverLogin";
 import { useRecoilState } from "recoil";
 import { userAtom } from "./atoms";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTaxi, faUser } from "@fortawesome/free-solid-svg-icons";
+import {
+  faRightFromBracket,
+  faRightToBracket,
+  faTaxi,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
 import { User } from "./api-client";
 import { CityPicker } from "./CityPicker";
+import { LogOut } from "lucide-react";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import { Button } from "@/components/ui/button";
 
 function App() {
   const [user, setUser] = useRecoilState(userAtom);
@@ -50,11 +67,36 @@ function App() {
         <Route path="login/manager" element={<ManagerLogin />} />
         <Route path="login/admin" element={<AdminLogin />} />
       </Routes>
+      <BookingDrawer />
     </div>
   );
 }
 
 export default App;
+const BookingDrawer = () => (
+  <>
+    <Drawer>
+      <DrawerTrigger>Open</DrawerTrigger>
+      <DrawerContent>
+        <DrawerHeader>
+          <DrawerTitle>Are you absolutely sure?</DrawerTitle>
+          <DrawerDescription>This action cannot be undone.</DrawerDescription>
+        </DrawerHeader>
+        <DrawerFooter>
+          <Button>Submit</Button>
+          <DrawerClose>
+            <Button variant="outline">Cancel</Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
+  </>
+);
+const LogoutHandler = () => {
+  client.logout();
+  localStorage.clear();
+  window.location.href = "/";
+};
 
 const Menu = ({ user }: { user: User }) => (
   <div className="flex mx-auto cursor-pointer justify-evenly w-60">
@@ -64,6 +106,16 @@ const Menu = ({ user }: { user: User }) => (
     <Link className="hover:text-sky-400" to={user ? "account" : "login/driver"}>
       <FontAwesomeIcon icon={faUser} />
     </Link>
+    {user && (
+      <div className="hover:text-sky-400" onClick={LogoutHandler}>
+        <FontAwesomeIcon icon={faRightFromBracket} />
+      </div>
+    )}
+    {!user && (
+      <Link className="hover:text-sky-400" to="login/driver">
+        <FontAwesomeIcon icon={faRightToBracket} />
+      </Link>
+    )}
   </div>
 );
 

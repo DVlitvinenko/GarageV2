@@ -4,25 +4,27 @@ import comfort from "./assets/car_icons/comfort.png";
 import comfortPlus from "./assets/car_icons/comfort-plus.png";
 import business from "./assets/car_icons/business.png";
 import { Checkbox } from "@/components/ui/checkbox";
-
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useEffect, useState } from "react";
 import {
+  Body15,
   Body9,
   CarClass,
   Cars2,
   FuelType,
   Schemas,
+  Schemas2,
   TransmissionType,
 } from "./api-client";
-import { Slider } from "@/components/ui/slider";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+// import { Slider } from "@/components/ui/slider";
+// import {
+//   Select,
+//   SelectContent,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "@/components/ui/select";
 import {
   Dialog,
   DialogClose,
@@ -45,26 +47,26 @@ import { cityAtom } from "./atoms";
 import { Badge } from "@/components/ui/badge";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRightArrowLeft } from "@fortawesome/free-solid-svg-icons";
-
+import { Separator } from "@/components/ui/separator";
 const DEFAULT_COMMISSION_PERCENTAGE = 0;
 
 type CarFilter = {
   brands: string[];
   carClass: CarClass[];
-  commission: number;
+  commission: number | null;
   fuelType: FuelType | null;
   transmissionType: TransmissionType | null;
   selfEmployed: boolean;
   buyoutPossible: boolean;
-  rentTerm: Schemas | null;
+  schema: Schemas2 | null;
   sorting: "asc" | "desc";
 };
 
 enum ActiveFilter {
-  FuelType,
-  TransmissionType,
-  RentTerm,
-  Sorting,
+  FuelType = 1,
+  TransmissionType = 2,
+  RentTerm = 3,
+  Sorting = 4,
 }
 
 const staticSchemas = [
@@ -83,20 +85,29 @@ export const Finder = () => {
     selfEmployed: false,
     buyoutPossible: false,
     sorting: "asc",
-    rentTerm: null,
+    schema: null,
   });
 
   const [cars, setCars] = useState<Cars2[]>([]);
-  const [activeFilter, setActiveFilter] = useState<ActiveFilter>(
-    ActiveFilter.Sorting
-  );
+  const [activeFilter, setActiveFilter] = useState<ActiveFilter | null>(null);
+  const [brands, setBrands] = useState<string[]>([]);
 
   const city = useRecoilValue(cityAtom);
 
   useEffect(() => {
+    const getBrandList = async () => {
+      const data = await client.getBrandList();
+
+      setBrands(data.brands!);
+    };
+
+    getBrandList();
+  }, [filters, city]);
+
+  useEffect(() => {
     const getCars = async () => {
       const data = await client.searchCars(
-        new Body9({
+        new Body15({
           brand: filters.brands,
           city,
           fuel_type: filters.fuelType || undefined,
@@ -108,6 +119,7 @@ export const Finder = () => {
           commission: filters.commission,
           self_employed: filters.selfEmployed,
           is_buyout_possible: filters.buyoutPossible,
+          schemas: filters.schema || undefined,
         })
       );
 
@@ -125,7 +137,7 @@ export const Finder = () => {
     <>
       {/* <div onClick={() => navigate("login/driver")} className="fixed top-5 right-5">Войти</div> */}
       <div className="">
-        <div className="flex justify-between h-24 mx-auto my-2">
+        <div className="flex justify-between mx-auto my-2 h-fit">
           {[
             [CarClass.Economy, econom, "Эконом"],
             [CarClass.Comfort, comfort, "Комфорт"],
@@ -138,12 +150,12 @@ export const Finder = () => {
             return (
               <div
                 key={carClass}
-                className={`w-20 flex flex-col items-center bg-white rounded-xl transition-all ${
-                  isActive ? "shadow border-2 border-yellow" : " scale-75"
+                className={`w-20 flex flex-col items-center bg-white rounded-xl transition-all h-fit pb-2 ${
+                  isActive ? "shadow border-2 border-yellow" : " scale-90"
                 }`}
               >
                 <img
-                  className="w-16 rounded-xl"
+                  className="w-12 rounded-xl"
                   onClick={() =>
                     setFilters({
                       ...filters,
@@ -159,86 +171,153 @@ export const Finder = () => {
             );
           })}
         </div>
-        <div className="flex justify-between my-4 space-x-4 overflow-x-auto">
+        <div className="flex my-2 space-x-1 overflow-scroll overflow-x-auto scrollbar-hide">
           {[
             {
               title: (
                 <FontAwesomeIcon
                   icon={faArrowRightArrowLeft}
-                  className="rotate-90"
+                  className="px-1 rotate-90"
                 />
               ),
               filter: ActiveFilter.Sorting,
+              isEngaged: filters.sorting === "desc",
             },
             {
               title: "Любой график аренды",
               filter: ActiveFilter.RentTerm,
+              isEngaged: filters.schema !== null,
             },
+            { isEngaged: filters.brands.length > 0 },
+
             {
               title: "Трансмиссия",
               filter: ActiveFilter.TransmissionType,
+              isEngaged: filters.transmissionType !== null,
             },
             {
               title: "Топливо",
               filter: ActiveFilter.FuelType,
+              isEngaged: filters.fuelType !== null,
             },
-          ].map(({ filter, title }) => (
-            <Badge
-              className={`${activeFilter === filter ? "bg-white" : ""} `}
-              onClick={() => setActiveFilter(filter)}
-            >
-              {title}
-            </Badge>
+          ].map(({ filter, title, isEngaged }, i) => (
+            <div className="relative" key={`filters ${i}`}>
+              {isEngaged && (
+                <div className="absolute top-0 right-0 w-3 h-3 rounded-full bg-red"></div>
+              )}
+              {!!filter && (
+                <Badge
+                  className={`${activeFilter === filter ? "bg-white" : ""} `}
+                  onClick={() =>
+                    setActiveFilter(activeFilter === filter ? null : filter)
+                  }
+                >
+                  {title}
+                </Badge>
+              )}
+
+              {!filter && (
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <span className="bg-grey text-nowrap rounded-xl px-2.5 py-0.5 h-10 flex items-center">
+                      {filters.brands.length
+                        ? filters.brands.join(", ")
+                        : "Все марки"}
+                    </span>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[800px]">
+                    <DialogHeader>
+                      <DialogTitle>Марка автомобиля</DialogTitle>
+                    </DialogHeader>
+                    <div className="grid grid-cols-3 gap-4 py-4 h-[300px] overflow-y-scroll">
+                      {brands.map((x: string) => {
+                        const title = x;
+                        const isActive = filters.brands.some(
+                          (b) => b === title
+                        );
+
+                        return (
+                          <span
+                            className={`text-sm font-bold  ${
+                              isActive ? "text-slate-700" : "text-slate-400"
+                            }`}
+                            key={title}
+                            onClick={() =>
+                              setFilters({
+                                ...filters,
+                                brands: isActive
+                                  ? filters.brands.filter((b) => b != title)
+                                  : [...filters.brands, title],
+                              })
+                            }
+                          >
+                            {title}
+                          </span>
+                        );
+                      })}
+                    </div>
+                    <DialogFooter>
+                      <DialogClose asChild>
+                        <div className="fixed bottom-0 left-0 flex justify-center w-full px-4 py-4 space-x-2 bg-white border-t border-pale">
+                          <Button>Выбрать</Button>
+                        </div>
+                      </DialogClose>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              )}
+            </div>
           ))}
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="outline">
-                {filters.brands.length
-                  ? filters.brands.join(", ")
-                  : "Все марки"}
-              </Button>
+              <span className="bg-grey text-nowrap rounded-xl px-2.5 py-0.5 h-10 flex items-center">
+                Еще
+              </span>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[800px]">
-              <DialogHeader>
-                <DialogTitle>Марка автомобиля</DialogTitle>
-              </DialogHeader>
-              <div className="grid grid-cols-3 gap-4 py-4 h-[300px] overflow-y-scroll">
-                {["Audi", "BMW", "Kia", "Hyundai"].map((x) => {
-                  const title = x;
-                  const isActive = filters.brands.some((b) => b === title);
-
-                  return (
-                    <span
-                      className={`text-sm font-bold  ${
-                        isActive ? "text-slate-700" : "text-slate-400"
-                      }`}
-                      key={title}
-                      onClick={() =>
-                        setFilters({
-                          ...filters,
-                          brands: isActive
-                            ? filters.brands.filter((b) => b != title)
-                            : [...filters.brands, title],
-                        })
-                      }
-                    >
-                      {title}
-                    </span>
-                  );
-                })}
-              </div>
+            <DialogContent>
+              <Checkbox
+                title="Для самозанятых"
+                isChecked={filters.selfEmployed}
+                onCheckedChange={(e: boolean) =>
+                  setFilters({ ...filters, selfEmployed: e })
+                }
+              />
+              <Separator className="mb-4" />
+              <Checkbox
+                isChecked={filters.buyoutPossible}
+                onCheckedChange={(e: boolean) =>
+                  setFilters({ ...filters, buyoutPossible: e })
+                }
+                title="Выкуп автомобиля"
+              />
+              <Separator className="mb-4" />
+              <p className="mb-4 text-xl font-semibold">Комиссия</p>
+              {[null, 1, 2, 3, 4, 5, 10].map((x, i) => (
+                <Checkbox
+                  key={`comission${i}`}
+                  regular
+                  isChecked={filters.commission === x}
+                  onCheckedChange={(e: boolean) =>
+                    setFilters({ ...filters, commission: x })
+                  }
+                  title={x ? `${x}%` : "Нет"}
+                />
+              ))}7
               <DialogFooter>
                 <DialogClose asChild>
-                  <Button>Выбрать</Button>
+                  <div className="fixed bottom-0 left-0 flex justify-center w-full px-4 py-4 space-x-2 bg-white border-t border-pale">
+                    <Button>Выбрать</Button>
+                  </div>
                 </DialogClose>
               </DialogFooter>
             </DialogContent>
           </Dialog>
         </div>
-        <div className="">
+        <div className="flex my-2 mb-4 space-x-1 overflow-scroll overflow-x-auto scrollbar-hide">
           {activeFilter === ActiveFilter.Sorting &&
-            ["asc", "desc"].map((sorting) => (
+            ["asc", "desc"].map((sorting, i) => (
               <Badge
+                key={`sorting ${i}`}
                 className={`${filters.sorting === sorting ? "bg-white" : ""} `}
                 onClick={() =>
                   setFilters({
@@ -252,27 +331,27 @@ export const Finder = () => {
               </Badge>
             ))}
           {activeFilter === ActiveFilter.RentTerm &&
-            [null, ...staticSchemas].map((rentTerm) => (
+            [null, ...staticSchemas].map((schema, i) => (
               <Badge
-                className={`${
-                  filters.rentTerm === rentTerm ? "bg-white" : ""
-                } `}
+                key={`schema ${i}`}
+                className={`${filters.schema === schema ? "bg-white" : ""} `}
                 onClick={() =>
                   setFilters({
                     ...filters,
-                    rentTerm,
+                    schema,
                   })
                 }
               >
-                {rentTerm
-                  ? `${rentTerm?.working_days}/${rentTerm?.non_working_days}`
+                {schema
+                  ? `${schema?.working_days}/${schema?.non_working_days}`
                   : "Любой график аренды"}
               </Badge>
             ))}
           {activeFilter === ActiveFilter.TransmissionType &&
             [TransmissionType.Automatic, TransmissionType.Mechanics, null].map(
-              (transmissionType) => (
+              (transmissionType, i) => (
                 <Badge
+                  key={`transmissionType ${i}`}
                   className={`${
                     filters.transmissionType === transmissionType
                       ? "bg-white"
@@ -290,8 +369,9 @@ export const Finder = () => {
               )
             )}
           {activeFilter === ActiveFilter.FuelType &&
-            [FuelType.Gasoline, FuelType.Gas, null].map((fuelType) => (
+            [FuelType.Gasoline, FuelType.Gas, null].map((fuelType, i) => (
               <Badge
+                key={`fuelType ${i}`}
                 className={`${
                   filters.fuelType === fuelType ? "bg-white" : ""
                 } `}
