@@ -51,12 +51,12 @@ function App() {
 
   return (
     <div className="max-w-sm p-4 mx-auto">
-      <div className="flex justify-between my-0">
+      <div className="flex justify-between my-0 space-x-2">
         <a>
-          <img className="w-24 mb-2" src={logo} alt="logo" />
+          <img className="w-30" src={logo} alt="logo" />
         </a>
         <Menu user={user} />
-        <span className="font-bold text-md text-gray"></span>
+        {/* <span className="font-bold text-md text-gray"></span> */}
         <CityPicker />
       </div>
 
@@ -99,21 +99,21 @@ const LogoutHandler = () => {
 };
 
 const Menu = ({ user }: { user: User }) => (
-  <div className="flex mx-auto cursor-pointer justify-evenly w-60">
+  <div className="flex mx-auto space-x-4 cursor-pointer justify-evenly w-60">
     <Link className="hover:text-sky-400" to="/">
-      <FontAwesomeIcon icon={faTaxi} />
+      <FontAwesomeIcon icon={faTaxi} className="h-4" />
     </Link>
     <Link className="hover:text-sky-400" to={user ? "account" : "login/driver"}>
-      <FontAwesomeIcon icon={faUser} />
+      <FontAwesomeIcon icon={faUser} className="h-4" />
     </Link>
     {user && (
       <div className="hover:text-sky-400" onClick={LogoutHandler}>
-        <FontAwesomeIcon icon={faRightFromBracket} />
+        <FontAwesomeIcon icon={faRightFromBracket} className="h-4" />
       </div>
     )}
     {!user && (
       <Link className="hover:text-sky-400" to="login/driver">
-        <FontAwesomeIcon icon={faRightToBracket} />
+        <FontAwesomeIcon icon={faRightToBracket} className="h-4" />
       </Link>
     )}
   </div>
