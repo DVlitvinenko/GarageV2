@@ -677,7 +677,7 @@ foreach ($booked->rent_term->schemas as $schema) {
      * @return \Illuminate\Http\JsonResponse JSON-ответ с результатом отмены бронирования
      */
     public function GetBrandList() {
-        $brandList = Car::select('brand')->distinct()->get()->pluck('brand')->toArray();
+        $brandList = Car::select('brand')->distinct()->orderBy('brand', 'asc')->get()->pluck('brand')->toArray();
         return response()->json(['brands' => $brandList]);
     }
 }
