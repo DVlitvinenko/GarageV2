@@ -226,7 +226,7 @@ export const Finder = () => {
                     <DialogHeader>
                       <DialogTitle>Марка автомобиля</DialogTitle>
                     </DialogHeader>
-                    <div className="grid grid-cols-3 gap-4 py-4 h-[300px] overflow-y-scroll">
+                    <div className="flex flex-wrap items-start content-start justify-start h-full gap-4 py-4 overflow-y-scroll">
                       {brands.map((x: string) => {
                         const title = x;
                         const isActive = filters.brands.some(
