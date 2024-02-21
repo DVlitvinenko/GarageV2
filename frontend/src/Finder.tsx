@@ -248,24 +248,22 @@ export const Finder = () => {
                         );
 
                         return (
-                          <>
-                            <span
-                              className={`text-xl font-bold w-full py-2 ${
-                                isActive ? "text-black" : "text-zinc-500"
-                              }`}
-                              key={title}
-                              onClick={() =>
-                                setFilters({
-                                  ...filters,
-                                  brands: isActive
-                                    ? filters.brands.filter((b) => b != title)
-                                    : [...filters.brands, title],
-                                })
-                              }
-                            >
-                              {title} <Separator className="mt-1" />
-                            </span>
-                          </>
+                          <span
+                            className={`text-xl font-bold w-full py-2 ${
+                              isActive ? "text-black" : "text-zinc-500"
+                            }`}
+                            key={title}
+                            onClick={() =>
+                              setFilters({
+                                ...filters,
+                                brands: isActive
+                                  ? filters.brands.filter((b) => b != title)
+                                  : [...filters.brands, title],
+                              })
+                            }
+                          >
+                            {title} <Separator className="mt-1" />
+                          </span>
                         );
                       })}
                     </div>
