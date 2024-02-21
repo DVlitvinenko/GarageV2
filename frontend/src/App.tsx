@@ -41,7 +41,7 @@ function App() {
     <div className="max-w-sm p-4 mx-auto">
       <div className="flex justify-between my-0 space-x-2">
         <a>
-          <img className="w-30" src={logo} alt="logo" />
+          <img className="w-32" src={logo} alt="logo" />
         </a>
         <Menu user={user} />
         {/* <span className="font-bold text-md text-gray"></span> */}
