@@ -174,7 +174,7 @@ class CarsController extends Controller
                         $query->whereNotIn('forbidden_republic_ids', $forbiddenRepublicIds);
                     }
                     $query->where('experience', '<=', $driverSpecifications->experience);
-                    $query->where('max_fine_count', '>=', $driverSpecifications->count_seams);
+                    $query->where('max_fine_count', '>=', $driverSpecifications->fine_count);
                     $query->where('min_scoring', '<=', $driverSpecifications->scoring);
                     if ($driverSpecifications->has_caused_accident == 1) {
                         $query->where('has_caused_accident', 0);

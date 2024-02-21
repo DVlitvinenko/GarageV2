@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('criminal_ids');
             $table->boolean('has_caused_accident');
             $table->integer('experience');
-            $table->integer('count_seams');
+            $table->integer('fine_count');
             $table->boolean('abandoned_car');
             $table->unsignedBigInteger('republick_id');
             $table->integer('scoring');
