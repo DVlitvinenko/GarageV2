@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Body8, Body9 } from "./api-client";
-import { MaskedInput, createDefaultMaskGenerator } from "react-hook-mask";
+import React, { ChangeEvent } from "react";
 export const DriverLogin = () => {
   const CODE_LENGTH = 8;
 
@@ -36,7 +36,7 @@ export const DriverLogin = () => {
   const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setCode(parseInt(e.target.value));
 
-  const handlePhoneChange = (e) => {
+  const handlePhoneChange = (e: ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value.replace(/\D/g, "");
     let formattedPhone = "+";
 

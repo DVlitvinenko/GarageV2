@@ -5,9 +5,9 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { Body, Body16, Cars2, UserStatus } from "./api-client";
+import { Body16, Cars2, UserStatus } from "./api-client";
 import { Separator } from "@/components/ui/separator";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   formatRoubles,
   getFuelTypeDisplayName,
@@ -19,7 +19,7 @@ import { useRecoilValue } from "recoil";
 import { client } from "./backend";
 
 export const ModalCard = ({ car }: { car: Cars2 }) => {
-  const [phoneRequested, setPhoneRequested] = useState(false);
+  const [phoneRequested] = useState(false);
 
   const user = useRecoilValue(userAtom);
 
@@ -30,7 +30,7 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
       return navigate("login/driver");
     }
     if (user.user_status === UserStatus.Verified) {
-      await client.booking(
+      await client.booked(
         new Body16({
           id: car.id,
         })
@@ -122,7 +122,11 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
       <div className="fixed bottom-0 left-0 flex justify-center w-full px-4 py-4 space-x-2 bg-white border-t border-pale">
         {!phoneRequested && (
           <Badge variant="schema" className="w-1/2 h-auto border-none bg-grey">
-            {`${formatRoubles(car.rent_term?.schemas![0]!.daily_amount)}`}
+            {`${
+              car.rent_term?.schemas![0]?.daily_amount !== undefined
+                ? formatRoubles(car.rent_term?.schemas![0]!.daily_amount)
+                : ""
+            }`}
             <div className="text-xs font-medium text-black">{`${
               car.rent_term?.schemas![0]!.working_days
             }раб. /${car.rent_term?.schemas![0]!.non_working_days}вых.`}</div>

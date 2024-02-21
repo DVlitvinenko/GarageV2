@@ -4,12 +4,9 @@ import comfort from "./assets/car_icons/comfort.png";
 import comfortPlus from "./assets/car_icons/comfort-plus.png";
 import business from "./assets/car_icons/business.png";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useEffect, useState } from "react";
 import {
   Body15,
-  Body9,
   CarClass,
   Cars2,
   FuelType,
@@ -40,9 +37,8 @@ import {
   getFuelTypeDisplayName,
   getTransmissionDisplayName,
 } from "@/lib/utils";
-import { useDebouncedCallback } from "use-debounce";
-import { type } from "os";
-import { useRecoilState, useRecoilValue } from "recoil";
+
+import { useRecoilValue } from "recoil";
 import { cityAtom } from "./atoms";
 import { Badge } from "@/components/ui/badge";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -116,7 +112,8 @@ export const Finder = () => {
           limit: 50,
           offset: 0,
           sorting: filters.sorting,
-          commission: filters.commission,
+          commission:
+            filters.commission !== null ? filters.commission : undefined,
           self_employed: filters.selfEmployed,
           is_buyout_possible: filters.buyoutPossible,
           schemas: filters.schema || undefined,
@@ -129,9 +126,9 @@ export const Finder = () => {
     getCars();
   }, [filters, city]);
 
-  const debouncedCommission = useDebouncedCallback((value) => {
-    setFilters({ ...filters, commission: value });
-  }, 300);
+  // const debouncedCommission = useDebouncedCallback((value) => {
+  //   setFilters({ ...filters, commission: value });
+  // }, 300);
 
   return (
     <>
@@ -297,7 +294,7 @@ export const Finder = () => {
                   key={`comission${i}`}
                   regular
                   isChecked={filters.commission === x}
-                  onCheckedChange={(e: boolean) =>
+                  onCheckedChange={() =>
                     setFilters({ ...filters, commission: x })
                   }
                   title={x ? `${x}%` : "Нет"}
