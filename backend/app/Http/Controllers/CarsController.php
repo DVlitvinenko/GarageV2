@@ -372,16 +372,28 @@ $car['commission'] = rtrim(rtrim($commissionFormatted, '0'), '.');
      *
      * @OA\Post(
      *     path="/auth/cars/booking",
-     *     operationId="booking",
+     *     operationId="Booked",
      *     summary="Бронирование автомобиля",
      *     tags={"Cars"},
      *     security={{"bearerAuth": {}}},
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             @OA\Property(property="id", type="integer", description="Идентификатор автомобиля, который необходимо забронировать")
-     *         )
-     *     ),
+     * @OA\RequestBody(
+ *     required=true,
+ *     @OA\JsonContent(
+ *         @OA\Property(property="booking", type="array",
+ *             @OA\Items(
+ *                 type="object",
+ *                 @OA\Property(property="id", type="integer", description="Идентификатор бронирования"),
+ *                 @OA\Property(property="status", type="string", description="Статус бронирования", ref="#/components/schemas/BookingStatus"),
+ *                 @OA\Property(property="car_id", type="integer", description="Идентификатор автомобиля"),
+ *                 @OA\Property(property="start_date", type="string", description="Дата начала бронирования в формате 'd.m.Y H:i'"),
+ *                 @OA\Property(property="end_date", type="string", description="Дата окончания бронирования в формате 'd.m.Y H:i'"),
+ *                 @OA\Property(property="car_brand", type="string", description="Марка автомобиля"),
+ *                 @OA\Property(property="car_model", type="string", description="Модель автомобиля"),
+ *                 @OA\Property(property="car_images", type="array", @OA\Items(type="string"), description="Ссылки на изображения"),
+ *             ),
+ *         ),
+ *     ),
+ * ),
      *     @OA\Response(
      *         response="200",
      *         description="Успешное бронирование",
@@ -413,7 +425,7 @@ $car['commission'] = rtrim(rtrim($commissionFormatted, '0'), '.');
      * @param \Illuminate\Http\Request $request Объект запроса, содержащий идентификатор автомобиля для бронирования
      * @return \Illuminate\Http\JsonResponse JSON-ответ с результатом бронирования
      */
-    public function booking(Request $request)
+    public function Booked(Request $request)
     {
         $rent_time = 3;
         $user = Auth::guard('sanctum')->user();
@@ -457,9 +469,19 @@ $car['commission'] = rtrim(rtrim($commissionFormatted, '0'), '.');
         $booking->save();
         $car->status = CarStatus::Booked->value;
         $car->save();
+
+        $booked = $booking;
+            $booked->status = BookingStatus::from($booked->status)->name;
+            $booked->start_date = Carbon::parse($booked->booked_at)->format('d.m.Y H:i');
+            $booked->end_date = Carbon::parse($booked->booked_until)->format('d.m.Y H:i');
+            $booked->car_brand = $car->brand;
+            $booked->car_model = $car->model;
+            $booked->car_images = $car->images;
+            unset($booked->created_at, $booked->updated_at, $booked->booked_at, $booked->booked_until, $booked->park_id, $booked->driver_id, $booked->car);
+
         $api = new APIController;
         $api->notifyParkOnBookingStatusChanged($booking->id, true);
-        return response()->json($newEndTime, 200);
+        return response()->json(['booking'=>$booked], 200);
     }
 
     /**
