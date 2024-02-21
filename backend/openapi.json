@@ -1616,13 +1616,57 @@
                                                     "type": "array",
                                                     "items": {
                                                         "properties": {
-                                                            "driverDocumentType": {
-                                                                "$ref": "#/components/schemas/DriverDocumentType"
+                                                            "type": {
+                                                                "description": "Тип документа",
+                                                                "type": "string"
                                                             },
                                                             "url": {
                                                                 "description": "URL документа",
                                                                 "type": "string",
                                                                 "nullable": true
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "bookings": {
+                                                    "description": "Список бронирований",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "description": "Идентификатор бронирования",
+                                                                "type": "integer"
+                                                            },
+                                                            "status": {
+                                                                "$ref": "#/components/schemas/BookingStatus"
+                                                            },
+                                                            "car_id": {
+                                                                "description": "Идентификатор автомобиля",
+                                                                "type": "integer"
+                                                            },
+                                                            "start_date": {
+                                                                "description": "Дата начала бронирования в формате 'd.m.Y H:i'",
+                                                                "type": "string"
+                                                            },
+                                                            "end_date": {
+                                                                "description": "Дата окончания бронирования в формате 'd.m.Y H:i'",
+                                                                "type": "string"
+                                                            },
+                                                            "car_brand": {
+                                                                "description": "Марка автомобиля",
+                                                                "type": "string"
+                                                            },
+                                                            "car_model": {
+                                                                "description": "Модель автомобиля",
+                                                                "type": "string"
+                                                            },
+                                                            "car_images": {
+                                                                "description": "Ссылки на изображения",
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string"
+                                                                }
                                                             }
                                                         },
                                                         "type": "object"
