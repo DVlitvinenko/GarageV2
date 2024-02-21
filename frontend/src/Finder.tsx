@@ -233,7 +233,7 @@ export const Finder = () => {
                     </DialogHeader>
                     <div className="">
                       <input
-                        className="w-full px-2 py-1 border-2 border-yellow rounded-xl"
+                        className="w-full px-2 py-2 border-2 border-yellow rounded-xl"
                         type="text"
                         placeholder="Поиск"
                         value={searchTerm}
