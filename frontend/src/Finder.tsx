@@ -87,6 +87,7 @@ export const Finder = () => {
   const [cars, setCars] = useState<Cars2[]>([]);
   const [activeFilter, setActiveFilter] = useState<ActiveFilter | null>(null);
   const [brands, setBrands] = useState<string[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const city = useRecoilValue(cityAtom);
 
@@ -129,6 +130,10 @@ export const Finder = () => {
   // const debouncedCommission = useDebouncedCallback((value) => {
   //   setFilters({ ...filters, commission: value });
   // }, 300);
+
+  const filteredBrands = brands.filter((brand) =>
+    brand.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <>
@@ -226,30 +231,42 @@ export const Finder = () => {
                     <DialogHeader>
                       <DialogTitle>Марка автомобиля</DialogTitle>
                     </DialogHeader>
-                    <div className="flex flex-wrap items-start content-start justify-start h-full py-4 overflow-y-scroll gap-7">
-                      {brands.map((x: string) => {
+                    <div className="">
+                      <input
+                        className="w-full px-2 py-1 border-2 border-yellow rounded-xl"
+                        type="text"
+                        placeholder="Поиск"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                      />
+                    </div>
+                    <div className="flex flex-wrap items-start content-start justify-start h-full py-4 overflow-y-scroll">
+                      {filteredBrands.map((x: string) => {
                         const title = x;
                         const isActive = filters.brands.some(
                           (b) => b === title
                         );
 
                         return (
-                          <span
-                            className={`text-sm font-bold  ${
-                              isActive ? "text-slate-700" : "text-slate-400"
-                            }`}
-                            key={title}
-                            onClick={() =>
-                              setFilters({
-                                ...filters,
-                                brands: isActive
-                                  ? filters.brands.filter((b) => b != title)
-                                  : [...filters.brands, title],
-                              })
-                            }
-                          >
-                            {title}
-                          </span>
+                          <>
+                            <span
+                              className={`text-xl font-bold w-full py-2 ${
+                                isActive ? "text-black" : "text-zinc-500"
+                              }`}
+                              key={title}
+                              onClick={() =>
+                                setFilters({
+                                  ...filters,
+                                  brands: isActive
+                                    ? filters.brands.filter((b) => b != title)
+                                    : [...filters.brands, title],
+                                })
+                              }
+                            >
+                              {title}
+                            </span>
+                            <Separator />
+                          </>
                         );
                       })}
                     </div>
