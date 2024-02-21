@@ -33,7 +33,7 @@ export const Card = ({ car }: { car: Cars2 }) => {
               {car.images?.map((x, i) => (
                 <img
                   key={`${x}${i}`}
-                  className="object-cover w-full rounded-sm h-52"
+                  className="object-cover w-10/12 rounded-sm h-52"
                   src={x}
                 />
               ))}

@@ -10,7 +10,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-yellow text-black font-semibold hover:bg-slate-900/50 dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-50/90",
+          "bg-yellow text-black font-semibold w-full hover:bg-slate-900/50 dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-50/90",
         reject:
           "bg-red text-white hover:bg-red dark:bg-red-900 dark:text-slate-50 dark:hover:bg-red-900/90",
         outline:

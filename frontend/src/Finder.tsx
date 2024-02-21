@@ -4,7 +4,8 @@ import comfort from "./assets/car_icons/comfort.png";
 import comfortPlus from "./assets/car_icons/comfort-plus.png";
 import business from "./assets/car_icons/business.png";
 import { Checkbox } from "@/components/ui/checkbox";
-
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useEffect, useState } from "react";
 import {
   Body15,
@@ -16,15 +17,14 @@ import {
   Schemas2,
   TransmissionType,
 } from "./api-client";
-import { Slider } from "@/components/ui/slider";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+// import { Slider } from "@/components/ui/slider";
+// import {
+//   Select,
+//   SelectContent,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "@/components/ui/select";
 import {
   Dialog,
   DialogClose,
@@ -53,7 +53,7 @@ const DEFAULT_COMMISSION_PERCENTAGE = 0;
 type CarFilter = {
   brands: string[];
   carClass: CarClass[];
-  commission: number;
+  commission: number | null;
   fuelType: FuelType | null;
   transmissionType: TransmissionType | null;
   selfEmployed: boolean;
@@ -258,7 +258,9 @@ export const Finder = () => {
                     </div>
                     <DialogFooter>
                       <DialogClose asChild>
-                        <Button>Выбрать</Button>
+                        <div className="fixed bottom-0 left-0 flex justify-center w-full px-4 py-4 space-x-2 bg-white border-t border-pale">
+                          <Button>Выбрать</Button>
+                        </div>
                       </DialogClose>
                     </DialogFooter>
                   </DialogContent>
@@ -289,10 +291,23 @@ export const Finder = () => {
                 title="Выкуп автомобиля"
               />
               <Separator className="mb-4" />
-              <p className="mb-4 text-xl font-bold">Комиссия</p>
+              <p className="mb-4 text-xl font-semibold">Комиссия</p>
+              {[null, 1, 2, 3, 4, 5, 10].map((x, i) => (
+                <Checkbox
+                  key={`comission${i}`}
+                  regular
+                  isChecked={filters.commission === x}
+                  onCheckedChange={(e: boolean) =>
+                    setFilters({ ...filters, commission: x })
+                  }
+                  title={x ? `${x}%` : "Нет"}
+                />
+              ))}7
               <DialogFooter>
                 <DialogClose asChild>
-                  <Button>Выбрать</Button>
+                  <div className="fixed bottom-0 left-0 flex justify-center w-full px-4 py-4 space-x-2 bg-white border-t border-pale">
+                    <Button>Выбрать</Button>
+                  </div>
                 </DialogClose>
               </DialogFooter>
             </DialogContent>

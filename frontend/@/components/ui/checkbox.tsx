@@ -12,7 +12,7 @@ const CheckboxShad = React.forwardRef<
   <CheckboxPrimitive.Root
     ref={ref}
     className={cn(
-      `peer  shrink-0 border
+      `peer  shrink-0 border 
        border-pale ring-offset-white focus-visible:outline-none
         focus-visible:ring-2 focus-visible:ring-slate-950 
         focus-visible:ring-offset-2 disabled:cursor-not-allowed 
@@ -34,6 +34,7 @@ CheckboxShad.displayName = CheckboxPrimitive.Root.displayName;
 const Checkbox = (props: {
   title: string;
   isChecked: boolean;
+  regular?: boolean;
   onCheckedChange: (isChecked: boolean) => void;
 }) => {
   const handleTitleClick = () => {
@@ -41,7 +42,12 @@ const Checkbox = (props: {
   };
   return (
     <span className="flex items-center justify-between mb-4 space-x-2">
-      <p className="text-xl md:text-sm" onClick={handleTitleClick}>
+      <p
+        className={`${
+          props.regular ? "regular" : "font-semibold"
+        } text-xl  md:text-sm`}
+        onClick={handleTitleClick}
+      >
         {props.title}
       </p>
       <CheckboxShad

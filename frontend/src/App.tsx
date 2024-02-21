@@ -18,6 +18,17 @@ import {
 import { User } from "./api-client";
 import { CityPicker } from "./CityPicker";
 import { LogOut } from "lucide-react";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import { Button } from "@/components/ui/button";
 
 function App() {
   const [user, setUser] = useRecoilState(userAtom);
@@ -56,12 +67,31 @@ function App() {
         <Route path="login/manager" element={<ManagerLogin />} />
         <Route path="login/admin" element={<AdminLogin />} />
       </Routes>
+      <BookingDrawer />
     </div>
   );
 }
 
 export default App;
-
+const BookingDrawer = () => (
+  <>
+    <Drawer>
+      <DrawerTrigger>Open</DrawerTrigger>
+      <DrawerContent>
+        <DrawerHeader>
+          <DrawerTitle>Are you absolutely sure?</DrawerTitle>
+          <DrawerDescription>This action cannot be undone.</DrawerDescription>
+        </DrawerHeader>
+        <DrawerFooter>
+          <Button>Submit</Button>
+          <DrawerClose>
+            <Button variant="outline">Cancel</Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
+  </>
+);
 const LogoutHandler = () => {
   client.logout();
   localStorage.clear();

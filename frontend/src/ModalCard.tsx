@@ -20,34 +20,25 @@ import { client } from "./backend";
 
 export const ModalCard = ({ car }: { car: Cars2 }) => {
   const [phoneRequested, setPhoneRequested] = useState(false);
-  const [booking, setBooking] = useState(false);
 
   const user = useRecoilValue(userAtom);
 
   const navigate = useNavigate();
 
-  const book = () => {
+  const book = async () => {
     if (!user) {
-      navigate("login/driver");
+      return navigate("login/driver");
     }
     if (user.user_status === UserStatus.Verified) {
-      setBooking(true);
+      await client.booking(
+        new Body16({
+          id: car.id,
+        })
+      );
     } else {
       navigate("account");
     }
   };
-
-  // useEffect(() => {
-  //   const booking = async () => {
-  //     const data = await client.booking(new Body16({
-  // id=car.id;
-  //  }));
-
-  //     setBooking();
-  //   };
-
-  //   setBooking();
-  // }, [car]);
 
   const currentSchemas = car.rent_term?.schemas;
 
