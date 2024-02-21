@@ -233,14 +233,14 @@ export const Finder = () => {
                     </DialogHeader>
                     <div className="">
                       <input
-                        className="w-full px-2 py-2 border-2 border-yellow rounded-xl"
+                        className="w-full px-2 py-2 border-2 border-yellow rounded-xl focus-visible:outline-none"
                         type="text"
                         placeholder="Поиск"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                       />
                     </div>
-                    <div className="flex flex-wrap items-start content-start justify-start h-full py-4 overflow-y-scroll">
+                    <div className="flex flex-wrap items-start content-start justify-start h-full py-4 overflow-y-scroll ">
                       {filteredBrands.map((x: string) => {
                         const title = x;
                         const isActive = filters.brands.some(
@@ -263,9 +263,8 @@ export const Finder = () => {
                                 })
                               }
                             >
-                              {title}
+                              {title} <Separator className="mt-1" />
                             </span>
-                            <Separator />
                           </>
                         );
                       })}
