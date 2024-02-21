@@ -274,7 +274,7 @@ export const Finder = () => {
                 Еще
               </span>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="pt-12">
               <Checkbox
                 title="Для самозанятых"
                 isChecked={filters.selfEmployed}
