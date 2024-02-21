@@ -219,7 +219,7 @@ export const Finder = () => {
               {!filter && (
                 <Dialog>
                   <DialogTrigger asChild>
-                    <span className="bg-grey text-nowrap rounded-xl px-2.5 py-0.5 h-10 flex items-center">
+                    <span className="bg-grey text-nowrap whitespace-nowrap rounded-xl px-2.5 py-0.5 h-10 flex items-center">
                       {filters.brands.length
                         ? filters.brands.join(", ")
                         : "Все марки"}
@@ -302,7 +302,8 @@ export const Finder = () => {
                   }
                   title={x ? `${x}%` : "Нет"}
                 />
-              ))}7
+              ))}
+              7
               <DialogFooter>
                 <DialogClose asChild>
                   <div className="fixed bottom-0 left-0 flex justify-center w-full px-4 py-4 space-x-2 bg-white border-t border-pale">

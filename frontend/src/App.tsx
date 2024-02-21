@@ -67,7 +67,7 @@ function App() {
         <Route path="login/manager" element={<ManagerLogin />} />
         <Route path="login/admin" element={<AdminLogin />} />
       </Routes>
-      <BookingDrawer />
+      {/* <BookingDrawer /> */}
     </div>
   );
 }

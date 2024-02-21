@@ -106,7 +106,7 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
             <Badge variant="card">Выкуп автомобиля</Badge>
           )}
         </div>
-        <div className="flex flex-wrap gap-1 pb-10">
+        <div className="flex flex-wrap gap-1 pb-20 mb-16">
           {currentSchemas?.map((currentSchema, i) => (
             <Badge
               key={`${currentSchema.working_days}/${currentSchema.non_working_days}${i}`}
