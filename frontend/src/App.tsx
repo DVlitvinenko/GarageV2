@@ -27,7 +27,7 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/drawer";
+} from "@/components/ui/drawer"
 import { Button } from "@/components/ui/button";
 
 function App() {
@@ -67,7 +67,7 @@ function App() {
         <Route path="login/manager" element={<ManagerLogin />} />
         <Route path="login/admin" element={<AdminLogin />} />
       </Routes>
-      <BookingDrawer />
+      <BookingDrawer  />
     </div>
   );
 }
@@ -76,20 +76,20 @@ export default App;
 const BookingDrawer = () => (
   <>
     <Drawer>
-      <DrawerTrigger>Open</DrawerTrigger>
-      <DrawerContent>
-        <DrawerHeader>
-          <DrawerTitle>Are you absolutely sure?</DrawerTitle>
-          <DrawerDescription>This action cannot be undone.</DrawerDescription>
-        </DrawerHeader>
-        <DrawerFooter>
-          <Button>Submit</Button>
-          <DrawerClose>
-            <Button variant="outline">Cancel</Button>
-          </DrawerClose>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
+  <DrawerTrigger>Open</DrawerTrigger>
+  <DrawerContent>
+    <DrawerHeader>
+      <DrawerTitle>Are you absolutely sure?</DrawerTitle>
+      <DrawerDescription>This action cannot be undone.</DrawerDescription>
+    </DrawerHeader>
+    <DrawerFooter>
+      <Button>Submit</Button>
+      <DrawerClose>
+        <Button variant="outline">Cancel</Button>
+      </DrawerClose>
+    </DrawerFooter>
+  </DrawerContent>
+</Drawer>
   </>
 );
 const LogoutHandler = () => {

@@ -13,9 +13,7 @@ const CheckboxShad = React.forwardRef<
     ref={ref}
     className={cn(
       `peer  shrink-0 border 
-       border-pale ring-offset-white focus-visible:outline-none
-        focus-visible:ring-2 focus-visible:ring-slate-950 
-        focus-visible:ring-offset-2 disabled:cursor-not-allowed 
+       border-pale ring-offset-white focus-visible:outline-none disabled:cursor-not-allowed 
         disabled:opacity-50 data-[state=checked]:bg-yellow
          data-[state=checked]:text-slate-50 rounded-full w-7 h-7 bg-pale`,
       className
