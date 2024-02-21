@@ -20,7 +20,7 @@ use PHPUnit\Framework\Attributes\Group;
 */
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
-    Route::post('auth/cars/booking', [CarsController::class, 'booking']);
+    Route::post('auth/cars/booking', [CarsController::class, 'Booked']);
     Route::post('auth/cars/cancel-booking', [CarsController::class, 'cancelBooking']);
     Route::post('user/logout', [AuthController::class, 'logout']);
     Route::delete('user', [AuthController::class, 'DeleteUser']);

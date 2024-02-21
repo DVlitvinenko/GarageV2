@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\BookingStatus;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,7 +19,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use App\Enums\UserStatus;
 use App\Enums\UserType;
-
+use Illuminate\Support\Carbon;
 
 class AuthController extends Controller
 {
@@ -53,8 +54,24 @@ class AuthController extends Controller
      *                     description="Данные документов водителя",
      *                     @OA\Items(
      *                         type="object",
-     *                         @OA\Property(property="driverDocumentType", type="string", description="Тип документа", ref="#/components/schemas/DriverDocumentType"),
+     *                         @OA\Property(property="type", type="string", description="Тип документа"),
      *                         @OA\Property(property="url", type="string", nullable=true, description="URL документа")
+     *                     )
+     *                 ),
+     *                 @OA\Property(
+     *                     property="bookings",
+     *                     type="array",
+     *                     description="Список бронирований",
+     *                     @OA\Items(
+     *                         type="object",
+     *                         @OA\Property(property="id", type="integer", description="Идентификатор бронирования"),
+     *                         @OA\Property(property="status", type="string", description="Статус бронирования", ref="#/components/schemas/BookingStatus"),
+     * @OA\Property(property="car_id", type="integer", description="Идентификатор автомобиля"),
+     *                         @OA\Property(property="start_date", type="string", description="Дата начала бронирования в формате 'd.m.Y H:i'"),
+     *                         @OA\Property(property="end_date", type="string", description="Дата окончания бронирования в формате 'd.m.Y H:i'"),
+     *                         @OA\Property(property="car_brand", type="string", description="Марка автомобиля"),
+     *                         @OA\Property(property="car_model", type="string", description="Модель автомобиля"),
+     *                         @OA\Property(property="car_images", type="array", @OA\Items(type="string"), description="Ссылки на изображения"),
      *                     )
      *                 )
      *             )
@@ -98,13 +115,22 @@ class AuthController extends Controller
             $user->city_name = $driver->city->name;
         }
 
-        $booking =  $driver->booking;
-        if ($booking) {
+        $bookings =  $driver->booking;
+        if ($bookings) {
 
-            unset($booking->id, $booking->code, $user->role_id, $user->avatar, $user->email_verified_at, $user->settings, $user->created_at, $user->updated_at);
+            unset($bookings->id, $bookings->code, $user->role_id, $user->avatar, $user->email_verified_at, $user->settings, $user->created_at, $user->updated_at);
+        }
+        foreach ($bookings as $booking) {
+            $booking->status = BookingStatus::from($booking->status)->name;
+            $booking->start_date = Carbon::parse($booking->booked_at)->format('d.m.Y H:i');
+            $booking->end_date = Carbon::parse($booking->booked_until)->format('d.m.Y H:i');
+            $booking->car_brand = $booking->car->brand;
+            $booking->car_model = $booking->car->model;
+            $booking->car_images = $booking->car->images;
+            unset($booking->created_at, $booking->updated_at, $booking->booked_at, $booking->booked_until, $booking->park_id, $booking->driver_id, $booking->car);
         }
         $user->docs = $docs;
-
+        $user->bookings = $bookings ? $bookings : null;
         unset($user->id, $user->code, $user->role_id, $user->avatar, $user->email_verified_at, $user->settings, $user->created_at, $user->updated_at);
 
         return response()->json(['user' => $user]);
