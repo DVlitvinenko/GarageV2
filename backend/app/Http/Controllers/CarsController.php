@@ -159,38 +159,40 @@ class CarsController extends Controller
             ->whereHas('division', function ($query) use ($cityId) {
                 $query->where('city_id', $cityId);
             });
-        if ($user && $user->user_status == UserStatus::Verified->value) {
-            $driverSpecifications = $user->driver->driverSpecification;
-            if ($driverSpecifications) {
-                $carsQuery->whereHas('tariff', function ($query) use ($driverSpecifications) {
-                    $criminalIds = explode(',', $driverSpecifications->criminal_ids);
-                    $criminalIds = array_map('intval', $criminalIds);
-                    if (!empty(array_filter($criminalIds, 'is_numeric'))) {
-                        $query->whereNotIn('criminal_ids', $criminalIds);
-                    }
-                    $forbiddenRepublicIds = explode(',', $driverSpecifications->republick_id);
-                    $forbiddenRepublicIds = array_map('intval', $forbiddenRepublicIds);
-                    if (!empty(array_filter($forbiddenRepublicIds, 'is_numeric'))) {
-                        $query->whereNotIn('forbidden_republic_ids', $forbiddenRepublicIds);
-                    }
-                    $query->where('experience', '<=', $driverSpecifications->experience);
-                    $query->where('max_fine_count', '>=', $driverSpecifications->fine_count);
-                    $query->where('min_scoring', '<=', $driverSpecifications->scoring);
-                    if ($driverSpecifications->has_caused_accident == 1) {
-                        $query->where('has_caused_accident', 0);
-                    }
-                    if ($driverSpecifications->abandoned_car == 1) {
-                        $query->where('abandoned_car', 0);
-                    }
-                    if ($driverSpecifications->has_caused_accident == 1) {
-                        $query->where('has_caused_accident', 0);
-                    }
-                    if ($driverSpecifications->alcohol == 1) {
-                        $query->where('alcohol', 0);
-                    }
-                });
-            }
-        }
+
+        // отключена проверка по спецификации!
+        // if ($user && $user->user_status == UserStatus::Verified->value) {
+        //     $driverSpecifications = $user->driver->driverSpecification;
+        //     if ($driverSpecifications) {
+        //         $carsQuery->whereHas('tariff', function ($query) use ($driverSpecifications) {
+        //             $criminalIds = explode(',', $driverSpecifications->criminal_ids);
+        //             $criminalIds = array_map('intval', $criminalIds);
+        //             if (!empty(array_filter($criminalIds, 'is_numeric'))) {
+        //                 $query->whereNotIn('criminal_ids', $criminalIds);
+        //             }
+        //             $forbiddenRepublicIds = explode(',', $driverSpecifications->republick_id);
+        //             $forbiddenRepublicIds = array_map('intval', $forbiddenRepublicIds);
+        //             if (!empty(array_filter($forbiddenRepublicIds, 'is_numeric'))) {
+        //                 $query->whereNotIn('forbidden_republic_ids', $forbiddenRepublicIds);
+        //             }
+        //             $query->where('experience', '<=', $driverSpecifications->experience);
+        //             $query->where('max_fine_count', '>=', $driverSpecifications->fine_count);
+        //             $query->where('min_scoring', '<=', $driverSpecifications->scoring);
+        //             if ($driverSpecifications->has_caused_accident == 1) {
+        //                 $query->where('has_caused_accident', 0);
+        //             }
+        //             if ($driverSpecifications->abandoned_car == 1) {
+        //                 $query->where('abandoned_car', 0);
+        //             }
+        //             if ($driverSpecifications->has_caused_accident == 1) {
+        //                 $query->where('has_caused_accident', 0);
+        //             }
+        //             if ($driverSpecifications->alcohol == 1) {
+        //                 $query->where('alcohol', 0);
+        //             }
+        //         });
+        //     }
+        // }
         if ($fuelType) {
             $carsQuery->where('fuel_type', $fuelType);
         }
@@ -376,36 +378,74 @@ $car['commission'] = rtrim(rtrim($commissionFormatted, '0'), '.');
      *     summary="Бронирование автомобиля",
      *     tags={"Cars"},
      *     security={{"bearerAuth": {}}},
-     * @OA\RequestBody(
+ * @OA\RequestBody(
  *     required=true,
  *     @OA\JsonContent(
- *         @OA\Property(property="booking", type="array",
- *             @OA\Items(
- *                 type="object",
- *                 @OA\Property(property="id", type="integer", description="Идентификатор бронирования"),
- *                 @OA\Property(property="status", type="string", description="Статус бронирования", ref="#/components/schemas/BookingStatus"),
- *                 @OA\Property(property="car_id", type="integer", description="Идентификатор автомобиля"),
- *                 @OA\Property(property="start_date", type="string", description="Дата начала бронирования в формате 'd.m.Y H:i'"),
- *                 @OA\Property(property="end_date", type="string", description="Дата окончания бронирования в формате 'd.m.Y H:i'"),
- *                 @OA\Property(property="car_brand", type="string", description="Марка автомобиля"),
- *                 @OA\Property(property="car_model", type="string", description="Модель автомобиля"),
- *                 @OA\Property(property="car_images", type="array", @OA\Items(type="string"), description="Ссылки на изображения"),
+ *         @OA\Property(property="id", type="integer", description="Идентификатор машины"),
+ *     ),
+ * ),
+ * @OA\Response(
+ *     response="200",
+ *     description="Успешное бронирование",
+ *     @OA\MediaType(
+ *         mediaType="application/json",
+ *         @OA\Schema(
+ *             @OA\Property(property="booking", type="object",
+ *                 @OA\Property(property="car_id", type="integer"),
+ *                 @OA\Property(property="status", type="string"),
+ *                 @OA\Property(property="id", type="integer"),
+ *                 @OA\Property(property="start_date", type="string"),
+ *                 @OA\Property(property="end_date", type="string"),
+ *                 @OA\Property(property="car", type="object",
+ *                     @OA\Property(property="id", type="integer"),
+ *                     @OA\Property(property="fuel_type", type="string", description="Тип топлива",ref="#/components/schemas/FuelType"),
+ *                     @OA\Property(property="transmission_type", type="string", description="Тип трансмиссии",ref="#/components/schemas/TransmissionType"),
+ *                     @OA\Property(property="brand", type="string"),
+ *                     @OA\Property(property="model", type="string"),
+ *                     @OA\Property(property="year_produced", type="integer"),
+ *                     @OA\Property(property="images", type="string"),
+ *                     @OA\Property(property="сar_class", type="string", description="Класс тарифа", ref="#/components/schemas/CarClass"),
+ *                     @OA\Property(property="division", type="object",
+ *                         @OA\Property(property="coords", type="string"),
+ *                         @OA\Property(property="address", type="string"),
+ *                         @OA\Property(property="park", type="object",
+ *                             @OA\Property(property="phone", type="string"),
+ *                             @OA\Property(property="url", type="string"),
+ *                             @OA\Property(property="commission", type="integer"),
+ *                             @OA\Property(property="self_employed", type="integer"),
+ *                             @OA\Property(property="park_name", type="string"),
+ *                             @OA\Property(property="about", type="string"),
+     *                 @OA\Property(
+     *                     property="working_hours",
+     *                     type="array",
+     *                     description="Расписание работы парка",
+     *                     @OA\Items(
+     *                         type="object",
+     *                         @OA\Property(property="start", type="string", description="Время начала"),
+     *                         @OA\Property(property="end", type="string", description="Время окончания"),
+     *                         @OA\Property(property="day", type="string", description="День недели на русском")
+     *                     )
+     *                 ),
+ *                         ),
+ *                     ),
+ *                 ),
+ *                 @OA\Property(property="rent_term", type="object",
+ *                     @OA\Property(property="deposit_amount_daily", type="string"),
+ *                     @OA\Property(property="deposit_amount_total", type="string"),
+ *                     @OA\Property(property="minimum_period_days", type="integer"),
+ *                     @OA\Property(property="is_buyout_possible", type="integer"),
+ *                     @OA\Property(property="schemas", type="array",
+ *                         @OA\Items(
+ *                             @OA\Property(property="daily_amount", type="integer"),
+ *                             @OA\Property(property="non_working_days", type="integer"),
+ *                             @OA\Property(property="working_days", type="integer"),
+ *                         ),
+ *                     ),
+ *                 ),
  *             ),
  *         ),
  *     ),
  * ),
-     *     @OA\Response(
-     *         response="200",
-     *         description="Успешное бронирование",
-     *         @OA\MediaType(
-     *             mediaType="text/plain",
-     *             @OA\Schema(
-     *                 type="integer",
-     *                 example="1708006209"
-     *             )
-     *         )
-     *     ),
-     *     ),
      *     @OA\Response(
      *         response="403",
      *         description="Пользователь не зарегистрирован или не верифицирован",
@@ -429,9 +469,10 @@ $car['commission'] = rtrim(rtrim($commissionFormatted, '0'), '.');
     {
         $rent_time = 3;
         $user = Auth::guard('sanctum')->user();
-        if ($user->user_status !== UserStatus::Verified->value) {
-            return response()->json(['message' => 'Пользователь не зарегистрирован или не верифицирован'], 403);
-        }
+        // отключена проверка по верификации!
+        // if ($user->user_status !== UserStatus::Verified->value) {
+        //     return response()->json(['message' => 'Пользователь не зарегистрирован или не верифицирован'], 403);
+        // }
         $car = Car::where('id', $request->id)
             ->with('booking', 'division', 'division.park')->first();
         if (!$car) {
@@ -469,15 +510,49 @@ $car['commission'] = rtrim(rtrim($commissionFormatted, '0'), '.');
         $booking->save();
         $car->status = CarStatus::Booked->value;
         $car->save();
+        $workingHours = json_decode($car->division->park->working_hours, true);
 
+        $daysOfWeek = [
+            'понедельник' => 'monday',
+            'вторник' => 'tuesday',
+            'среда' => 'wednesday',
+            'четверг' => 'thursday',
+            'пятница' => 'friday',
+            'суббота' => 'saturday',
+            'воскресенье' => 'sunday'
+        ];
+
+        $hoursToArray = [];
+
+        foreach ($daysOfWeek as $rusDay => $engDay) {
+            if (isset($workingHours[$engDay])) {
+                foreach ($workingHours[$engDay] as $timeRange) {
+                    $hoursToArray[] = [
+                        'start' => $timeRange['start'],
+                        'end' => $timeRange['end'],
+                        'day' => $rusDay
+                    ];
+                }
+            }
+        }
+        $car->division->park->working_hours = $hoursToArray;
         $booked = $booking;
             $booked->status = BookingStatus::from($booked->status)->name;
             $booked->start_date = Carbon::parse($booked->booked_at)->format('d.m.Y H:i');
             $booked->end_date = Carbon::parse($booked->booked_until)->format('d.m.Y H:i');
-            $booked->car_brand = $car->brand;
-            $booked->car_model = $car->model;
-            $booked->car_images = $car->images;
-            unset($booked->created_at, $booked->updated_at, $booked->booked_at, $booked->booked_until, $booked->park_id, $booked->driver_id, $booked->car);
+            $booked->car = $car;
+            $booked->car->сar_class = CarClass::from($car->tariff->class)->name;
+            $booked->rent_term = RentTerm::where('id', $car->rent_term_id)->with('schemas')->select('deposit_amount_daily','deposit_amount_total','minimum_period_days','is_buyout_possible','id')->first();
+            unset($booked->created_at, $booked->updated_at, $booked->booked_at, $booked->booked_until,
+$booked->park_id, $booked->driver_id, $car->booking, $car->created_at, $car->updated_at, $car->status, $car->car_id, $car->division_id,
+$car->park_id,$car->tariff_id,$car->rent_term_id,$car->division->id,$car->division->park_id,
+$car->division->city_id,$car->division->created_at,$car->division->updated_at,$car->division->name,
+$car->division->park->id,$car->division->park->id,$car->division->park->API_key,
+$car->division->park->created_at,$car->division->park->updated_at,$car->tariff,
+$car->division->park->created_at, $booked->rent_term->id);
+foreach ($booked->rent_term->schemas as $schema) {
+    unset($schema->created_at, $schema->updated_at, $schema->id, $schema->rent_term_id);
+}
 
         $api = new APIController;
         $api->notifyParkOnBookingStatusChanged($booking->id, true);
@@ -602,7 +677,7 @@ $car['commission'] = rtrim(rtrim($commissionFormatted, '0'), '.');
      * @return \Illuminate\Http\JsonResponse JSON-ответ с результатом отмены бронирования
      */
     public function GetBrandList() {
-        $brandList = Car::select('brand')->distinct()->get()->pluck('brand')->toArray();
+        $brandList = Car::select('brand')->distinct()->orderBy('brand', 'asc')->get()->pluck('brand')->toArray();
         return response()->json(['brands' => $brandList]);
     }
 }

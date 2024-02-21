@@ -11,8 +11,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { Check, ChevronsUpDown } from "lucide-react";
+
+import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRecoilState } from "recoil";
 import { cityAtom } from "./atoms";
@@ -37,7 +37,7 @@ export function CityPicker() {
           {city}
           <ChevronsUpDown className="w-4 h-4 ml-2 opacity-50 shrink-0" />
         </Button> */}
-        <div className=" flex items-center w-48 capitalize text-[10px] font-bold justify-end">
+        <div className=" flex items-center w-48 capitalize text-[12px] font-bold justify-end ">
           {city}
         </div>
       </PopoverTrigger>

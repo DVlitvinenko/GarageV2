@@ -4,12 +4,9 @@ import comfort from "./assets/car_icons/comfort.png";
 import comfortPlus from "./assets/car_icons/comfort-plus.png";
 import business from "./assets/car_icons/business.png";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useEffect, useState } from "react";
 import {
   Body15,
-  Body9,
   CarClass,
   Cars2,
   FuelType,
@@ -40,9 +37,8 @@ import {
   getFuelTypeDisplayName,
   getTransmissionDisplayName,
 } from "@/lib/utils";
-import { useDebouncedCallback } from "use-debounce";
-import { type } from "os";
-import { useRecoilState, useRecoilValue } from "recoil";
+
+import { useRecoilValue } from "recoil";
 import { cityAtom } from "./atoms";
 import { Badge } from "@/components/ui/badge";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -91,6 +87,7 @@ export const Finder = () => {
   const [cars, setCars] = useState<Cars2[]>([]);
   const [activeFilter, setActiveFilter] = useState<ActiveFilter | null>(null);
   const [brands, setBrands] = useState<string[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const city = useRecoilValue(cityAtom);
 
@@ -116,7 +113,8 @@ export const Finder = () => {
           limit: 50,
           offset: 0,
           sorting: filters.sorting,
-          commission: filters.commission,
+          commission:
+            filters.commission !== null ? filters.commission : undefined,
           self_employed: filters.selfEmployed,
           is_buyout_possible: filters.buyoutPossible,
           schemas: filters.schema || undefined,
@@ -129,9 +127,13 @@ export const Finder = () => {
     getCars();
   }, [filters, city]);
 
-  const debouncedCommission = useDebouncedCallback((value) => {
-    setFilters({ ...filters, commission: value });
-  }, 300);
+  // const debouncedCommission = useDebouncedCallback((value) => {
+  //   setFilters({ ...filters, commission: value });
+  // }, 300);
+
+  const filteredBrands = brands.filter((brand) =>
+    brand.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <>
@@ -219,7 +221,7 @@ export const Finder = () => {
               {!filter && (
                 <Dialog>
                   <DialogTrigger asChild>
-                    <span className="bg-grey text-nowrap rounded-xl px-2.5 py-0.5 h-10 flex items-center">
+                    <span className="bg-grey text-nowrap whitespace-nowrap rounded-xl px-2.5 py-0.5 h-10 flex items-center">
                       {filters.brands.length
                         ? filters.brands.join(", ")
                         : "Все марки"}
@@ -229,8 +231,17 @@ export const Finder = () => {
                     <DialogHeader>
                       <DialogTitle>Марка автомобиля</DialogTitle>
                     </DialogHeader>
-                    <div className="grid grid-cols-3 gap-4 py-4 h-[300px] overflow-y-scroll">
-                      {brands.map((x: string) => {
+                    <div className="">
+                      <input
+                        className="w-full px-2 py-2 border-2 border-yellow rounded-xl focus-visible:outline-none"
+                        type="text"
+                        placeholder="Поиск"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                      />
+                    </div>
+                    <div className="flex flex-wrap items-start content-start justify-start h-full py-4 overflow-y-scroll ">
+                      {filteredBrands.map((x: string) => {
                         const title = x;
                         const isActive = filters.brands.some(
                           (b) => b === title
@@ -238,8 +249,8 @@ export const Finder = () => {
 
                         return (
                           <span
-                            className={`text-sm font-bold  ${
-                              isActive ? "text-slate-700" : "text-slate-400"
+                            className={`text-xl font-bold w-full py-2 ${
+                              isActive ? "text-black" : "text-zinc-500"
                             }`}
                             key={title}
                             onClick={() =>
@@ -251,7 +262,7 @@ export const Finder = () => {
                               })
                             }
                           >
-                            {title}
+                            {title} <Separator className="mt-1" />
                           </span>
                         );
                       })}
@@ -297,12 +308,13 @@ export const Finder = () => {
                   key={`comission${i}`}
                   regular
                   isChecked={filters.commission === x}
-                  onCheckedChange={(e: boolean) =>
+                  onCheckedChange={() =>
                     setFilters({ ...filters, commission: x })
                   }
                   title={x ? `${x}%` : "Нет"}
                 />
-              ))}7
+              ))}
+              7
               <DialogFooter>
                 <DialogClose asChild>
                   <div className="fixed bottom-0 left-0 flex justify-center w-full px-4 py-4 space-x-2 bg-white border-t border-pale">

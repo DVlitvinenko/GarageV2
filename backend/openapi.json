@@ -1588,7 +1588,8 @@
                                             "description": "Данные пользователя",
                                             "properties": {
                                                 "user_status": {
-                                                    "$ref": "#/components/schemas/UserStatus"
+                                                    "description": "Статус пользователя",
+                                                    "type": "string"
                                                 },
                                                 "phone": {
                                                     "description": "Номер телефона пользователя",
@@ -1605,7 +1606,8 @@
                                                     "nullable": true
                                                 },
                                                 "user_type": {
-                                                    "$ref": "#/components/schemas/UserType"
+                                                    "description": "Тип пользователя",
+                                                    "type": "string"
                                                 },
                                                 "city_name": {
                                                     "description": "Название города",
@@ -1639,7 +1641,8 @@
                                                                 "type": "integer"
                                                             },
                                                             "status": {
-                                                                "$ref": "#/components/schemas/BookingStatus"
+                                                                "description": "Статус бронирования",
+                                                                "type": "string"
                                                             },
                                                             "car_id": {
                                                                 "description": "Идентификатор автомобиля",
@@ -1667,6 +1670,128 @@
                                                                 "items": {
                                                                     "type": "string"
                                                                 }
+                                                            },
+                                                            "rent_term": {
+                                                                "description": "Условия аренды",
+                                                                "properties": {
+                                                                    "deposit_amount_daily": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "deposit_amount_total": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "minimum_period_days": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "is_buyout_possible": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "schemas": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "properties": {
+                                                                                "daily_amount": {
+                                                                                    "type": "integer"
+                                                                                },
+                                                                                "non_working_days": {
+                                                                                    "type": "integer"
+                                                                                },
+                                                                                "working_days": {
+                                                                                    "type": "integer"
+                                                                                }
+                                                                            },
+                                                                            "type": "object"
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            },
+                                                            "car": {
+                                                                "description": "Информация об автомобиле",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "fuel_type": {
+                                                                        "$ref": "#/components/schemas/FuelType"
+                                                                    },
+                                                                    "transmission_type": {
+                                                                        "$ref": "#/components/schemas/TransmissionType"
+                                                                    },
+                                                                    "сar_class": {
+                                                                        "$ref": "#/components/schemas/CarClass"
+                                                                    },
+                                                                    "brand": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "model": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "year_produced": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "images": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "division": {
+                                                                        "description": "Информация о дивизионе",
+                                                                        "properties": {
+                                                                            "address": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "coords": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "park": {
+                                                                                "description": "Информация о парке",
+                                                                                "properties": {
+                                                                                    "phone": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "url": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "commission": {
+                                                                                        "type": "integer"
+                                                                                    },
+                                                                                    "self_employed": {
+                                                                                        "type": "integer"
+                                                                                    },
+                                                                                    "park_name": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "about": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "working_hours": {
+                                                                                        "description": "Расписание работы парка",
+                                                                                        "type": "array",
+                                                                                        "items": {
+                                                                                            "properties": {
+                                                                                                "start": {
+                                                                                                    "description": "Время начала",
+                                                                                                    "type": "string"
+                                                                                                },
+                                                                                                "end": {
+                                                                                                    "description": "Время окончания",
+                                                                                                    "type": "string"
+                                                                                                },
+                                                                                                "day": {
+                                                                                                    "description": "День недели на русском",
+                                                                                                    "type": "string"
+                                                                                                }
+                                                                                            },
+                                                                                            "type": "object"
+                                                                                        }
+                                                                                    }
+                                                                                },
+                                                                                "type": "object"
+                                                                            }
+                                                                        },
+                                                                        "type": "object"
+                                                                    }
+                                                                },
+                                                                "type": "object"
                                                             }
                                                         },
                                                         "type": "object"
@@ -2198,47 +2323,9 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "booking": {
-                                        "type": "array",
-                                        "items": {
-                                            "properties": {
-                                                "id": {
-                                                    "description": "Идентификатор бронирования",
-                                                    "type": "integer"
-                                                },
-                                                "status": {
-                                                    "$ref": "#/components/schemas/BookingStatus"
-                                                },
-                                                "car_id": {
-                                                    "description": "Идентификатор автомобиля",
-                                                    "type": "integer"
-                                                },
-                                                "start_date": {
-                                                    "description": "Дата начала бронирования в формате 'd.m.Y H:i'",
-                                                    "type": "string"
-                                                },
-                                                "end_date": {
-                                                    "description": "Дата окончания бронирования в формате 'd.m.Y H:i'",
-                                                    "type": "string"
-                                                },
-                                                "car_brand": {
-                                                    "description": "Марка автомобиля",
-                                                    "type": "string"
-                                                },
-                                                "car_model": {
-                                                    "description": "Модель автомобиля",
-                                                    "type": "string"
-                                                },
-                                                "car_images": {
-                                                    "description": "Ссылки на изображения",
-                                                    "type": "array",
-                                                    "items": {
-                                                        "type": "string"
-                                                    }
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
+                                    "id": {
+                                        "description": "Идентификатор машины",
+                                        "type": "integer"
                                     }
                                 },
                                 "type": "object"
@@ -2250,10 +2337,181 @@
                     "200": {
                         "description": "Успешное бронирование",
                         "content": {
-                            "text/plain": {
+                            "application/json": {
                                 "schema": {
-                                    "type": "integer",
-                                    "example": "1708006209"
+                                    "properties": {
+                                        "booking": {
+                                            "properties": {
+                                                "car_id": {
+                                                    "type": "integer"
+                                                },
+                                                "status": {
+                                                    "type": "string"
+                                                },
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "start_date": {
+                                                    "type": "string"
+                                                },
+                                                "end_date": {
+                                                    "type": "string"
+                                                },
+                                                "car": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "fuel_type": {
+                                                            "$ref": "#/components/schemas/FuelType"
+                                                        },
+                                                        "transmission_type": {
+                                                            "$ref": "#/components/schemas/TransmissionType"
+                                                        },
+                                                        "brand": {
+                                                            "type": "string"
+                                                        },
+                                                        "model": {
+                                                            "type": "string"
+                                                        },
+                                                        "year_produced": {
+                                                            "type": "integer"
+                                                        },
+                                                        "images": {
+                                                            "type": "string"
+                                                        },
+                                                        "сar_class": {
+                                                            "$ref": "#/components/schemas/CarClass"
+                                                        },
+                                                        "division": {
+                                                            "properties": {
+                                                                "coords": {
+                                                                    "type": "string"
+                                                                },
+                                                                "address": {
+                                                                    "type": "string"
+                                                                },
+                                                                "park": {
+                                                                    "properties": {
+                                                                        "phone": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "url": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "commission": {
+                                                                            "type": "integer"
+                                                                        },
+                                                                        "self_employed": {
+                                                                            "type": "integer"
+                                                                        },
+                                                                        "park_name": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "about": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "working_hours": {
+                                                                            "description": "Расписание работы парка",
+                                                                            "type": "array",
+                                                                            "items": {
+                                                                                "properties": {
+                                                                                    "start": {
+                                                                                        "description": "Время начала",
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "end": {
+                                                                                        "description": "Время окончания",
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "day": {
+                                                                                        "description": "День недели на русском",
+                                                                                        "type": "string"
+                                                                                    }
+                                                                                },
+                                                                                "type": "object"
+                                                                            }
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "rent_term": {
+                                                    "properties": {
+                                                        "deposit_amount_daily": {
+                                                            "type": "string"
+                                                        },
+                                                        "deposit_amount_total": {
+                                                            "type": "string"
+                                                        },
+                                                        "minimum_period_days": {
+                                                            "type": "integer"
+                                                        },
+                                                        "is_buyout_possible": {
+                                                            "type": "integer"
+                                                        },
+                                                        "schemas": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "properties": {
+                                                                    "daily_amount": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "non_working_days": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "working_days": {
+                                                                        "type": "integer"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            }
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Пользователь не зарегистрирован или не верифицирован",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Пользователь не зарегистрирован или не верифицирован"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Машина не найдена",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Машина не найдена"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -2589,40 +2847,6 @@
                     "Manager",
                     "Admin"
                 ]
-            }
-        },
-        "responses": {
-            "403": {
-                "description": "Пользователь не зарегистрирован или не верифицирован",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "properties": {
-                                "message": {
-                                    "type": "string",
-                                    "example": "Пользователь не зарегистрирован или не верифицирован"
-                                }
-                            },
-                            "type": "object"
-                        }
-                    }
-                }
-            },
-            "404": {
-                "description": "Машина не найдена",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "properties": {
-                                "message": {
-                                    "type": "string",
-                                    "example": "Машина не найдена"
-                                }
-                            },
-                            "type": "object"
-                        }
-                    }
-                }
             }
         }
     }

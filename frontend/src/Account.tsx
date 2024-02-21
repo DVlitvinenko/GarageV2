@@ -27,27 +27,27 @@ export const Account = ({ user }: { user: User }) => {
   >([
     {
       title:
-        "Загрузите селфи при хорошем освещении c главным разворотом страниц паспорта",
+        "Селфи при хорошем освещении c главным разворотом страниц паспорта",
       type: DriverDocumentType.Image_fase_and_pasport,
       placeholderImg: selca,
     },
     {
-      title: "Загрузите лицевую сторону водительского удостоверения",
+      title: "Лицевая сторона водительского удостоверения",
       type: DriverDocumentType.Image_licence_front,
       placeholderImg: frontDriverId,
     },
     {
-      title: "Загрузите обратную сторону водительского удостоверения",
+      title: "Обратная сторона водительского удостоверения",
       type: DriverDocumentType.Image_licence_back,
       placeholderImg: backDriverId,
     },
     {
-      title: "Загрузите разворот вашего паспорта с фото",
+      title: "Разворот страниц паспорта с фото",
       type: DriverDocumentType.Image_pasport_front,
       placeholderImg: frontPassport,
     },
     {
-      title: "Загрузите страницу паспорта с разворотом прописки",
+      title: "Разворот страних паспорта с пропиской",
       type: DriverDocumentType.Image_pasport_address,
       placeholderImg: backPassport,
     },

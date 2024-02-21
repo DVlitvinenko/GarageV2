@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Body8, Body9 } from "./api-client";
-import { MaskedInput, createDefaultMaskGenerator } from "react-hook-mask";
+import React, { ChangeEvent } from "react";
 export const DriverLogin = () => {
   const CODE_LENGTH = 8;
 
@@ -36,7 +36,7 @@ export const DriverLogin = () => {
   const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setCode(parseInt(e.target.value));
 
-  const handlePhoneChange = (e) => {
+  const handlePhoneChange = (e: ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value.replace(/\D/g, "");
     let formattedPhone = "+";
 
@@ -71,11 +71,11 @@ export const DriverLogin = () => {
     <>
       <div className="mx-auto w-80">
         <h2 className="my-10 text-center">
-          Зарегистрируйтесь, чтобы получить возможность бронирования автомобиля
-          или войдите в личный кабинет.
+          Зарегистрируйтесь или войдите в личный кабинет.
         </h2>
         <Label>Введите ваш телефон</Label>
         <Input
+          className="mt-1"
           onChange={handlePhoneChange}
           value={phone}
           type="text"
@@ -84,8 +84,9 @@ export const DriverLogin = () => {
 
         {codeRequested && (
           <>
-            <Label htmlFor="code">Введите полученную смс</Label>
+            <Label htmlFor="code">Введите код из смс</Label>
             <Input
+              className="mt-1"
               onChange={handleCodeChange}
               id="code"
               placeholder="_ _ _ _ _ _ _"
