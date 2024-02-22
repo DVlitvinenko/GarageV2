@@ -390,7 +390,7 @@ $car['commission'] = rtrim(rtrim($commissionFormatted, '0'), '.');
  *         @OA\Schema(
  *             @OA\Property(property="booking", type="object",
  *                 @OA\Property(property="car_id", type="integer"),
- *                 @OA\Property(property="status", type="string"),
+ *                 @OA\Property(property="status", type="string",ref="#/components/schemas/BookingStatus"),
  *                 @OA\Property(property="id", type="integer"),
  *                 @OA\Property(property="start_date", type="string"),
  *                 @OA\Property(property="end_date", type="string"),

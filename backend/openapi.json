@@ -2343,7 +2343,7 @@
                                                     "type": "integer"
                                                 },
                                                 "status": {
-                                                    "type": "string"
+                                                    "$ref": "#/components/schemas/BookingStatus"
                                                 },
                                                 "id": {
                                                     "type": "integer"

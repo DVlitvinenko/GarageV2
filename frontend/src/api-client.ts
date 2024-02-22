@@ -6619,7 +6619,7 @@ export interface ICars2 {
 
 export class Booking implements IBooking {
     car_id?: number;
-    status?: string;
+    status?: BookingStatus;
     id?: number;
     start_date?: string;
     end_date?: string;
@@ -6679,7 +6679,7 @@ export class Booking implements IBooking {
 
 export interface IBooking {
     car_id?: number;
-    status?: string;
+    status?: BookingStatus;
     id?: number;
     start_date?: string;
     end_date?: string;
