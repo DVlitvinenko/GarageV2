@@ -7108,8 +7108,8 @@ export interface ICar {
 }
 
 export class Rent_term2 implements IRent_term2 {
-    deposit_amount_daily?: string;
-    deposit_amount_total?: string;
+    deposit_amount_daily?: number;
+    deposit_amount_total?: number;
     minimum_period_days?: number;
     is_buyout_possible?: number;
     schemas?: Schemas4[];
@@ -7170,8 +7170,8 @@ export class Rent_term2 implements IRent_term2 {
 }
 
 export interface IRent_term2 {
-    deposit_amount_daily?: string;
-    deposit_amount_total?: string;
+    deposit_amount_daily?: number;
+    deposit_amount_total?: number;
     minimum_period_days?: number;
     is_buyout_possible?: number;
     schemas?: Schemas4[];
@@ -7180,8 +7180,8 @@ export interface IRent_term2 {
 }
 
 export class Rent_term3 implements IRent_term3 {
-    deposit_amount_daily?: string;
-    deposit_amount_total?: string;
+    deposit_amount_daily?: number;
+    deposit_amount_total?: number;
     minimum_period_days?: number;
     is_buyout_possible?: number;
     schemas?: Schemas5[];
@@ -7242,8 +7242,8 @@ export class Rent_term3 implements IRent_term3 {
 }
 
 export interface IRent_term3 {
-    deposit_amount_daily?: string;
-    deposit_amount_total?: string;
+    deposit_amount_daily?: number;
+    deposit_amount_total?: number;
     minimum_period_days?: number;
     is_buyout_possible?: number;
     schemas?: Schemas5[];

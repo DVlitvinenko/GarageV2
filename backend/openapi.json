@@ -1652,10 +1652,10 @@
                                                                 "description": "Условия аренды",
                                                                 "properties": {
                                                                     "deposit_amount_daily": {
-                                                                        "type": "string"
+                                                                        "type": "number"
                                                                     },
                                                                     "deposit_amount_total": {
-                                                                        "type": "string"
+                                                                        "type": "number"
                                                                     },
                                                                     "minimum_period_days": {
                                                                         "type": "integer"
@@ -2426,10 +2426,10 @@
                                                 "rent_term": {
                                                     "properties": {
                                                         "deposit_amount_daily": {
-                                                            "type": "string"
+                                                            "type": "number"
                                                         },
                                                         "deposit_amount_total": {
-                                                            "type": "string"
+                                                            "type": "number"
                                                         },
                                                         "minimum_period_days": {
                                                             "type": "integer"

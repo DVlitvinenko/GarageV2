@@ -75,8 +75,8 @@ class AuthController extends Controller
      *                         property="rent_term",
      *                         type="object",
      *                         description="Условия аренды",
-     *                         @OA\Property(property="deposit_amount_daily", type="string"),
-     *                         @OA\Property(property="deposit_amount_total", type="string"),
+     *                         @OA\Property(property="deposit_amount_daily", type="number"),
+     *                         @OA\Property(property="deposit_amount_total", type="number"),
      *                         @OA\Property(property="minimum_period_days", type="integer"),
      *                         @OA\Property(property="is_buyout_possible", type="integer"),
      *                         @OA\Property(
