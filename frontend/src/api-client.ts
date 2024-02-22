@@ -6748,8 +6748,7 @@ export interface IDocs {
 export class Bookings implements IBookings {
     /** Идентификатор бронирования */
     id?: number;
-    /** Статус бронирования */
-    status?: string;
+    status?: BookingStatus;
     /** Идентификатор автомобиля */
     car_id?: number;
     /** Дата начала бронирования в формате 'd.m.Y H:i' */
@@ -6835,8 +6834,7 @@ export class Bookings implements IBookings {
 export interface IBookings {
     /** Идентификатор бронирования */
     id?: number;
-    /** Статус бронирования */
-    status?: string;
+    status?: BookingStatus;
     /** Идентификатор автомобиля */
     car_id?: number;
     /** Дата начала бронирования в формате 'd.m.Y H:i' */

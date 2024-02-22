@@ -1638,8 +1638,7 @@
                                                                 "type": "integer"
                                                             },
                                                             "status": {
-                                                                "description": "Статус бронирования",
-                                                                "type": "string"
+                                                                "$ref": "#/components/schemas/BookingStatus"
                                                             },
                                                             "car_id": {
                                                                 "description": "Идентификатор автомобиля",

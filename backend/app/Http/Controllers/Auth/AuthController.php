@@ -68,7 +68,7 @@ class AuthController extends Controller
      *                 @OA\Items(
      *                     type="object",
      *                     @OA\Property(property="id", type="integer", description="Идентификатор бронирования"),
-     *                     @OA\Property(property="status", type="string", description="Статус бронирования"),
+     *                     @OA\Property(property="status", type="string", description="Статус бронирования",ref="#/components/schemas/BookingStatus"),
      *                     @OA\Property(property="car_id", type="integer", description="Идентификатор автомобиля"),
      *                     @OA\Property(property="start_date", type="string", description="Дата начала бронирования в формате 'd.m.Y H:i'"),
      *                     @OA\Property(property="end_date", type="string", description="Дата окончания бронирования в формате 'd.m.Y H:i'"),
