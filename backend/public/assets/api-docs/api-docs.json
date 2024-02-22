@@ -1,0 +1,1598 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API Мой гараж",
+        "description": "Это список методов для интеграции с Мой гараж, в заголовках всех запросов должен присутствоваться API-ключ, который будет предоставлен администратором на почту клиента после регистрации клиента в сервисе администратором",
+        "version": "1.0.2"
+    },
+    "paths": {
+        "/cars": {
+            "put": {
+                "tags": ["API"],
+                "summary": "Обновление информации о машине",
+                "description": "Обновление информации о машине",
+                "operationId": "updateCar",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "VIN-номер машины",
+                                        "type": "string",
+                                        "maxLength": 20
+                                    },
+                                    "division_id": {
+                                        "description": "id подразделения",
+                                        "type": "integer",
+                                        "maxLength": 250
+                                    },
+                                    "class": {
+                                        "description": "Тариф машины (1 - эконом, 2 - комфорт, 3 - комфорт+, 4 - бизнес)",
+                                        "type": "integer",
+                                        "nullable": true
+                                    },
+                                    "images": {
+                                        "description": "Изображения машины",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Успешное обновление информации о машине",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Машина успешно обновлена"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Ошибка аутентификации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ошибка аутентификации"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ошибка сервера"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Ошибки валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "id": [
+                                                    "Поле id обязательно для заполнения."
+                                                ],
+                                                "city": [
+                                                    "Поле city должно быть строкой."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": ["API"],
+                "summary": "Добавить несколько автомобилей, все добавленные автомобили будут доступны к бронированию сразу после привязки к ним Условий бронирования (метод: /cars/rent-term)",
+                "description": "Добавить несколько автомобилей",
+                "operationId": "pushCars",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "cars": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "id": {
+                                                    "description": "VIN-номер автомобиля",
+                                                    "type": "string",
+                                                    "maxLength": 17
+                                                },
+                                                "division_id": {
+                                                    "description": "id подразделения",
+                                                    "type": "integer",
+                                                    "maxLength": 250
+                                                },
+                                                "fuel_type": {
+                                                    "description": "Вид топлива (1 - газ, 0 - бензин)",
+                                                    "type": "integer"
+                                                },
+                                                "transmission_type": {
+                                                    "description": "КПП ТС (1 - автомат, 0 - механика)",
+                                                    "type": "integer"
+                                                },
+                                                "brand": {
+                                                    "description": "Бренд автомобиля",
+                                                    "type": "string",
+                                                    "maxLength": 50
+                                                },
+                                                "model": {
+                                                    "description": "Модель автомобиля",
+                                                    "type": "string",
+                                                    "maxLength": 80
+                                                },
+                                                "class": {
+                                                    "description": "Тариф автомобиля (1 - эконом, 2 - комфорт, 3 - комфорт+, 4 - бизнес)",
+                                                    "type": "integer"
+                                                },
+                                                "year_produced": {
+                                                    "description": "Год выпуска автомобиля",
+                                                    "type": "integer"
+                                                },
+                                                "images": {
+                                                    "description": "Ссылки на фотографии автомобиля",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Успешное добавление автомобилей",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Автомобили успешно добавлены"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Ошибка аутентификации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ошибка аутентификации"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ошибка сервера"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Ошибки валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Неверные или недостающие параметры в запросе"
+                                        },
+                                        "errors": {
+                                            "description": "Список ошибок валидации",
+                                            "type": "object",
+                                            "nullable": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
+        "/cars/status": {
+            "put": {
+                "tags": ["API"],
+                "summary": "Обновление статуса допуска к бронированию",
+                "description": "Обновление статуса допуска к бронированию автомобиля",
+                "operationId": "updateCarStatus",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "VIN-номер автомобиля",
+                                        "type": "string",
+                                        "maxLength": 20
+                                    },
+                                    "status": {
+                                        "description": "Допуск автомобиля к бронированию. 1 - допущен, 0 - заблокирован",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Успешное обновление статуса автомобиля",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Статус автомобиля успешно обновлен"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Ошибка аутентификации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ошибка аутентификации"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ошибка сервера"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Ошибки валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "id": [
+                                                    "Поле id обязательно для заполнения."
+                                                ],
+                                                "status": [
+                                                    "Поле status должно быть числом."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Конфликт",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Автомобиль сейчас забронирован, изменение статуса невозможно"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
+        "/URL_АДРЕС_ПАРКА/cars/outbound/status": {
+            "put": {
+                "tags": ["API"],
+                "summary": "Изменить статус бронирования автомобиля, ОТ МОЕГО ГАРАЖА",
+                "description": "Изменить статус бронирования автомобиля\n\nЭтот метод используется для передачи данных ОТ МОЕГО ГАРАЖА.",
+                "operationId": "notifyParkOnBookingStatusChanged",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "VIN-номер автомобиля",
+                                        "type": "string"
+                                    },
+                                    "is_booked": {
+                                        "description": "Статус бронирования. 1 - забронировано, 0 - бронь отменена",
+                                        "type": "integer"
+                                    },
+                                    "driver_name": {
+                                        "description": "ФИО водителя",
+                                        "type": "string"
+                                    },
+                                    "phone": {
+                                        "description": "Телефон водителя",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "Успешное изменение статуса бронирования"
+                    },
+                    "400": {
+                        "description": "Некорректный запрос"
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
+        "/parks/rent-terms": {
+            "post": {
+                "tags": ["API"],
+                "summary": "Создание или обновление условий аренды",
+                "description": "Создание или обновление условий аренды\n\nЭтот метод позволяет создавать новые или обновлять существующие условия аренды для парков.",
+                "operationId": "createOrUpdateRentTerm",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "rent_term_id": {
+                                        "description": "Идентификатор существующего условия аренды (для обновления)",
+                                        "type": "integer",
+                                        "nullable": true
+                                    },
+                                    "deposit_amount_daily": {
+                                        "description": "Сумма ежедневного залога",
+                                        "type": "number"
+                                    },
+                                    "deposit_amount_total": {
+                                        "description": "Общая сумма залога",
+                                        "type": "number"
+                                    },
+                                    "is_buyout_possible": {
+                                        "description": "Возможность выкупа (true/false)",
+                                        "type": "boolean"
+                                    },
+                                    "minimum_period_days": {
+                                        "description": "Минимальный период аренды в днях",
+                                        "type": "integer"
+                                    },
+                                    "name": {
+                                        "description": "Название условия аренды",
+                                        "type": "string"
+                                    },
+                                    "schemas": {
+                                        "description": "Схемы аренды",
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "daily_amount": {
+                                                    "description": "Стоимость аренды авто",
+                                                    "type": "number",
+                                                    "format": "float"
+                                                },
+                                                "non_working_days": {
+                                                    "description": "Количество нерабочих дней",
+                                                    "type": "integer"
+                                                },
+                                                "working_days": {
+                                                    "description": "Количество рабочих дней",
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Успешное создание или обновление условий аренды",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Условие аренды успешно создано или изменено"
+                                        },
+                                        "id": {
+                                            "type": "integer",
+                                            "example": "Идентификатор условия аренды"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Ошибка аутентификации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ошибка аутентификации"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибки валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "deposit_amount_daily": [
+                                                    "Поле deposit_amount_daily обязательно для заполнения и должно быть числом."
+                                                ],
+                                                "deposit_amount_total": [
+                                                    "Поле deposit_amount_total обязательно для заполнения и должно быть числом."
+                                                ],
+                                                "is_buyout_possible": [
+                                                    "Поле is_buyout_possible обязательно для заполнения и должно быть булевым значением."
+                                                ],
+                                                "minimum_period_days": [
+                                                    "Поле minimum_period_days обязательно для заполнения и должно быть целым числом."
+                                                ],
+                                                "name": [
+                                                    "Поле name обязательно для заполнения и должно быть строкой."
+                                                ],
+                                                "schemas": [
+                                                    "Поле schemas обязательно для заполнения и должно быть массивом строк."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Парк с указанным API ключом не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Парк не найден"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ошибка сервера"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
+        "/cars/rent-term": {
+            "put": {
+                "tags": ["API"],
+                "summary": "Обновление условия аренды для автомобиля",
+                "description": "Обновление условия аренды для автомобиля\n\nЭтот метод позволяет обновлять условие аренды для конкретного автомобиля по его VIN-номеру.",
+                "operationId": "updateCarRentTerm",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "VIN-номер автомобиля",
+                                        "type": "string"
+                                    },
+                                    "rent_term_id": {
+                                        "description": "Идентификатор условия аренды",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Успешное обновление условия аренды для автомобиля",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Условие аренды успешно обновлено для автомобиля"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Ошибка аутентификации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ошибка аутентификации"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Ошибки валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "rent_term_id": [
+                                                    "Поле rent_term_id обязательно для заполнения и должно быть целым числом."
+                                                ],
+                                                "id": [
+                                                    "Поле id обязательно для заполнения и должно быть целым числом."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Условие аренды или автомобиль не найдены",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Условие аренды или автомобиль не найдены"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ошибка сервера"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
+        "/cars/booking": {
+            "put": {
+                "tags": ["API"],
+                "summary": "Обновление статуса брони автомобиля",
+                "description": "Обновление условия аренды для автомобиля\n\nЭтот метод позволяет обновлять статус брони для конкретного автомобиля по его VIN-номеру.",
+                "operationId": "updateCarBookingStatus",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "car_id": {
+                                        "description": "VIN-номер автомобиля",
+                                        "type": "string"
+                                    },
+                                    "status": {
+                                        "$ref": "#/components/schemas/BookingStatus"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Успешное обновление статуса брони автомобиля",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "статуса брони автомобиля"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Ошибка аутентификации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ошибка аутентификации"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Ошибки валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "status": [
+                                                    "Поле status обязательно для заполнения и должно быть строкой."
+                                                ],
+                                                "id": [
+                                                    "Поле id обязательно для заполнения и должно быть строкой."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Автомобиль не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Автомобиль не найден или бронирование не найдено"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ошибка сервера"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
+        "/parks": {
+            "put": {
+                "tags": ["API"],
+                "summary": "Обновление информации о парке",
+                "description": "Обновление информации о парке\n\nЭтот метод позволяет обновлять информацию о парке.",
+                "operationId": "updateParkInfo",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "url": {
+                                        "description": "URL парка",
+                                        "type": "string"
+                                    },
+                                    "commission": {
+                                        "description": "Комиссия",
+                                        "type": "number"
+                                    },
+                                    "self_employed": {
+                                        "description": "Работает ли парк с самозанятыми, true - если работает",
+                                        "type": "boolean"
+                                    },
+                                    "park_name": {
+                                        "description": "Название парка",
+                                        "type": "string"
+                                    },
+                                    "about": {
+                                        "description": "Описание парка",
+                                        "type": "string"
+                                    },
+                                    "phone": {
+                                        "description": "Телефон парка",
+                                        "type": "string"
+                                    },
+                                    "working_hours": {
+                                        "description": "Время работы",
+                                        "properties": {
+                                            "monday": {
+                                                "description": "Время работы в понедельник",
+                                                "type": "object"
+                                            },
+                                            "tuesday": {
+                                                "description": "Время работы во вторник",
+                                                "type": "object"
+                                            },
+                                            "wednesday": {
+                                                "description": "Время работы в среду",
+                                                "type": "object"
+                                            },
+                                            "thursday": {
+                                                "description": "Время работы в четверг",
+                                                "type": "object"
+                                            },
+                                            "friday": {
+                                                "description": "Время работы в пятницу",
+                                                "type": "object"
+                                            },
+                                            "saturday": {
+                                                "description": "Время работы в субботу",
+                                                "type": "object"
+                                            },
+                                            "sunday": {
+                                                "description": "Время работы в воскресенье",
+                                                "type": "object"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Успешное обновление информации о парке",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Парк обновлен"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Ошибка аутентификации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Неверный ключ авторизации"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Ошибки валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ошибка валидации"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "url": [
+                                                    "Поле url должно быть строкой."
+                                                ],
+                                                "commission": [
+                                                    "Поле commission должно быть числом."
+                                                ],
+                                                "self_employed": [
+                                                    "Поле self_employed должно быть булевым значением."
+                                                ],
+                                                "park_name": [
+                                                    "Поле park_name должно быть строкой."
+                                                ],
+                                                "about": [
+                                                    "Поле about должно быть строкой."
+                                                ],
+                                                "working_hours": [
+                                                    "Поле working_hours должно быть в формате JSON."
+                                                ],
+                                                "phone": [
+                                                    "Поле phone должно быть строкой."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
+        "/parks/division": {
+            "put": {
+                "tags": ["API"],
+                "summary": "Обновление подразделения парка",
+                "description": "Обновление подразделения парка\n\nЭтот метод позволяет обновлять подразделение в парке.",
+                "operationId": "updateParkDivision",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "Идентификатор подразделения",
+                                        "type": "integer"
+                                    },
+                                    "coords": {
+                                        "description": "Координаты подразделения",
+                                        "type": "string"
+                                    },
+                                    "address": {
+                                        "description": "Адрес подразделения",
+                                        "type": "string"
+                                    },
+                                    "name": {
+                                        "description": "Название подразделения",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Успешное обновление подразделения",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Подразделение успешно обновлено"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Ошибка аутентификации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Неверный ключ авторизации"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Ошибки валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ошибка валидации"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "coords": [
+                                                    "Поле coords должно быть строкой."
+                                                ],
+                                                "address": [
+                                                    "Поле address должно быть строкой."
+                                                ],
+                                                "name": [
+                                                    "Поле name должно быть строкой и уникальным в пределах парка."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Подразделение не найдено",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Подразделение не найдено"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": ["API"],
+                "summary": "Создание подразделения парка",
+                "description": "Создание подразделения парка\n\nЭтот метод позволяет создавать подразделение в парке.",
+                "operationId": "createParkDivision",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "city": {
+                                        "description": "Город подразделения",
+                                        "type": "string"
+                                    },
+                                    "coords": {
+                                        "description": "Координаты подразделения",
+                                        "type": "string"
+                                    },
+                                    "address": {
+                                        "description": "Адрес подразделения",
+                                        "type": "string"
+                                    },
+                                    "name": {
+                                        "description": "Название подразделения",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Успешное создание подразделения",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Подразделение создано"
+                                        },
+                                        "id": {
+                                            "type": "integer",
+                                            "example": "Идентификатор созданного подразделения"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Ошибка аутентификации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Неверный ключ авторизации"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Ошибки валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ошибка валидации"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "city": [
+                                                    "Поле city обязательно для заполнения и должно быть строкой."
+                                                ],
+                                                "coords": [
+                                                    "Поле coords обязательно для заполнения и должно быть строкой."
+                                                ],
+                                                "address": [
+                                                    "Поле address обязательно для заполнения и должно быть строкой."
+                                                ],
+                                                "name": [
+                                                    "Поле name обязательно для заполнения и должно быть строкой."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
+        "/parks/tariff": {
+            "put": {
+                "tags": ["API"],
+                "summary": "Обновление тарифа авто с критериями блокерами",
+                "description": "Обновление тарифа авто с критериями блокерами\n\nЭтот метод позволяет обновлять тарифы авто с критериями блокерами для парков.",
+                "operationId": "upfateTariff",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "id тарифа",
+                                        "type": "integer"
+                                    },
+                                    "has_caused_accident": {
+                                        "description": "Участие в ДТП, true/false",
+                                        "type": "boolean",
+                                        "nullable": true
+                                    },
+                                    "experience": {
+                                        "description": "Минимальный опыт вождения",
+                                        "type": "integer",
+                                        "nullable": true
+                                    },
+                                    "max_fine_count": {
+                                        "description": "Максимальное количество штрафов",
+                                        "type": "integer",
+                                        "nullable": true
+                                    },
+                                    "abandoned_car": {
+                                        "description": "Бросал ли машину, true/false",
+                                        "type": "boolean",
+                                        "nullable": true
+                                    },
+                                    "min_scoring": {
+                                        "description": "минимальный скоринг",
+                                        "type": "integer",
+                                        "nullable": true
+                                    },
+                                    "forbidden_republic_ids": {
+                                        "description": "Массив запрещенных статей",
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "criminal_ids": {
+                                        "description": "Массив запрещенных республик",
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "alcohol": {
+                                        "description": "Принимает ли что-то водитель, алкоголь/иное, true/false",
+                                        "type": "boolean",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Успешное обновление тарифа",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Тариф успешно обнолвен"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Ошибка аутентификации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ошибка аутентификации"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Парк с указанным API ключом не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Парк не найден"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ошибка сервера"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": ["API"],
+                "summary": "Создание тарифа авто с критериями блокерами",
+                "description": "Создание тарифа авто с критериями блокерами\n\nЭтот метод позволяет создавать новые тарифы авто с критериями блокерами для парков. В одном городе для парка может быть толкьо один тариф заданного класса.",
+                "operationId": "createTariff",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "class": {
+                                        "description": "Тариф машины (1 - эконом, 2 - комфорт, 3 - комфорт+, 4 - бизнес)",
+                                        "type": "integer",
+                                        "nullable": true
+                                    },
+                                    "city": {
+                                        "description": "Город тарифа",
+                                        "type": "string"
+                                    },
+                                    "has_caused_accident": {
+                                        "description": "Участие в ДТП, true/false",
+                                        "type": "boolean"
+                                    },
+                                    "experience": {
+                                        "description": "Минимальный опыт вождения",
+                                        "type": "integer"
+                                    },
+                                    "max_fine_count": {
+                                        "description": "Максимальное количество штрафов",
+                                        "type": "integer"
+                                    },
+                                    "abandoned_car": {
+                                        "description": "Бросал ли машину, true/false",
+                                        "type": "boolean"
+                                    },
+                                    "min_scoring": {
+                                        "description": "минимальный скоринг",
+                                        "type": "integer"
+                                    },
+                                    "forbidden_republic_ids": {
+                                        "description": "Массив запрещенных статей",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "criminal_ids": {
+                                        "description": "Массив запрещенных республик",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "alcohol": {
+                                        "description": "Принимает ли что-то водитель, алкоголь/иное, true/false",
+                                        "type": "boolean"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Успешное создание  тарифа",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Тариф успешно создан"
+                                        },
+                                        "id": {
+                                            "type": "integer",
+                                            "example": "Идентификатор тарифа"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Ошибка аутентификации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ошибка аутентификации"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Парк с указанным API ключом не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Парк не найден"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "В этом городе уже есть такой тариф",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "В этом городе уже есть такой тариф"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ошибка сервера"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "BookingStatus": {
+                "description": "The unique identifier of a product in our catalog",
+                "type": "string",
+                "enum": [
+                    "Booked",
+                    "UnBooked",
+                    "BookingTimeOver",
+                    "RentOver",
+                    "RentStart"
+                ]
+            }
+        },
+        "responses": {
+            "403": {
+                "description": "Пользователь не зарегистрирован или не верифицирован",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Пользователь не зарегистрирован или не верифицирован"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "404": {
+                "description": "Машина не найдена",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Машина не найдена"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

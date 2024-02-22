@@ -1,0 +1,739 @@
+openapi: 3.0.0
+info:
+  title: 'API Мой гараж'
+  description: 'Это список методов для интеграции с Мой гараж, в заголовках всех запросов должен присутствоваться API-ключ, который будет предоставлен администратором на почку клиента после регистрации клиента в сервисе администратором'
+  version: 1.0.0
+paths:
+  /push-cars:
+    post:
+      tags:
+        - API
+      summary: 'Добавить несколько автомобилей'
+      operationId: 7838e7c632ad3876ae62a5a544449d85
+      parameters:
+        -
+          name: cars
+          in: query
+          description: 'Массив параметров'
+          required: true
+          schema:
+            type: array
+            items: []
+        -
+          name: city
+          in: query
+          description: 'Город колонны'
+          required: true
+          schema:
+            type: string
+        -
+          name: petrol_car
+          in: query
+          description: 'Вид топлива (1 - газ, 0 - бензин)'
+          required: true
+          schema:
+            type: integer
+        -
+          name: kpp_car
+          in: query
+          description: 'КПП ТС (1 - автомат, 0 - механика)'
+          required: true
+          schema:
+            type: integer
+        -
+          name: brand_car
+          in: query
+          description: 'Бренд авто'
+          required: true
+          schema:
+            type: string
+            maxLength: 50
+        -
+          name: model_car
+          in: query
+          description: 'Модель авто'
+          required: true
+          schema:
+            type: string
+            maxLength: 80
+        -
+          name: conditions
+          in: query
+          description: 'Тариф авто (1 - эконом, 2 - комфорт, 3 - комфорт+, 4 - бизнес)'
+          required: true
+          schema:
+            type: integer
+        -
+          name: year_car
+          in: query
+          description: 'Год выпуска авто'
+          required: true
+          schema:
+            type: integer
+        -
+          name: slug
+          in: query
+          description: 'VIN-номер авто'
+          required: true
+          schema:
+            type: string
+            maxLength: 17
+        -
+          name: description
+          in: query
+          description: 'Описание авто'
+          required: false
+          schema:
+            type: string
+            maxLength: 500
+        -
+          name: image
+          in: query
+          description: 'Фото авто'
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+              format: binary
+        -
+          name: price
+          in: query
+          description: 'Стоимость аренды авто'
+          required: true
+          schema:
+            type: integer
+        -
+          name: min_rent_term
+          in: query
+          description: 'Минимальный срок аренды в днях'
+          required: true
+          schema:
+            type: integer
+        -
+          name: rent_conditions
+          in: query
+          description: 'Условия аренды'
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                cars:
+                  type: array
+                  items:
+                    properties:
+                      city:
+                        description: 'Город колонны'
+                        type: string
+                        maxLength: 50
+                      columns:
+                        description: 'Название колонны'
+                        type: string
+                        maxLength: 250
+                      petrol_car:
+                        description: 'Вид топлива (1 - газ, 0 - бензин)'
+                        type: integer
+                      kpp_car:
+                        description: 'КПП ТС (1 - автомат, 0 - механика)'
+                        type: integer
+                      brand_car:
+                        description: 'Бренд авто'
+                        type: string
+                        maxLength: 50
+                      model_car:
+                        description: 'Модель авто'
+                        type: string
+                        maxLength: 80
+                      conditions:
+                        description: 'Тариф авто (1 - эконом, 2 - комфорт, 3 - комфорт+, 4 - бизнес)'
+                        type: integer
+                      year_car:
+                        description: 'Год выпуска авто'
+                        type: integer
+                      slug:
+                        description: VIN-номер
+                        type: string
+                        maxLength: 17
+                      description:
+                        description: 'Описание авто'
+                        type: string
+                        maxLength: 500
+                        nullable: true
+                      image:
+                        description: 'Фото авто'
+                        type: array
+                        items:
+                          type: string
+                          format: binary
+                      image_gallery:
+                        description: 'Фото авто в галерее'
+                        type: array
+                        items:
+                          type: string
+                        nullable: true
+                      price:
+                        description: 'Стоимость аренды авто'
+                        type: integer
+                      min_rent_term:
+                        description: 'Минимальный срок аренды в днях'
+                        type: integer
+                      rent_conditions:
+                        description: 'Условия аренды'
+                        type: array
+                        items:
+                          type: string
+                    type: object
+              type: object
+      responses:
+        200:
+          description: 'Успешный ответ'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: 'Автомобили успешно добавлены'
+                type: object
+        401:
+          description: 'Ошибка аутентификации'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: 'Ошибка аутентификации'
+                type: object
+        500:
+          description: 'Ошибка сервера'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: 'Ошибка сервера'
+                type: object
+        400:
+          description: 'Ошибки валидации'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: 'Неверные или недостающие параметры в запросе'
+                type: object
+      security:
+        -
+          api_key: []
+  /push-car:
+    post:
+      tags:
+        - API
+      summary: 'Добавить автомобиль'
+      operationId: 50b41d3fa34efd4efcc3c3688cf15f2c
+      parameters:
+        -
+          name: city
+          in: query
+          description: 'Город колонны'
+          required: true
+          schema:
+            type: string
+            maxLength: 50
+        -
+          name: columns
+          in: query
+          description: 'Название колонны'
+          required: true
+          schema:
+            type: string
+            maxLength: 250
+        -
+          name: petrol_car
+          in: query
+          description: 'Вид топлива (1 - газ, 0 - бензин)'
+          required: true
+          schema:
+            type: integer
+        -
+          name: kpp_car
+          in: query
+          description: 'КПП ТС (1 - автомат, 0 - механика)'
+          required: true
+          schema:
+            type: integer
+        -
+          name: brand_car
+          in: query
+          description: 'Бренд авто'
+          required: true
+          schema:
+            type: string
+            maxLength: 50
+        -
+          name: model_car
+          in: query
+          description: 'Модель авто'
+          required: true
+          schema:
+            type: string
+            maxLength: 80
+        -
+          name: conditions
+          in: query
+          description: 'Тариф авто (1 - эконом, 2 - комфорт, 3 - комфорт+, 4 - бизнес)'
+          required: true
+          schema:
+            type: integer
+        -
+          name: year_car
+          in: query
+          description: 'Год выпуска авто'
+          required: true
+          schema:
+            type: integer
+        -
+          name: slug
+          in: query
+          description: 'VIN-номер авто'
+          required: true
+          schema:
+            type: string
+            maxLength: 17
+        -
+          name: description
+          in: query
+          description: 'Описание авто'
+          required: false
+          schema:
+            type: string
+            maxLength: 500
+        -
+          name: image
+          in: query
+          description: 'Фото авто'
+          required: true
+          schema:
+            type: file
+            format: binary
+        -
+          name: price
+          in: query
+          description: 'Стоимость аренды авто'
+          required: true
+          schema:
+            type: integer
+        -
+          name: min_rent_term
+          in: query
+          description: 'Минимальный срок аренды в днях'
+          required: true
+          schema:
+            type: integer
+        -
+          name: rent_conditions
+          in: query
+          description: 'Условия аренды'
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                city:
+                  description: 'Город колонны'
+                  type: string
+                  maxLength: 50
+                columns:
+                  description: 'Название колонны'
+                  type: string
+                  maxLength: 250
+                petrol_car:
+                  description: 'Вид топлива (1 - газ, 0 - бензин)'
+                  type: integer
+                kpp_car:
+                  description: 'КПП ТС (1 - автомат, 0 - механика)'
+                  type: integer
+                brand_car:
+                  description: 'Бренд авто'
+                  type: string
+                  maxLength: 50
+                model_car:
+                  description: 'Модель авто'
+                  type: string
+                  maxLength: 80
+                conditions:
+                  description: 'Тариф авто (1 - эконом, 2 - комфорт, 3 - комфорт+, 4 - бизнес)'
+                  type: integer
+                year_car:
+                  description: 'Год выпуска авто'
+                  type: integer
+                slug:
+                  description: VIN-номер
+                  type: string
+                  maxLength: 17
+                description:
+                  description: 'Описание авто'
+                  type: string
+                  maxLength: 500
+                  nullable: true
+                image:
+                  description: 'Фото авто'
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                price:
+                  description: 'Стоимость аренды авто'
+                  type: integer
+                min_rent_term:
+                  description: 'Минимальный срок аренды в днях'
+                  type: integer
+                rent_conditions:
+                  description: 'Условия аренды'
+                  type: array
+                  items:
+                    type: string
+              type: object
+      responses:
+        200:
+          description: 'Успешный ответ'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: 'Автомобили успешно добавлены'
+                type: object
+        401:
+          description: 'Ошибка аутентификации'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: 'Ошибка аутентификации'
+                type: object
+        500:
+          description: 'Ошибка сервера'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: 'Ошибка сервера'
+                type: object
+        400:
+          description: 'Ошибки валидации'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: 'Неверные или недостающие параметры в запросе'
+                type: object
+      security:
+        -
+          api_key: []
+  /update-car:
+    post:
+      tags:
+        - API
+      summary: 'Изменить информацию об автомобиле'
+      operationId: 903370b5dc78d5ef126a188ecb4e4707
+      parameters:
+        -
+          name: slug
+          in: query
+          description: 'VIN автомобиля'
+          required: true
+          schema:
+            type: integer
+        -
+          name: is_booked
+          in: query
+          description: 'Статус бронирования'
+          required: true
+          schema:
+            type: boolean
+        -
+          name: city
+          in: query
+          description: 'Город колонны'
+          required: false
+          schema:
+            type: string
+            maxLength: 50
+        -
+          name: columns
+          in: query
+          description: 'Название колонны'
+          required: false
+          schema:
+            type: string
+            maxLength: 250
+        -
+          name: petrol_car
+          in: query
+          description: 'Вид топлива (1 - газ, 0 - бензин)'
+          required: false
+          schema:
+            type: integer
+        -
+          name: kpp_car
+          in: query
+          description: 'КПП ТС (1 - автомат, 0 - механика)'
+          required: false
+          schema:
+            type: integer
+        -
+          name: brand_car
+          in: query
+          description: 'Бренд авто'
+          required: false
+          schema:
+            type: string
+            maxLength: 50
+        -
+          name: model_car
+          in: query
+          description: 'Модель авто'
+          required: false
+          schema:
+            type: string
+            maxLength: 80
+        -
+          name: conditions
+          in: query
+          description: 'Тариф авто (1 - эконом, 2 - комфорт, 3 - комфорт+, 4 - бизнес)'
+          required: false
+          schema:
+            type: integer
+        -
+          name: year_car
+          in: query
+          description: 'Год выпуска авто'
+          required: false
+          schema:
+            type: integer
+        -
+          name: description
+          in: query
+          description: 'Описание авто'
+          required: false
+          schema:
+            type: string
+            maxLength: 500
+        -
+          name: image
+          in: query
+          description: 'Фото авто'
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        -
+          name: price
+          in: query
+          description: 'Стоимость аренды авто'
+          required: false
+          schema:
+            type: integer
+        -
+          name: min_rent_term
+          in: query
+          description: 'Минимальный срок аренды в днях'
+          required: false
+          schema:
+            type: integer
+        -
+          name: rent_conditions
+          in: query
+          description: 'Условия аренды'
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                slug:
+                  description: VIN-номер
+                  type: string
+                  maxLength: 17
+                status:
+                  description: 'Разрешение брони авто (1 - разрешено, 0 - запрещено)'
+                  type: integer
+                city:
+                  description: 'Город колонны'
+                  type: string
+                  maxLength: 50
+                  nullable: true
+                columns:
+                  description: 'Название колонны'
+                  type: string
+                  maxLength: 250
+                  nullable: true
+                petrol_car:
+                  description: 'Вид топлива (1 - газ, 0 - бензин)'
+                  type: integer
+                  nullable: true
+                kpp_car:
+                  description: 'КПП ТС (1 - автомат, 0 - механика)'
+                  type: integer
+                  nullable: true
+                brand_car:
+                  description: 'Бренд авто'
+                  type: string
+                  maxLength: 50
+                  nullable: true
+                model_car:
+                  description: 'Модель авто'
+                  type: string
+                  maxLength: 80
+                  nullable: true
+                conditions:
+                  description: 'Тариф авто (1 - эконом, 2 - комфорт, 3 - комфорт+, 4 - бизнес)'
+                  type: integer
+                  nullable: true
+                year_car:
+                  description: 'Год выпуска авто'
+                  type: integer
+                  nullable: true
+                description:
+                  description: 'Описание авто'
+                  type: string
+                  maxLength: 500
+                  nullable: true
+                image:
+                  description: 'Фото авто'
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  nullable: true
+                price:
+                  description: 'Стоимость аренды авто'
+                  type: integer
+                  nullable: true
+                min_rent_term:
+                  description: 'Минимальный срок аренды в днях'
+                  type: integer
+                  nullable: true
+                rent_conditions:
+                  description: 'Условия аренды'
+                  type: array
+                  items:
+                    type: string
+                  nullable: true
+              type: object
+      responses:
+        200:
+          description: 'Успешный ответ'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: 'Автомобиль успешно изменен'
+                type: object
+        401:
+          description: 'Ошибка аутентификации'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: 'Ошибка аутентификации'
+                type: object
+        500:
+          description: 'Ошибка сервера'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: 'Ошибка сервера'
+                type: object
+        400:
+          description: 'Ошибки валидации'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: 'Неверные или недостающие параметры в запросе'
+                type: object
+      security:
+        -
+          api_key: []
+  /car-status:
+    put:
+      tags:
+        - API
+      summary: 'Изменить статус бронирования автомобиля'
+      operationId: 2deafc1e13fd4e292f7a2d6a63211924
+      parameters:
+        -
+          name: slug
+          in: query
+          description: 'VIN автомобиля'
+          required: true
+          schema:
+            type: integer
+        -
+          name: is_booked
+          in: query
+          description: 'Статус бронирования'
+          required: true
+          schema:
+            type: boolean
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                is_booked:
+                  description: 'Статус бронирования'
+                  type: boolean
+                slug:
+                  description: 'VIN автомобиля'
+                  type: string
+              type: object
+      responses:
+        204:
+          description: 'Успешное изменение'
+        400:
+          description: 'Некорректный запрос'
+      security:
+        -
+          api_key: []

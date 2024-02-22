@@ -7,7 +7,6 @@ import {
 } from "@/components/ui/collapsible";
 import { Body16, Cars2, UserStatus } from "./api-client";
 import { Separator } from "@/components/ui/separator";
-import { useState } from "react";
 import {
   formatRoubles,
   getFuelTypeDisplayName,

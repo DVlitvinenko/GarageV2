@@ -35,7 +35,9 @@ Route::middleware('api.key')->put('/parks/tariff', [APIController::class, 'updat
 Route::middleware('api.key')->put('/parks/division', [APIController::class, 'updateParkDivision']);
 Route::middleware('api.key')->put('/cars/booking', [APIController::class, 'updateCarBookingStatus']);
 
-
+Route::get('/documentation', function () {
+    return view('swagger.docs');
+});
 
 // Auth::routes();
 
