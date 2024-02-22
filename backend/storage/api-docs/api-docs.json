@@ -1295,9 +1295,9 @@
                                         "type": "integer",
                                         "nullable": true
                                     },
-                                    "forbidden_republic_ids": {
-                                        "description": "Массив запрещенных статей",
-                                        "type": "string",
+                                    "is_north_caucasus": {
+                                        "description": "Права выданы в Северном Кавказе",
+                                        "type": "boolean",
                                         "nullable": true
                                     },
                                     "criminal_ids": {
@@ -1428,12 +1428,9 @@
                                         "description": "минимальный скоринг",
                                         "type": "integer"
                                     },
-                                    "forbidden_republic_ids": {
-                                        "description": "Массив запрещенных статей",
-                                        "type": "array",
-                                        "items": {
-                                            "type": "string"
-                                        }
+                                    "is_north_caucasus": {
+                                        "description": "Права выданы в Северном Кавказе",
+                                        "type": "boolean"
                                     },
                                     "criminal_ids": {
                                         "description": "Массив запрещенных республик",
@@ -1544,53 +1541,19 @@
                     }
                 ]
             }
-        }
-    },
-    "components": {
-        "schemas": {
-            "BookingStatus": {
-                "description": "The unique identifier of a product in our catalog",
-                "type": "string",
-                "enum": [
-                    "Booked",
-                    "UnBooked",
-                    "BookingTimeOver",
-                    "RentOver",
-                    "RentStart"
-                ]
-            }
         },
-        "responses": {
-            "403": {
-                "description": "Пользователь не зарегистрирован или не верифицирован",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "properties": {
-                                "message": {
-                                    "type": "string",
-                                    "example": "Пользователь не зарегистрирован или не верифицирован"
-                                }
-                            },
-                            "type": "object"
-                        }
-                    }
-                }
-            },
-            "404": {
-                "description": "Машина не найдена",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "properties": {
-                                "message": {
-                                    "type": "string",
-                                    "example": "Машина не найдена"
-                                }
-                            },
-                            "type": "object"
-                        }
-                    }
+        "components": {
+            "schemas": {
+                "BookingStatus": {
+                    "description": "The unique identifier of a product in our catalog",
+                    "type": "string",
+                    "enum": [
+                        "Booked",
+                        "UnBooked",
+                        "BookingTimeOver",
+                        "RentOver",
+                        "RentStart"
+                    ]
                 }
             }
         }
