@@ -545,6 +545,8 @@ $car['commission'] = rtrim(rtrim($commissionFormatted, '0'), '.');
             $booked->end_date = Carbon::parse($booked->booked_until)->format('d.m.Y H:i');
             $booked->car = $car;
             $booked->car->сar_class = CarClass::from($car->tariff->class)->name;
+            $booked->car->transmission_type = TransmissionType::from($booked->car->transmission_type)->name;
+            $booked->car->fuel_type = FuelType::from($booked->car->fuel_type)->name;
             $booked->rent_term = RentTerm::where('id', $car->rent_term_id)->with('schemas')->select('deposit_amount_daily','deposit_amount_total','minimum_period_days','is_buyout_possible','id')->first();
             unset($booked->created_at, $booked->updated_at, $booked->booked_at, $booked->booked_until,
 $booked->park_id, $booked->driver_id, $car->booking, $car->created_at, $car->updated_at, $car->status, $car->car_id, $car->division_id,

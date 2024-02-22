@@ -22,6 +22,8 @@ use Illuminate\Support\Facades\Storage;
 use App\Enums\UserStatus;
 use App\Enums\UserType;
 use App\Enums\CarClass;
+use App\Enums\TransmissionType;
+use App\Enums\FuelType;
 use Illuminate\Support\Carbon;
 
 class AuthController extends Controller
@@ -179,6 +181,8 @@ class AuthController extends Controller
                 $booking->start_date = Carbon::parse($booking->booking_at)->format('d.m.Y H:i');
                 $booking->end_date = Carbon::parse($booking->booking_until)->format('d.m.Y H:i');
                 $booking->car->сar_class = CarClass::from($booking->car->tariff->class)->name;
+                $booking->car->transmission_type = TransmissionType::from($booking->car->transmission_type)->name;
+                $booking->car->fuel_type = FuelType::from($booking->car->fuel_type)->name;
                 $booking->car->division = Division::where('id', $booking->car->division_id)->with('park')->select('address', 'park_id', 'coords')->first();
                 $booking->rent_term = RentTerm::where('id', $booking->car->rent_term_id)->with('schemas')->select('deposit_amount_daily', 'deposit_amount_total', 'minimum_period_days', 'is_buyout_possible', 'id')->first();
                 $workingHours = json_decode($booking->car->division->park->working_hours, true);
