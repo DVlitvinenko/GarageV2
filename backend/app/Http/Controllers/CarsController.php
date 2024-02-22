@@ -479,6 +479,11 @@ $car['commission'] = rtrim(rtrim($commissionFormatted, '0'), '.');
         if ($car->status !== CarStatus::AvailableForBooking->value) {
             return response()->json(['message' => 'Машина уже забронирована'], 409);
         }
+        $checkBook = Booking::where('car_id', $car->id)
+        ->where('driver_id', $user->driver->id)
+        ->where('status', BookingStatus::Booked->value)
+        ->first();
+        if($checkBook){ return response()->json(['message' => 'У пользователя уже есть активная бронь!'], 409);}
         $division = $car->division;
         $driver = $user->driver;
         $workingHours = json_decode($division->park->working_hours, true);
