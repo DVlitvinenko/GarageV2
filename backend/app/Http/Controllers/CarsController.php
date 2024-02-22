@@ -546,6 +546,7 @@ $car['commission'] = rtrim(rtrim($commissionFormatted, '0'), '.');
             $booked->car = $car;
             $booked->car->сar_class = CarClass::from($car->tariff->class)->name;
             $booked->car->transmission_type = TransmissionType::from($booked->car->transmission_type)->name;
+            $booked->car->images = json_decode($booked->car->images);
             $booked->car->fuel_type = FuelType::from($booked->car->fuel_type)->name;
             $booked->rent_term = RentTerm::where('id', $car->rent_term_id)->with('schemas')->select('deposit_amount_daily','deposit_amount_total','minimum_period_days','is_buyout_possible','id')->first();
             unset($booked->created_at, $booked->updated_at, $booked->booked_at, $booked->booked_until,
