@@ -22,19 +22,20 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
 
   const navigate = useNavigate();
 
+  // временно удаляем проверку на верификацию!!!
   const book = async () => {
     if (!user) {
       return navigate("login/driver");
     }
-    if (user.user_status === UserStatus.Verified) {
-      await client.book(
-        new Body16({
-          id: car.id,
-        })
-      );
-    } else {
-      navigate("account");
-    }
+    // if (user.user_status === UserStatus.Verified) {
+    await client.book(
+      new Body16({
+        id: car.id,
+      })
+    );
+    // } else {
+    //   navigate("account");
+    // }
   };
 
   const currentSchemas = car.rent_term?.schemas;
