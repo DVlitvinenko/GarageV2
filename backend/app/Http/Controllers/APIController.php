@@ -1228,7 +1228,7 @@ class APIController extends Controller
      *             @OA\Property(property="max_fine_count", type="integer", description="Максимальное количество штрафов"),
      *             @OA\Property(property="abandoned_car", type="bool", description="Бросал ли машину, true/false"),
      *             @OA\Property(property="min_scoring", type="integer", description="минимальный скоринг"),
-     *             @OA\Property(property="forbidden_republic_ids", type="array", description="Массив запрещенных статей", @OA\Items(type="string")),
+     *             @OA\Property(property="is_north_caucasus", type="bool", description="Права выданы в Северном Кавказе"),
      *             @OA\Property(property="criminal_ids", type="array", description="Массив запрещенных республик", @OA\Items(type="string")),
      *             @OA\Property(property="alcohol", type="bool", description="Принимает ли что-то водитель, алкоголь/иное, true/false")
      *         )
@@ -1290,7 +1290,7 @@ class APIController extends Controller
             'max_fine_count' => 'required|integer',
             'abandoned_car' => 'required|bool',
             'min_scoring' => 'required|integer',
-            'forbidden_republic_ids' => 'required|array',
+            'is_north_caucasus' => 'required|bool',
             'alcohol' => 'required|bool',
         ]);
 
@@ -1313,7 +1313,7 @@ class APIController extends Controller
             'max_fine_count' => $request->max_fine_count,
             'abandoned_car' => $request->abandoned_car,
             'min_scoring' => $request->min_scoring,
-            'forbidden_republic_ids' => json_encode($request->forbidden_republic_ids),
+            'is_north_caucasus' => $request->is_north_caucasus,
             'alcohol' => $request->alcohol,
         ];
         $tariff = new Tariff($data);
@@ -1343,7 +1343,7 @@ class APIController extends Controller
      *             @OA\Property(property="max_fine_count", type="integer", nullable=true, description="Максимальное количество штрафов"),
      *             @OA\Property(property="abandoned_car", type="bool", nullable=true, description="Бросал ли машину, true/false"),
      *             @OA\Property(property="min_scoring", type="integer", nullable=true, description="минимальный скоринг"),
-     *             @OA\Property(property="forbidden_republic_ids", nullable=true, type="string", description="Массив запрещенных статей"),
+     *             @OA\Property(property="is_north_caucasus", nullable=true, type="bool", description="Права выданы в Северном Кавказе"),
      *             @OA\Property(property="criminal_ids", type="string", nullable=true, description="Массив запрещенных республик"),
      *             @OA\Property(property="alcohol", type="bool", nullable=true, description="Принимает ли что-то водитель, алкоголь/иное, true/false")
      *         )
@@ -1394,7 +1394,7 @@ class APIController extends Controller
             'max_fine_count' => 'integer',
             'abandoned_car' => 'boolean',
             'min_scoring' => 'integer',
-            'forbidden_republic_ids' => 'array',
+            'is_north_caucasus' => 'bool',
             'alcohol' => 'boolean',
         ]);
 
@@ -1406,7 +1406,7 @@ class APIController extends Controller
         $tariff = Tariff::where('id', $tariffId)->where('park_id', $park->id)->first();
 
         if ($tariff) {
-            $data = $request->only(['criminal_ids', 'has_caused_accident', 'experience', 'max_fine_count', 'abandoned_car', 'min_scoring', 'forbidden_republic_ids', 'alcohol']);
+            $data = $request->only(['criminal_ids', 'has_caused_accident', 'experience', 'max_fine_count', 'abandoned_car', 'min_scoring', 'is_north_caucasus', 'alcohol']);
 
             foreach ($data as $key => $value) {
                 if (is_null($value)) {

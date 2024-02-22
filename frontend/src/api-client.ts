@@ -2054,8 +2054,8 @@ export class Body11 implements IBody11 {
     abandoned_car?: boolean | undefined;
     /** минимальный скоринг */
     min_scoring?: number | undefined;
-    /** Массив запрещенных статей */
-    forbidden_republic_ids?: string | undefined;
+    /** Права выданы в Северном Кавказе */
+    is_north_caucasus?: boolean | undefined;
     /** Массив запрещенных республик */
     criminal_ids?: string | undefined;
     /** Принимает ли что-то водитель, алкоголь/иное, true/false */
@@ -2084,7 +2084,7 @@ export class Body11 implements IBody11 {
             this.max_fine_count = _data["max_fine_count"];
             this.abandoned_car = _data["abandoned_car"];
             this.min_scoring = _data["min_scoring"];
-            this.forbidden_republic_ids = _data["forbidden_republic_ids"];
+            this.is_north_caucasus = _data["is_north_caucasus"];
             this.criminal_ids = _data["criminal_ids"];
             this.alcohol = _data["alcohol"];
         }
@@ -2109,7 +2109,7 @@ export class Body11 implements IBody11 {
         data["max_fine_count"] = this.max_fine_count;
         data["abandoned_car"] = this.abandoned_car;
         data["min_scoring"] = this.min_scoring;
-        data["forbidden_republic_ids"] = this.forbidden_republic_ids;
+        data["is_north_caucasus"] = this.is_north_caucasus;
         data["criminal_ids"] = this.criminal_ids;
         data["alcohol"] = this.alcohol;
         return data;
@@ -2129,8 +2129,8 @@ export interface IBody11 {
     abandoned_car?: boolean | undefined;
     /** минимальный скоринг */
     min_scoring?: number | undefined;
-    /** Массив запрещенных статей */
-    forbidden_republic_ids?: string | undefined;
+    /** Права выданы в Северном Кавказе */
+    is_north_caucasus?: boolean | undefined;
     /** Массив запрещенных республик */
     criminal_ids?: string | undefined;
     /** Принимает ли что-то водитель, алкоголь/иное, true/false */
@@ -2154,8 +2154,8 @@ export class Body12 implements IBody12 {
     abandoned_car?: boolean;
     /** минимальный скоринг */
     min_scoring?: number;
-    /** Массив запрещенных статей */
-    forbidden_republic_ids?: string[];
+    /** Права выданы в Северном Кавказе */
+    is_north_caucasus?: boolean;
     /** Массив запрещенных республик */
     criminal_ids?: string[];
     /** Принимает ли что-то водитель, алкоголь/иное, true/false */
@@ -2185,11 +2185,7 @@ export class Body12 implements IBody12 {
             this.max_fine_count = _data["max_fine_count"];
             this.abandoned_car = _data["abandoned_car"];
             this.min_scoring = _data["min_scoring"];
-            if (Array.isArray(_data["forbidden_republic_ids"])) {
-                this.forbidden_republic_ids = [] as any;
-                for (let item of _data["forbidden_republic_ids"])
-                    this.forbidden_republic_ids!.push(item);
-            }
+            this.is_north_caucasus = _data["is_north_caucasus"];
             if (Array.isArray(_data["criminal_ids"])) {
                 this.criminal_ids = [] as any;
                 for (let item of _data["criminal_ids"])
@@ -2219,11 +2215,7 @@ export class Body12 implements IBody12 {
         data["max_fine_count"] = this.max_fine_count;
         data["abandoned_car"] = this.abandoned_car;
         data["min_scoring"] = this.min_scoring;
-        if (Array.isArray(this.forbidden_republic_ids)) {
-            data["forbidden_republic_ids"] = [];
-            for (let item of this.forbidden_republic_ids)
-                data["forbidden_republic_ids"].push(item);
-        }
+        data["is_north_caucasus"] = this.is_north_caucasus;
         if (Array.isArray(this.criminal_ids)) {
             data["criminal_ids"] = [];
             for (let item of this.criminal_ids)
@@ -2249,8 +2241,8 @@ export interface IBody12 {
     abandoned_car?: boolean;
     /** минимальный скоринг */
     min_scoring?: number;
-    /** Массив запрещенных статей */
-    forbidden_republic_ids?: string[];
+    /** Права выданы в Северном Кавказе */
+    is_north_caucasus?: boolean;
     /** Массив запрещенных республик */
     criminal_ids?: string[];
     /** Принимает ли что-то водитель, алкоголь/иное, true/false */

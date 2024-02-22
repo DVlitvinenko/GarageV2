@@ -1317,9 +1317,9 @@
                                         "type": "integer",
                                         "nullable": true
                                     },
-                                    "forbidden_republic_ids": {
-                                        "description": "Массив запрещенных статей",
-                                        "type": "string",
+                                    "is_north_caucasus": {
+                                        "description": "Права выданы в Северном Кавказе",
+                                        "type": "boolean",
                                         "nullable": true
                                     },
                                     "criminal_ids": {
@@ -1452,12 +1452,9 @@
                                         "description": "минимальный скоринг",
                                         "type": "integer"
                                     },
-                                    "forbidden_republic_ids": {
-                                        "description": "Массив запрещенных статей",
-                                        "type": "array",
-                                        "items": {
-                                            "type": "string"
-                                        }
+                                    "is_north_caucasus": {
+                                        "description": "Права выданы в Северном Кавказе",
+                                        "type": "boolean"
                                     },
                                     "criminal_ids": {
                                         "description": "Массив запрещенных республик",

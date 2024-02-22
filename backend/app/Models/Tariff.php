@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Tariff extends Model
 {
     use HasFactory;
-    protected $fillable = ['class', 'park_id', 'city_id', 'criminal_ids', 'has_caused_accident', 'experience', 'max_fine_count', 'abandoned_car', 'min_scoring', 'forbidden_republic_ids', 'alcohol'];
+    protected $fillable = ['class', 'park_id', 'city_id', 'criminal_ids', 'has_caused_accident', 'experience', 'max_fine_count', 'abandoned_car', 'min_scoring', 'is_north_caucasus', 'alcohol'];
 
     public function park()
     {

@@ -170,10 +170,8 @@ class CarsController extends Controller
         //             if (!empty(array_filter($criminalIds, 'is_numeric'))) {
         //                 $query->whereNotIn('criminal_ids', $criminalIds);
         //             }
-        //             $forbiddenRepublicIds = explode(',', $driverSpecifications->republick_id);
-        //             $forbiddenRepublicIds = array_map('intval', $forbiddenRepublicIds);
-        //             if (!empty(array_filter($forbiddenRepublicIds, 'is_numeric'))) {
-        //                 $query->whereNotIn('forbidden_republic_ids', $forbiddenRepublicIds);
+        //             if ($driverSpecifications->is_north_caucasus) {
+        //                 $query->where('is_north_caucasus', 0);
         //             }
         //             $query->where('experience', '<=', $driverSpecifications->experience);
         //             $query->where('max_fine_count', '>=', $driverSpecifications->fine_count);
