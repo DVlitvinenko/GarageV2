@@ -1066,7 +1066,7 @@ export class Client {
      * Бронирование автомобиля
      * @return Успешное бронирование
      */
-    booked(body: Body16): Promise<Anonymous58> {
+    book(body: Body16): Promise<Anonymous58> {
         let url_ = this.baseUrl + "/auth/cars/booking";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1082,11 +1082,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processBooked(_response);
+            return this.processBook(_response);
         });
     }
 
-    protected processBooked(response: Response): Promise<Anonymous58> {
+    protected processBook(response: Response): Promise<Anonymous58> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {

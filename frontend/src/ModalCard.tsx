@@ -27,7 +27,7 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
       return navigate("login/driver");
     }
     if (user.user_status === UserStatus.Verified) {
-      await client.booked(
+      await client.book(
         new Body16({
           id: car.id,
         })

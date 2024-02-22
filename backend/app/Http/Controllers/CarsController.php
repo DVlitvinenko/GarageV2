@@ -372,7 +372,7 @@ $car['commission'] = rtrim(rtrim($commissionFormatted, '0'), '.');
      *
      * @OA\Post(
      *     path="/auth/cars/booking",
-     *     operationId="Booked",
+     *     operationId="Book",
      *     summary="Бронирование автомобиля",
      *     tags={"Cars"},
      *     security={{"bearerAuth": {}}},
@@ -463,7 +463,7 @@ $car['commission'] = rtrim(rtrim($commissionFormatted, '0'), '.');
      * @param \Illuminate\Http\Request $request Объект запроса, содержащий идентификатор автомобиля для бронирования
      * @return \Illuminate\Http\JsonResponse JSON-ответ с результатом бронирования
      */
-    public function Booked(Request $request)
+    public function Book(Request $request)
     {
         $rent_time = 3;
         $user = Auth::guard('sanctum')->user();

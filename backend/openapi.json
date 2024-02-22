@@ -2313,7 +2313,7 @@
                 ],
                 "summary": "Бронирование автомобиля",
                 "description": "Бронирование автомобиля",
-                "operationId": "Booked",
+                "operationId": "Book",
                 "requestBody": {
                     "required": true,
                     "content": {
