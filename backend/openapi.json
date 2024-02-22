@@ -1640,10 +1640,6 @@
                                                             "status": {
                                                                 "$ref": "#/components/schemas/BookingStatus"
                                                             },
-                                                            "car_id": {
-                                                                "description": "Идентификатор автомобиля",
-                                                                "type": "integer"
-                                                            },
                                                             "start_date": {
                                                                 "description": "Дата начала бронирования в формате 'd.m.Y H:i'",
                                                                 "type": "string"
@@ -1651,21 +1647,6 @@
                                                             "end_date": {
                                                                 "description": "Дата окончания бронирования в формате 'd.m.Y H:i'",
                                                                 "type": "string"
-                                                            },
-                                                            "car_brand": {
-                                                                "description": "Марка автомобиля",
-                                                                "type": "string"
-                                                            },
-                                                            "car_model": {
-                                                                "description": "Модель автомобиля",
-                                                                "type": "string"
-                                                            },
-                                                            "car_images": {
-                                                                "description": "Ссылки на изображения",
-                                                                "type": "array",
-                                                                "items": {
-                                                                    "type": "string"
-                                                                }
                                                             },
                                                             "rent_term": {
                                                                 "description": "Условия аренды",
@@ -1727,7 +1708,11 @@
                                                                         "type": "integer"
                                                                     },
                                                                     "images": {
-                                                                        "type": "string"
+                                                                        "description": "Ссылки на изображения",
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "string"
+                                                                        }
                                                                     },
                                                                     "division": {
                                                                         "description": "Информация о дивизионе",
@@ -2338,9 +2323,6 @@
                                     "properties": {
                                         "booking": {
                                             "properties": {
-                                                "car_id": {
-                                                    "type": "integer"
-                                                },
                                                 "status": {
                                                     "$ref": "#/components/schemas/BookingStatus"
                                                 },
@@ -2374,7 +2356,11 @@
                                                             "type": "integer"
                                                         },
                                                         "images": {
-                                                            "type": "string"
+                                                            "description": "Ссылки на изображения",
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            }
                                                         },
                                                         "сar_class": {
                                                             "$ref": "#/components/schemas/CarClass"

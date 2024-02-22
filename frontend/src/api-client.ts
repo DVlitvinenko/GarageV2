@@ -6618,7 +6618,6 @@ export interface ICars2 {
 }
 
 export class Booking implements IBooking {
-    car_id?: number;
     status?: BookingStatus;
     id?: number;
     start_date?: string;
@@ -6643,7 +6642,6 @@ export class Booking implements IBooking {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
-            this.car_id = _data["car_id"];
             this.status = _data["status"];
             this.id = _data["id"];
             this.start_date = _data["start_date"];
@@ -6666,7 +6664,6 @@ export class Booking implements IBooking {
             if (this.hasOwnProperty(property))
                 data[property] = this[property];
         }
-        data["car_id"] = this.car_id;
         data["status"] = this.status;
         data["id"] = this.id;
         data["start_date"] = this.start_date;
@@ -6678,7 +6675,6 @@ export class Booking implements IBooking {
 }
 
 export interface IBooking {
-    car_id?: number;
     status?: BookingStatus;
     id?: number;
     start_date?: string;
@@ -6749,18 +6745,10 @@ export class Bookings implements IBookings {
     /** Идентификатор бронирования */
     id?: number;
     status?: BookingStatus;
-    /** Идентификатор автомобиля */
-    car_id?: number;
     /** Дата начала бронирования в формате 'd.m.Y H:i' */
     start_date?: string;
     /** Дата окончания бронирования в формате 'd.m.Y H:i' */
     end_date?: string;
-    /** Марка автомобиля */
-    car_brand?: string;
-    /** Модель автомобиля */
-    car_model?: string;
-    /** Ссылки на изображения */
-    car_images?: string[];
     /** Условия аренды */
     rent_term?: Rent_term3;
     /** Информация об автомобиле */
@@ -6785,16 +6773,8 @@ export class Bookings implements IBookings {
             }
             this.id = _data["id"];
             this.status = _data["status"];
-            this.car_id = _data["car_id"];
             this.start_date = _data["start_date"];
             this.end_date = _data["end_date"];
-            this.car_brand = _data["car_brand"];
-            this.car_model = _data["car_model"];
-            if (Array.isArray(_data["car_images"])) {
-                this.car_images = [] as any;
-                for (let item of _data["car_images"])
-                    this.car_images!.push(item);
-            }
             this.rent_term = _data["rent_term"] ? Rent_term3.fromJS(_data["rent_term"]) : <any>undefined;
             this.car = _data["car"] ? Car2.fromJS(_data["car"]) : <any>undefined;
         }
@@ -6815,16 +6795,8 @@ export class Bookings implements IBookings {
         }
         data["id"] = this.id;
         data["status"] = this.status;
-        data["car_id"] = this.car_id;
         data["start_date"] = this.start_date;
         data["end_date"] = this.end_date;
-        data["car_brand"] = this.car_brand;
-        data["car_model"] = this.car_model;
-        if (Array.isArray(this.car_images)) {
-            data["car_images"] = [];
-            for (let item of this.car_images)
-                data["car_images"].push(item);
-        }
         data["rent_term"] = this.rent_term ? this.rent_term.toJSON() : <any>undefined;
         data["car"] = this.car ? this.car.toJSON() : <any>undefined;
         return data;
@@ -6835,18 +6807,10 @@ export interface IBookings {
     /** Идентификатор бронирования */
     id?: number;
     status?: BookingStatus;
-    /** Идентификатор автомобиля */
-    car_id?: number;
     /** Дата начала бронирования в формате 'd.m.Y H:i' */
     start_date?: string;
     /** Дата окончания бронирования в формате 'd.m.Y H:i' */
     end_date?: string;
-    /** Марка автомобиля */
-    car_brand?: string;
-    /** Модель автомобиля */
-    car_model?: string;
-    /** Ссылки на изображения */
-    car_images?: string[];
     /** Условия аренды */
     rent_term?: Rent_term3;
     /** Информация об автомобиле */
@@ -7060,7 +7024,8 @@ export class Car implements ICar {
     brand?: string;
     model?: string;
     year_produced?: number;
-    images?: string;
+    /** Ссылки на изображения */
+    images?: string[];
     сar_class?: CarClass;
     division?: Division2;
 
@@ -7087,7 +7052,11 @@ export class Car implements ICar {
             this.brand = _data["brand"];
             this.model = _data["model"];
             this.year_produced = _data["year_produced"];
-            this.images = _data["images"];
+            if (Array.isArray(_data["images"])) {
+                this.images = [] as any;
+                for (let item of _data["images"])
+                    this.images!.push(item);
+            }
             this.сar_class = _data["сar_class"];
             this.division = _data["division"] ? Division2.fromJS(_data["division"]) : <any>undefined;
         }
@@ -7112,7 +7081,11 @@ export class Car implements ICar {
         data["brand"] = this.brand;
         data["model"] = this.model;
         data["year_produced"] = this.year_produced;
-        data["images"] = this.images;
+        if (Array.isArray(this.images)) {
+            data["images"] = [];
+            for (let item of this.images)
+                data["images"].push(item);
+        }
         data["сar_class"] = this.сar_class;
         data["division"] = this.division ? this.division.toJSON() : <any>undefined;
         return data;
@@ -7126,7 +7099,8 @@ export interface ICar {
     brand?: string;
     model?: string;
     year_produced?: number;
-    images?: string;
+    /** Ссылки на изображения */
+    images?: string[];
     сar_class?: CarClass;
     division?: Division2;
 
@@ -7285,7 +7259,8 @@ export class Car2 implements ICar2 {
     brand?: string;
     model?: string;
     year_produced?: number;
-    images?: string;
+    /** Ссылки на изображения */
+    images?: string[];
     /** Информация о дивизионе */
     division?: Division3;
 
@@ -7313,7 +7288,11 @@ export class Car2 implements ICar2 {
             this.brand = _data["brand"];
             this.model = _data["model"];
             this.year_produced = _data["year_produced"];
-            this.images = _data["images"];
+            if (Array.isArray(_data["images"])) {
+                this.images = [] as any;
+                for (let item of _data["images"])
+                    this.images!.push(item);
+            }
             this.division = _data["division"] ? Division3.fromJS(_data["division"]) : <any>undefined;
         }
     }
@@ -7338,7 +7317,11 @@ export class Car2 implements ICar2 {
         data["brand"] = this.brand;
         data["model"] = this.model;
         data["year_produced"] = this.year_produced;
-        data["images"] = this.images;
+        if (Array.isArray(this.images)) {
+            data["images"] = [];
+            for (let item of this.images)
+                data["images"].push(item);
+        }
         data["division"] = this.division ? this.division.toJSON() : <any>undefined;
         return data;
     }
@@ -7352,7 +7335,8 @@ export interface ICar2 {
     brand?: string;
     model?: string;
     year_produced?: number;
-    images?: string;
+    /** Ссылки на изображения */
+    images?: string[];
     /** Информация о дивизионе */
     division?: Division3;
 

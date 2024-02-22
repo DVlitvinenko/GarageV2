@@ -389,7 +389,6 @@ $car['commission'] = rtrim(rtrim($commissionFormatted, '0'), '.');
  *         mediaType="application/json",
  *         @OA\Schema(
  *             @OA\Property(property="booking", type="object",
- *                 @OA\Property(property="car_id", type="integer"),
  *                 @OA\Property(property="status", type="string",ref="#/components/schemas/BookingStatus"),
  *                 @OA\Property(property="id", type="integer"),
  *                 @OA\Property(property="start_date", type="string"),
@@ -401,7 +400,7 @@ $car['commission'] = rtrim(rtrim($commissionFormatted, '0'), '.');
  *                     @OA\Property(property="brand", type="string"),
  *                     @OA\Property(property="model", type="string"),
  *                     @OA\Property(property="year_produced", type="integer"),
- *                     @OA\Property(property="images", type="string"),
+ *                     @OA\Property(property="images", type="array", @OA\Items(type="string"), description="Ссылки на изображения"),
  *                     @OA\Property(property="сar_class", type="string", description="Класс тарифа", ref="#/components/schemas/CarClass"),
  *                     @OA\Property(property="division", type="object",
  *                         @OA\Property(property="coords", type="string"),
