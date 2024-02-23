@@ -24,6 +24,7 @@ import {
   getTransmissionDisplayName,
 } from "@/lib/utils";
 import { BookingDrawer } from "./BookingDrawer";
+import { BookingTimer } from "./BookingTimer";
 
 function App() {
   const [user, setUser] = useRecoilState(userAtom);
@@ -54,7 +55,7 @@ function App() {
         {/* <span className="font-bold text-md text-gray"></span> */}
         <CityPicker />
       </div>
-
+      <BookingTimer />
       <Routes>
         <Route path="/" element={<Finder />} />
         <Route path="account" element={<Account user={user} />} />

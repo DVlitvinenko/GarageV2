@@ -20,44 +20,12 @@ export const BookingDrawer = () => {
     (x) => x.status === BookingStatus.Booked
   );
 
-  const bookingEndDate = activeBooking
-    ? new Date(activeBooking.end_date!)
-    : new Date();
-
-  bookingEndDate.setSeconds(bookingEndDate.getSeconds() + 600);
-
-  const { minutes, hours, seconds } = useTimer({
-    expiryTimestamp: bookingEndDate,
-    // onExpire: () => console.warn("onExpire called"),
-  });
-
-  // formatDistanceToNow;
-
-  if (!user) {
-    return <></>;
+  if (!user?.bookings?.length) {
+    return <>У вас пока нет бронирований</>;
   }
-  if (!user.bookings) {
-    return <></>;
-  }
-
-  const cancelBooking = async () => {
-    await client.cancelBooking(
-      new Body17({
-        id: activeBooking!.id,
-      })
-    );
-  };
 
   return (
     <>
-      {!!activeBooking && (
-        <div className="flex space-x-1">
-          <div className="">Осталось времени {`${hours}ч:${minutes}м`}</div>
-          <Button variant="reject" onAsyncClick={cancelBooking}>
-            Отменить бронь
-          </Button>
-        </div>
-      )}
       {user.bookings.map((booking) => (
         <div
           className="py-8 overflow-y-auto h-[%]"
