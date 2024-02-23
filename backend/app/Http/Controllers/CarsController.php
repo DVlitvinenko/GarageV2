@@ -541,8 +541,8 @@ $car['commission'] = rtrim(rtrim($commissionFormatted, '0'), '.');
         $car->division->park->working_hours = $hoursToArray;
         $booked = $booking;
             $booked->status = BookingStatus::from($booked->status)->name;
-            $booked->start_date = Carbon::parse($booked->booked_at)->format('d.m.Y H:i');
-            $booked->end_date = Carbon::parse($booked->booked_until)->format('d.m.Y H:i');
+            $booked->start_date = Carbon::parse($booked->booked_at)->toISOString();
+            $booked->end_date = Carbon::parse($booked->booked_until)->toISOString();
             $booked->car = $car;
             $booked->car->сar_class = CarClass::from($car->tariff->class)->name;
             $booked->car->transmission_type = TransmissionType::from($booked->car->transmission_type)->name;
@@ -633,20 +633,14 @@ foreach ($booked->rent_term->schemas as $schema) {
             'id' => 'required|integer'
         ]);
         $user = Auth::guard('sanctum')->user();
-        $car = Car::where('id', $request->id)
-            ->with('booking')->first();
-
-        if (!$car) {
-            return response()->json(['message' => 'Машина не найдена'], 404);
-        }
-        if (!$car->status == CarStatus::Booked->value) {
-            return response()->json(['message' => 'Машина не забронирована'], 409);
-        }
-        $booking = $car->booking->first();
+        $booking = Booking::where('id', $request->id)->with('car')->first();
         if (!$booking) {
-            return response()->json(['message' => 'Машина не забронирована'], 409);
+            return response()->json(['message' => 'Бронь не найдена'], 404);
         }
-
+        if ($booking->status !== BookingStatus::Booked->value) {
+            return response()->json(['message' => 'Статус не "забронирован"'], 409);
+        }
+        $car = $booking->car;
         $booking->status = BookingStatus::UnBooked->value;
         $booking->save();
         $car->status = CarStatus::AvailableForBooking->value;

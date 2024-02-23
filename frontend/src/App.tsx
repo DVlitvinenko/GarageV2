@@ -27,7 +27,6 @@ import { BookingDrawer } from "./BookingDrawer";
 
 function App() {
   const [user, setUser] = useRecoilState(userAtom);
-  const isBooked: boolean = true;
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -59,7 +58,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Finder />} />
         <Route path="account" element={<Account user={user} />} />
-        <Route path="bookings" element={<BookingDrawer bookings={user?.bookings!} />} />
+        <Route path="bookings" element={<BookingDrawer />} />
         <Route path="login/driver" element={<DriverLogin />} />
         <Route path="login/manager" element={<ManagerLogin />} />
         <Route path="login/admin" element={<AdminLogin />} />
