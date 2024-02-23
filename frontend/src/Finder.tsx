@@ -314,7 +314,6 @@ export const Finder = () => {
                   title={x ? `${x}%` : "Нет"}
                 />
               ))}
-              7
               <DialogFooter>
                 <DialogClose asChild>
                   <div className="fixed bottom-0 left-0 flex justify-center w-full px-4 py-4 space-x-2 bg-white border-t border-pale">
