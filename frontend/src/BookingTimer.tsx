@@ -44,8 +44,11 @@ export const BookingTimer = () => {
   return (
     <>
       {!!activeBooking && (
-        <div className="flex space-x-1">
-          <div className="">Осталось времени {`${hours}ч:${minutes}м`}</div>
+        <div className="flex items-center content-center px-4 py-2 mt-2 space-x-2 text-lg font-bold bg-white rounded-xl">
+          <div className="flex flex-col items-center content-center">
+            Осталось времени:{" "}
+            <span className="text-xl">{`${hours}ч:${minutes}м`}</span>
+          </div>
           <Button variant="reject" onAsyncClick={cancelBooking}>
             Отменить бронь
           </Button>
