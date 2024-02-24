@@ -1,5 +1,5 @@
 import { atom } from "recoil";
-import { User } from "./api-client";
+import { Booking, User } from "./api-client";
 
 const userAtom = atom<User>({
   key: "userAtom",
@@ -9,5 +9,8 @@ const cityAtom = atom<string>({
   key: "cityAtom",
   default: "Москва",
 });
-
-export { userAtom, cityAtom };
+const activeBookingAtom = atom<Booking>({
+  key: "activeBookingAtom",
+  default: undefined,
+});
+export { userAtom, cityAtom, activeBookingAtom };

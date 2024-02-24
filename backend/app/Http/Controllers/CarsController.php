@@ -540,7 +540,45 @@ foreach($workingHours as $workingDay) {
     $car->status = CarStatus::Booked->value;
     $car->save();
 
-    // Дополнительные операции с данными, исключенными из ответа
+    $workingHours = json_decode($car->division->park->working_hours, true);
+
+    $daysOfWeek = [
+        'Monday' => 'понедельник',
+        'Tuesday' => 'вторник',
+        'Wednesday' => 'среда',
+        'Thursday' => 'четверг',
+        'Friday' => 'пятница',
+        'Saturday' => 'суббота',
+        'Sunday' => 'воскресенье'
+    ];
+    $translatedWorkingHours = [];
+    foreach ($workingHours as $workingDay) {
+        $day = $workingDay['day'];
+        $translatedDay = $daysOfWeek[$day];
+        $workingDay['day'] = $translatedDay;
+        $translatedWorkingHours[] = $workingDay;
+    }
+    $car->division->park->working_hours = $translatedWorkingHours;
+    $booked = $booking;
+        $booked->status = BookingStatus::from($booked->status)->name;
+        $booked->start_date = Carbon::parse($booked->booked_at)->toISOString();
+        $booked->end_date = Carbon::parse($booked->booked_until)->toISOString();
+        $booked->car = $car;
+        $booked->car->сar_class = CarClass::from($car->tariff->class)->name;
+        $booked->car->transmission_type = TransmissionType::from($booked->car->transmission_type)->name;
+        $booked->car->images = json_decode($booked->car->images);
+        $booked->car->fuel_type = FuelType::from($booked->car->fuel_type)->name;
+        $booked->rent_term = RentTerm::where('id', $car->rent_term_id)->with('schemas')->select('deposit_amount_daily','deposit_amount_total','minimum_period_days','is_buyout_possible','id')->first();
+        unset($booked->created_at, $booked->updated_at, $booked->booked_at, $booked->booked_until,
+$booked->park_id, $booked->driver_id, $car->booking, $car->created_at, $car->updated_at, $car->status, $car->car_id, $car->division_id,
+$car->park_id,$car->tariff_id,$car->rent_term_id,$car->division->id,$car->division->park_id,
+$car->division->city_id,$car->division->created_at,$car->division->updated_at,$car->division->name,
+$car->division->park->id,$car->division->park->id,$car->division->park->API_key,
+$car->division->park->created_at,$car->division->park->updated_at,$car->tariff,
+$car->division->park->created_at, $booked->rent_term->id);
+foreach ($booked->rent_term->schemas as $schema) {
+unset($schema->created_at, $schema->updated_at, $schema->id, $schema->rent_term_id);
+}
 
     $api = new APIController;
     $api->notifyParkOnBookingStatusChanged($booking->id, true);

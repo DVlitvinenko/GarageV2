@@ -12,27 +12,37 @@ import {
   getFuelTypeDisplayName,
   getTransmissionDisplayName,
 } from "@/lib/utils";
-import { userAtom } from "./atoms";
+import { userAtom, activeBookingAtom } from "./atoms";
 import { useNavigate } from "react-router-dom";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { client } from "./backend";
 
 export const ModalCard = ({ car }: { car: Cars2 }) => {
   const user = useRecoilValue(userAtom);
+  const [activeBookingData, setActiveBookingData] =
+    useRecoilState(activeBookingAtom);
 
   const navigate = useNavigate();
 
   // временно удаляем проверку на верификацию!!!
-  const book = async () => {
+  const book = () => {
     if (!user) {
       return navigate("login/driver");
     }
     // if (user.user_status === UserStatus.Verified) {
-    await client.book(
-      new Body16({
-        id: car.id,
-      })
-    );
+    const startBooking = async () => {
+      try {
+        const bookingData = await client.book(
+          new Body16({
+            id: car.id,
+          })
+        );
+
+        setActiveBookingData(bookingData);
+      } catch (error) {}
+    };
+    startBooking();
+    return navigate("bookings");
     // } else {
     //   navigate("account");
     // }
