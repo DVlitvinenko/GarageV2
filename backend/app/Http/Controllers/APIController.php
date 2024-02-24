@@ -15,7 +15,7 @@ use App\Models\RentTerm;
 use App\Models\Booking;
 use App\Enums\BookingStatus;
 use App\Enums\SuitEnum;
-use App\Enums\CarStatus;
+use App\Enums\CarStatus;use App\Enums\DayList;
 use Illuminate\Support\Str;
 use GuzzleHttp\Client;
 use App\Http\Controllers\Enums;
@@ -912,19 +912,30 @@ class APIController extends Controller
      *             @OA\Property(property="self_employed", type="boolean", description="Работает ли парк с самозанятыми, true - если работает"),
      *             @OA\Property(property="park_name", type="string", description="Название парка"),
      *             @OA\Property(property="about", type="string", description="Описание парка"),
-     *                 @OA\Property(property="phone", type="string", description="Телефон парка"),
+     *             @OA\Property(property="phone", type="string", description="Телефон парка"),
      *             @OA\Property(
      *                 property="working_hours",
-     *                 type="object",
-     *                 description="Время работы",
-     *                 @OA\Property(property="monday", type="object", description="Время работы в понедельник"),
-     *                 @OA\Property(property="tuesday", type="object", description="Время работы во вторник"),
-     *                 @OA\Property(property="wednesday", type="object", description="Время работы в среду"),
-     *                 @OA\Property(property="thursday", type="object", description="Время работы в четверг"),
-     *                 @OA\Property(property="friday", type="object", description="Время работы в пятницу"),
-     *                 @OA\Property(property="saturday", type="object", description="Время работы в субботу"),
-     *                 @OA\Property(property="sunday", type="object", description="Время работы в воскресенье")
-     *             )
+     *                 type="array",
+     *                 description="Расписание работы парка",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="day", type="string", description="День недели на английском",ref="#/components/schemas/DayList")),
+     *                     @OA\Property(
+     *                         property="start",
+     *                         type="object",
+     *                         description="Время начала работы",
+     *                         @OA\Property(property="hours", type="integer", description="Часы (0-23)"),
+     *                         @OA\Property(property="minutes", type="integer", description="Минуты (0-59)")
+     *                     ),
+     *                     @OA\Property(
+     *                         property="end",
+     *                         type="object",
+     *                         description="Время окончания работы",
+     *                         @OA\Property(property="hours", type="integer", description="Часы (0-23)"),
+     *                         @OA\Property(property="minutes", type="integer", description="Минуты (0-59)")
+     *                     )
+     *                 )
+     *             ),
      *         )
      *     ),
      *     @OA\Response(
@@ -977,16 +988,27 @@ class APIController extends Controller
             'about' => 'string',
             'working_hours' => [
                 'required',
-                'json',
+                'array',
                 function ($attribute, $value, $fail) {
-                    $daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-                    $decodedValue = json_decode($value, true);
-                    if ($decodedValue === null) {
-                        $fail('The ' . $attribute . ' field must be a valid JSON object.');
-                        return;
-                    }
+                    $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
                     foreach ($daysOfWeek as $day) {
-                        if (!array_key_exists($day, $decodedValue)) {
+                        $found = false;
+                        foreach ($value as $workingDay) {
+                            if ($workingDay['day'] === $day) {
+                                $found = true;
+                                if (!isset($workingDay['start']['hours']) || !isset($workingDay['start']['minutes']) ||
+                                    !isset($workingDay['end']['hours']) || !isset($workingDay['end']['minutes']) ||
+                                    $workingDay['start']['hours'] < 0 || $workingDay['start']['hours'] > 23 ||
+                                    $workingDay['start']['minutes'] < 0 || $workingDay['start']['minutes'] > 59 ||
+                                    $workingDay['end']['hours'] < 0 || $workingDay['end']['hours'] > 23 ||
+                                    $workingDay['end']['minutes'] < 0 || $workingDay['end']['minutes'] > 59
+                                ) {
+                                    $fail('The ' . $attribute . ' field must have valid working hours for ' . $day . '.');
+                                    return;
+                                }
+                            }
+                        }
+                        if (!$found) {
                             $fail('The ' . $attribute . ' field must contain ' . $day . ' working hours.');
                             return;
                         }

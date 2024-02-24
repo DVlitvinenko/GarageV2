@@ -77,19 +77,19 @@ const LogoutHandler = () => {
 
 const Menu = ({ user }: { user: User }) => (
   <div className="flex mx-auto space-x-4 cursor-pointer justify-evenly w-60">
-    <Link className="hover:text-sky-400" to="/">
+    <Link className="hover:text-yellow" to="/">
       <FontAwesomeIcon icon={faTaxi} className="h-4" />
     </Link>
-    <Link className="hover:text-sky-400" to={user ? "account" : "login/driver"}>
+    <Link className="hover:text-yellow" to={user ? "account" : "login/driver"}>
       <FontAwesomeIcon icon={faUser} className="h-4" />
     </Link>
     {user && (
-      <div className="hover:text-sky-400" onClick={LogoutHandler}>
+      <div className="hover:text-yellow" onClick={LogoutHandler}>
         <FontAwesomeIcon icon={faRightFromBracket} className="h-4" />
       </div>
     )}
     {!user && (
-      <Link className="hover:text-sky-400" to="login/driver">
+      <Link className="hover:text-yellow" to="login/driver">
         <FontAwesomeIcon icon={faRightToBracket} className="h-4" />
       </Link>
     )}

@@ -99,7 +99,7 @@ export const Finder = () => {
     };
 
     getBrandList();
-  }, [filters, city]);
+  }, []);
 
   useEffect(() => {
     const getCars = async () => {

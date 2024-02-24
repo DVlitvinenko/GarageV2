@@ -76,13 +76,19 @@ class CarsController extends Controller
      *                     property="working_hours",
      *                     type="array",
      *                     description="Расписание работы парка",
-     *                     @OA\Items(
-     *                         type="object",
-     *                         @OA\Property(property="start", type="string", description="Время начала"),
-     *                         @OA\Property(property="end", type="string", description="Время окончания"),
-     *                         @OA\Property(property="day", type="string", description="День недели на русском")
-     *                     )
-     *                 ),
+     *     @OA\Items(
+ *         type="object",
+ *         @OA\Property(property="day", type="string", description="День недели на русском"),
+ *         @OA\Property(property="start", type="object", description="Время начала",
+ *             @OA\Property(property="hours", type="integer", description="Часы (0-23)"),
+ *             @OA\Property(property="minutes", type="integer", description="Минуты (0-59)")
+ *         ),
+ *         @OA\Property(property="end", type="object", description="Время окончания",
+ *             @OA\Property(property="hours", type="integer", description="Часы (0-23)"),
+ *             @OA\Property(property="minutes", type="integer", description="Минуты (0-59)")
+ *         )
+ *     )
+ * ),
      *                 @OA\Property(property="about", type="string", description="Описание парка"),
      *                 @OA\Property(property="phone", type="string", description="Телефон парка"),
      *                 @OA\Property(property="commission", type="number", description="Комиссия"),
@@ -306,30 +312,22 @@ class CarsController extends Controller
             $about = $car['division']['park']['about'];
             $selfEmployed = $car['division']['park']['self_employed'];
             $workingHours = json_decode($car['division']['park']['working_hours'], true);
-
-            $daysOfWeek = [
-                'понедельник' => 'monday',
-                'вторник' => 'tuesday',
-                'среда' => 'wednesday',
-                'четверг' => 'thursday',
-                'пятница' => 'friday',
-                'суббота' => 'saturday',
-                'воскресенье' => 'sunday'
-            ];
-
-            $hoursToArray = [];
-
-            foreach ($daysOfWeek as $rusDay => $engDay) {
-                if (isset($workingHours[$engDay])) {
-                    foreach ($workingHours[$engDay] as $timeRange) {
-                        $hoursToArray[] = [
-                            'start' => $timeRange['start'],
-                            'end' => $timeRange['end'],
-                            'day' => $rusDay
-                        ];
-                    }
-                }
-            }
+$daysOfWeek = [
+    'Monday' => 'понедельник',
+    'Tuesday' => 'вторник',
+    'Wednesday' => 'среда',
+    'Thursday' => 'четверг',
+    'Friday' => 'пятница',
+    'Saturday' => 'суббота',
+    'Sunday' => 'воскресенье'
+];
+$translatedWorkingHours = [];
+foreach ($workingHours as $workingDay) {
+    $day = $workingDay['day'];
+    $translatedDay = $daysOfWeek[$day];
+    $workingDay['day'] = $translatedDay;
+    $translatedWorkingHours[] = $workingDay;
+}
             if (isset($car['division']['park']['park_name'])) {
                 $parkName = $car['division']['park']['park_name'];
             } else {
@@ -339,7 +337,7 @@ class CarsController extends Controller
             $car['city'] = $city;
             $car['CarClass'] = $end;
             $car['park_name'] = $parkName;
-            $car['working_hours'] = $hoursToArray;
+            $car['working_hours'] = $translatedWorkingHours;
             $car['phone'] = $phone;
             $car['self_employed'] = $selfEmployed;
             $car['about'] = $about;
@@ -463,107 +461,78 @@ $car['commission'] = rtrim(rtrim($commissionFormatted, '0'), '.');
      * @return \Illuminate\Http\JsonResponse JSON-ответ с результатом бронирования
      */
     public function Book(Request $request)
-    {
-        $rent_time = 3;
-        $user = Auth::guard('sanctum')->user();
-        // отключена проверка по верификации!
-        // if ($user->user_status !== UserStatus::Verified->value) {
-        //     return response()->json(['message' => 'Пользователь не зарегистрирован или не верифицирован'], 403);
-        // }
-        $car = Car::where('id', $request->id)
-            ->with('booking', 'division', 'division.park')->first();
-        if (!$car) {
-            return response()->json(['message' => 'Машина не найдена'], 404);
-        }
-        if ($car->status !== CarStatus::AvailableForBooking->value) {
-            return response()->json(['message' => 'Машина уже забронирована'], 409);
-        }
-        $checkBook = Booking::where('driver_id', $user->driver->id)
+{
+    $rent_time = 3;
+    $user = Auth::guard('sanctum')->user();
+
+    // Проверка статуса пользователя
+    // if ($user->user_status !== UserStatus::Verified->value) {
+    //     return response()->json(['message' => 'Пользователь не зарегистрирован или не верифицирован'], 403);
+    // }
+
+    $car = Car::where('id', $request->id)->with('booking', 'division', 'division.park')->first();
+
+    if (!$car) {
+        return response()->json(['message' => 'Машина не найдена'], 404);
+    }
+
+    if ($car->status !== CarStatus::AvailableForBooking->value) {
+        return response()->json(['message' => 'Машина уже забронирована'], 409);
+    }
+
+    $checkBook = Booking::where('driver_id', $user->driver->id)
         ->where('status', BookingStatus::Booked->value)
         ->first();
-        if($checkBook){
-            return response()->json(['message' => 'У пользователя уже есть активная бронь!'], 409);
-        }
-        $division = $car->division;
-        $driver = $user->driver;
-        $workingHours = json_decode($division->park->working_hours, true);
-        $currentDayOfWeek = Carbon::now()->format('l');
 
-        $currentTime = Carbon::now()->timestamp;
-
-        $endTimeOfWorkDayToday = Carbon::createFromFormat('H:i', $workingHours[strtolower($currentDayOfWeek)][0]['end'], $division->park->timezone)->timestamp;
-        $endTimeOfWorkDayToday -= $rent_time * 3600;
-
-        if ($endTimeOfWorkDayToday < $currentTime) {
-            $nextWorkingDay = Carbon::now()->addDay()->format('l');
-            $startTimeOfWorkDayTomorrow = Carbon::createFromFormat('H:i', $workingHours[strtolower($nextWorkingDay)][0]['start'], $division->park->timezone)->timestamp;
-            $newEndTime = $startTimeOfWorkDayTomorrow + $rent_time * 3600;
-        } else {
-            $remainingTime = $rent_time * 3600;
-            $newEndTime = $currentTime + $remainingTime;
-        }
-
-        $booking = new Booking();
-        $booking->car_id = $request->id;
-        $booking->park_id = $division->park_id;
-        $booking->booked_at = $currentTime;
-        $booking->booked_until = $newEndTime;
-        $booking->status = BookingStatus::Booked->value;
-        $booking->driver_id = $driver->id;
-        $booking->save();
-        $car->status = CarStatus::Booked->value;
-        $car->save();
-        $workingHours = json_decode($car->division->park->working_hours, true);
-
-        $daysOfWeek = [
-            'понедельник' => 'monday',
-            'вторник' => 'tuesday',
-            'среда' => 'wednesday',
-            'четверг' => 'thursday',
-            'пятница' => 'friday',
-            'суббота' => 'saturday',
-            'воскресенье' => 'sunday'
-        ];
-
-        $hoursToArray = [];
-
-        foreach ($daysOfWeek as $rusDay => $engDay) {
-            if (isset($workingHours[$engDay])) {
-                foreach ($workingHours[$engDay] as $timeRange) {
-                    $hoursToArray[] = [
-                        'start' => $timeRange['start'],
-                        'end' => $timeRange['end'],
-                        'day' => $rusDay
-                    ];
-                }
-            }
-        }
-        $car->division->park->working_hours = $hoursToArray;
-        $booked = $booking;
-            $booked->status = BookingStatus::from($booked->status)->name;
-            $booked->start_date = Carbon::parse($booked->booked_at)->toISOString();
-            $booked->end_date = Carbon::parse($booked->booked_until)->toISOString();
-            $booked->car = $car;
-            $booked->car->сar_class = CarClass::from($car->tariff->class)->name;
-            $booked->car->transmission_type = TransmissionType::from($booked->car->transmission_type)->name;
-            $booked->car->images = json_decode($booked->car->images);
-            $booked->car->fuel_type = FuelType::from($booked->car->fuel_type)->name;
-            $booked->rent_term = RentTerm::where('id', $car->rent_term_id)->with('schemas')->select('deposit_amount_daily','deposit_amount_total','minimum_period_days','is_buyout_possible','id')->first();
-            unset($booked->created_at, $booked->updated_at, $booked->booked_at, $booked->booked_until,
-$booked->park_id, $booked->driver_id, $car->booking, $car->created_at, $car->updated_at, $car->status, $car->car_id, $car->division_id,
-$car->park_id,$car->tariff_id,$car->rent_term_id,$car->division->id,$car->division->park_id,
-$car->division->city_id,$car->division->created_at,$car->division->updated_at,$car->division->name,
-$car->division->park->id,$car->division->park->id,$car->division->park->API_key,
-$car->division->park->created_at,$car->division->park->updated_at,$car->tariff,
-$car->division->park->created_at, $booked->rent_term->id);
-foreach ($booked->rent_term->schemas as $schema) {
-    unset($schema->created_at, $schema->updated_at, $schema->id, $schema->rent_term_id);
-}
-
-        $api = new APIController;
-        $api->notifyParkOnBookingStatusChanged($booking->id, true);
-        return response()->json(['booking'=>$booked], 200);
+    if ($checkBook) {
+        return response()->json(['message' => 'У пользователя уже есть активная бронь!'], 409);
     }
+
+    $division = $car->division;
+    $driver = $user->driver;
+
+    $workingHours = json_decode($division->park->working_hours, true);
+    $currentDayOfWeek = Carbon::now()->format('l');
+    $currentTime = Carbon::now()->timestamp;
+
+    $todayWorkingHours = null;
+foreach($workingHours as $workingDay) {
+    if($workingDay['day'] === $currentDayOfWeek) {
+        $todayWorkingHours = $workingDay;
+        break;
+    }
+}
+    $endTimeOfWorkDayToday = Carbon::createFromTime($todayWorkingHours['end']['hours'], $todayWorkingHours['end']['minutes'], 0, $division->park->timezone)->timestamp;
+    $endTimeOfWorkDayToday -= $rent_time * 3600;
+
+    if ($endTimeOfWorkDayToday < $currentTime) {
+        $nextWorkingDay = Carbon::now()->addDay()->format('l');
+        $nextWorkingHours = $workingHours[$nextWorkingDay][0];
+        $startTimeOfWorkDayTomorrow = Carbon::createFromTime($nextWorkingHours['start']['hours'], $nextWorkingHours['start']['minutes'], 0, $division->park->timezone)->timestamp;
+        $newEndTime = $startTimeOfWorkDayTomorrow + $rent_time * 3600;
+    } else {
+        $newEndTime = $currentTime + $rent_time * 3600;
+    }
+
+    $booking = new Booking();
+    $booking->car_id = $request->id;
+    $booking->park_id = $division->park_id;
+    $booking->booked_at = Carbon::now()->toIso8601String();
+    $booking->booked_until = Carbon::createFromTimestamp($newEndTime)->toIso8601String();
+    $booking->status = BookingStatus::Booked->value;
+    $booking->driver_id = $driver->id;
+    $booking->save();
+
+    $car->status = CarStatus::Booked->value;
+    $car->save();
+
+    // Дополнительные операции с данными, исключенными из ответа
+
+    $api = new APIController;
+    $api->notifyParkOnBookingStatusChanged($booking->id, true);
+
+    return response()->json(['booking' => $booking], 200);
+}
 
     /**
      * Отмена бронирования автомобиля (аутентифицированный запрос)

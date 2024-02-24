@@ -187,31 +187,23 @@ class AuthController extends Controller
                 $booking->car->division = Division::where('id', $booking->car->division_id)->with('park')->select('address', 'park_id', 'coords')->first();
                 $booking->rent_term = RentTerm::where('id', $booking->car->rent_term_id)->with('schemas')->select('deposit_amount_daily', 'deposit_amount_total', 'minimum_period_days', 'is_buyout_possible', 'id')->first();
                 $workingHours = json_decode($booking->car->division->park->working_hours, true);
-
                 $daysOfWeek = [
-                    'понедельник' => 'monday',
-                    'вторник' => 'tuesday',
-                    'среда' => 'wednesday',
-                    'четверг' => 'thursday',
-                    'пятница' => 'friday',
-                    'суббота' => 'saturday',
-                    'воскресенье' => 'sunday'
+                    'Monday' => 'понедельник',
+                    'Tuesday' => 'вторник',
+                    'Wednesday' => 'среда',
+                    'Thursday' => 'четверг',
+                    'Friday' => 'пятница',
+                    'Saturday' => 'суббота',
+                    'Sunday' => 'воскресенье'
                 ];
-
-                $hoursToArray = [];
-
-                foreach ($daysOfWeek as $rusDay => $engDay) {
-                    if (isset($workingHours[$engDay])) {
-                        foreach ($workingHours[$engDay] as $timeRange) {
-                            $hoursToArray[] = [
-                                'start' => $timeRange['start'],
-                                'end' => $timeRange['end'],
-                                'day' => $rusDay
-                            ];
-                        }
-                    }
+                $translatedWorkingHours = [];
+                foreach ($workingHours as $workingDay) {
+                    $day = $workingDay['day'];
+                    $translatedDay = $daysOfWeek[$day];
+                    $workingDay['day'] = $translatedDay;
+                    $translatedWorkingHours[] = $workingDay;
                 }
-                $booking->car->division->park->working_hours = $hoursToArray;
+                $booking->car->division->park->working_hours = $translatedWorkingHours;
                 unset(
                     $booking->created_at,
                     $booking->updated_at,
