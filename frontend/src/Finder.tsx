@@ -88,6 +88,9 @@ export const Finder = () => {
   const [activeFilter, setActiveFilter] = useState<ActiveFilter | null>(null);
   const [brands, setBrands] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchSchema, setSearchSchema] = useState("");
+  const [searchTransmission, setSearchTransmission] = useState("");
+  const [searchFuelType, setSearchFuelType] = useState("");
 
   const city = useRecoilValue(cityAtom);
 
@@ -189,6 +192,7 @@ export const Finder = () => {
               title: "Любой график аренды",
               filter: ActiveFilter.RentTerm,
               isEngaged: filters.schema !== null,
+              stateName: searchSchema,
             },
             { isEngaged: filters.brands.length > 0 },
 
@@ -196,16 +200,18 @@ export const Finder = () => {
               title: "Трансмиссия",
               filter: ActiveFilter.TransmissionType,
               isEngaged: filters.transmissionType !== null,
+              stateName: searchTransmission,
             },
             {
               title: "Топливо",
               filter: ActiveFilter.FuelType,
               isEngaged: filters.fuelType !== null,
+              stateName: searchFuelType,
             },
-          ].map(({ filter, title, isEngaged }, i) => (
+          ].map(({ filter, title, isEngaged, stateName }, i) => (
             <div className="relative" key={`filters ${i}`}>
               {isEngaged && (
-                <div className="absolute top-0 right-0 w-3 h-3 rounded-full bg-red"></div>
+                <div className="absolute top-0 right-0 w-1.5 h-1.5 rounded-full  bg-red"></div>
               )}
               {!!filter && (
                 <Badge
@@ -214,7 +220,7 @@ export const Finder = () => {
                     setActiveFilter(activeFilter === filter ? null : filter)
                   }
                 >
-                  {title}
+                  {isEngaged ? stateName : title}
                 </Badge>
               )}
 
@@ -281,9 +287,14 @@ export const Finder = () => {
           ))}
           <Dialog>
             <DialogTrigger asChild>
-              <span className="bg-grey text-nowrap rounded-xl px-2.5 py-0.5 h-10 flex items-center">
+              <div className="bg-grey text-nowrap rounded-xl px-2.5 py-0.5 h-10 flex items-center relative">
+                {(filters.buyoutPossible ||
+                  !!filters.commission ||
+                  filters.selfEmployed) && (
+                  <div className="absolute top-0 right-0 w-1.5 h-1.5 rounded-full  bg-red"></div>
+                )}
                 Еще
-              </span>
+              </div>
             </DialogTrigger>
             <DialogContent>
               <Checkbox
@@ -346,12 +357,15 @@ export const Finder = () => {
               <Badge
                 key={`schema ${i}`}
                 className={`${filters.schema === schema ? "bg-white" : ""} `}
-                onClick={() =>
-                  setFilters({
+                onClick={() => {
+                  setSearchSchema(
+                    `${schema?.working_days}/${schema?.non_working_days}`
+                  );
+                  return setFilters({
                     ...filters,
                     schema,
-                  })
-                }
+                  });
+                }}
               >
                 {schema
                   ? `${schema?.working_days}/${schema?.non_working_days}`
@@ -368,12 +382,15 @@ export const Finder = () => {
                       ? "bg-white"
                       : ""
                   } `}
-                  onClick={() =>
-                    setFilters({
+                  onClick={() => {
+                    setSearchTransmission(
+                      `${getTransmissionDisplayName(transmissionType)}`
+                    );
+                    return setFilters({
                       ...filters,
                       transmissionType,
-                    })
-                  }
+                    });
+                  }}
                 >
                   {getTransmissionDisplayName(transmissionType)}
                 </Badge>
@@ -386,12 +403,13 @@ export const Finder = () => {
                 className={`${
                   filters.fuelType === fuelType ? "bg-white" : ""
                 } `}
-                onClick={() =>
-                  setFilters({
+                onClick={() => {
+                  setSearchFuelType(`${getFuelTypeDisplayName(fuelType)}`);
+                  return setFilters({
                     ...filters,
                     fuelType,
-                  })
-                }
+                  });
+                }}
               >
                 {getFuelTypeDisplayName(fuelType)}
               </Badge>

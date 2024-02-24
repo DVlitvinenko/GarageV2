@@ -9,7 +9,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { activeBookingAtom, userAtom } from "./atoms";
+import { userAtom } from "./atoms";
 import { reject } from "ramda";
 import { useState } from "react";
 import { client } from "./backend";
@@ -22,7 +22,7 @@ import {
 
 export const BookingDrawer = () => {
   const [user, setUser] = useRecoilState(userAtom);
-  const activeBookingData = useRecoilValue(activeBookingAtom);
+  // const activeBookingData = useRecoilValue(activeBookingAtom);
 
   let activeBooking = user?.bookings!.find(
     (x) => x.status === BookingStatus.Booked
@@ -98,16 +98,19 @@ export const BookingDrawer = () => {
                 )}
               </div>
               <div className="flex flex-wrap gap-1 pb-2 mb-1">
-                {booking.rent_term?.schemas?.map((currentSchema, i) => (
-                  <Badge
-                    key={`${currentSchema.working_days}/${currentSchema.non_working_days}${i}`}
-                    className="flex-col items-start justify-start flex-grow h-full px-2 text-lg font-bold text-wrap"
-                    variant="schema"
-                  >
-                    {`${formatRoubles(currentSchema.daily_amount!)}`}
-                    <div className="text-xs font-medium text-black">{`${currentSchema.working_days}раб. /${currentSchema.non_working_days}вых.`}</div>
-                  </Badge>
-                ))}
+                {booking.rent_term?.schemas?.map(
+                  (currentSchema, i) =>
+                    i < 3 && (
+                      <Badge
+                        key={`${currentSchema.working_days}/${currentSchema.non_working_days}${i}`}
+                        className="flex-col items-start justify-start flex-grow h-full px-2 text-lg font-bold text-wrap"
+                        variant="schema"
+                      >
+                        {`${formatRoubles(currentSchema.daily_amount!)}`}
+                        <div className="text-xs font-medium text-black">{`${currentSchema.working_days}раб. /${currentSchema.non_working_days}вых.`}</div>
+                      </Badge>
+                    )
+                )}
               </div>
               <p className="mb-2 text-base font-semibold text-gray">
                 Минимум дней аренды: {booking.rent_term?.minimum_period_days}
@@ -123,6 +126,16 @@ export const BookingDrawer = () => {
               </div>
             </>
           )}
+          <Separator />
+          <div className="flex items-center">
+            <p className="w-1/2 font-semibold">Дата начала бронирования:</p>
+            {booking.start_date}
+          </div>
+          <Separator />
+          <div className="flex items-center">
+            <p className="w-1/2 font-semibold">Дата окончания бронирования:</p>
+            {booking.start_date}
+          </div>
         </div>
       ))}
     </>

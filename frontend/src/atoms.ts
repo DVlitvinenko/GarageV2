@@ -9,8 +9,8 @@ const cityAtom = atom<string>({
   key: "cityAtom",
   default: "Москва",
 });
-const activeBookingAtom = atom<Booking>({
-  key: "activeBookingAtom",
-  default: undefined,
+const isActiveBookingAtom = atom({
+  key: "isActiveBooking",
+  default: false,
 });
-export { userAtom, cityAtom, activeBookingAtom };
+export { userAtom, cityAtom, isActiveBookingAtom };

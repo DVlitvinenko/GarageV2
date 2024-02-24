@@ -6,10 +6,11 @@ import { client } from "./backend";
 import { Finder } from "./Finder";
 import { Account } from "./Account";
 import { DriverLogin } from "./DriverLogin";
-import { useRecoilState } from "recoil";
-import { userAtom } from "./atoms";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { isActiveBookingAtom, userAtom } from "./atoms";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faClockRotateLeft,
   faRightFromBracket,
   faRightToBracket,
   faTaxi,
@@ -29,6 +30,7 @@ import { BookingTimer } from "./BookingTimer";
 
 function App() {
   const [user, setUser] = useRecoilState(userAtom);
+  const isActiveBooking = useRecoilValue(isActiveBookingAtom);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -44,7 +46,7 @@ function App() {
     };
 
     checkAuth();
-  }, []);
+  }, [isActiveBooking]);
 
   return (
     <div className="max-w-sm p-4 mx-auto">
@@ -86,7 +88,7 @@ const Menu = ({ user }: { user: User }) => (
     </Link>
     {user && (
       <Link className="hover:text-yellow" to="bookings">
-        <FontAwesomeIcon icon={faWarehouse} className="h-4" />
+        <FontAwesomeIcon icon={faClockRotateLeft} className="h-4" />
       </Link>
     )}
     {!user && (

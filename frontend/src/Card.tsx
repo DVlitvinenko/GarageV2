@@ -62,16 +62,19 @@ export const Card = ({ car }: { car: Cars2 }) => {
               )}
             </div>
             <div className="flex flex-wrap gap-1">
-              {currentSchemas?.map((currentSchema, i) => (
-                <Badge
-                  key={`${currentSchema.working_days}/${currentSchema.non_working_days}${i}`}
-                  className=""
-                  variant="schema"
-                >
-                  {`${formatRoubles(currentSchema.daily_amount!)}`}
-                  <div className="text-xs font-medium text-black">{`${currentSchema.working_days}раб. /${currentSchema.non_working_days}вых.`}</div>
-                </Badge>
-              ))}
+              {currentSchemas?.map(
+                (currentSchema, i) =>
+                  i < 3 && (
+                    <Badge
+                      key={`${currentSchema.working_days}/${currentSchema.non_working_days}${i}`}
+                      className=""
+                      variant="schema"
+                    >
+                      {`${formatRoubles(currentSchema.daily_amount!)}`}
+                      <div className="text-xs font-medium text-black">{`${currentSchema.working_days}раб. /${currentSchema.non_working_days}вых.`}</div>
+                    </Badge>
+                  )
+              )}
             </div>
             <div className="mt-4 text-center">
               <Button className="w-full sm:max-w-[376px]">Подробнее</Button>

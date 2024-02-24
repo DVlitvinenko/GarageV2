@@ -9,30 +9,27 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { activeBookingAtom, userAtom } from "./atoms";
+import { isActiveBookingAtom, userAtom } from "./atoms";
 import { reject } from "ramda";
 import { useEffect, useState } from "react";
 import { client } from "./backend";
 
 export const BookingTimer = () => {
   const [user, setUser] = useRecoilState(userAtom);
-  const activeBookingData = useRecoilValue(activeBookingAtom);
+  const [isActiveBooking, setIsActiveBooking] =
+    useRecoilState(isActiveBookingAtom);
 
-  let activeBooking = user?.bookings!.find(
+  const activeBooking = user?.bookings!.find(
     (x) => x.status === BookingStatus.Booked
   );
-  if (activeBookingData) {
-    activeBooking = activeBookingData;
-  }
   const bookingEndDate = activeBooking
     ? new Date(activeBooking.end_date + "Z")
     : new Date();
 
-  const { minutes, hours, seconds, start, pause, resume, restart, isRunning } =
-    useTimer({
-      expiryTimestamp: bookingEndDate, // Передаем объект Date в useTimer
-      // onExpire: () => console.warn("onExpire called"),
-    });
+  const { minutes, hours, restart } = useTimer({
+    expiryTimestamp: bookingEndDate, // Передаем объект Date в useTimer
+    // onExpire: () => console.warn("onExpire called"),
+  });
 
   useEffect(() => {
     restart(bookingEndDate);
@@ -44,6 +41,7 @@ export const BookingTimer = () => {
         id: activeBooking!.id,
       })
     );
+    setIsActiveBooking(!isActiveBooking);
   };
 
   return (

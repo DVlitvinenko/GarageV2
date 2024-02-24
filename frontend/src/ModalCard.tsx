@@ -5,22 +5,22 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { Body16, Cars2, UserStatus } from "./api-client";
+import { Body16, Booking, Cars2, UserStatus } from "./api-client";
 import { Separator } from "@/components/ui/separator";
 import {
   formatRoubles,
   getFuelTypeDisplayName,
   getTransmissionDisplayName,
 } from "@/lib/utils";
-import { userAtom, activeBookingAtom } from "./atoms";
+import { userAtom, isActiveBookingAtom } from "./atoms";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { client } from "./backend";
 
 export const ModalCard = ({ car }: { car: Cars2 }) => {
-  const user = useRecoilValue(userAtom);
-  const [activeBookingData, setActiveBookingData] =
-    useRecoilState(activeBookingAtom);
+  const [user, setUser] = useRecoilState(userAtom);
+  const [isActiveBooking, setActiveBookingData] =
+    useRecoilState(isActiveBookingAtom);
 
   const navigate = useNavigate();
 
@@ -37,7 +37,6 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
             id: car.id,
           })
         );
-
         setActiveBookingData(bookingData);
       } catch (error) {}
     };
@@ -116,16 +115,19 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
           )}
         </div>
         <div className="flex flex-wrap gap-1 pb-20 mb-16">
-          {currentSchemas?.map((currentSchema, i) => (
-            <Badge
-              key={`${currentSchema.working_days}/${currentSchema.non_working_days}${i}`}
-              className="flex-col items-start justify-start flex-grow h-full px-2 text-lg font-bold text-wrap"
-              variant="schema"
-            >
-              {`${formatRoubles(currentSchema.daily_amount!)}`}
-              <div className="text-xs font-medium text-black">{`${currentSchema.working_days}раб. /${currentSchema.non_working_days}вых.`}</div>
-            </Badge>
-          ))}
+          {currentSchemas?.map(
+            (currentSchema, i) =>
+              i < 3 && (
+                <Badge
+                  key={`${currentSchema.working_days}/${currentSchema.non_working_days}${i}`}
+                  className="flex-col items-start justify-start flex-grow h-full px-2 text-lg font-bold text-wrap"
+                  variant="schema"
+                >
+                  {`${formatRoubles(currentSchema.daily_amount!)}`}
+                  <div className="text-xs font-medium text-black">{`${currentSchema.working_days}раб. /${currentSchema.non_working_days}вых.`}</div>
+                </Badge>
+              )
+          )}
         </div>
       </div>
       <div className="fixed bottom-0 left-0 flex justify-center w-full px-4 py-4 space-x-2 bg-white border-t border-pale">
