@@ -70,8 +70,9 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
           <div className="min-h-48">
             {car.working_hours?.map((x) => (
               <div className="flex items-center" key={x.day}>
-                <div className="text-sm capitalize w-28">{x.day}</div> {x.start}{" "}
-                - {x.end}
+                <div className="text-sm capitalize w-28">{x.day}</div>{" "}
+                {x.start?.hours}:{x.start?.minutes} - {x.end?.hours}:
+                {x.end?.minutes}
               </div>
             ))}
           </div>
@@ -86,10 +87,10 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
         <div className="flex flex-wrap items-center justify-start gap-1 mb-3">
           <Badge variant="card" className="px-0 py-0 bg-grey ">
             <span className="flex items-center h-full px-2 bg-white rounded-xl">
-              Депозит {formatRoubles(car.rent_term?.deposit_amount_total!)}
+              Депозит {formatRoubles(car.rent_term!.deposit_amount_total!)}
             </span>
             <span className="flex items-center h-full px-2 ">
-              {formatRoubles(car.rent_term?.deposit_amount_daily!)}
+              {formatRoubles(car.rent_term!.deposit_amount_daily!)}
               /день
             </span>
           </Badge>

@@ -1034,8 +1034,25 @@ class APIController extends Controller
         if ($request->about) {
             $park->about = $request->about;
         }
-        if ($request->working_hours) {
-            $park->working_hours = $request->working_hours;
+        $updatedWorkingHours = [];
+        foreach ($request->working_hours as $workingDay) {
+            $updatedWorkingDay = [
+                'day' => $workingDay['day'],
+                'start' => [
+                    'hours' => str_pad($workingDay['start']['hours'], 2, '0', STR_PAD_LEFT),
+                    'minutes' => str_pad($workingDay['start']['minutes'], 2, '0', STR_PAD_LEFT),
+                ],
+                'end' => [
+                    'hours' => str_pad($workingDay['end']['hours'], 2, '0', STR_PAD_LEFT),
+                    'minutes' => str_pad($workingDay['end']['minutes'], 2, '0', STR_PAD_LEFT),
+                ],
+            ];
+            $updatedWorkingHours[] = $updatedWorkingDay;
+        }
+
+        if ($updatedWorkingHours) {
+            $park->working_hours = $updatedWorkingHours;
+            $park->save();
         }
         if ($request->phone) {
             $park->phone = $request->phone;
