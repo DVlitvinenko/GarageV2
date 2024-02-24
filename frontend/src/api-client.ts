@@ -8073,12 +8073,11 @@ export interface IWorking_hours3 {
 }
 
 export class Working_hours4 implements IWorking_hours4 {
-    /** Время начала */
-    start?: string;
-    /** Время окончания */
-    end?: string;
-    /** День недели на русском */
-    day?: string;
+    day?: DayList;
+    /** Время начала работы */
+    start?: Start4;
+    /** Время окончания работы */
+    end?: End4;
 
     [key: string]: any;
 
@@ -8097,9 +8096,9 @@ export class Working_hours4 implements IWorking_hours4 {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
-            this.start = _data["start"];
-            this.end = _data["end"];
             this.day = _data["day"];
+            this.start = _data["start"] ? Start4.fromJS(_data["start"]) : <any>undefined;
+            this.end = _data["end"] ? End4.fromJS(_data["end"]) : <any>undefined;
         }
     }
 
@@ -8116,20 +8115,19 @@ export class Working_hours4 implements IWorking_hours4 {
             if (this.hasOwnProperty(property))
                 data[property] = this[property];
         }
-        data["start"] = this.start;
-        data["end"] = this.end;
         data["day"] = this.day;
+        data["start"] = this.start ? this.start.toJSON() : <any>undefined;
+        data["end"] = this.end ? this.end.toJSON() : <any>undefined;
         return data;
     }
 }
 
 export interface IWorking_hours4 {
-    /** Время начала */
-    start?: string;
-    /** Время окончания */
-    end?: string;
-    /** День недели на русском */
-    day?: string;
+    day?: DayList;
+    /** Время начала работы */
+    start?: Start4;
+    /** Время окончания работы */
+    end?: End4;
 
     [key: string]: any;
 }
@@ -8238,6 +8236,118 @@ export class End3 implements IEnd3 {
 }
 
 export interface IEnd3 {
+    /** Часы (0-23) */
+    hours?: number;
+    /** Минуты (0-59) */
+    minutes?: number;
+
+    [key: string]: any;
+}
+
+export class Start4 implements IStart4 {
+    /** Часы (0-23) */
+    hours?: number;
+    /** Минуты (0-59) */
+    minutes?: number;
+
+    [key: string]: any;
+
+    constructor(data?: IStart4) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.hours = _data["hours"];
+            this.minutes = _data["minutes"];
+        }
+    }
+
+    static fromJS(data: any): Start4 {
+        data = typeof data === 'object' ? data : {};
+        let result = new Start4();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["hours"] = this.hours;
+        data["minutes"] = this.minutes;
+        return data;
+    }
+}
+
+export interface IStart4 {
+    /** Часы (0-23) */
+    hours?: number;
+    /** Минуты (0-59) */
+    minutes?: number;
+
+    [key: string]: any;
+}
+
+export class End4 implements IEnd4 {
+    /** Часы (0-23) */
+    hours?: number;
+    /** Минуты (0-59) */
+    minutes?: number;
+
+    [key: string]: any;
+
+    constructor(data?: IEnd4) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.hours = _data["hours"];
+            this.minutes = _data["minutes"];
+        }
+    }
+
+    static fromJS(data: any): End4 {
+        data = typeof data === 'object' ? data : {};
+        let result = new End4();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["hours"] = this.hours;
+        data["minutes"] = this.minutes;
+        return data;
+    }
+}
+
+export interface IEnd4 {
     /** Часы (0-23) */
     hours?: number;
     /** Минуты (0-59) */

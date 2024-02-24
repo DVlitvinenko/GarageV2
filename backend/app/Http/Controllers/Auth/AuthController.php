@@ -120,17 +120,29 @@ class AuthController extends Controller
      *                                 @OA\Property(property="self_employed", type="integer"),
      *                                 @OA\Property(property="park_name", type="string"),
      *                                 @OA\Property(property="about", type="string"),
-     *                 @OA\Property(
-     *                     property="working_hours",
-     *                     type="array",
-     *                     description="Расписание работы парка",
-     *                     @OA\Items(
+     *             @OA\Property(
+     *                 property="working_hours",
+     *                 type="array",
+     *                 description="Расписание работы парка",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="day", type="string", description="День недели на английском",ref="#/components/schemas/DayList"),
+     *                     @OA\Property(
+     *                         property="start",
      *                         type="object",
-     *                         @OA\Property(property="start", type="string", description="Время начала"),
-     *                         @OA\Property(property="end", type="string", description="Время окончания"),
-     *                         @OA\Property(property="day", type="string", description="День недели на русском")
+     *                         description="Время начала работы",
+     *                         @OA\Property(property="hours", type="integer", description="Часы (0-23)"),
+     *                         @OA\Property(property="minutes", type="integer", description="Минуты (0-59)")
+     *                     ),
+     *                     @OA\Property(
+     *                         property="end",
+     *                         type="object",
+     *                         description="Время окончания работы",
+     *                         @OA\Property(property="hours", type="integer", description="Часы (0-23)"),
+     *                         @OA\Property(property="minutes", type="integer", description="Минуты (0-59)")
      *                     )
      *                 )
+     *             )
      *                             )
      *                         )
      *                     )
