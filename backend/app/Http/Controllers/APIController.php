@@ -919,7 +919,7 @@ class APIController extends Controller
      *                 description="Расписание работы парка",
      *                 @OA\Items(
      *                     type="object",
-     *                     @OA\Property(property="day", type="string", description="День недели на английском",ref="#/components/schemas/DayList")),
+     *                     @OA\Property(property="day", type="string", description="День недели на английском",ref="#/components/schemas/DayList"),
      *                     @OA\Property(
      *                         property="start",
      *                         type="object",
@@ -935,9 +935,8 @@ class APIController extends Controller
      *                         @OA\Property(property="minutes", type="integer", description="Минуты (0-59)")
      *                     )
      *                 )
-     *             ),
-     *         )
-     *     ),
+     *             )
+     *     )),
      *     @OA\Response(
      *         response=200,
      *         description="Успешное обновление информации о парке",
