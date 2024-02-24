@@ -561,8 +561,8 @@ foreach($workingHours as $workingDay) {
     $car->division->park->working_hours = $translatedWorkingHours;
     $booked = $booking;
         $booked->status = BookingStatus::from($booked->status)->name;
-        $booked->start_date = Carbon::parse($booked->booked_at)->toISOString();
-        $booked->end_date = Carbon::parse($booked->booked_until)->toISOString();
+        $booked->start_date = $booked->booked_at;
+        $booked->end_date = $booked->booked_until;
         $booked->car = $car;
         $booked->car->сar_class = CarClass::from($car->tariff->class)->name;
         $booked->car->transmission_type = TransmissionType::from($booked->car->transmission_type)->name;
