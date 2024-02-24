@@ -517,8 +517,10 @@ foreach($workingHours as $workingDay) {
     $booking = new Booking();
     $booking->car_id = $request->id;
     $booking->park_id = $division->park_id;
-    $booking->booked_at = Carbon::now()->toIso8601String();
-    $booking->booked_until = Carbon::createFromTimestamp($newEndTime)->toIso8601String();
+    date_default_timezone_set('UTC');
+
+    $booking->booked_at = Carbon::now()->setTimezone('UTC')->toDateTimeString();
+    $booking->booked_until = Carbon::createFromTimestamp($newEndTime)->setTimezone('UTC')->toDateTimeString();
     $booking->status = BookingStatus::Booked->value;
     $booking->driver_id = $driver->id;
     $booking->save();

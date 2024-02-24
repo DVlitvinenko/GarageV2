@@ -178,8 +178,8 @@ class AuthController extends Controller
         if ($bookings) {
             foreach ($bookings as $booking) {
                 $booking->status = BookingStatus::from($booking->status)->name;
-                $booking->start_date = Carbon::parse($booking->booking_at)->toISOString();
-                $booking->end_date = Carbon::parse($booking->booking_until)->toISOString();
+                $booking->start_date = $booking->booked_at;
+                $booking->end_date = $booking->booked_until;
                 $booking->car->сar_class = CarClass::from($booking->car->tariff->class)->name;
                 $booking->car->transmission_type = TransmissionType::from($booking->car->transmission_type)->name;
                 $booking->car->fuel_type = FuelType::from($booking->car->fuel_type)->name;

@@ -11,7 +11,7 @@ import {
 import { useRecoilState } from "recoil";
 import { userAtom } from "./atoms";
 import { reject } from "ramda";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { client } from "./backend";
 
 export const BookingTimer = () => {
@@ -21,15 +21,18 @@ export const BookingTimer = () => {
   );
 
   const bookingEndDate = activeBooking
-    ? new Date(activeBooking.end_date!)
+    ? new Date(activeBooking.end_date + "Z")
     : new Date();
 
-  bookingEndDate.setSeconds(bookingEndDate.getSeconds() + 600);
+  const { minutes, hours, seconds, start, pause, resume, restart, isRunning } =
+    useTimer({
+      expiryTimestamp: bookingEndDate, // Передаем объект Date в useTimer
+      // onExpire: () => console.warn("onExpire called"),
+    });
 
-  const { minutes, hours, seconds } = useTimer({
-    expiryTimestamp: bookingEndDate,
-    // onExpire: () => console.warn("onExpire called"),
-  });
+  useEffect(() => {
+    restart(bookingEndDate);
+  }, [user]);
 
   const cancelBooking = async () => {
     await client.cancelBooking(

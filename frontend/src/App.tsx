@@ -14,6 +14,7 @@ import {
   faRightToBracket,
   faTaxi,
   faUser,
+  faWarehouse,
 } from "@fortawesome/free-solid-svg-icons";
 import { User } from "./api-client";
 import { CityPicker } from "./CityPicker";
@@ -84,9 +85,9 @@ const Menu = ({ user }: { user: User }) => (
       <FontAwesomeIcon icon={faUser} className="h-4" />
     </Link>
     {user && (
-      <div className="hover:text-yellow" onClick={LogoutHandler}>
-        <FontAwesomeIcon icon={faRightFromBracket} className="h-4" />
-      </div>
+      <Link className="hover:text-yellow" to="bookings">
+        <FontAwesomeIcon icon={faWarehouse} className="h-4" />
+      </Link>
     )}
     {!user && (
       <Link className="hover:text-yellow" to="login/driver">
