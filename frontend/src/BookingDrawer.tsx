@@ -22,14 +22,10 @@ import {
 
 export const BookingDrawer = () => {
   const [user, setUser] = useRecoilState(userAtom);
-  // const activeBookingData = useRecoilValue(activeBookingAtom);
 
-  let activeBooking = user?.bookings!.find(
+  const activeBooking = user?.bookings!.find(
     (x) => x.status === BookingStatus.Booked
   );
-  // if (activeBookingData) {
-  //   activeBooking = activeBookingData;
-  // }
 
   if (!user?.bookings?.length) {
     return <>У вас пока нет бронирований</>;
