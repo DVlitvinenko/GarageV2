@@ -531,8 +531,8 @@ foreach($workingHours as $workingDay) {
     $booking->park_id = $division->park_id;
     date_default_timezone_set('UTC');
 
-    $booking->booked_at = Carbon::now()->setTimezone('UTC')->toDateTimeString();
-    $booking->booked_until = Carbon::createFromTimestamp($newEndTime)->setTimezone('UTC')->toDateTimeString();
+    $booking->booked_at = Carbon::now()->toIso8601ZuluString();
+    $booking->booked_until = Carbon::createFromTimestamp($newEndTime)->toIso8601ZuluString();
     $booking->status = BookingStatus::Booked->value;
     $booking->driver_id = $driver->id;
     $booking->save();
@@ -661,7 +661,9 @@ unset($schema->created_at, $schema->updated_at, $schema->id, $schema->rent_term_
         if ($booking->status !== BookingStatus::Booked->value) {
             return response()->json(['message' => 'Статус не "забронирован"'], 409);
         }
+        date_default_timezone_set('UTC');
         $car = $booking->car;
+        $booking->booked_until = Carbon::now()->toIso8601ZuluString();
         $booking->status = BookingStatus::UnBooked->value;
         $booking->save();
         $car->status = CarStatus::AvailableForBooking->value;

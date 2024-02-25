@@ -137,7 +137,7 @@ export const BookingDrawer = () => {
           <Separator />
           <div className="flex items-center">
             <p className="w-1/2 font-semibold">Дата окончания бронирования:</p>
-            {booking.end_date!}
+            {format(booking.end_date!, "dd.MM.yyyy HH:mm")}
           </div>
         </div>
       ))}

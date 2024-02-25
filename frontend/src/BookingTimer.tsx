@@ -21,7 +21,7 @@ export const BookingTimer = () => {
     (x) => x.status === BookingStatus.Booked
   );
   const bookingEndDate = activeBooking
-    ? new Date(activeBooking.end_date + "Z")
+    ? new Date(activeBooking.end_date!)
     : new Date();
 
   const { minutes, hours, restart } = useTimer({
@@ -44,7 +44,11 @@ export const BookingTimer = () => {
         ...user,
         bookings: [
           ...user.bookings!.filter((x) => x !== activeBooking),
-          new Bookings({ ...activeBooking, status: BookingStatus.UnBooked }),
+          new Bookings({
+            ...activeBooking,
+            status: BookingStatus.UnBooked,
+            end_date: new Date().toISOString(),
+          }),
         ],
       })
     );

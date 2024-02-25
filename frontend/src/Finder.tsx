@@ -187,6 +187,7 @@ export const Finder = () => {
               ),
               filter: ActiveFilter.Sorting,
               isEngaged: filters.sorting === "desc",
+              stateName: null,
             },
             {
               title: "Любой график аренды",
@@ -194,7 +195,7 @@ export const Finder = () => {
               isEngaged: filters.schema !== null,
               stateName: searchSchema,
             },
-            { isEngaged: filters.brands.length > 0 },
+            { isEngaged: filters.brands.length > 0, stateName: null },
 
             {
               title: "Трансмиссия",
@@ -220,7 +221,7 @@ export const Finder = () => {
                     setActiveFilter(activeFilter === filter ? null : filter)
                   }
                 >
-                  {isEngaged ? stateName : title}
+                  {isEngaged && stateName ? stateName : title}
                 </Badge>
               )}
 
