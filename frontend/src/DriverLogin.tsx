@@ -15,9 +15,7 @@ export const DriverLogin = () => {
   const [phone, setPhone] = useState("");
   const [code, setCode] = useState(0);
 
-  const {
-    state: { bookingAttempt },
-  } = useLocation();
+  const location = useLocation();
 
   const getCode = async () => {
     await client.createAndSendCode(new Body9({ phone }));
@@ -78,7 +76,7 @@ export const DriverLogin = () => {
         <h2 className="my-10 text-center">
           Зарегистрируйтесь или войдите в личный кабинет.
         </h2>
-        {bookingAttempt && (
+        {location?.state?.bookingAttempt && (
           <div className="mb-8 text-center text-red ">
             Чтобы забронировать машину - зарегистрируйтесь
           </div>
