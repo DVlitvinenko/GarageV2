@@ -8,7 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export function getFuelTypeDisplayName(x: FuelType | undefined | null) {
   if (!x) {
-    return "Любой тип топлива";
+    return "Топливо";
   }
 
   const dict = {
@@ -23,7 +23,7 @@ export function getTransmissionDisplayName(
   x: TransmissionType | undefined | null
 ) {
   if (!x) {
-    return "Любой тип трансмиссии";
+    return "Трансмиссия";
   }
 
   const dict = {

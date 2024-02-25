@@ -5,21 +5,14 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import {
-  Body16,
-  Booking,
-  Bookings,
-  Cars2,
-  UserStatus,
-  User,
-} from "./api-client";
+import { Body16, Bookings, Cars2, User } from "./api-client";
 import { Separator } from "@/components/ui/separator";
 import {
   formatRoubles,
   getFuelTypeDisplayName,
   getTransmissionDisplayName,
 } from "@/lib/utils";
-import { userAtom, isActiveBookingAtom } from "./atoms";
+import { userAtom } from "./atoms";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { client } from "./backend";
@@ -56,7 +49,7 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
     // }
   };
 
-  const currentSchemas = car.rent_term?.schemas;
+  const { schemas } = car.rent_term!;
 
   return (
     <>
@@ -124,7 +117,7 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
           )}
         </div>
         <div className="flex flex-wrap gap-1 pb-20 mb-16">
-          {currentSchemas?.slice(0, 3).map((currentSchema, i) => (
+          {schemas!.slice(0, 3).map((currentSchema, i) => (
             <Badge
               key={`${currentSchema.working_days}/${currentSchema.non_working_days}${i}`}
               className="flex-col items-start justify-start flex-grow h-full px-2 text-lg font-bold text-wrap"

@@ -88,9 +88,6 @@ export const Finder = () => {
   const [activeFilter, setActiveFilter] = useState<ActiveFilter | null>(null);
   const [brands, setBrands] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchSchema, setSearchSchema] = useState("");
-  const [searchTransmission, setSearchTransmission] = useState("");
-  const [searchFuelType, setSearchFuelType] = useState("");
 
   const city = useRecoilValue(cityAtom);
 
@@ -137,7 +134,6 @@ export const Finder = () => {
   const filteredBrands = brands.filter((brand) =>
     brand.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
   return (
     <>
       {/* <div onClick={() => navigate("login/driver")} className="fixed top-5 right-5">Войти</div> */}
@@ -187,29 +183,27 @@ export const Finder = () => {
               ),
               filter: ActiveFilter.Sorting,
               isEngaged: filters.sorting === "desc",
-              stateName: null,
             },
             {
-              title: "Любой график аренды",
+              title: filters.schema
+                ? `${filters.schema?.working_days}/${filters.schema?.non_working_days}`
+                : "Любой график аренды",
               filter: ActiveFilter.RentTerm,
               isEngaged: filters.schema !== null,
-              stateName: searchSchema,
             },
-            { isEngaged: filters.brands.length > 0, stateName: null },
+            { isEngaged: !!filters.brands.length },
 
             {
-              title: "Трансмиссия",
+              title: getTransmissionDisplayName(filters.transmissionType),
               filter: ActiveFilter.TransmissionType,
               isEngaged: filters.transmissionType !== null,
-              stateName: searchTransmission,
             },
             {
-              title: "Топливо",
+              title: getFuelTypeDisplayName(filters.fuelType),
               filter: ActiveFilter.FuelType,
               isEngaged: filters.fuelType !== null,
-              stateName: searchFuelType,
             },
-          ].map(({ filter, title, isEngaged, stateName }, i) => (
+          ].map(({ filter, title, isEngaged }, i) => (
             <div className="relative" key={`filters ${i}`}>
               {isEngaged && (
                 <div className="absolute top-0 right-0 w-1.5 h-1.5 rounded-full  bg-red"></div>
@@ -221,7 +215,7 @@ export const Finder = () => {
                     setActiveFilter(activeFilter === filter ? null : filter)
                   }
                 >
-                  {isEngaged && stateName ? stateName : title}
+                  {title}
                 </Badge>
               )}
 
@@ -359,9 +353,6 @@ export const Finder = () => {
                 key={`schema ${i}`}
                 className={`${filters.schema === schema ? "bg-white" : ""} `}
                 onClick={() => {
-                  setSearchSchema(
-                    `${schema?.working_days}/${schema?.non_working_days}`
-                  );
                   return setFilters({
                     ...filters,
                     schema,
@@ -384,9 +375,6 @@ export const Finder = () => {
                       : ""
                   } `}
                   onClick={() => {
-                    setSearchTransmission(
-                      `${getTransmissionDisplayName(transmissionType)}`
-                    );
                     return setFilters({
                       ...filters,
                       transmissionType,
@@ -405,7 +393,6 @@ export const Finder = () => {
                   filters.fuelType === fuelType ? "bg-white" : ""
                 } `}
                 onClick={() => {
-                  setSearchFuelType(`${getFuelTypeDisplayName(fuelType)}`);
                   return setFilters({
                     ...filters,
                     fuelType,
