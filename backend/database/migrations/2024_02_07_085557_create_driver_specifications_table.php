@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('experience');
             $table->integer('fine_count');
             $table->boolean('abandoned_car');
+            $table->boolean('is_north_caucasus');
             $table->unsignedBigInteger('republick_id');
             $table->integer('scoring');
             $table->boolean('alcohol');

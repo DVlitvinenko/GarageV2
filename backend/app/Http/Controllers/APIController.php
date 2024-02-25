@@ -15,7 +15,7 @@ use App\Models\RentTerm;
 use App\Models\Booking;
 use App\Enums\BookingStatus;
 use App\Enums\SuitEnum;
-use App\Enums\CarStatus;
+use App\Enums\CarStatus;use App\Enums\DayList;
 use Illuminate\Support\Str;
 use GuzzleHttp\Client;
 use App\Http\Controllers\Enums;
@@ -912,21 +912,31 @@ class APIController extends Controller
      *             @OA\Property(property="self_employed", type="boolean", description="Работает ли парк с самозанятыми, true - если работает"),
      *             @OA\Property(property="park_name", type="string", description="Название парка"),
      *             @OA\Property(property="about", type="string", description="Описание парка"),
-     *                 @OA\Property(property="phone", type="string", description="Телефон парка"),
+     *             @OA\Property(property="phone", type="string", description="Телефон парка"),
      *             @OA\Property(
      *                 property="working_hours",
-     *                 type="object",
-     *                 description="Время работы",
-     *                 @OA\Property(property="monday", type="object", description="Время работы в понедельник"),
-     *                 @OA\Property(property="tuesday", type="object", description="Время работы во вторник"),
-     *                 @OA\Property(property="wednesday", type="object", description="Время работы в среду"),
-     *                 @OA\Property(property="thursday", type="object", description="Время работы в четверг"),
-     *                 @OA\Property(property="friday", type="object", description="Время работы в пятницу"),
-     *                 @OA\Property(property="saturday", type="object", description="Время работы в субботу"),
-     *                 @OA\Property(property="sunday", type="object", description="Время работы в воскресенье")
+     *                 type="array",
+     *                 description="Расписание работы парка",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="day", type="string", description="День недели на английском",ref="#/components/schemas/DayList"),
+     *                     @OA\Property(
+     *                         property="start",
+     *                         type="object",
+     *                         description="Время начала работы",
+     *                         @OA\Property(property="hours", type="integer", description="Часы (0-23)"),
+     *                         @OA\Property(property="minutes", type="integer", description="Минуты (0-59)")
+     *                     ),
+     *                     @OA\Property(
+     *                         property="end",
+     *                         type="object",
+     *                         description="Время окончания работы",
+     *                         @OA\Property(property="hours", type="integer", description="Часы (0-23)"),
+     *                         @OA\Property(property="minutes", type="integer", description="Минуты (0-59)")
+     *                     )
+     *                 )
      *             )
-     *         )
-     *     ),
+     *     )),
      *     @OA\Response(
      *         response=200,
      *         description="Успешное обновление информации о парке",
@@ -977,16 +987,27 @@ class APIController extends Controller
             'about' => 'string',
             'working_hours' => [
                 'required',
-                'json',
+                'array',
                 function ($attribute, $value, $fail) {
-                    $daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-                    $decodedValue = json_decode($value, true);
-                    if ($decodedValue === null) {
-                        $fail('The ' . $attribute . ' field must be a valid JSON object.');
-                        return;
-                    }
+                    $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
                     foreach ($daysOfWeek as $day) {
-                        if (!array_key_exists($day, $decodedValue)) {
+                        $found = false;
+                        foreach ($value as $workingDay) {
+                            if ($workingDay['day'] === $day) {
+                                $found = true;
+                                if (!isset($workingDay['start']['hours']) || !isset($workingDay['start']['minutes']) ||
+                                    !isset($workingDay['end']['hours']) || !isset($workingDay['end']['minutes']) ||
+                                    $workingDay['start']['hours'] < 0 || $workingDay['start']['hours'] > 23 ||
+                                    $workingDay['start']['minutes'] < 0 || $workingDay['start']['minutes'] > 59 ||
+                                    $workingDay['end']['hours'] < 0 || $workingDay['end']['hours'] > 23 ||
+                                    $workingDay['end']['minutes'] < 0 || $workingDay['end']['minutes'] > 59
+                                ) {
+                                    $fail('The ' . $attribute . ' field must have valid working hours for ' . $day . '.');
+                                    return;
+                                }
+                            }
+                        }
+                        if (!$found) {
                             $fail('The ' . $attribute . ' field must contain ' . $day . ' working hours.');
                             return;
                         }
@@ -1013,8 +1034,25 @@ class APIController extends Controller
         if ($request->about) {
             $park->about = $request->about;
         }
-        if ($request->working_hours) {
-            $park->working_hours = $request->working_hours;
+        $updatedWorkingHours = [];
+        foreach ($request->working_hours as $workingDay) {
+            $updatedWorkingDay = [
+                'day' => $workingDay['day'],
+                'start' => [
+                    'hours' => str_pad($workingDay['start']['hours'], 2, '0', STR_PAD_LEFT),
+                    'minutes' => str_pad($workingDay['start']['minutes'], 2, '0', STR_PAD_LEFT),
+                ],
+                'end' => [
+                    'hours' => str_pad($workingDay['end']['hours'], 2, '0', STR_PAD_LEFT),
+                    'minutes' => str_pad($workingDay['end']['minutes'], 2, '0', STR_PAD_LEFT),
+                ],
+            ];
+            $updatedWorkingHours[] = $updatedWorkingDay;
+        }
+
+        if ($updatedWorkingHours) {
+            $park->working_hours = $updatedWorkingHours;
+            $park->save();
         }
         if ($request->phone) {
             $park->phone = $request->phone;
@@ -1228,7 +1266,7 @@ class APIController extends Controller
      *             @OA\Property(property="max_fine_count", type="integer", description="Максимальное количество штрафов"),
      *             @OA\Property(property="abandoned_car", type="bool", description="Бросал ли машину, true/false"),
      *             @OA\Property(property="min_scoring", type="integer", description="минимальный скоринг"),
-     *             @OA\Property(property="forbidden_republic_ids", type="array", description="Массив запрещенных статей", @OA\Items(type="string")),
+     *             @OA\Property(property="is_north_caucasus", type="bool", description="Права выданы в Северном Кавказе"),
      *             @OA\Property(property="criminal_ids", type="array", description="Массив запрещенных республик", @OA\Items(type="string")),
      *             @OA\Property(property="alcohol", type="bool", description="Принимает ли что-то водитель, алкоголь/иное, true/false")
      *         )
@@ -1290,7 +1328,7 @@ class APIController extends Controller
             'max_fine_count' => 'required|integer',
             'abandoned_car' => 'required|bool',
             'min_scoring' => 'required|integer',
-            'forbidden_republic_ids' => 'required|array',
+            'is_north_caucasus' => 'required|bool',
             'alcohol' => 'required|bool',
         ]);
 
@@ -1313,7 +1351,7 @@ class APIController extends Controller
             'max_fine_count' => $request->max_fine_count,
             'abandoned_car' => $request->abandoned_car,
             'min_scoring' => $request->min_scoring,
-            'forbidden_republic_ids' => json_encode($request->forbidden_republic_ids),
+            'is_north_caucasus' => $request->is_north_caucasus,
             'alcohol' => $request->alcohol,
         ];
         $tariff = new Tariff($data);
@@ -1343,7 +1381,7 @@ class APIController extends Controller
      *             @OA\Property(property="max_fine_count", type="integer", nullable=true, description="Максимальное количество штрафов"),
      *             @OA\Property(property="abandoned_car", type="bool", nullable=true, description="Бросал ли машину, true/false"),
      *             @OA\Property(property="min_scoring", type="integer", nullable=true, description="минимальный скоринг"),
-     *             @OA\Property(property="forbidden_republic_ids", nullable=true, type="string", description="Массив запрещенных статей"),
+     *             @OA\Property(property="is_north_caucasus", nullable=true, type="bool", description="Права выданы в Северном Кавказе"),
      *             @OA\Property(property="criminal_ids", type="string", nullable=true, description="Массив запрещенных республик"),
      *             @OA\Property(property="alcohol", type="bool", nullable=true, description="Принимает ли что-то водитель, алкоголь/иное, true/false")
      *         )
@@ -1394,7 +1432,7 @@ class APIController extends Controller
             'max_fine_count' => 'integer',
             'abandoned_car' => 'boolean',
             'min_scoring' => 'integer',
-            'forbidden_republic_ids' => 'array',
+            'is_north_caucasus' => 'bool',
             'alcohol' => 'boolean',
         ]);
 
@@ -1406,7 +1444,7 @@ class APIController extends Controller
         $tariff = Tariff::where('id', $tariffId)->where('park_id', $park->id)->first();
 
         if ($tariff) {
-            $data = $request->only(['criminal_ids', 'has_caused_accident', 'experience', 'max_fine_count', 'abandoned_car', 'min_scoring', 'forbidden_republic_ids', 'alcohol']);
+            $data = $request->only(['criminal_ids', 'has_caused_accident', 'experience', 'max_fine_count', 'abandoned_car', 'min_scoring', 'is_north_caucasus', 'alcohol']);
 
             foreach ($data as $key => $value) {
                 if (is_null($value)) {

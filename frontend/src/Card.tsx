@@ -62,7 +62,7 @@ export const Card = ({ car }: { car: Cars2 }) => {
               )}
             </div>
             <div className="flex flex-wrap gap-1">
-              {currentSchemas?.map((currentSchema, i) => (
+              {currentSchemas?.slice(0, 3).map((currentSchema, i) => (
                 <Badge
                   key={`${currentSchema.working_days}/${currentSchema.non_working_days}${i}`}
                   className=""

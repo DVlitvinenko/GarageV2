@@ -5,7 +5,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { Body16, Cars2, UserStatus } from "./api-client";
+import { Body16, Bookings, Cars2, User } from "./api-client";
 import { Separator } from "@/components/ui/separator";
 import {
   formatRoubles,
@@ -14,30 +14,42 @@ import {
 } from "@/lib/utils";
 import { userAtom } from "./atoms";
 import { useNavigate } from "react-router-dom";
-import { useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { client } from "./backend";
 
 export const ModalCard = ({ car }: { car: Cars2 }) => {
-  const user = useRecoilValue(userAtom);
+  const [user, setUser] = useRecoilState(userAtom);
 
   const navigate = useNavigate();
 
+  // временно удаляем проверку на верификацию!!!
   const book = async () => {
     if (!user) {
-      return navigate("login/driver");
+      return navigate("login/driver", {
+        state: {
+          bookingAttempt: true,
+        },
+      });
     }
-    if (user.user_status === UserStatus.Verified) {
-      await client.booked(
-        new Body16({
-          id: car.id,
-        })
-      );
-    } else {
-      navigate("account");
-    }
+    // if (user.user_status === UserStatus.Verified) {
+    const bookingData = await client.book(
+      new Body16({
+        id: car.id,
+      })
+    );
+    setUser(
+      new User({
+        ...user,
+        bookings: [...user.bookings!, new Bookings(bookingData.booking)],
+      })
+    );
+    return navigate("bookings");
+    // } else {
+    //   navigate("account");
+    // }
   };
 
-  const currentSchemas = car.rent_term?.schemas;
+  const { schemas } = car.rent_term!;
 
   return (
     <>
@@ -69,8 +81,9 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
           <div className="min-h-48">
             {car.working_hours?.map((x) => (
               <div className="flex items-center" key={x.day}>
-                <div className="text-sm capitalize w-28">{x.day}</div> {x.start}{" "}
-                - {x.end}
+                <div className="text-sm capitalize w-28">{x.day}</div>{" "}
+                {x.start?.hours}:{x.start?.minutes} - {x.end?.hours}:
+                {x.end?.minutes}
               </div>
             ))}
           </div>
@@ -85,10 +98,10 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
         <div className="flex flex-wrap items-center justify-start gap-1 mb-3">
           <Badge variant="card" className="px-0 py-0 bg-grey ">
             <span className="flex items-center h-full px-2 bg-white rounded-xl">
-              Депозит {formatRoubles(car.rent_term?.deposit_amount_total!)}
+              Депозит {formatRoubles(car.rent_term!.deposit_amount_total!)}
             </span>
             <span className="flex items-center h-full px-2 ">
-              {formatRoubles(car.rent_term?.deposit_amount_daily!)}
+              {formatRoubles(car.rent_term!.deposit_amount_daily!)}
               /день
             </span>
           </Badge>
@@ -104,7 +117,7 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
           )}
         </div>
         <div className="flex flex-wrap gap-1 pb-20 mb-16">
-          {currentSchemas?.map((currentSchema, i) => (
+          {schemas!.slice(0, 3).map((currentSchema, i) => (
             <Badge
               key={`${currentSchema.working_days}/${currentSchema.non_working_days}${i}`}
               className="flex-col items-start justify-start flex-grow h-full px-2 text-lg font-bold text-wrap"

@@ -6,17 +6,27 @@ import { client } from "./backend";
 import { Finder } from "./Finder";
 import { Account } from "./Account";
 import { DriverLogin } from "./DriverLogin";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { userAtom } from "./atoms";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faClockRotateLeft,
   faRightFromBracket,
   faRightToBracket,
   faTaxi,
   faUser,
+  faWarehouse,
 } from "@fortawesome/free-solid-svg-icons";
 import { User } from "./api-client";
 import { CityPicker } from "./CityPicker";
+import { Badge } from "@/components/ui/badge";
+import {
+  formatRoubles,
+  getFuelTypeDisplayName,
+  getTransmissionDisplayName,
+} from "@/lib/utils";
+import { BookingDrawer } from "./BookingDrawer";
+import { BookingTimer } from "./BookingTimer";
 
 function App() {
   const [user, setUser] = useRecoilState(userAtom);
@@ -47,39 +57,20 @@ function App() {
         {/* <span className="font-bold text-md text-gray"></span> */}
         <CityPicker />
       </div>
-
+      <BookingTimer />
       <Routes>
         <Route path="/" element={<Finder />} />
         <Route path="account" element={<Account user={user} />} />
+        <Route path="bookings" element={<BookingDrawer />} />
         <Route path="login/driver" element={<DriverLogin />} />
         <Route path="login/manager" element={<ManagerLogin />} />
         <Route path="login/admin" element={<AdminLogin />} />
       </Routes>
-      {/* <BookingDrawer /> */}
     </div>
   );
 }
 
 export default App;
-// const BookingDrawer = () => (
-//   <>
-//     <Drawer>
-//       <DrawerTrigger>Open</DrawerTrigger>
-//       <DrawerContent>
-//         <DrawerHeader>
-//           <DrawerTitle>Are you absolutely sure?</DrawerTitle>
-//           <DrawerDescription>This action cannot be undone.</DrawerDescription>
-//         </DrawerHeader>
-//         <DrawerFooter>
-//           <Button>Submit</Button>
-//           <DrawerClose>
-//             <Button variant="outline">Cancel</Button>
-//           </DrawerClose>
-//         </DrawerFooter>
-//       </DrawerContent>
-//     </Drawer>
-//   </>
-// );
 const LogoutHandler = () => {
   client.logout();
   localStorage.clear();
@@ -88,19 +79,19 @@ const LogoutHandler = () => {
 
 const Menu = ({ user }: { user: User }) => (
   <div className="flex mx-auto space-x-4 cursor-pointer justify-evenly w-60">
-    <Link className="hover:text-sky-400" to="/">
+    <Link className="hover:text-yellow" to="/">
       <FontAwesomeIcon icon={faTaxi} className="h-4" />
     </Link>
-    <Link className="hover:text-sky-400" to={user ? "account" : "login/driver"}>
+    <Link className="hover:text-yellow" to={user ? "account" : "login/driver"}>
       <FontAwesomeIcon icon={faUser} className="h-4" />
     </Link>
     {user && (
-      <div className="hover:text-sky-400" onClick={LogoutHandler}>
-        <FontAwesomeIcon icon={faRightFromBracket} className="h-4" />
-      </div>
+      <Link className="hover:text-yellow" to="bookings">
+        <FontAwesomeIcon icon={faClockRotateLeft} className="h-4" />
+      </Link>
     )}
     {!user && (
-      <Link className="hover:text-sky-400" to="login/driver">
+      <Link className="hover:text-yellow" to="login/driver">
         <FontAwesomeIcon icon={faRightToBracket} className="h-4" />
       </Link>
     )}

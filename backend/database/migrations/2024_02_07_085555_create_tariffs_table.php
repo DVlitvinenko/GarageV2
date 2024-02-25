@@ -21,6 +21,7 @@ return new class extends Migration
             $table->integer('experience');
             $table->integer('max_fine_count');
             $table->boolean('abandoned_car');
+            $table->boolean('is_north_caucasus');
             $table->integer('min_scoring');
             $table->string('forbidden_republic_ids');
             $table->boolean('alcohol');

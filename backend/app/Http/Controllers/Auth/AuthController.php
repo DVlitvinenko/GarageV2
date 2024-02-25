@@ -22,6 +22,8 @@ use Illuminate\Support\Facades\Storage;
 use App\Enums\UserStatus;
 use App\Enums\UserType;
 use App\Enums\CarClass;
+use App\Enums\TransmissionType;
+use App\Enums\FuelType;
 use Illuminate\Support\Carbon;
 
 class AuthController extends Controller
@@ -68,19 +70,15 @@ class AuthController extends Controller
      *                 @OA\Items(
      *                     type="object",
      *                     @OA\Property(property="id", type="integer", description="Идентификатор бронирования"),
-     *                     @OA\Property(property="status", type="string", description="Статус бронирования"),
-     *                     @OA\Property(property="car_id", type="integer", description="Идентификатор автомобиля"),
+     *                     @OA\Property(property="status", type="string", description="Статус бронирования",ref="#/components/schemas/BookingStatus"),
      *                     @OA\Property(property="start_date", type="string", description="Дата начала бронирования в формате 'd.m.Y H:i'"),
      *                     @OA\Property(property="end_date", type="string", description="Дата окончания бронирования в формате 'd.m.Y H:i'"),
-     *                     @OA\Property(property="car_brand", type="string", description="Марка автомобиля"),
-     *                     @OA\Property(property="car_model", type="string", description="Модель автомобиля"),
-     *                     @OA\Property(property="car_images", type="array", @OA\Items(type="string"), description="Ссылки на изображения"),
      *                     @OA\Property(
      *                         property="rent_term",
      *                         type="object",
      *                         description="Условия аренды",
-     *                         @OA\Property(property="deposit_amount_daily", type="string"),
-     *                         @OA\Property(property="deposit_amount_total", type="string"),
+     *                         @OA\Property(property="deposit_amount_daily", type="number"),
+     *                         @OA\Property(property="deposit_amount_total", type="number"),
      *                         @OA\Property(property="minimum_period_days", type="integer"),
      *                         @OA\Property(property="is_buyout_possible", type="integer"),
      *                         @OA\Property(
@@ -105,7 +103,7 @@ class AuthController extends Controller
      *                         @OA\Property(property="brand", type="string"),
      *                         @OA\Property(property="model", type="string"),
      *                         @OA\Property(property="year_produced", type="integer"),
-     *                         @OA\Property(property="images", type="string"),
+     *                         @OA\Property(property="images", type="array", @OA\Items(type="string"), description="Ссылки на изображения"),
      *                         @OA\Property(
      *                             property="division",
      *                             type="object",
@@ -122,17 +120,29 @@ class AuthController extends Controller
      *                                 @OA\Property(property="self_employed", type="integer"),
      *                                 @OA\Property(property="park_name", type="string"),
      *                                 @OA\Property(property="about", type="string"),
-     *                 @OA\Property(
-     *                     property="working_hours",
-     *                     type="array",
-     *                     description="Расписание работы парка",
-     *                     @OA\Items(
+     *             @OA\Property(
+     *                 property="working_hours",
+     *                 type="array",
+     *                 description="Расписание работы парка",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="day", type="string", description="День недели на английском",ref="#/components/schemas/DayList"),
+     *                     @OA\Property(
+     *                         property="start",
      *                         type="object",
-     *                         @OA\Property(property="start", type="string", description="Время начала"),
-     *                         @OA\Property(property="end", type="string", description="Время окончания"),
-     *                         @OA\Property(property="day", type="string", description="День недели на русском")
+     *                         description="Время начала работы",
+     *                         @OA\Property(property="hours", type="integer", description="Часы (0-23)"),
+     *                         @OA\Property(property="minutes", type="integer", description="Минуты (0-59)")
+     *                     ),
+     *                     @OA\Property(
+     *                         property="end",
+     *                         type="object",
+     *                         description="Время окончания работы",
+     *                         @OA\Property(property="hours", type="integer", description="Часы (0-23)"),
+     *                         @OA\Property(property="minutes", type="integer", description="Минуты (0-59)")
      *                     )
      *                 )
+     *             )
      *                             )
      *                         )
      *                     )
@@ -180,37 +190,32 @@ class AuthController extends Controller
         if ($bookings) {
             foreach ($bookings as $booking) {
                 $booking->status = BookingStatus::from($booking->status)->name;
-                $booking->start_date = Carbon::parse($booking->booking_at)->format('d.m.Y H:i');
-                $booking->end_date = Carbon::parse($booking->booking_until)->format('d.m.Y H:i');
+                $booking->start_date = Carbon::parse($booking->booked_at)->toIso8601ZuluString();
+                $booking->end_date = Carbon::parse($booking->booked_until)->toIso8601ZuluString();
                 $booking->car->сar_class = CarClass::from($booking->car->tariff->class)->name;
+                $booking->car->transmission_type = TransmissionType::from($booking->car->transmission_type)->name;
+                $booking->car->fuel_type = FuelType::from($booking->car->fuel_type)->name;
+                $booking->car->images = json_decode($booking->car->images);
                 $booking->car->division = Division::where('id', $booking->car->division_id)->with('park')->select('address', 'park_id', 'coords')->first();
                 $booking->rent_term = RentTerm::where('id', $booking->car->rent_term_id)->with('schemas')->select('deposit_amount_daily', 'deposit_amount_total', 'minimum_period_days', 'is_buyout_possible', 'id')->first();
                 $workingHours = json_decode($booking->car->division->park->working_hours, true);
-
                 $daysOfWeek = [
-                    'понедельник' => 'monday',
-                    'вторник' => 'tuesday',
-                    'среда' => 'wednesday',
-                    'четверг' => 'thursday',
-                    'пятница' => 'friday',
-                    'суббота' => 'saturday',
-                    'воскресенье' => 'sunday'
+                    'Monday' => 'понедельник',
+                    'Tuesday' => 'вторник',
+                    'Wednesday' => 'среда',
+                    'Thursday' => 'четверг',
+                    'Friday' => 'пятница',
+                    'Saturday' => 'суббота',
+                    'Sunday' => 'воскресенье'
                 ];
-
-                $hoursToArray = [];
-
-                foreach ($daysOfWeek as $rusDay => $engDay) {
-                    if (isset($workingHours[$engDay])) {
-                        foreach ($workingHours[$engDay] as $timeRange) {
-                            $hoursToArray[] = [
-                                'start' => $timeRange['start'],
-                                'end' => $timeRange['end'],
-                                'day' => $rusDay
-                            ];
-                        }
-                    }
+                $translatedWorkingHours = [];
+                foreach ($workingHours as $workingDay) {
+                    $day = $workingDay['day'];
+                    $translatedDay = $daysOfWeek[$day];
+                    $workingDay['day'] = $translatedDay;
+                    $translatedWorkingHours[] = $workingDay;
                 }
-                $booking->car->division->park->working_hours = $hoursToArray;
+                $booking->car->division->park->working_hours = $translatedWorkingHours;
                 unset(
                     $booking->created_at,
                     $booking->updated_at,

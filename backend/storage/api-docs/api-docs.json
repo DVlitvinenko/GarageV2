@@ -901,38 +901,44 @@
                                         "type": "string"
                                     },
                                     "working_hours": {
-                                        "description": "Время работы",
-                                        "properties": {
-                                            "monday": {
-                                                "description": "Время работы в понедельник",
-                                                "type": "object"
+                                        "description": "Расписание работы парка",
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "day": {
+                                                    "$ref": "#/components/schemas/DayList"
+                                                },
+                                                "start": {
+                                                    "description": "Время начала работы",
+                                                    "properties": {
+                                                        "hours": {
+                                                            "description": "Часы (0-23)",
+                                                            "type": "integer"
+                                                        },
+                                                        "minutes": {
+                                                            "description": "Минуты (0-59)",
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "end": {
+                                                    "description": "Время окончания работы",
+                                                    "properties": {
+                                                        "hours": {
+                                                            "description": "Часы (0-23)",
+                                                            "type": "integer"
+                                                        },
+                                                        "minutes": {
+                                                            "description": "Минуты (0-59)",
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
                                             },
-                                            "tuesday": {
-                                                "description": "Время работы во вторник",
-                                                "type": "object"
-                                            },
-                                            "wednesday": {
-                                                "description": "Время работы в среду",
-                                                "type": "object"
-                                            },
-                                            "thursday": {
-                                                "description": "Время работы в четверг",
-                                                "type": "object"
-                                            },
-                                            "friday": {
-                                                "description": "Время работы в пятницу",
-                                                "type": "object"
-                                            },
-                                            "saturday": {
-                                                "description": "Время работы в субботу",
-                                                "type": "object"
-                                            },
-                                            "sunday": {
-                                                "description": "Время работы в воскресенье",
-                                                "type": "object"
-                                            }
-                                        },
-                                        "type": "object"
+                                            "type": "object"
+                                        }
                                     }
                                 },
                                 "type": "object"
@@ -1295,9 +1301,9 @@
                                         "type": "integer",
                                         "nullable": true
                                     },
-                                    "forbidden_republic_ids": {
-                                        "description": "Массив запрещенных статей",
-                                        "type": "string",
+                                    "is_north_caucasus": {
+                                        "description": "Права выданы в Северном Кавказе",
+                                        "type": "boolean",
                                         "nullable": true
                                     },
                                     "criminal_ids": {
@@ -1428,12 +1434,9 @@
                                         "description": "минимальный скоринг",
                                         "type": "integer"
                                     },
-                                    "forbidden_republic_ids": {
-                                        "description": "Массив запрещенных статей",
-                                        "type": "array",
-                                        "items": {
-                                            "type": "string"
-                                        }
+                                    "is_north_caucasus": {
+                                        "description": "Права выданы в Северном Кавказе",
+                                        "type": "boolean"
                                     },
                                     "criminal_ids": {
                                         "description": "Массив запрещенных республик",
@@ -1558,40 +1561,19 @@
                     "RentOver",
                     "RentStart"
                 ]
-            }
-        },
-        "responses": {
-            "403": {
-                "description": "Пользователь не зарегистрирован или не верифицирован",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "properties": {
-                                "message": {
-                                    "type": "string",
-                                    "example": "Пользователь не зарегистрирован или не верифицирован"
-                                }
-                            },
-                            "type": "object"
-                        }
-                    }
-                }
             },
-            "404": {
-                "description": "Машина не найдена",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "properties": {
-                                "message": {
-                                    "type": "string",
-                                    "example": "Машина не найдена"
-                                }
-                            },
-                            "type": "object"
-                        }
-                    }
-                }
+            "DayList": {
+                "description": "The unique identifier of a product in our catalog",
+                "type": null,
+                "enum": [
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday",
+                    "Saturday",
+                    "Sunday"
+                ]
             }
         }
     }

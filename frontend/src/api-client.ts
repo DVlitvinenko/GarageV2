@@ -1066,7 +1066,7 @@ export class Client {
      * Бронирование автомобиля
      * @return Успешное бронирование
      */
-    booked(body: Body16): Promise<Anonymous58> {
+    book(body: Body16): Promise<Anonymous58> {
         let url_ = this.baseUrl + "/auth/cars/booking";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1082,11 +1082,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processBooked(_response);
+            return this.processBook(_response);
         });
     }
 
-    protected processBooked(response: Response): Promise<Anonymous58> {
+    protected processBook(response: Response): Promise<Anonymous58> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -1322,6 +1322,17 @@ export enum CarStatus {
     Hidden = "Hidden",
     Booked = "Booked",
     Rented = "Rented",
+}
+
+/** The unique identifier of a product in our catalog */
+export enum DayList {
+    Monday = "Monday",
+    Tuesday = "Tuesday",
+    Wednesday = "Wednesday",
+    Thursday = "Thursday",
+    Friday = "Friday",
+    Saturday = "Saturday",
+    Sunday = "Sunday",
 }
 
 /** The unique identifier of a product in our catalog */
@@ -1832,8 +1843,8 @@ export class Body8 implements IBody8 {
     about?: string;
     /** Телефон парка */
     phone?: string;
-    /** Время работы */
-    working_hours?: Working_hours;
+    /** Расписание работы парка */
+    working_hours?: Working_hours[];
 
     [key: string]: any;
 
@@ -1858,7 +1869,11 @@ export class Body8 implements IBody8 {
             this.park_name = _data["park_name"];
             this.about = _data["about"];
             this.phone = _data["phone"];
-            this.working_hours = _data["working_hours"] ? Working_hours.fromJS(_data["working_hours"]) : <any>undefined;
+            if (Array.isArray(_data["working_hours"])) {
+                this.working_hours = [] as any;
+                for (let item of _data["working_hours"])
+                    this.working_hours!.push(Working_hours.fromJS(item));
+            }
         }
     }
 
@@ -1881,7 +1896,11 @@ export class Body8 implements IBody8 {
         data["park_name"] = this.park_name;
         data["about"] = this.about;
         data["phone"] = this.phone;
-        data["working_hours"] = this.working_hours ? this.working_hours.toJSON() : <any>undefined;
+        if (Array.isArray(this.working_hours)) {
+            data["working_hours"] = [];
+            for (let item of this.working_hours)
+                data["working_hours"].push(item.toJSON());
+        }
         return data;
     }
 }
@@ -1899,8 +1918,8 @@ export interface IBody8 {
     about?: string;
     /** Телефон парка */
     phone?: string;
-    /** Время работы */
-    working_hours?: Working_hours;
+    /** Расписание работы парка */
+    working_hours?: Working_hours[];
 
     [key: string]: any;
 }
@@ -2054,8 +2073,8 @@ export class Body11 implements IBody11 {
     abandoned_car?: boolean | undefined;
     /** минимальный скоринг */
     min_scoring?: number | undefined;
-    /** Массив запрещенных статей */
-    forbidden_republic_ids?: string | undefined;
+    /** Права выданы в Северном Кавказе */
+    is_north_caucasus?: boolean | undefined;
     /** Массив запрещенных республик */
     criminal_ids?: string | undefined;
     /** Принимает ли что-то водитель, алкоголь/иное, true/false */
@@ -2084,7 +2103,7 @@ export class Body11 implements IBody11 {
             this.max_fine_count = _data["max_fine_count"];
             this.abandoned_car = _data["abandoned_car"];
             this.min_scoring = _data["min_scoring"];
-            this.forbidden_republic_ids = _data["forbidden_republic_ids"];
+            this.is_north_caucasus = _data["is_north_caucasus"];
             this.criminal_ids = _data["criminal_ids"];
             this.alcohol = _data["alcohol"];
         }
@@ -2109,7 +2128,7 @@ export class Body11 implements IBody11 {
         data["max_fine_count"] = this.max_fine_count;
         data["abandoned_car"] = this.abandoned_car;
         data["min_scoring"] = this.min_scoring;
-        data["forbidden_republic_ids"] = this.forbidden_republic_ids;
+        data["is_north_caucasus"] = this.is_north_caucasus;
         data["criminal_ids"] = this.criminal_ids;
         data["alcohol"] = this.alcohol;
         return data;
@@ -2129,8 +2148,8 @@ export interface IBody11 {
     abandoned_car?: boolean | undefined;
     /** минимальный скоринг */
     min_scoring?: number | undefined;
-    /** Массив запрещенных статей */
-    forbidden_republic_ids?: string | undefined;
+    /** Права выданы в Северном Кавказе */
+    is_north_caucasus?: boolean | undefined;
     /** Массив запрещенных республик */
     criminal_ids?: string | undefined;
     /** Принимает ли что-то водитель, алкоголь/иное, true/false */
@@ -2154,8 +2173,8 @@ export class Body12 implements IBody12 {
     abandoned_car?: boolean;
     /** минимальный скоринг */
     min_scoring?: number;
-    /** Массив запрещенных статей */
-    forbidden_republic_ids?: string[];
+    /** Права выданы в Северном Кавказе */
+    is_north_caucasus?: boolean;
     /** Массив запрещенных республик */
     criminal_ids?: string[];
     /** Принимает ли что-то водитель, алкоголь/иное, true/false */
@@ -2185,11 +2204,7 @@ export class Body12 implements IBody12 {
             this.max_fine_count = _data["max_fine_count"];
             this.abandoned_car = _data["abandoned_car"];
             this.min_scoring = _data["min_scoring"];
-            if (Array.isArray(_data["forbidden_republic_ids"])) {
-                this.forbidden_republic_ids = [] as any;
-                for (let item of _data["forbidden_republic_ids"])
-                    this.forbidden_republic_ids!.push(item);
-            }
+            this.is_north_caucasus = _data["is_north_caucasus"];
             if (Array.isArray(_data["criminal_ids"])) {
                 this.criminal_ids = [] as any;
                 for (let item of _data["criminal_ids"])
@@ -2219,11 +2234,7 @@ export class Body12 implements IBody12 {
         data["max_fine_count"] = this.max_fine_count;
         data["abandoned_car"] = this.abandoned_car;
         data["min_scoring"] = this.min_scoring;
-        if (Array.isArray(this.forbidden_republic_ids)) {
-            data["forbidden_republic_ids"] = [];
-            for (let item of this.forbidden_republic_ids)
-                data["forbidden_republic_ids"].push(item);
-        }
+        data["is_north_caucasus"] = this.is_north_caucasus;
         if (Array.isArray(this.criminal_ids)) {
             data["criminal_ids"] = [];
             for (let item of this.criminal_ids)
@@ -2249,8 +2260,8 @@ export interface IBody12 {
     abandoned_car?: boolean;
     /** минимальный скоринг */
     min_scoring?: number;
-    /** Массив запрещенных статей */
-    forbidden_republic_ids?: string[];
+    /** Права выданы в Северном Кавказе */
+    is_north_caucasus?: boolean;
     /** Массив запрещенных республик */
     criminal_ids?: string[];
     /** Принимает ли что-то водитель, алкоголь/иное, true/false */
@@ -6222,20 +6233,11 @@ export interface ISchemas {
 }
 
 export class Working_hours implements IWorking_hours {
-    /** Время работы в понедельник */
-    monday?: any;
-    /** Время работы во вторник */
-    tuesday?: any;
-    /** Время работы в среду */
-    wednesday?: any;
-    /** Время работы в четверг */
-    thursday?: any;
-    /** Время работы в пятницу */
-    friday?: any;
-    /** Время работы в субботу */
-    saturday?: any;
-    /** Время работы в воскресенье */
-    sunday?: any;
+    day?: DayList;
+    /** Время начала работы */
+    start?: Start;
+    /** Время окончания работы */
+    end?: End;
 
     [key: string]: any;
 
@@ -6254,13 +6256,9 @@ export class Working_hours implements IWorking_hours {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
-            this.monday = _data["monday"];
-            this.tuesday = _data["tuesday"];
-            this.wednesday = _data["wednesday"];
-            this.thursday = _data["thursday"];
-            this.friday = _data["friday"];
-            this.saturday = _data["saturday"];
-            this.sunday = _data["sunday"];
+            this.day = _data["day"];
+            this.start = _data["start"] ? Start.fromJS(_data["start"]) : <any>undefined;
+            this.end = _data["end"] ? End.fromJS(_data["end"]) : <any>undefined;
         }
     }
 
@@ -6277,32 +6275,19 @@ export class Working_hours implements IWorking_hours {
             if (this.hasOwnProperty(property))
                 data[property] = this[property];
         }
-        data["monday"] = this.monday;
-        data["tuesday"] = this.tuesday;
-        data["wednesday"] = this.wednesday;
-        data["thursday"] = this.thursday;
-        data["friday"] = this.friday;
-        data["saturday"] = this.saturday;
-        data["sunday"] = this.sunday;
+        data["day"] = this.day;
+        data["start"] = this.start ? this.start.toJSON() : <any>undefined;
+        data["end"] = this.end ? this.end.toJSON() : <any>undefined;
         return data;
     }
 }
 
 export interface IWorking_hours {
-    /** Время работы в понедельник */
-    monday?: any;
-    /** Время работы во вторник */
-    tuesday?: any;
-    /** Время работы в среду */
-    wednesday?: any;
-    /** Время работы в четверг */
-    thursday?: any;
-    /** Время работы в пятницу */
-    friday?: any;
-    /** Время работы в субботу */
-    saturday?: any;
-    /** Время работы в воскресенье */
-    sunday?: any;
+    day?: DayList;
+    /** Время начала работы */
+    start?: Start;
+    /** Время окончания работы */
+    end?: End;
 
     [key: string]: any;
 }
@@ -6626,8 +6611,7 @@ export interface ICars2 {
 }
 
 export class Booking implements IBooking {
-    car_id?: number;
-    status?: string;
+    status?: BookingStatus;
     id?: number;
     start_date?: string;
     end_date?: string;
@@ -6651,7 +6635,6 @@ export class Booking implements IBooking {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
-            this.car_id = _data["car_id"];
             this.status = _data["status"];
             this.id = _data["id"];
             this.start_date = _data["start_date"];
@@ -6674,7 +6657,6 @@ export class Booking implements IBooking {
             if (this.hasOwnProperty(property))
                 data[property] = this[property];
         }
-        data["car_id"] = this.car_id;
         data["status"] = this.status;
         data["id"] = this.id;
         data["start_date"] = this.start_date;
@@ -6686,13 +6668,124 @@ export class Booking implements IBooking {
 }
 
 export interface IBooking {
-    car_id?: number;
-    status?: string;
+    status?: BookingStatus;
     id?: number;
     start_date?: string;
     end_date?: string;
     car?: Car;
     rent_term?: Rent_term2;
+
+    [key: string]: any;
+}
+
+export class Start implements IStart {
+    /** Часы (0-23) */
+    hours?: number;
+    /** Минуты (0-59) */
+    minutes?: number;
+
+    [key: string]: any;
+
+    constructor(data?: IStart) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.hours = _data["hours"];
+            this.minutes = _data["minutes"];
+        }
+    }
+
+    static fromJS(data: any): Start {
+        data = typeof data === 'object' ? data : {};
+        let result = new Start();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["hours"] = this.hours;
+        data["minutes"] = this.minutes;
+        return data;
+    }
+}
+
+export interface IStart {
+    /** Часы (0-23) */
+    hours?: number;
+    /** Минуты (0-59) */
+    minutes?: number;
+
+    [key: string]: any;
+}
+
+export class End implements IEnd {
+    /** Часы (0-23) */
+    hours?: number;
+    /** Минуты (0-59) */
+    minutes?: number;
+
+    [key: string]: any;
+
+    constructor(data?: IEnd) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.hours = _data["hours"];
+            this.minutes = _data["minutes"];
+        }
+    }
+
+    static fromJS(data: any): End {
+        data = typeof data === 'object' ? data : {};
+        let result = new End();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["hours"] = this.hours;
+        data["minutes"] = this.minutes;
+        return data;
+    }
+}
+
+export interface IEnd {
+    /** Часы (0-23) */
+    hours?: number;
+    /** Минуты (0-59) */
+    minutes?: number;
 
     [key: string]: any;
 }
@@ -6756,20 +6849,11 @@ export interface IDocs {
 export class Bookings implements IBookings {
     /** Идентификатор бронирования */
     id?: number;
-    /** Статус бронирования */
-    status?: string;
-    /** Идентификатор автомобиля */
-    car_id?: number;
+    status?: BookingStatus;
     /** Дата начала бронирования в формате 'd.m.Y H:i' */
     start_date?: string;
     /** Дата окончания бронирования в формате 'd.m.Y H:i' */
     end_date?: string;
-    /** Марка автомобиля */
-    car_brand?: string;
-    /** Модель автомобиля */
-    car_model?: string;
-    /** Ссылки на изображения */
-    car_images?: string[];
     /** Условия аренды */
     rent_term?: Rent_term3;
     /** Информация об автомобиле */
@@ -6794,16 +6878,8 @@ export class Bookings implements IBookings {
             }
             this.id = _data["id"];
             this.status = _data["status"];
-            this.car_id = _data["car_id"];
             this.start_date = _data["start_date"];
             this.end_date = _data["end_date"];
-            this.car_brand = _data["car_brand"];
-            this.car_model = _data["car_model"];
-            if (Array.isArray(_data["car_images"])) {
-                this.car_images = [] as any;
-                for (let item of _data["car_images"])
-                    this.car_images!.push(item);
-            }
             this.rent_term = _data["rent_term"] ? Rent_term3.fromJS(_data["rent_term"]) : <any>undefined;
             this.car = _data["car"] ? Car2.fromJS(_data["car"]) : <any>undefined;
         }
@@ -6824,16 +6900,8 @@ export class Bookings implements IBookings {
         }
         data["id"] = this.id;
         data["status"] = this.status;
-        data["car_id"] = this.car_id;
         data["start_date"] = this.start_date;
         data["end_date"] = this.end_date;
-        data["car_brand"] = this.car_brand;
-        data["car_model"] = this.car_model;
-        if (Array.isArray(this.car_images)) {
-            data["car_images"] = [];
-            for (let item of this.car_images)
-                data["car_images"].push(item);
-        }
         data["rent_term"] = this.rent_term ? this.rent_term.toJSON() : <any>undefined;
         data["car"] = this.car ? this.car.toJSON() : <any>undefined;
         return data;
@@ -6843,20 +6911,11 @@ export class Bookings implements IBookings {
 export interface IBookings {
     /** Идентификатор бронирования */
     id?: number;
-    /** Статус бронирования */
-    status?: string;
-    /** Идентификатор автомобиля */
-    car_id?: number;
+    status?: BookingStatus;
     /** Дата начала бронирования в формате 'd.m.Y H:i' */
     start_date?: string;
     /** Дата окончания бронирования в формате 'd.m.Y H:i' */
     end_date?: string;
-    /** Марка автомобиля */
-    car_brand?: string;
-    /** Модель автомобиля */
-    car_model?: string;
-    /** Ссылки на изображения */
-    car_images?: string[];
     /** Условия аренды */
     rent_term?: Rent_term3;
     /** Информация об автомобиле */
@@ -6866,12 +6925,12 @@ export interface IBookings {
 }
 
 export class Working_hours2 implements IWorking_hours2 {
-    /** Время начала */
-    start?: string;
-    /** Время окончания */
-    end?: string;
     /** День недели на русском */
     day?: string;
+    /** Время начала */
+    start?: Start2;
+    /** Время окончания */
+    end?: End2;
 
     [key: string]: any;
 
@@ -6890,9 +6949,9 @@ export class Working_hours2 implements IWorking_hours2 {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
-            this.start = _data["start"];
-            this.end = _data["end"];
             this.day = _data["day"];
+            this.start = _data["start"] ? Start2.fromJS(_data["start"]) : <any>undefined;
+            this.end = _data["end"] ? End2.fromJS(_data["end"]) : <any>undefined;
         }
     }
 
@@ -6909,20 +6968,20 @@ export class Working_hours2 implements IWorking_hours2 {
             if (this.hasOwnProperty(property))
                 data[property] = this[property];
         }
-        data["start"] = this.start;
-        data["end"] = this.end;
         data["day"] = this.day;
+        data["start"] = this.start ? this.start.toJSON() : <any>undefined;
+        data["end"] = this.end ? this.end.toJSON() : <any>undefined;
         return data;
     }
 }
 
 export interface IWorking_hours2 {
-    /** Время начала */
-    start?: string;
-    /** Время окончания */
-    end?: string;
     /** День недели на русском */
     day?: string;
+    /** Время начала */
+    start?: Start2;
+    /** Время окончания */
+    end?: End2;
 
     [key: string]: any;
 }
@@ -7070,7 +7129,8 @@ export class Car implements ICar {
     brand?: string;
     model?: string;
     year_produced?: number;
-    images?: string;
+    /** Ссылки на изображения */
+    images?: string[];
     сar_class?: CarClass;
     division?: Division2;
 
@@ -7097,7 +7157,11 @@ export class Car implements ICar {
             this.brand = _data["brand"];
             this.model = _data["model"];
             this.year_produced = _data["year_produced"];
-            this.images = _data["images"];
+            if (Array.isArray(_data["images"])) {
+                this.images = [] as any;
+                for (let item of _data["images"])
+                    this.images!.push(item);
+            }
             this.сar_class = _data["сar_class"];
             this.division = _data["division"] ? Division2.fromJS(_data["division"]) : <any>undefined;
         }
@@ -7122,7 +7186,11 @@ export class Car implements ICar {
         data["brand"] = this.brand;
         data["model"] = this.model;
         data["year_produced"] = this.year_produced;
-        data["images"] = this.images;
+        if (Array.isArray(this.images)) {
+            data["images"] = [];
+            for (let item of this.images)
+                data["images"].push(item);
+        }
         data["сar_class"] = this.сar_class;
         data["division"] = this.division ? this.division.toJSON() : <any>undefined;
         return data;
@@ -7136,7 +7204,8 @@ export interface ICar {
     brand?: string;
     model?: string;
     year_produced?: number;
-    images?: string;
+    /** Ссылки на изображения */
+    images?: string[];
     сar_class?: CarClass;
     division?: Division2;
 
@@ -7144,8 +7213,8 @@ export interface ICar {
 }
 
 export class Rent_term2 implements IRent_term2 {
-    deposit_amount_daily?: string;
-    deposit_amount_total?: string;
+    deposit_amount_daily?: number;
+    deposit_amount_total?: number;
     minimum_period_days?: number;
     is_buyout_possible?: number;
     schemas?: Schemas4[];
@@ -7206,8 +7275,8 @@ export class Rent_term2 implements IRent_term2 {
 }
 
 export interface IRent_term2 {
-    deposit_amount_daily?: string;
-    deposit_amount_total?: string;
+    deposit_amount_daily?: number;
+    deposit_amount_total?: number;
     minimum_period_days?: number;
     is_buyout_possible?: number;
     schemas?: Schemas4[];
@@ -7216,8 +7285,8 @@ export interface IRent_term2 {
 }
 
 export class Rent_term3 implements IRent_term3 {
-    deposit_amount_daily?: string;
-    deposit_amount_total?: string;
+    deposit_amount_daily?: number;
+    deposit_amount_total?: number;
     minimum_period_days?: number;
     is_buyout_possible?: number;
     schemas?: Schemas5[];
@@ -7278,8 +7347,8 @@ export class Rent_term3 implements IRent_term3 {
 }
 
 export interface IRent_term3 {
-    deposit_amount_daily?: string;
-    deposit_amount_total?: string;
+    deposit_amount_daily?: number;
+    deposit_amount_total?: number;
     minimum_period_days?: number;
     is_buyout_possible?: number;
     schemas?: Schemas5[];
@@ -7295,7 +7364,8 @@ export class Car2 implements ICar2 {
     brand?: string;
     model?: string;
     year_produced?: number;
-    images?: string;
+    /** Ссылки на изображения */
+    images?: string[];
     /** Информация о дивизионе */
     division?: Division3;
 
@@ -7323,7 +7393,11 @@ export class Car2 implements ICar2 {
             this.brand = _data["brand"];
             this.model = _data["model"];
             this.year_produced = _data["year_produced"];
-            this.images = _data["images"];
+            if (Array.isArray(_data["images"])) {
+                this.images = [] as any;
+                for (let item of _data["images"])
+                    this.images!.push(item);
+            }
             this.division = _data["division"] ? Division3.fromJS(_data["division"]) : <any>undefined;
         }
     }
@@ -7348,7 +7422,11 @@ export class Car2 implements ICar2 {
         data["brand"] = this.brand;
         data["model"] = this.model;
         data["year_produced"] = this.year_produced;
-        data["images"] = this.images;
+        if (Array.isArray(this.images)) {
+            data["images"] = [];
+            for (let item of this.images)
+                data["images"].push(item);
+        }
         data["division"] = this.division ? this.division.toJSON() : <any>undefined;
         return data;
     }
@@ -7362,9 +7440,122 @@ export interface ICar2 {
     brand?: string;
     model?: string;
     year_produced?: number;
-    images?: string;
+    /** Ссылки на изображения */
+    images?: string[];
     /** Информация о дивизионе */
     division?: Division3;
+
+    [key: string]: any;
+}
+
+export class Start2 implements IStart2 {
+    /** Часы (0-23) */
+    hours?: number;
+    /** Минуты (0-59) */
+    minutes?: number;
+
+    [key: string]: any;
+
+    constructor(data?: IStart2) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.hours = _data["hours"];
+            this.minutes = _data["minutes"];
+        }
+    }
+
+    static fromJS(data: any): Start2 {
+        data = typeof data === 'object' ? data : {};
+        let result = new Start2();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["hours"] = this.hours;
+        data["minutes"] = this.minutes;
+        return data;
+    }
+}
+
+export interface IStart2 {
+    /** Часы (0-23) */
+    hours?: number;
+    /** Минуты (0-59) */
+    minutes?: number;
+
+    [key: string]: any;
+}
+
+export class End2 implements IEnd2 {
+    /** Часы (0-23) */
+    hours?: number;
+    /** Минуты (0-59) */
+    minutes?: number;
+
+    [key: string]: any;
+
+    constructor(data?: IEnd2) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.hours = _data["hours"];
+            this.minutes = _data["minutes"];
+        }
+    }
+
+    static fromJS(data: any): End2 {
+        data = typeof data === 'object' ? data : {};
+        let result = new End2();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["hours"] = this.hours;
+        data["minutes"] = this.minutes;
+        return data;
+    }
+}
+
+export interface IEnd2 {
+    /** Часы (0-23) */
+    hours?: number;
+    /** Минуты (0-59) */
+    minutes?: number;
 
     [key: string]: any;
 }
@@ -7822,12 +8013,11 @@ export interface IPark2 {
 }
 
 export class Working_hours3 implements IWorking_hours3 {
-    /** Время начала */
-    start?: string;
-    /** Время окончания */
-    end?: string;
-    /** День недели на русском */
-    day?: string;
+    day?: DayList;
+    /** Время начала работы */
+    start?: Start3;
+    /** Время окончания работы */
+    end?: End3;
 
     [key: string]: any;
 
@@ -7846,9 +8036,9 @@ export class Working_hours3 implements IWorking_hours3 {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
-            this.start = _data["start"];
-            this.end = _data["end"];
             this.day = _data["day"];
+            this.start = _data["start"] ? Start3.fromJS(_data["start"]) : <any>undefined;
+            this.end = _data["end"] ? End3.fromJS(_data["end"]) : <any>undefined;
         }
     }
 
@@ -7865,31 +8055,29 @@ export class Working_hours3 implements IWorking_hours3 {
             if (this.hasOwnProperty(property))
                 data[property] = this[property];
         }
-        data["start"] = this.start;
-        data["end"] = this.end;
         data["day"] = this.day;
+        data["start"] = this.start ? this.start.toJSON() : <any>undefined;
+        data["end"] = this.end ? this.end.toJSON() : <any>undefined;
         return data;
     }
 }
 
 export interface IWorking_hours3 {
-    /** Время начала */
-    start?: string;
-    /** Время окончания */
-    end?: string;
-    /** День недели на русском */
-    day?: string;
+    day?: DayList;
+    /** Время начала работы */
+    start?: Start3;
+    /** Время окончания работы */
+    end?: End3;
 
     [key: string]: any;
 }
 
 export class Working_hours4 implements IWorking_hours4 {
-    /** Время начала */
-    start?: string;
-    /** Время окончания */
-    end?: string;
-    /** День недели на русском */
-    day?: string;
+    day?: DayList;
+    /** Время начала работы */
+    start?: Start4;
+    /** Время окончания работы */
+    end?: End4;
 
     [key: string]: any;
 
@@ -7908,9 +8096,9 @@ export class Working_hours4 implements IWorking_hours4 {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
-            this.start = _data["start"];
-            this.end = _data["end"];
             this.day = _data["day"];
+            this.start = _data["start"] ? Start4.fromJS(_data["start"]) : <any>undefined;
+            this.end = _data["end"] ? End4.fromJS(_data["end"]) : <any>undefined;
         }
     }
 
@@ -7927,20 +8115,243 @@ export class Working_hours4 implements IWorking_hours4 {
             if (this.hasOwnProperty(property))
                 data[property] = this[property];
         }
-        data["start"] = this.start;
-        data["end"] = this.end;
         data["day"] = this.day;
+        data["start"] = this.start ? this.start.toJSON() : <any>undefined;
+        data["end"] = this.end ? this.end.toJSON() : <any>undefined;
         return data;
     }
 }
 
 export interface IWorking_hours4 {
-    /** Время начала */
-    start?: string;
-    /** Время окончания */
-    end?: string;
-    /** День недели на русском */
-    day?: string;
+    day?: DayList;
+    /** Время начала работы */
+    start?: Start4;
+    /** Время окончания работы */
+    end?: End4;
+
+    [key: string]: any;
+}
+
+export class Start3 implements IStart3 {
+    /** Часы (0-23) */
+    hours?: number;
+    /** Минуты (0-59) */
+    minutes?: number;
+
+    [key: string]: any;
+
+    constructor(data?: IStart3) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.hours = _data["hours"];
+            this.minutes = _data["minutes"];
+        }
+    }
+
+    static fromJS(data: any): Start3 {
+        data = typeof data === 'object' ? data : {};
+        let result = new Start3();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["hours"] = this.hours;
+        data["minutes"] = this.minutes;
+        return data;
+    }
+}
+
+export interface IStart3 {
+    /** Часы (0-23) */
+    hours?: number;
+    /** Минуты (0-59) */
+    minutes?: number;
+
+    [key: string]: any;
+}
+
+export class End3 implements IEnd3 {
+    /** Часы (0-23) */
+    hours?: number;
+    /** Минуты (0-59) */
+    minutes?: number;
+
+    [key: string]: any;
+
+    constructor(data?: IEnd3) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.hours = _data["hours"];
+            this.minutes = _data["minutes"];
+        }
+    }
+
+    static fromJS(data: any): End3 {
+        data = typeof data === 'object' ? data : {};
+        let result = new End3();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["hours"] = this.hours;
+        data["minutes"] = this.minutes;
+        return data;
+    }
+}
+
+export interface IEnd3 {
+    /** Часы (0-23) */
+    hours?: number;
+    /** Минуты (0-59) */
+    minutes?: number;
+
+    [key: string]: any;
+}
+
+export class Start4 implements IStart4 {
+    /** Часы (0-23) */
+    hours?: number;
+    /** Минуты (0-59) */
+    minutes?: number;
+
+    [key: string]: any;
+
+    constructor(data?: IStart4) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.hours = _data["hours"];
+            this.minutes = _data["minutes"];
+        }
+    }
+
+    static fromJS(data: any): Start4 {
+        data = typeof data === 'object' ? data : {};
+        let result = new Start4();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["hours"] = this.hours;
+        data["minutes"] = this.minutes;
+        return data;
+    }
+}
+
+export interface IStart4 {
+    /** Часы (0-23) */
+    hours?: number;
+    /** Минуты (0-59) */
+    minutes?: number;
+
+    [key: string]: any;
+}
+
+export class End4 implements IEnd4 {
+    /** Часы (0-23) */
+    hours?: number;
+    /** Минуты (0-59) */
+    minutes?: number;
+
+    [key: string]: any;
+
+    constructor(data?: IEnd4) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.hours = _data["hours"];
+            this.minutes = _data["minutes"];
+        }
+    }
+
+    static fromJS(data: any): End4 {
+        data = typeof data === 'object' ? data : {};
+        let result = new End4();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["hours"] = this.hours;
+        data["minutes"] = this.minutes;
+        return data;
+    }
+}
+
+export interface IEnd4 {
+    /** Часы (0-23) */
+    hours?: number;
+    /** Минуты (0-59) */
+    minutes?: number;
 
     [key: string]: any;
 }

@@ -24,7 +24,7 @@ module.exports = {
         },
       }),
       colors: {
-        red: "#b91c1c",
+        red: "#ff4930",
         yellow: "#fbbf24",
         black: "#0c0a09",
         gray: "#1f2937",

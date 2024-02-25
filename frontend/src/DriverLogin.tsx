@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Body8, Body9 } from "./api-client";
 import React, { ChangeEvent } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 export const DriverLogin = () => {
   const CODE_LENGTH = 8;
 
@@ -13,6 +14,10 @@ export const DriverLogin = () => {
 
   const [phone, setPhone] = useState("");
   const [code, setCode] = useState(0);
+
+  const {
+    state: { bookingAttempt },
+  } = useLocation();
 
   const getCode = async () => {
     await client.createAndSendCode(new Body9({ phone }));
@@ -73,6 +78,11 @@ export const DriverLogin = () => {
         <h2 className="my-10 text-center">
           Зарегистрируйтесь или войдите в личный кабинет.
         </h2>
+        {bookingAttempt && (
+          <div className="mb-8 text-center text-red ">
+            Чтобы забронировать машину - зарегистрируйтесь
+          </div>
+        )}
         <Label>Введите ваш телефон</Label>
         <Input
           className="mt-1"
