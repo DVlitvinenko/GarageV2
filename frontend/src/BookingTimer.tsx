@@ -1,17 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { Body17, Booking, BookingStatus, Bookings, User } from "./api-client";
-import { Separator } from "@/components/ui/separator";
+import { Body17, BookingStatus, Bookings, User } from "./api-client";
 import { useTimer } from "react-timer-hook";
-import { addDays, addHours, addSeconds, formatDistanceToNow } from "date-fns";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { userAtom } from "./atoms";
-import { reject } from "ramda";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { client } from "./backend";
 
 export const BookingTimer = () => {
@@ -20,18 +12,21 @@ export const BookingTimer = () => {
   const activeBooking = user?.bookings!.find(
     (x) => x.status === BookingStatus.Booked
   );
-  const bookingEndDate = activeBooking
-    ? new Date(activeBooking.end_date!)
-    : new Date();
 
   const { minutes, hours, restart } = useTimer({
-    expiryTimestamp: bookingEndDate, // Передаем объект Date в useTimer
-    // onExpire: () => console.warn("onExpire called"),
+    expiryTimestamp: new Date(),
+    autoStart: false,
   });
 
   useEffect(() => {
-    restart(bookingEndDate);
-  }, [user]);
+    if (activeBooking) {
+      restart(new Date(activeBooking.end_date!));
+    }
+  }, [activeBooking]);
+
+  if (!activeBooking) {
+    return <></>;
+  }
 
   const cancelBooking = async () => {
     await client.cancelBooking(
@@ -55,18 +50,14 @@ export const BookingTimer = () => {
   };
 
   return (
-    <>
-      {!!activeBooking && (
-        <div className="flex items-center content-center px-4 py-2 mt-2 space-x-2 text-lg font-bold bg-white rounded-xl">
-          <div className="flex flex-col items-center content-center">
-            Осталось времени:{" "}
-            <span className="text-xl">{`${hours}ч:${minutes}м`}</span>
-          </div>
-          <Button variant="reject" onAsyncClick={cancelBooking}>
-            Отменить бронь
-          </Button>
-        </div>
-      )}
-    </>
+    <div className="flex items-center content-center px-4 py-2 mt-2 space-x-2 text-lg font-bold bg-white rounded-xl">
+      <div className="flex flex-col items-center content-center">
+        Осталось времени:
+        <span className="text-xl">{`${hours}ч:${minutes}м`}</span>
+      </div>
+      <Button variant="reject" onAsyncClick={cancelBooking}>
+        Отменить бронь
+      </Button>
+    </div>
   );
 };

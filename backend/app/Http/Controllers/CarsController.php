@@ -517,14 +517,14 @@ foreach($workingHours as $workingDay) {
     $endTimeOfWorkDayToday = Carbon::createFromTime($todayWorkingHours['end']['hours'], $todayWorkingHours['end']['minutes'], 0, $division->park->timezone)->timestamp;
     $endTimeOfWorkDayToday -= $rent_time * 3600;
 
-    if ($endTimeOfWorkDayToday < $currentTime) {
-        $nextWorkingDay = Carbon::now()->addDay()->format('l');
-        $nextWorkingHours = $workingHours[$nextWorkingDay][0];
-        $startTimeOfWorkDayTomorrow = Carbon::createFromTime($nextWorkingHours['start']['hours'], $nextWorkingHours['start']['minutes'], 0, $division->park->timezone)->timestamp;
-        $newEndTime = $startTimeOfWorkDayTomorrow + $rent_time * 3600;
-    } else {
-        $newEndTime = $currentTime + $rent_time * 3600;
-    }
+    // if ($endTimeOfWorkDayToday < $currentTime) {
+    //     $nextWorkingDay = Carbon::now()->addDay()->format('l');
+    //     $nextWorkingHours = $workingHours[$nextWorkingDay][0];
+    //     $startTimeOfWorkDayTomorrow = Carbon::createFromTime($nextWorkingHours['start']['hours'], $nextWorkingHours['start']['minutes'], 0, $division->park->timezone)->timestamp;
+    //     $newEndTime = $startTimeOfWorkDayTomorrow + $rent_time * 3600;
+    // } else {
+    $newEndTime = $currentTime + $rent_time * 3600;
+    // }
 
     $booking = new Booking();
     $booking->car_id = $request->id;
