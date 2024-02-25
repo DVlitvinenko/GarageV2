@@ -30,14 +30,15 @@ import {
 export const BookingDrawer = () => {
   const [user, setUser] = useRecoilState(userAtom);
 
-  const activeBooking = user?.bookings!.find(
+  const bookings = user!.bookings;
+  const activeBooking = bookings!.find(
     (x) => x.status === BookingStatus.Booked
   );
 
-  if (!user?.bookings?.length) {
+  if (bookings?.length) {
     return <>У вас пока нет бронирований</>;
   }
-  const sortedBookings = user?.bookings.slice().sort((a, b) => {
+  const sortedBookings = bookings!.slice().sort((a, b) => {
     if (a.end_date! > b.end_date!) return -1;
     if (a.end_date! < b.end_date!) return 1;
     return 0;
