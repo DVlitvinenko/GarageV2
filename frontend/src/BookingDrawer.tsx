@@ -2,7 +2,14 @@ import { Button } from "@/components/ui/button";
 import { Body17, BookingStatus, Bookings } from "./api-client";
 import { Separator } from "@/components/ui/separator";
 import { useTimer } from "react-timer-hook";
-import { addDays, addHours, addSeconds, formatDistanceToNow } from "date-fns";
+import {
+  addDays,
+  addHours,
+  addSeconds,
+  format,
+  formatDistanceToNow,
+  formatISO,
+} from "date-fns";
 import {
   Collapsible,
   CollapsibleContent,
@@ -31,9 +38,9 @@ export const BookingDrawer = () => {
     return <>У вас пока нет бронирований</>;
   }
   const sortedBookings = user?.bookings.slice().sort((a, b) => {
-    if (a.id === activeBooking?.id) return -1; // Активное бронирование должно быть первым
-    if (b.id === activeBooking?.id) return 1; // Активное бронирование должно быть первым
-    return 0; // Остальные бронирования не изменяют порядок
+    if (a.end_date! > b.end_date!) return -1;
+    if (a.end_date! < b.end_date!) return 1;
+    return 0;
   });
   return (
     <>
@@ -125,12 +132,12 @@ export const BookingDrawer = () => {
           <Separator />
           <div className="flex items-center">
             <p className="w-1/2 font-semibold">Дата начала бронирования:</p>
-            {booking.start_date}
+            {format(booking.start_date!, "dd.MM.yyyy HH:mm")}
           </div>
           <Separator />
           <div className="flex items-center">
             <p className="w-1/2 font-semibold">Дата окончания бронирования:</p>
-            {booking.start_date}
+            {booking.end_date!}
           </div>
         </div>
       ))}

@@ -19,7 +19,9 @@ export function getFuelTypeDisplayName(x: FuelType | undefined | null) {
   return dict[x];
 }
 
-export function getTransmissionDisplayName(x: TransmissionType | undefined | null) {
+export function getTransmissionDisplayName(
+  x: TransmissionType | undefined | null
+) {
   if (!x) {
     return "Любой тип трансмиссии";
   }
@@ -38,5 +40,3 @@ export const formatRoubles = (amount: number) =>
     maximumSignificantDigits: 3,
     currency: "RUB",
   }).format(amount);
-
-
