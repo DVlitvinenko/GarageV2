@@ -5,7 +5,14 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { Body16, Booking, Cars2, UserStatus } from "./api-client";
+import {
+  Body16,
+  Booking,
+  Bookings,
+  Cars2,
+  UserStatus,
+  User,
+} from "./api-client";
 import { Separator } from "@/components/ui/separator";
 import {
   formatRoubles,
@@ -19,28 +26,30 @@ import { client } from "./backend";
 
 export const ModalCard = ({ car }: { car: Cars2 }) => {
   const [user, setUser] = useRecoilState(userAtom);
-  const [isActiveBooking, setActiveBookingData] =
-    useRecoilState(isActiveBookingAtom);
 
   const navigate = useNavigate();
 
   // временно удаляем проверку на верификацию!!!
-  const book = () => {
+  const book = async () => {
     if (!user) {
-      return navigate("login/driver");
+      return navigate("login/driver", {
+        state: {
+          bookingAttempt: true,
+        },
+      });
     }
     // if (user.user_status === UserStatus.Verified) {
-    const startBooking = async () => {
-      try {
-        const bookingData = await client.book(
-          new Body16({
-            id: car.id,
-          })
-        );
-        setActiveBookingData(bookingData);
-      } catch (error) {}
-    };
-    startBooking();
+    const bookingData = await client.book(
+      new Body16({
+        id: car.id,
+      })
+    );
+    setUser(
+      new User({
+        ...user,
+        bookings: [...user.bookings!, new Bookings(bookingData.booking)],
+      })
+    );
     return navigate("bookings");
     // } else {
     //   navigate("account");

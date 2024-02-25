@@ -7,7 +7,7 @@ import { Finder } from "./Finder";
 import { Account } from "./Account";
 import { DriverLogin } from "./DriverLogin";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { isActiveBookingAtom, userAtom } from "./atoms";
+import { userAtom } from "./atoms";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faClockRotateLeft,
@@ -30,7 +30,6 @@ import { BookingTimer } from "./BookingTimer";
 
 function App() {
   const [user, setUser] = useRecoilState(userAtom);
-  const isActiveBooking = useRecoilValue(isActiveBookingAtom);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -46,7 +45,7 @@ function App() {
     };
 
     checkAuth();
-  }, [isActiveBooking]);
+  }, []);
 
   return (
     <div className="max-w-sm p-4 mx-auto">

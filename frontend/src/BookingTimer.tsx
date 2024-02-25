@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Body17, Booking, BookingStatus, Bookings } from "./api-client";
+import { Body17, Booking, BookingStatus, Bookings, User } from "./api-client";
 import { Separator } from "@/components/ui/separator";
 import { useTimer } from "react-timer-hook";
 import { addDays, addHours, addSeconds, formatDistanceToNow } from "date-fns";
@@ -9,15 +9,13 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { isActiveBookingAtom, userAtom } from "./atoms";
+import { userAtom } from "./atoms";
 import { reject } from "ramda";
 import { useEffect, useState } from "react";
 import { client } from "./backend";
 
 export const BookingTimer = () => {
   const [user, setUser] = useRecoilState(userAtom);
-  const [isActiveBooking, setIsActiveBooking] =
-    useRecoilState(isActiveBookingAtom);
 
   const activeBooking = user?.bookings!.find(
     (x) => x.status === BookingStatus.Booked
@@ -41,7 +39,15 @@ export const BookingTimer = () => {
         id: activeBooking!.id,
       })
     );
-    setIsActiveBooking(!isActiveBooking);
+    setUser(
+      new User({
+        ...user,
+        bookings: [
+          ...user.bookings!.filter((x) => x !== activeBooking),
+          new Bookings({ ...activeBooking, status: BookingStatus.UnBooked }),
+        ],
+      })
+    );
   };
 
   return (
