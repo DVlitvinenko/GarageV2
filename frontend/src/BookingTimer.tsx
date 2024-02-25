@@ -5,6 +5,7 @@ import { useRecoilState } from "recoil";
 import { userAtom } from "./atoms";
 import { useEffect } from "react";
 import { client } from "./backend";
+import Confirmation from "@/components/ui/confirmation";
 
 export const BookingTimer = () => {
   const [user, setUser] = useRecoilState(userAtom);
@@ -55,9 +56,15 @@ export const BookingTimer = () => {
         Осталось времени:
         <span className="text-xl">{`${hours}ч:${minutes}м`}</span>
       </div>
-      <Button variant="reject" onAsyncClick={cancelBooking}>
-        Отменить бронь
-      </Button>
+      <div className="w-1/2">
+        <Confirmation
+          title="Вы уверены?"
+          type="red"
+          accept={cancelBooking}
+          cancel={() => {}}
+          trigger={<Button variant="reject">Отменить бронь</Button>}
+        />
+      </div>
     </div>
   );
 };

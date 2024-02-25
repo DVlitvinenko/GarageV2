@@ -16,6 +16,7 @@ import { userAtom } from "./atoms";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { client } from "./backend";
+import Confirmation from "@/components/ui/confirmation";
 
 export const ModalCard = ({ car }: { car: Cars2 }) => {
   const [user, setUser] = useRecoilState(userAtom);
@@ -140,9 +141,15 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
             car.rent_term?.schemas![0]!.working_days
           }раб. /${car.rent_term?.schemas![0]!.non_working_days}вых.`}</div>
         </Badge>
-        <Button onClick={book} className="w-1/2">
-          Забронировать
-        </Button>
+        <div className="w-1/2">
+          <Confirmation
+            title="Вы уверены?"
+            type="green"
+            accept={book}
+            cancel={() => {}}
+            trigger={<Button className="">Забронировать</Button>}
+          />
+        </div>
       </div>
     </>
   );
