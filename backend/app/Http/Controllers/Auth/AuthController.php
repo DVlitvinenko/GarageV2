@@ -219,8 +219,8 @@ class AuthController extends Controller
                 unset(
                     $booking->created_at,
                     $booking->updated_at,
-                    $booking->booking_at,
-                    $booking->booking_until,
+                    $booking->booked_at,
+                    $booking->booked_until,
                     $booking->park_id,
                     $booking->driver_id,
                     $booking->car->booking,
