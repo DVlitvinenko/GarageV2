@@ -50,9 +50,6 @@ function App() {
   return (
     <div className="max-w-sm p-4 mx-auto">
       <div className="flex justify-between my-0 space-x-2">
-        <a>
-          <img className="w-32" src={logo} alt="logo" />
-        </a>
         <Menu user={user} />
         {/* <span className="font-bold text-md text-gray"></span> */}
         <CityPicker />
@@ -79,12 +76,20 @@ const LogoutHandler = () => {
 
 const Menu = ({ user }: { user: User }) => (
   <div className="flex mx-auto space-x-4 cursor-pointer justify-evenly w-60">
+    <Link to="/">
+      <img className="h-5" src={logo} alt="logo" />
+    </Link>
     <Link className="hover:text-yellow" to="/">
       <FontAwesomeIcon icon={faTaxi} className="h-4" />
-    </Link>
-    <Link className="hover:text-yellow" to={user ? "account" : "login/driver"}>
-      <FontAwesomeIcon icon={faUser} className="h-4" />
-    </Link>
+    </Link>{" "}
+    {user && (
+      <Link
+        className="hover:text-yellow"
+        to={user ? "account" : "login/driver"}
+      >
+        <FontAwesomeIcon icon={faUser} className="h-4" />
+      </Link>
+    )}
     {user && (
       <Link className="hover:text-yellow" to="bookings">
         <FontAwesomeIcon icon={faClockRotateLeft} className="h-4" />

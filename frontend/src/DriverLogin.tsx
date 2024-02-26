@@ -6,11 +6,13 @@ import { Label } from "@/components/ui/label";
 import { Body8, Body9 } from "./api-client";
 import React, { ChangeEvent } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useTimer } from "react-timer-hook";
 export const DriverLogin = () => {
   const CODE_LENGTH = 8;
 
   const [codeRequested, setRequested] = useState(false);
   const [codeHasError, setCodeHasError] = useState(false);
+  const [codeAttempts, setCodeAttempts] = useState(0);
 
   const [phone, setPhone] = useState("");
   const [code, setCode] = useState(0);
@@ -18,8 +20,15 @@ export const DriverLogin = () => {
   const location = useLocation();
 
   const getCode = async () => {
+    const time = new Date();
+
+    codeAttempts < 3
+      ? time.setSeconds(time.getSeconds() + 60)
+      : time.setSeconds(time.getSeconds() + 300);
+    codeAttempts < 3 ? setCodeAttempts(codeAttempts + 1) : setCodeAttempts(0);
     await client.createAndSendCode(new Body9({ phone }));
     setRequested(true);
+    restart(time);
   };
 
   const login = async () => {
@@ -35,6 +44,11 @@ export const DriverLogin = () => {
       setCodeHasError(true);
     }
   };
+
+  const { minutes, seconds, restart } = useTimer({
+    expiryTimestamp: new Date(),
+    autoStart: false,
+  });
 
   const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setCode(parseInt(e.target.value));
@@ -107,9 +121,19 @@ export const DriverLogin = () => {
           </>
         )}
 
-        <div className="text-center">
+        <div className="space-y-6 text-center">
           {!codeRequested && (
             <Button onAsyncClick={getCode}>Получить код</Button>
+          )}
+          {codeRequested && !(!!minutes || !!seconds) && (
+            <Button variant={"reject"} onAsyncClick={getCode}>
+              Отправить код повторно
+            </Button>
+          )}
+          {(!!minutes || !!seconds) && (
+            <Button className="bg-grey active:bg-grey">
+              Повторная отправка кода через: ({`${minutes}:${seconds}`})
+            </Button>
           )}
           {codeRequested && (
             <Button
@@ -123,7 +147,7 @@ export const DriverLogin = () => {
 
         {codeRequested && (
           <div className="my-4 text-center">
-            Нажимая 'Войти' вы соглашаетесь с{" "}
+            Нажимая &laquo;Войти&raquo; вы соглашаетесь с{" "}
             <a className="text-blue-800 underline" href="kwol.ru">
               условиями договора
             </a>
