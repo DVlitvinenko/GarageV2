@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { client } from "./backend";
 import Confirmation from "@/components/ui/confirmation";
+import SliderImages from "@/components/ui/slider-images";
 import {
   addDays,
   addHours,
@@ -26,9 +27,11 @@ import {
   formatDistanceToNow,
   formatISO,
 } from "date-fns";
+import { useState } from "react";
 
 export const ModalCard = ({ car }: { car: Cars2 }) => {
   const [user, setUser] = useRecoilState(userAtom);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   const navigate = useNavigate();
 
@@ -58,17 +61,52 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
     //   navigate("account");
     // }
   };
-
   const { schemas } = car.rent_term!;
 
   return (
     <>
-      <div className="flex flex-col justify-center py-8 overflow-y-auto ">
-        <img
-          className="object-cover w-full rounded-t-xl"
-          src={car.images![0]}
-          alt=""
-        />
+      <div className="flex flex-col justify-center pt-4 pb-8 overflow-y-auto ">
+        <SliderImages images={car.images!} />
+        {/* <div className="relative w-full h-52">
+          <div className="flex space-x-4 overflow-scroll overflow-x-auto scrollbar-hide">
+            {car.images!.map((x, i) => {
+              return (
+                <div
+                  className={`min-w-[100%] h-52 pr-1 transition-transform ${
+                    i === activeImageIndex ? "" : ""
+                  }`}
+                >
+                  <img
+                    className="object-cover w-full h-full rounded-xl"
+                    src={x}
+                    alt=""
+                  />
+                </div>
+              );
+            })}
+          </div> */}
+        {/* <div className="absolute bottom-0 flex px-1 py-1">
+            {car.images!.map((x, i) => {
+              return (
+                <div
+                  key={`modal_image_${i}`}
+                  className={`w-full flex items-center bg-white rounded-xl transition-all h-14 ${
+                    i === activeImageIndex
+                      ? "shadow border-2 border-yellow"
+                      : " scale-90"
+                  }`}
+                >
+                  <img
+                    className="object-cover w-full h-full rounded-xl"
+                    src={x}
+                    onClick={() => setActiveImageIndex(i)}
+                    alt=""
+                  />
+                </div>
+              );
+            })}
+          </div> */}
+        {/* </div> */}
         <div className="space-y-2">
           <h1 className="my-4 text-center">{`${car.brand} ${car.model} ${car.year_produced}`}</h1>
 
@@ -143,7 +181,7 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
           ))}
         </div>
       </div>
-      <div className="fixed bottom-0 left-0 flex justify-center w-full px-4 py-4 space-x-2 bg-white border-t border-pale">
+      <div className="fixed bottom-0 left-0 flex justify-center w-full px-2 py-2 space-x-2 bg-white border-t border-pale">
         <Badge variant="schema" className="w-1/2 h-auto border-none bg-grey">
           {`${
             car.rent_term?.schemas![0]?.daily_amount !== undefined
