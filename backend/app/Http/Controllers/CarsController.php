@@ -529,7 +529,7 @@ if ($endTimeOfWorkDayToday < $currentTime) {
     date_default_timezone_set('UTC');
 
     $booking->booked_at = Carbon::now()->toIso8601ZuluString();
-    $booking->booked_until = Carbon::createFromTimestamp($newEndTime)->toIso8601ZuluString();
+    $booking->booked_until = Carbon::parse($newEndTime)->toIso8601ZuluString();
     $booking->status = BookingStatus::Booked->value;
     $booking->driver_id = $driver->id;
 
