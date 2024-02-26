@@ -9,6 +9,7 @@ import { Body16, Bookings, Cars2, User } from "./api-client";
 import { Separator } from "@/components/ui/separator";
 import {
   formatRoubles,
+  formatWorkingTime,
   getFuelTypeDisplayName,
   getTransmissionDisplayName,
 } from "@/lib/utils";
@@ -17,6 +18,14 @@ import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { client } from "./backend";
 import Confirmation from "@/components/ui/confirmation";
+import {
+  addDays,
+  addHours,
+  addSeconds,
+  format,
+  formatDistanceToNow,
+  formatISO,
+} from "date-fns";
 
 export const ModalCard = ({ car }: { car: Cars2 }) => {
   const [user, setUser] = useRecoilState(userAtom);
@@ -82,9 +91,13 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
           <div className="min-h-48">
             {car.working_hours?.map((x) => (
               <div className="flex items-center" key={x.day}>
-                <div className="text-sm capitalize w-28">{x.day}</div>{" "}
-                {x.start?.hours}:{x.start?.minutes} - {x.end?.hours}:
-                {x.end?.minutes}
+                <div className="text-sm capitalize w-28">{x.day}</div>
+                {formatWorkingTime(
+                  x.start!.hours!,
+                  x.start!.minutes!,
+                  x.end!.hours!,
+                  x.end!.minutes!
+                )}
               </div>
             ))}
           </div>

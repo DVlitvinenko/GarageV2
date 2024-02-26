@@ -505,7 +505,7 @@ $car['commission'] = rtrim(rtrim($commissionFormatted, '0'), '.');
 
     $workingHours = json_decode($division->park->working_hours, true);
     $currentDayOfWeek = Carbon::now()->format('l');
-    $currentTime = Carbon::now()->timestamp;
+    $currentTime = Carbon::now();
 
     $todayWorkingHours = null;
 foreach($workingHours as $workingDay) {
@@ -514,17 +514,14 @@ foreach($workingHours as $workingDay) {
         break;
     }
 }
-    $endTimeOfWorkDayToday = Carbon::createFromTime($todayWorkingHours['end']['hours'], $todayWorkingHours['end']['minutes'], 0, $division->park->timezone)->timestamp;
-    $endTimeOfWorkDayToday -= $rent_time * 3600;
-
-    // if ($endTimeOfWorkDayToday < $currentTime) {
-    //     $nextWorkingDay = Carbon::now()->addDay()->format('l');
-    //     $nextWorkingHours = $workingHours[$nextWorkingDay][0];
-    //     $startTimeOfWorkDayTomorrow = Carbon::createFromTime($nextWorkingHours['start']['hours'], $nextWorkingHours['start']['minutes'], 0, $division->park->timezone)->timestamp;
-    //     $newEndTime = $startTimeOfWorkDayTomorrow + $rent_time * 3600;
-    // } else {
-    $newEndTime = $currentTime + $rent_time * 3600;
-    // }
+$endTimeOfWorkDayToday = Carbon::createFromTime($todayWorkingHours['end']['hours'], $todayWorkingHours['end']['minutes'], 0)->addHours(-$rent_time);
+if ($endTimeOfWorkDayToday < $currentTime) {
+    $nextWorkingDayInfo = $this->findNextWorkingDay(Carbon::now()->format('l'), $workingHours);
+    $startTimeOfWorkDayTomorrow = Carbon::createFromTime($nextWorkingDayInfo['start']['hours'], $nextWorkingDayInfo['start']['minutes'], 0, 'UTC');
+    $newEndTime = $startTimeOfWorkDayTomorrow->addHours($rent_time);
+} else {
+    $newEndTime = $currentTime->addHours($rent_time);
+}
 
     $booking = new Booking();
     $booking->car_id = $request->id;
@@ -535,6 +532,7 @@ foreach($workingHours as $workingDay) {
     $booking->booked_until = Carbon::createFromTimestamp($newEndTime)->toIso8601ZuluString();
     $booking->status = BookingStatus::Booked->value;
     $booking->driver_id = $driver->id;
+
     $booking->save();
 
     $car->status = CarStatus::Booked->value;
@@ -584,6 +582,18 @@ unset($schema->created_at, $schema->updated_at, $schema->id, $schema->rent_term_
     $api->notifyParkOnBookingStatusChanged($booking->id, true);
 
     return response()->json(['booking' => $booking], 200);
+}
+
+private function findNextWorkingDay($currentDay, $workingHours) {
+    $nextDay = Carbon::now()->addDay();
+    while(true) {
+        $nextDayName = $nextDay->format('l');
+        $nextDayInfo = collect($workingHours)->firstWhere('day', $nextDayName);
+        if($nextDayInfo && $nextDayInfo['start'] != $nextDayInfo['end']) {
+            return $nextDayInfo;
+        }
+        $nextDay->addDay();
+    }
 }
 
     /**

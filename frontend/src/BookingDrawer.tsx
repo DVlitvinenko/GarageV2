@@ -23,6 +23,7 @@ import { client } from "./backend";
 import { Badge } from "@/components/ui/badge";
 import {
   formatRoubles,
+  formatWorkingTime,
   getFuelTypeDisplayName,
   getTransmissionDisplayName,
 } from "@/lib/utils";
@@ -122,8 +123,12 @@ export const BookingDrawer = () => {
                 {booking.car?.division?.park?.working_hours?.map((x) => (
                   <div className="flex items-center" key={x.day}>
                     <div className="text-sm capitalize w-28">{x.day}</div>{" "}
-                    {x.start?.hours}:{x.start?.minutes} - {x.end?.hours}:
-                    {x.end?.minutes}
+                    {formatWorkingTime(
+                      x.start!.hours!,
+                      x.start!.minutes!,
+                      x.end!.hours!,
+                      x.end!.minutes!
+                    )}
                   </div>
                 ))}
               </div>

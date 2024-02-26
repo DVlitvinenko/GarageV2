@@ -1,6 +1,7 @@
 import { type ClassValue, clsx } from "clsx";
 import { FuelType, TransmissionType } from "../../src/api-client";
 import { twMerge } from "tailwind-merge";
+import { format } from "date-fns";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -40,3 +41,17 @@ export const formatRoubles = (amount: number) =>
     maximumSignificantDigits: 3,
     currency: "RUB",
   }).format(amount);
+
+export function formatWorkingTime(
+  startHour: number,
+  startMinute: number,
+  endHour: number,
+  endMinute: number
+) {
+  return `${startHour}${startMinute}` !== `${endHour}${endMinute}`
+    ? `${format(
+        new Date(2000, 0, 0, startHour, startMinute),
+        "HH:mm"
+      )} - ${format(new Date(2000, 0, 0, endHour, endMinute), "HH:mm")}`
+    : "Выходной";
+}

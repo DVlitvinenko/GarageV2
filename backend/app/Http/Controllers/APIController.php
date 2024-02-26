@@ -1034,22 +1034,12 @@ class APIController extends Controller
         if ($request->about) {
             $park->about = $request->about;
         }
-        $updatedWorkingHours = [];
-        foreach ($request->working_hours as $workingDay) {
-            $updatedWorkingDay = [
-                'day' => $workingDay['day'],
-                'start' => [
-                    'hours' => str_pad($workingDay['start']['hours'], 2, '0', STR_PAD_LEFT),
-                    'minutes' => str_pad($workingDay['start']['minutes'], 2, '0', STR_PAD_LEFT),
-                ],
-                'end' => [
-                    'hours' => str_pad($workingDay['end']['hours'], 2, '0', STR_PAD_LEFT),
-                    'minutes' => str_pad($workingDay['end']['minutes'], 2, '0', STR_PAD_LEFT),
-                ],
-            ];
-            $updatedWorkingHours[] = $updatedWorkingDay;
-        }
+        $updatedWorkingHours = $this->sortWorkingHoursByDay($request->working_hours);
 
+        if ($updatedWorkingHours) {
+            $park->working_hours = $updatedWorkingHours;
+            $park->save();
+        }
         if ($updatedWorkingHours) {
             $park->working_hours = $updatedWorkingHours;
             $park->save();
@@ -1059,6 +1049,17 @@ class APIController extends Controller
         }
         $park->save();
         return response()->json(['message' => 'Парк обновлен'], 200);
+    }
+
+    private function sortWorkingHoursByDay($workingHours) {
+        $sortFunction = function ($a, $b) {
+            $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            return array_search($a['day'], $daysOfWeek) - array_search($b['day'], $daysOfWeek);
+        };
+
+        usort($workingHours, $sortFunction);
+
+        return $workingHours;
     }
     /**
      * Создание подразделения парка
