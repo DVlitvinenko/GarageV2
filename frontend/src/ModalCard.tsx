@@ -194,7 +194,7 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
         </Badge>
         <div className="w-1/2">
           <Confirmation
-            title="Вы уверены?"
+            title={`Забронировать ${car.brand} ${car.model}?`}
             type="green"
             accept={book}
             cancel={() => {}}
