@@ -45,7 +45,7 @@ const Confirmation = ({
           </div>
         </div>
       )}
-      <div className="" onClick={() => setIsOpen(true)}>
+      <div className="w-full" onClick={() => setIsOpen(true)}>
         {trigger}
       </div>
     </>

@@ -51,14 +51,14 @@ export const BookingTimer = () => {
   };
 
   return (
-    <div className="flex items-center content-center px-4 py-2 mt-2 space-x-2 text-lg font-bold bg-white rounded-xl">
+    <div className="flex items-center content-center px-4 py-2 mt-2 space-x-2 font-bold bg-white text-2sm rounded-xl">
       <div className="flex flex-col items-center content-center">
         Осталось времени:
-        <span className="text-xl">{`${hours}ч:${minutes}м`}</span>
+        <span className="text-lg">{`${hours}ч:${minutes}м`}</span>
       </div>
       <div className="w-1/2">
         <Confirmation
-          title="Вы уверены?"
+          title="Отменить бронь?"
           type="red"
           accept={cancelBooking}
           cancel={() => {}}
