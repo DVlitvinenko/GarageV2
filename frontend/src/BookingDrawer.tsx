@@ -118,7 +118,7 @@ export const BookingDrawer = () => {
                 {booking.car!.division!.park!.self_employed && (
                   <Badge variant="card">Для самозанятых</Badge>
                 )}
-                {booking.rent_term!.is_buyout_possible && (
+                {!!booking.rent_term!.is_buyout_possible && (
                   <Badge variant="card">Выкуп автомобиля</Badge>
                 )}
               </div>

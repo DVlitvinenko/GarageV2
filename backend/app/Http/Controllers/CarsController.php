@@ -503,7 +503,7 @@ $car['commission'] = rtrim(rtrim($commissionFormatted, '0'), '.');
     $division = $car->division;
     $driver = $user->driver;
 
-    date_default_timezone_set('UTC');
+    //date_default_timezone_set('UTC');
     $workingHours = json_decode($division->park->working_hours, true);
     $currentDayOfWeek = Carbon::now()->format('l');
     $currentTime = Carbon::now();
@@ -679,7 +679,7 @@ private function findNextWorkingDay($currentDay, $workingHours) {
         if ($booking->status !== BookingStatus::Booked->value) {
             return response()->json(['message' => 'Статус не "забронирован"'], 409);
         }
-        date_default_timezone_set('UTC');
+        //date_default_timezone_set('UTC');
         $car = $booking->car;
         $booking->booked_until = Carbon::now()->toIso8601ZuluString();
         $booking->status = BookingStatus::UnBooked->value;
