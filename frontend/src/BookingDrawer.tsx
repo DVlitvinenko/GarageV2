@@ -89,8 +89,10 @@ export const BookingDrawer = () => {
               <p className="font-semibold">{`Тел.: ${booking.car?.division?.park?.phone}`}</p>
             </div>
           </div>
-          {(booking.status === BookingStatus.Booked ||
-            booking.status === BookingStatus.RentStart) && (
+
+          {[BookingStatus.RentStart, BookingStatus.Booked].includes(
+            booking!.status!
+          ) && (
             <>
               <div className="flex flex-wrap items-center justify-start gap-1 my-3 ">
                 <Badge variant="card" className="px-0 py-0 bg-grey ">
@@ -104,25 +106,25 @@ export const BookingDrawer = () => {
                   </span>
                 </Badge>
                 <Badge variant="card">
-                  Комиссия {booking.car?.division?.park?.commission}
+                  Комиссия {booking.car!.division!.park!.commission}
                 </Badge>
                 <Badge variant="card">
-                  {getFuelTypeDisplayName(booking.car?.fuel_type)}
+                  {getFuelTypeDisplayName(booking.car!.fuel_type)}
                 </Badge>
                 <Badge variant="card">
-                  {getTransmissionDisplayName(booking.car?.transmission_type)}
+                  {getTransmissionDisplayName(booking.car!.transmission_type)}
                 </Badge>
 
-                {!!booking.car?.division?.park?.self_employed && (
+                {booking.car!.division!.park!.self_employed && (
                   <Badge variant="card">Для самозанятых</Badge>
                 )}
-                {!!booking.rent_term?.is_buyout_possible && (
+                {booking.rent_term!.is_buyout_possible && (
                   <Badge variant="card">Выкуп автомобиля</Badge>
                 )}
               </div>
               <div className="flex flex-wrap gap-1 pb-2 mb-1">
-                {booking.rent_term?.schemas
-                  ?.slice(0, 3)
+                {booking
+                  .rent_term!.schemas!.slice(0, 3)
                   .map((currentSchema, i) => (
                     <Badge
                       key={`${currentSchema.working_days}/${currentSchema.non_working_days}${i}`}
@@ -157,9 +159,8 @@ export const BookingDrawer = () => {
             <p className="w-1/2 font-semibold">Дата начала бронирования:</p>
             {format(booking.start_date!, "dd.MM.yyyy HH:mm")}
           </div>
-          {!(
-            booking.status === BookingStatus.RentOver ||
-            booking.status === BookingStatus.RentStart
+          {![BookingStatus.RentOver, BookingStatus.RentStart].includes(
+            booking.status!
           ) && (
             <>
               <Separator />
