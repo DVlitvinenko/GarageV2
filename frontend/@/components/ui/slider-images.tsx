@@ -6,7 +6,7 @@ interface SliderImagesProps {
 
 const SliderImages = ({ images }: SliderImagesProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const containerRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const handleMove = () => {
     if (containerRef.current) {
