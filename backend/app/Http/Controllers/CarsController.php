@@ -503,6 +503,7 @@ $car['commission'] = rtrim(rtrim($commissionFormatted, '0'), '.');
     $division = $car->division;
     $driver = $user->driver;
 
+    date_default_timezone_set('UTC');
     $workingHours = json_decode($division->park->working_hours, true);
     $currentDayOfWeek = Carbon::now()->format('l');
     $currentTime = Carbon::now();
@@ -515,24 +516,30 @@ foreach($workingHours as $workingDay) {
     }
 }
 $endTimeOfWorkDayToday = Carbon::createFromTime($todayWorkingHours['end']['hours'], $todayWorkingHours['end']['minutes'], 0)->addHours(-$rent_time);
-if ($endTimeOfWorkDayToday < $currentTime) {
+$startTimeOfWorkDayToday = Carbon::createFromTime($todayWorkingHours['start']['hours'], $todayWorkingHours['start']['minutes'], 0)->addHours(-$rent_time);
+$isNonWorkingDayToday = ($endTimeOfWorkDayToday == $startTimeOfWorkDayToday)? true : false;
+
+if (($endTimeOfWorkDayToday < $currentTime && $currentTime > $startTimeOfWorkDayToday) || $isNonWorkingDayToday) {
+
     $nextWorkingDayInfo = $this->findNextWorkingDay(Carbon::now()->format('l'), $workingHours);
-    $startTimeOfWorkDayTomorrow = Carbon::createFromTime($nextWorkingDayInfo['start']['hours'], $nextWorkingDayInfo['start']['minutes'], 0, 'UTC');
-    $newEndTime = $startTimeOfWorkDayTomorrow->addHours($rent_time);
+    $nextWorkingDay = Carbon::now()->next($nextWorkingDayInfo['day']);
+
+$startTimeOfWorkDayTomorrow = Carbon::create($nextWorkingDay->year, $nextWorkingDay->month, $nextWorkingDay->day, $nextWorkingDayInfo['start']['hours'], $nextWorkingDayInfo['start']['minutes'], 0);$newEndTime = $startTimeOfWorkDayTomorrow->addHours($rent_time);
+
+}elseif ($currentTime < $startTimeOfWorkDayToday) {
+    $newEndTime = $startTimeOfWorkDayToday->addHours($rent_time)->addHours($rent_time);
 } else {
     $newEndTime = $currentTime->addHours($rent_time);
 }
-
     $booking = new Booking();
     $booking->car_id = $request->id;
     $booking->park_id = $division->park_id;
-    date_default_timezone_set('UTC');
+
 
     $booking->booked_at = Carbon::now()->toIso8601ZuluString();
     $booking->booked_until = Carbon::parse($newEndTime)->toIso8601ZuluString();
     $booking->status = BookingStatus::Booked->value;
     $booking->driver_id = $driver->id;
-
     $booking->save();
 
     $car->status = CarStatus::Booked->value;
@@ -586,7 +593,7 @@ unset($schema->created_at, $schema->updated_at, $schema->id, $schema->rent_term_
 
 private function findNextWorkingDay($currentDay, $workingHours) {
     $nextDay = Carbon::now()->addDay();
-    while(true) {
+    for ($i=0; $i < 7; $i++) {
         $nextDayName = $nextDay->format('l');
         $nextDayInfo = collect($workingHours)->firstWhere('day', $nextDayName);
         if($nextDayInfo && $nextDayInfo['start'] != $nextDayInfo['end']) {
@@ -594,6 +601,7 @@ private function findNextWorkingDay($currentDay, $workingHours) {
         }
         $nextDay->addDay();
     }
+    return null;
 }
 
     /**
