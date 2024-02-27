@@ -44,6 +44,7 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
         },
       });
     }
+
     if (activeBooking) {
       await client.cancelBooking(
         new Body17({
@@ -57,16 +58,23 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
         id: car.id,
       })
     );
-    setUser(
-      new User({
-        ...user,
-        bookings: [
-          ...user.bookings!.filter((x) => x !== activeBooking),
+
+    const potentialExistingBooking = activeBooking
+      ? [
           new Bookings({
             ...activeBooking,
             status: BookingStatus.UnBooked,
             end_date: new Date().toISOString(),
           }),
+        ]
+      : [];
+
+    setUser(
+      new User({
+        ...user,
+        bookings: [
+          ...user.bookings!.filter((x) => x !== activeBooking),
+          ...potentialExistingBooking,
           new Bookings(bookingData.booking),
         ],
       })
