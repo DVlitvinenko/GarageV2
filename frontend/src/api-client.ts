@@ -2053,7 +2053,7 @@ export enum CarStatus {
 }
 
 /** The unique identifier of a product in our catalog */
-export enum DayList {
+export enum DayOfWeek {
   Monday = "Monday",
   Tuesday = "Tuesday",
   Wednesday = "Wednesday",
@@ -6766,7 +6766,7 @@ export interface ISchemas {
 }
 
 export class Working_hours implements IWorking_hours {
-  day?: DayList;
+  day?: DayOfWeek;
   /** Время начала работы */
   start?: Start;
   /** Время окончания работы */
@@ -6816,7 +6816,7 @@ export class Working_hours implements IWorking_hours {
 }
 
 export interface IWorking_hours {
-  day?: DayList;
+  day?: DayOfWeek;
   /** Время начала работы */
   start?: Start;
   /** Время окончания работы */
@@ -8506,7 +8506,7 @@ export interface IPark2 {
 }
 
 export class Working_hours3 implements IWorking_hours3 {
-  day?: DayList;
+  day?: DayOfWeek;
   /** Время начала работы */
   start?: Start3;
   /** Время окончания работы */
@@ -8556,7 +8556,7 @@ export class Working_hours3 implements IWorking_hours3 {
 }
 
 export interface IWorking_hours3 {
-  day?: DayList;
+  day?: DayOfWeek;
   /** Время начала работы */
   start?: Start3;
   /** Время окончания работы */
@@ -8566,7 +8566,7 @@ export interface IWorking_hours3 {
 }
 
 export class Working_hours4 implements IWorking_hours4 {
-  day?: DayList;
+  day?: DayOfWeek;
   /** Время начала работы */
   start?: Start4;
   /** Время окончания работы */
@@ -8616,7 +8616,7 @@ export class Working_hours4 implements IWorking_hours4 {
 }
 
 export interface IWorking_hours4 {
-  day?: DayList;
+  day?: DayOfWeek;
   /** Время начала работы */
   start?: Start4;
   /** Время окончания работы */

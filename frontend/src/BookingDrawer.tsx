@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Body17, BookingStatus, Bookings } from "./api-client";
+import { Body17, BookingStatus, Bookings, DayOfWeek } from "./api-client";
 import { Separator } from "@/components/ui/separator";
 import { useTimer } from "react-timer-hook";
 import {
@@ -24,6 +24,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   formatRoubles,
   formatWorkingTime,
+  getDayOfWeekDisplayName,
   getFuelTypeDisplayName,
   getTransmissionDisplayName,
 } from "@/lib/utils";
@@ -140,17 +141,33 @@ export const BookingDrawer = () => {
                 Минимум дней аренды: {booking.rent_term?.minimum_period_days}
               </p>
               <div className="min-h-28">
-                {booking.car?.division?.park?.working_hours?.map((x) => (
-                  <div className="flex items-center" key={x.day}>
-                    <div className="text-sm capitalize w-28">{x.day}</div>{" "}
-                    {formatWorkingTime(
-                      x.start!.hours!,
-                      x.start!.minutes!,
-                      x.end!.hours!,
-                      x.end!.minutes!
-                    )}
-                  </div>
-                ))}
+                {[DayOfWeek.Monday, DayOfWeek.Tuesday].map((x) => {
+                  const { working_hours } = booking.car!.division!.park!;
+                  const currentDay = working_hours!.find(
+                    ({ day }) => day === x
+                  )!;
+                  return (
+                    <div className="flex items-center" key={x}>
+                      <div className="text-sm capitalize w-28">
+                        {getDayOfWeekDisplayName(x)}
+                      </div>
+                      {currentDay && (
+                        <>
+                          {formatWorkingTime(
+                            currentDay.start!.hours!,
+                            currentDay.start!.minutes!
+                          )}{" "}
+                          -{" "}
+                          {formatWorkingTime(
+                            currentDay.end!.hours!,
+                            currentDay.end!.minutes!
+                          )}
+                        </>
+                      )}
+                      {!currentDay && <>Выходной</>}
+                    </div>
+                  );
+                })}
               </div>
             </>
           )}

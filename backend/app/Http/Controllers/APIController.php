@@ -15,7 +15,7 @@ use App\Models\RentTerm;
 use App\Models\Booking;
 use App\Enums\BookingStatus;
 use App\Enums\SuitEnum;
-use App\Enums\CarStatus;use App\Enums\DayList;
+use App\Enums\CarStatus;use App\Enums\DayOfWeek;
 use Illuminate\Support\Str;
 use GuzzleHttp\Client;
 use App\Http\Controllers\Enums;
@@ -919,7 +919,7 @@ class APIController extends Controller
      *                 description="Расписание работы парка",
      *                 @OA\Items(
      *                     type="object",
-     *                     @OA\Property(property="day", type="string", description="День недели на английском",ref="#/components/schemas/DayList"),
+     *                     @OA\Property(property="day", type="string", description="День недели на английском",ref="#/components/schemas/DayOfWeek"),
      *                     @OA\Property(
      *                         property="start",
      *                         type="object",

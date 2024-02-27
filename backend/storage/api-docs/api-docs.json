@@ -906,7 +906,7 @@
                                         "items": {
                                             "properties": {
                                                 "day": {
-                                                    "$ref": "#/components/schemas/DayList"
+                                                    "$ref": "#/components/schemas/DayOfWeek"
                                                 },
                                                 "start": {
                                                     "description": "Время начала работы",
@@ -1562,7 +1562,7 @@
                     "RentStart"
                 ]
             },
-            "DayList": {
+            "DayOfWeek": {
                 "description": "The unique identifier of a product in our catalog",
                 "type": null,
                 "enum": [

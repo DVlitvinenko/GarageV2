@@ -126,7 +126,7 @@ class AuthController extends Controller
      *                 description="Расписание работы парка",
      *                 @OA\Items(
      *                     type="object",
-     *                     @OA\Property(property="day", type="string", description="День недели на английском",ref="#/components/schemas/DayList"),
+     *                     @OA\Property(property="day", type="string", description="День недели на английском",ref="#/components/schemas/DayOfWeek"),
      *                     @OA\Property(
      *                         property="start",
      *                         type="object",

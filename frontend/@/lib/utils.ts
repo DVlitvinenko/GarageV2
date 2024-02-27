@@ -1,5 +1,5 @@
 import { type ClassValue, clsx } from "clsx";
-import { FuelType, TransmissionType } from "../../src/api-client";
+import { DayOfWeek, FuelType, TransmissionType } from "../../src/api-client";
 import { twMerge } from "tailwind-merge";
 import { format } from "date-fns";
 
@@ -42,16 +42,19 @@ export const formatRoubles = (amount: number) =>
     currency: "RUB",
   }).format(amount);
 
-export function formatWorkingTime(
-  startHour: number,
-  startMinute: number,
-  endHour: number,
-  endMinute: number
-) {
-  return `${startHour}${startMinute}` !== `${endHour}${endMinute}`
-    ? `${format(
-        new Date(2000, 0, 0, startHour, startMinute),
-        "HH:mm"
-      )} - ${format(new Date(2000, 0, 0, endHour, endMinute), "HH:mm")}`
-    : "Выходной";
+export function formatWorkingTime(hours: number, minutes: number) {
+  return `${format(new Date(2000, 0, 0, hours, minutes), "HH:mm")}`;
 }
+
+export const getDayOfWeekDisplayName = (day: DayOfWeek) => {
+  const daysOfWeek = {
+    [DayOfWeek.Monday]: "понедельник",
+    [DayOfWeek.Tuesday]: "вторник",
+    [DayOfWeek.Wednesday]: "среда",
+    [DayOfWeek.Thursday]: "четверг",
+    [DayOfWeek.Friday]: "пятница",
+    [DayOfWeek.Saturday]: "суббота",
+    [DayOfWeek.Sunday]: "воскресенье",
+  };
+  return daysOfWeek[day];
+};

@@ -8,13 +8,13 @@ use OpenApi\Attributes as OAT;
 
 /**
  * @OA\Schema(
- *   schema="DayList",
+ *   schema="DayOfWeek",
  *   type="enum",
  *   description="The unique identifier of a product in our catalog"
  * )
  */
 
-enum DayList
+enum DayOfWeek
 {
     case Monday;
     case Tuesday;

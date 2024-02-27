@@ -11,12 +11,14 @@ import {
   BookingStatus,
   Bookings,
   Cars2,
+  DayOfWeek,
   User,
 } from "./api-client";
 import { Separator } from "@/components/ui/separator";
 import {
   formatRoubles,
   formatWorkingTime,
+  getDayOfWeekDisplayName,
   getFuelTypeDisplayName,
   getTransmissionDisplayName,
 } from "@/lib/utils";
@@ -152,7 +154,9 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
           <div className="min-h-48">
             {car.working_hours?.map((x) => (
               <div className="flex items-center" key={x.day}>
-                <div className="text-sm capitalize w-28">{x.day}</div>
+                <div className="text-sm capitalize w-28">
+                  {getDayOfWeekDisplayName(x.day as DayOfWeek)}
+                </div>
                 {formatWorkingTime(
                   x.start!.hours!,
                   x.start!.minutes!,

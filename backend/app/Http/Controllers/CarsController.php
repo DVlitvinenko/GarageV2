@@ -416,7 +416,7 @@ $car['commission'] = rtrim(rtrim($commissionFormatted, '0'), '.');
      *                 description="Расписание работы парка",
      *                 @OA\Items(
      *                     type="object",
-     *                     @OA\Property(property="day", type="string", description="День недели на английском",ref="#/components/schemas/DayList"),
+     *                     @OA\Property(property="day", type="string", description="День недели на английском",ref="#/components/schemas/DayOfWeek"),
      *                     @OA\Property(
      *                         property="start",
      *                         type="object",
@@ -514,10 +514,10 @@ foreach($workingHours as $workingDay) {
         $todayWorkingHours = $workingDay;
         break;
     }
+    else{$isNonWorkingDayToday = true;}
 }
 $endTimeOfWorkDayToday = Carbon::createFromTime($todayWorkingHours['end']['hours'], $todayWorkingHours['end']['minutes'], 0)->addHours(-$rent_time);
 $startTimeOfWorkDayToday = Carbon::createFromTime($todayWorkingHours['start']['hours'], $todayWorkingHours['start']['minutes'], 0)->addHours(-$rent_time);
-$isNonWorkingDayToday = ($endTimeOfWorkDayToday == $startTimeOfWorkDayToday)? true : false;
 
 if (($endTimeOfWorkDayToday < $currentTime && $currentTime > $startTimeOfWorkDayToday) || $isNonWorkingDayToday) {
 
@@ -547,22 +547,7 @@ $startTimeOfWorkDayTomorrow = Carbon::create($nextWorkingDay->year, $nextWorking
 
     $workingHours = json_decode($car->division->park->working_hours, true);
 
-    $daysOfWeek = [
-        'Monday' => 'понедельник',
-        'Tuesday' => 'вторник',
-        'Wednesday' => 'среда',
-        'Thursday' => 'четверг',
-        'Friday' => 'пятница',
-        'Saturday' => 'суббота',
-        'Sunday' => 'воскресенье'
-    ];
-    $translatedWorkingHours = [];
-    foreach ($workingHours as $workingDay) {
-        $day = $workingDay['day'];
-        $translatedDay = $daysOfWeek[$day];
-        $workingDay['day'] = $translatedDay;
-        $translatedWorkingHours[] = $workingDay;
-    }
+
     $car->division->park->working_hours = $translatedWorkingHours;
     $booked = $booking;
         $booked->status = BookingStatus::from($booked->status)->name;
@@ -596,7 +581,7 @@ private function findNextWorkingDay($currentDay, $workingHours) {
     for ($i=0; $i < 7; $i++) {
         $nextDayName = $nextDay->format('l');
         $nextDayInfo = collect($workingHours)->firstWhere('day', $nextDayName);
-        if($nextDayInfo && $nextDayInfo['start'] != $nextDayInfo['end']) {
+        if($nextDayInfo) {
             return $nextDayInfo;
         }
         $nextDay->addDay();
