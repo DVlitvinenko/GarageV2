@@ -26,6 +26,15 @@ const SliderImages = ({ images }: SliderImagesProps) => {
     }
   };
 
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTo({
+        left: activeIndex * containerRef.current.offsetWidth,
+        behavior: "smooth",
+      });
+    }
+  }, [activeIndex]);
+
   return (
     <div className="relative h-64">
       <div
