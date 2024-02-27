@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 interface SliderImagesProps {
   images: string[];
@@ -8,16 +8,7 @@ const SliderImages = ({ images }: SliderImagesProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const containerRef = useRef(null);
 
-  const handleDotClick = (index) => {
-    setActiveIndex(index);
-    if (containerRef.current) {
-      containerRef.current.scrollTo({
-        left: index * containerRef.current.offsetWidth,
-        behavior: "smooth",
-      });
-    }
-  };
-  const handleScroll = () => {
+  const handleMove = () => {
     if (containerRef.current) {
       const containerWidth = containerRef.current.offsetWidth;
       const scrollLeft = containerRef.current.scrollLeft;
@@ -26,12 +17,22 @@ const SliderImages = ({ images }: SliderImagesProps) => {
     }
   };
 
+  const handleMoveEnd = () => {
+    if (containerRef.current) {
+      containerRef.current.scrollTo({
+        left: activeIndex * containerRef.current.offsetWidth,
+        behavior: "smooth",
+      });
+    }
+  };
+
   return (
     <div className="relative h-64">
       <div
         className={`absolute flex items-center justify-start h-64 space-x-1 pr-1 overflow-scroll overflow-x-auto scrollbar-hide`}
         ref={containerRef}
-        onScroll={handleScroll}
+        onTouchMove={handleMove}
+        onTouchEnd={handleMoveEnd}
       >
         {images.map((x, i) => (
           <img
@@ -56,7 +57,7 @@ const SliderImages = ({ images }: SliderImagesProps) => {
               <img
                 className="object-cover w-full h-full rounded-xl"
                 src={x}
-                onClick={() => handleDotClick(i)}
+                onClick={() => setActiveIndex(i)}
                 alt=""
               />
             </div>

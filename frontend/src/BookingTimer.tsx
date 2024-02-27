@@ -14,7 +14,7 @@ export const BookingTimer = () => {
     (x) => x.status === BookingStatus.Booked
   );
 
-  const { minutes, hours, restart } = useTimer({
+  const { days, minutes, hours, restart } = useTimer({
     expiryTimestamp: new Date(),
     autoStart: false,
   });
@@ -54,7 +54,10 @@ export const BookingTimer = () => {
     <div className="flex items-center content-center px-4 py-2 mt-2 space-x-2 font-bold bg-white text-2sm rounded-xl">
       <div className="flex flex-col items-center content-center">
         Осталось времени:
-        <span className="text-lg">{`${hours}ч:${minutes}м`}</span>
+        <span className="text-lg">
+          {!!days && `${days}д:`}
+          {`${hours}ч:${minutes}м`}
+        </span>
       </div>
       <div className="w-1/2">
         <Confirmation

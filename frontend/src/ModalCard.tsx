@@ -5,7 +5,14 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { Body16, Bookings, Cars2, User } from "./api-client";
+import {
+  Body16,
+  Body17,
+  BookingStatus,
+  Bookings,
+  Cars2,
+  User,
+} from "./api-client";
 import { Separator } from "@/components/ui/separator";
 import {
   formatRoubles,
@@ -19,22 +26,15 @@ import { useRecoilState } from "recoil";
 import { client } from "./backend";
 import Confirmation from "@/components/ui/confirmation";
 import SliderImages from "@/components/ui/slider-images";
-import {
-  addDays,
-  addHours,
-  addSeconds,
-  format,
-  formatDistanceToNow,
-  formatISO,
-} from "date-fns";
-import { useState } from "react";
 
 export const ModalCard = ({ car }: { car: Cars2 }) => {
   const [user, setUser] = useRecoilState(userAtom);
-  const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   const navigate = useNavigate();
 
+  const activeBooking = user?.bookings!.find(
+    (x) => x.status === BookingStatus.Booked
+  );
   // временно удаляем проверку на верификацию!!!
   const book = async () => {
     if (!user) {
@@ -43,6 +43,13 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
           bookingAttempt: true,
         },
       });
+    }
+    if (activeBooking) {
+      await client.cancelBooking(
+        new Body17({
+          id: activeBooking!.id,
+        })
+      );
     }
     // if (user.user_status === UserStatus.Verified) {
     const bookingData = await client.book(
@@ -53,7 +60,15 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
     setUser(
       new User({
         ...user,
-        bookings: [...user.bookings!, new Bookings(bookingData.booking)],
+        bookings: [
+          ...user.bookings!.filter((x) => x !== activeBooking),
+          new Bookings({
+            ...activeBooking,
+            status: BookingStatus.UnBooked,
+            end_date: new Date().toISOString(),
+          }),
+          new Bookings(bookingData.booking),
+        ],
       })
     );
     return navigate("bookings");
@@ -192,15 +207,28 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
             car.rent_term?.schemas![0]!.working_days
           }раб. /${car.rent_term?.schemas![0]!.non_working_days}вых.`}</div>
         </Badge>
-        <div className="w-1/2">
-          <Confirmation
-            title={`Забронировать ${car.brand} ${car.model}?`}
-            type="green"
-            accept={book}
-            cancel={() => {}}
-            trigger={<Button className="">Забронировать</Button>}
-          />
-        </div>
+        {!activeBooking && (
+          <div className="w-1/2">
+            <Confirmation
+              title={`Забронировать ${car.brand} ${car.model}?`}
+              type="green"
+              accept={book}
+              cancel={() => {}}
+              trigger={<Button className="">Забронировать</Button>}
+            />
+          </div>
+        )}
+        {!!activeBooking && (
+          <div className="w-1/2">
+            <Confirmation
+              title={`У вас есть активная бронь: ${activeBooking.car?.brand} ${activeBooking.car?.model}. Отменить и забронировать ${car.brand} ${car.model}?`}
+              type="green"
+              accept={book}
+              cancel={() => {}}
+              trigger={<Button className="">Забронировать</Button>}
+            />
+          </div>
+        )}
       </div>
     </>
   );
