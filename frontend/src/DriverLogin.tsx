@@ -86,7 +86,7 @@ export const DriverLogin = () => {
 
   return (
     <>
-      <div className="mx-auto w-80">
+      <div className="mx-auto w-80 sm:w-full">
         <h2 className="my-10 text-center">
           Зарегистрируйтесь или войдите в личный кабинет.
         </h2>
@@ -95,64 +95,66 @@ export const DriverLogin = () => {
             Чтобы забронировать машину - зарегистрируйтесь
           </div>
         )}
-        <Label>Введите ваш телефон</Label>
-        <Input
-          className="mt-1"
-          onChange={handlePhoneChange}
-          value={phone}
-          type="text"
-          placeholder="+7 (999) 123-45-67"
-        />
+        <div className="max-w-sm mx-auto">
+          <Label>Введите ваш телефон</Label>
+          <Input
+            className="mt-1"
+            onChange={handlePhoneChange}
+            value={phone}
+            type="text"
+            placeholder="+7 (999) 123-45-67"
+          />
 
-        {codeRequested && (
-          <>
-            <Label htmlFor="code">Введите код из смс</Label>
-            <Input
-              className="mt-1"
-              onChange={handleCodeChange}
-              id="code"
-              placeholder="_ _ _ _ _ _ _"
-            />
-            {codeHasError && (
-              <p className="my-4 text-center text-red">
-                Вы ввели неправильный код
-              </p>
-            )}
-          </>
-        )}
-
-        <div className="space-y-6 text-center">
-          {!codeRequested && (
-            <Button onAsyncClick={getCode}>Получить код</Button>
-          )}
-          {codeRequested && !(!!minutes || !!seconds) && (
-            <Button variant={"reject"} onAsyncClick={getCode}>
-              Отправить код повторно
-            </Button>
-          )}
-          {(!!minutes || !!seconds) && (
-            <Button className="bg-grey active:bg-grey">
-              Повторная отправка кода через: ({`${minutes}:${seconds}`})
-            </Button>
-          )}
           {codeRequested && (
-            <Button
-              onAsyncClick={login}
-              disabled={code.toString().length != CODE_LENGTH}
-            >
-              Войти
-            </Button>
+            <>
+              <Label htmlFor="code">Введите код из смс</Label>
+              <Input
+                className="mt-1"
+                onChange={handleCodeChange}
+                id="code"
+                placeholder="_ _ _ _ _ _ _"
+              />
+              {codeHasError && (
+                <p className="my-4 text-center text-red">
+                  Вы ввели неправильный код
+                </p>
+              )}
+            </>
+          )}
+
+          <div className="space-y-6 text-center">
+            {!codeRequested && (
+              <Button onAsyncClick={getCode}>Получить код</Button>
+            )}
+            {codeRequested && !(!!minutes || !!seconds) && (
+              <Button variant={"reject"} onAsyncClick={getCode}>
+                Отправить код повторно
+              </Button>
+            )}
+            {(!!minutes || !!seconds) && (
+              <Button className="bg-grey active:bg-grey">
+                Повторная отправка кода через: ({`${minutes}:${seconds}`})
+              </Button>
+            )}
+            {codeRequested && (
+              <Button
+                onAsyncClick={login}
+                disabled={code.toString().length != CODE_LENGTH}
+              >
+                Войти
+              </Button>
+            )}
+          </div>
+
+          {codeRequested && (
+            <div className="my-4 text-center">
+              Нажимая &laquo;Войти&raquo; вы соглашаетесь с{" "}
+              <a className="text-blue-800 underline" href="kwol.ru">
+                условиями договора
+              </a>
+            </div>
           )}
         </div>
-
-        {codeRequested && (
-          <div className="my-4 text-center">
-            Нажимая &laquo;Войти&raquo; вы соглашаетесь с{" "}
-            <a className="text-blue-800 underline" href="kwol.ru">
-              условиями договора
-            </a>
-          </div>
-        )}
       </div>
     </>
   );
