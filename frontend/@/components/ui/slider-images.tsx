@@ -36,9 +36,9 @@ const SliderImages = ({ images }: SliderImagesProps) => {
   }, [activeIndex]);
 
   return (
-    <div className="relative h-64">
+    <div className="relative h-64 sm:h-80">
       <div
-        className={`absolute flex items-center justify-start h-64 space-x-1 pr-1 overflow-scroll overflow-x-auto scrollbar-hide `}
+        className={`absolute flex items-center justify-start h-64 sm:h-80 space-x-1 pr-1 overflow-scroll overflow-x-auto scrollbar-hide `}
         ref={containerRef}
         onTouchMove={handleMove}
         onTouchEnd={handleMoveEnd}
@@ -46,13 +46,13 @@ const SliderImages = ({ images }: SliderImagesProps) => {
         {images.map((x, i) => (
           <img
             key={`image_${i}`}
-            className="object-cover h-64 rounded-xl"
+            className="object-cover h-64 rounded-xl sm:min-w-full sm:h-80"
             src={x}
             alt={`Slider Image ${i}`}
           />
         ))}
       </div>
-      <div className="absolute bottom-0 flex justify-center px-1 py-1 mt-2">
+      <div className="absolute bottom-0 flex justify-center px-1 py-1 mt-2 sm:justify-start sm:w-1/2">
         {images.map((x, i) => {
           return (
             <div
