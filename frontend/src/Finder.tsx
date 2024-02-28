@@ -242,9 +242,14 @@ export const Finder = () => {
                 <Dialog>
                   <DialogTrigger asChild>
                     <span className="bg-grey text-nowrap whitespace-nowrap rounded-xl px-2.5 py-0.5 h-10 flex items-center">
-                      {filters.brands.length
-                        ? filters.brands.join(", ")
-                        : "Все марки"}
+                      {filters.brands.length > 3 &&
+                        `${filters.brands.slice(0, 3).join(", ")} и еще ${
+                          filters.brands.length - 3
+                        }`}
+                      {!!filters.brands.length &&
+                        filters.brands.length <= 3 &&
+                        `${filters.brands.join(", ")}`}
+                      {!filters.brands.length && "Все марки"}
                     </span>
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-[800px]">
