@@ -5,7 +5,25 @@ import { useRecoilState } from "recoil";
 import { userAtom } from "./atoms";
 import { useEffect } from "react";
 import { client } from "./backend";
+import Lottie from "react-lottie";
+import dataAnimation from "./assets/hourglass.json";
 import Confirmation from "@/components/ui/confirmation";
+
+const Animation = () => {
+  const defaultOptions = {
+    loop: true,
+    autoplay: true, 
+    animationData: dataAnimation, 
+    rendererSettings: {
+      preserveAspectRatio: 'xMidYMid slice'
+    }
+  };
+
+  return <Lottie options={defaultOptions} height={40} width={40} />;
+};
+
+export default Animation;
+
 
 export const BookingTimer = () => {
   const [user, setUser] = useRecoilState(userAtom);
@@ -50,22 +68,22 @@ export const BookingTimer = () => {
     );
   };
 
-  return (
-    <div className="flex items-center content-center px-4 py-2 mt-2 space-x-2 font-bold bg-white text-2sm rounded-xl">
-      <div className="flex flex-col items-center content-center">
-        Осталось времени:
-        <span className="text-lg">
-          {!!days && `${days}д:`}
-          {`${hours}ч:${minutes}м`}
-        </span>
+    return (
+    <div className="flex justify-center items-center content-center px-4 py-2 mt-2 space-x-2 font-bold bg-white text-2sm rounded-xl">
+       <div>
+       <Animation />
+    </div>
+      <div className="flex justify-center items-center content-center">
+      До конца бронирования осталось:
+        <span className="text-lg">{`${hours}ч:${minutes}м`}</span>
       </div>
       <div className="w-1/2">
         <Confirmation
-          title="Отменить бронь?"
+          title="Отмена бронирования. Хотите продолжить?"
           type="red"
           accept={cancelBooking}
           cancel={() => {}}
-          trigger={<Button variant="reject">Отменить бронь</Button>}
+          trigger={<Button variant="reject">Отменить</Button>}
         />
       </div>
     </div>
