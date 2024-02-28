@@ -312,22 +312,7 @@ class CarsController extends Controller
             $about = $car['division']['park']['about'];
             $selfEmployed = $car['division']['park']['self_employed'];
             $workingHours = json_decode($car['division']['park']['working_hours'], true);
-$daysOfWeek = [
-    'Monday' => 'понедельник',
-    'Tuesday' => 'вторник',
-    'Wednesday' => 'среда',
-    'Thursday' => 'четверг',
-    'Friday' => 'пятница',
-    'Saturday' => 'суббота',
-    'Sunday' => 'воскресенье'
-];
-$translatedWorkingHours = [];
-foreach ($workingHours as $workingDay) {
-    $day = $workingDay['day'];
-    $translatedDay = $daysOfWeek[$day];
-    $workingDay['day'] = $translatedDay;
-    $translatedWorkingHours[] = $workingDay;
-}
+
             if (isset($car['division']['park']['park_name'])) {
                 $parkName = $car['division']['park']['park_name'];
             } else {
@@ -337,7 +322,7 @@ foreach ($workingHours as $workingDay) {
             $car['city'] = $city;
             $car['CarClass'] = $end;
             $car['park_name'] = $parkName;
-            $car['working_hours'] = $translatedWorkingHours;
+            $car['working_hours'] = $workingHours;
             $car['phone'] = $phone;
             $car['self_employed'] = $selfEmployed;
             $car['about'] = $about;
@@ -548,7 +533,7 @@ $startTimeOfWorkDayTomorrow = Carbon::create($nextWorkingDay->year, $nextWorking
     $workingHours = json_decode($car->division->park->working_hours, true);
 
 
-    $car->division->park->working_hours = $translatedWorkingHours;
+    $car->division->park->working_hours = $workingHours;
     $booked = $booking;
         $booked->status = BookingStatus::from($booked->status)->name;
         $booked->start_date = $booked->booked_at;
