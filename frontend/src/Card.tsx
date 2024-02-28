@@ -17,7 +17,7 @@ export const Card = ({ car }: { car: Cars2 }) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <div className="max-w-sm p-1 pb-4 mx-auto mb-8 text-gray-700 bg-white shadow-md w-100 rounded-xl">
+        <div className="max-w-[352px] p-1 pb-4 mx-auto mb-8 text-gray-700 bg-white shadow-md w-100 rounded-xl">
           <div>
             <div className="absolute z-50 p-2 font-medium rounded-tl-lg rounded-br-lg shadow text-gray bg-yellow">
               {car.park_name}

@@ -444,9 +444,11 @@ export const Finder = () => {
           />
         </div> */}
         {/* <Button variant="outline">Сбросить фильтры</Button> */}
-        {cars.map((car) => {
-          return <Card key={car.id} car={car} />;
-        })}
+        <div className="flex flex-wrap gap-2">
+          {cars.map((car) => {
+            return <Card key={car.id} car={car} />;
+          })}
+        </div>
       </div>
     </>
   );

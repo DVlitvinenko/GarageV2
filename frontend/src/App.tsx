@@ -48,7 +48,7 @@ function App() {
   }, []);
 
   return (
-    <div className="max-w-sm p-4 mx-auto sm:max-w-2xl">
+    <div className="max-w-sm p-4 mx-auto sm:max-w-4xl">
       <div className="flex justify-between my-0 space-x-2">
         <Menu user={user} />
         {/* <span className="font-bold text-md text-gray"></span> */}
@@ -75,29 +75,29 @@ const LogoutHandler = () => {
 };
 
 const Menu = ({ user }: { user: User }) => (
-  <div className="flex mx-auto space-x-4 cursor-pointer justify-evenly w-60 sm:justify-start">
+  <div className="flex mx-auto space-x-4 cursor-pointer justify-evenly w-60 sm:justify-start sm:mx-0 sm:w-full sm:space-x-8">
     <Link to="/">
-      <img className="h-5" src={logo} alt="logo" />
+      <img className="h-5 sm:h-7" src={logo} alt="logo" />
     </Link>
     <Link className="hover:text-yellow" to="/">
-      <FontAwesomeIcon icon={faTaxi} className="h-4" />
+      <FontAwesomeIcon icon={faTaxi} className="h-4 sm:h-5" />
     </Link>{" "}
     {user && (
       <Link
         className="hover:text-yellow"
         to={user ? "account" : "login/driver"}
       >
-        <FontAwesomeIcon icon={faUser} className="h-4" />
+        <FontAwesomeIcon icon={faUser} className="h-4 sm:h-5" />
       </Link>
     )}
     {user && (
       <Link className="hover:text-yellow" to="bookings">
-        <FontAwesomeIcon icon={faClockRotateLeft} className="h-4" />
+        <FontAwesomeIcon icon={faClockRotateLeft} className="h-4 sm:h-5" />
       </Link>
     )}
     {!user && (
       <Link className="hover:text-yellow" to="login/driver">
-        <FontAwesomeIcon icon={faRightToBracket} className="h-4" />
+        <FontAwesomeIcon icon={faRightToBracket} className="h-4 sm:h-5" />
       </Link>
     )}
   </div>

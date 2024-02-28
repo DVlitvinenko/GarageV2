@@ -96,12 +96,12 @@ export const Account = ({ user }: { user: User }) => {
 
   return (
     <>
-      <div className="mx-auto w-80">
+      <div className="mx-auto w-80 sm:w-full sm:mx-0">
         <h1 className="mt-8 text-center">Подтвердите свою личность</h1>
 
         {user.user_status === UserStatus.DocumentsNotUploaded && (
           <>
-            <p className="p-4 text-xs font-bold text-center text-white rounded-lg bg-gradient-to-br from-amber-600 to-red">
+            <p className="max-w-sm p-4 mx-auto text-xs font-bold text-center text-white rounded-lg bg-gradient-to-br from-amber-600 to-red">
               Вы не можете начать процесс бронирования пока не загрузили
               документы или документы не прошли верификацию
             </p>
@@ -123,24 +123,30 @@ export const Account = ({ user }: { user: User }) => {
           </p>
         )}
 
-        {docs.map(({ title, type, placeholderImg }) => {
-          const actualUrl =
-            user.docs?.find((doc) => doc.type === type)?.url || placeholderImg;
+        <div className="flex flex-wrap justify-center gap-2">
+          {docs.map(({ title, type, placeholderImg }) => {
+            const actualUrl =
+              user.docs?.find((doc) => doc.type === type)?.url ||
+              placeholderImg;
 
-          return (
-            <div key={type} className="p-4 my-4 text-center rounded-lg shadow">
-              <p className="">{title}</p>
-              <img className="mx-auto my-8" src={actualUrl} />
-              <div className="text-center">
-                <FileInput
-                  title="Загрузить"
-                  onChange={(fileList) => onFileSelected(fileList[0], type)}
-                />
+            return (
+              <div
+                key={type}
+                className="p-4 my-4 text-center rounded-lg shadow max-w-[320px]"
+              >
+                <p className="">{title}</p>
+                <img className="mx-auto my-8" src={actualUrl} alt="" />
+                <div className="text-center">
+                  <FileInput
+                    title="Загрузить"
+                    onChange={(fileList) => onFileSelected(fileList[0], type)}
+                  />
+                </div>
               </div>
-            </div>
-          );
-        })}
-        <div className="my-8 text-center">
+            );
+          })}
+        </div>
+        <div className="my-8 text-center max-w-[320px] mx-auto">
           <Button variant="reject" onClick={logout}>
             Выйти из приложения
           </Button>

@@ -38,7 +38,7 @@ const SliderImages = ({ images }: SliderImagesProps) => {
   return (
     <div className="relative h-64">
       <div
-        className={`absolute flex items-center justify-start h-64 space-x-1 pr-1 overflow-scroll overflow-x-auto scrollbar-hide`}
+        className={`absolute flex items-center justify-start h-64 space-x-1 pr-1 overflow-scroll overflow-x-auto scrollbar-hide `}
         ref={containerRef}
         onTouchMove={handleMove}
         onTouchEnd={handleMoveEnd}

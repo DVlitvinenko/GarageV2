@@ -68,13 +68,12 @@ export const BookingTimer = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center content-center px-2 py-2 my-4 font-semibold bg-white rounded-xl">
-      <div>
+    <div className="flex flex-col items-center content-center justify-center px-2 py-2 my-4 font-semibold bg-white rounded-xl">
+      <div className="">
         <Animation />
       </div>
-      <div className="text-center text-lg mb-2">
-        До конца бронирования осталось:
-        <div>{`${hours}ч:${minutes}м`}</div>
+      <div className="flex flex-col mb-2 text-lg text-center sm:flex-row sm:items-center sm:gap-2">
+        До конца бронирования осталось: <span> {`${hours}ч:${minutes}м`}</span>
       </div>
       <div className="w-1/2 mb-2">
         <Confirmation
