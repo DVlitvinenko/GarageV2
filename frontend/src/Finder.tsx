@@ -44,7 +44,10 @@ import { useRecoilValue } from "recoil";
 import { cityAtom } from "./atoms";
 import { Badge } from "@/components/ui/badge";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRightArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowRightArrowLeft,
+  faTrashCan,
+} from "@fortawesome/free-solid-svg-icons";
 import { Separator } from "@/components/ui/separator";
 const DEFAULT_COMMISSION_PERCENTAGE = 0;
 
@@ -132,6 +135,20 @@ export const Finder = () => {
   // const debouncedCommission = useDebouncedCallback((value) => {
   //   setFilters({ ...filters, commission: value });
   // }, 300);
+
+  const filtersClean = () => {
+    setFilters({
+      carClass: [],
+      commission: DEFAULT_COMMISSION_PERCENTAGE,
+      fuelType: null,
+      brands: [],
+      transmissionType: null,
+      selfEmployed: false,
+      buyoutPossible: false,
+      sorting: "asc",
+      schema: null,
+    });
+  };
 
   const filteredBrands = brands.filter((brand) =>
     brand.toLowerCase().includes(searchTerm.toLowerCase())
@@ -331,6 +348,13 @@ export const Finder = () => {
               </DialogFooter>
             </DialogContent>
           </Dialog>
+          <div className="inline-flex items-center h-10 text-nowrap active:bg-white whitespace-nowrap rounded-xl px-2.5 py-0.5 text-base font-regular text-black transition-colors focus:outline-none bg-grey">
+            <FontAwesomeIcon
+              onClick={filtersClean}
+              icon={faTrashCan}
+              className="px-1"
+            />
+          </div>
         </div>
         <div className="flex my-2 mb-4 space-x-1 overflow-scroll overflow-x-auto scrollbar-hide">
           {activeFilter === ActiveFilter.Sorting &&
