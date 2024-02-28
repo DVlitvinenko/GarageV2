@@ -157,7 +157,7 @@ export const Finder = () => {
     <>
       {/* <div onClick={() => navigate("login/driver")} className="fixed top-5 right-5">Войти</div> */}
       <div className="">
-        <div className="flex justify-between mx-auto my-2 h-fit">
+        <div className="flex justify-between mx-auto my-2 h-fit sm:justify-start">
           {[
             [CarClass.Economy, econom, "Эконом"],
             [CarClass.Comfort, comfort, "Комфорт"],

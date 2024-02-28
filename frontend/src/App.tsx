@@ -48,7 +48,7 @@ function App() {
   }, []);
 
   return (
-    <div className="max-w-sm p-4 mx-auto">
+    <div className="max-w-sm p-4 mx-auto sm:max-w-2xl">
       <div className="flex justify-between my-0 space-x-2">
         <Menu user={user} />
         {/* <span className="font-bold text-md text-gray"></span> */}
@@ -75,7 +75,7 @@ const LogoutHandler = () => {
 };
 
 const Menu = ({ user }: { user: User }) => (
-  <div className="flex mx-auto space-x-4 cursor-pointer justify-evenly w-60">
+  <div className="flex mx-auto space-x-4 cursor-pointer justify-evenly w-60 sm:justify-start">
     <Link to="/">
       <img className="h-5" src={logo} alt="logo" />
     </Link>
