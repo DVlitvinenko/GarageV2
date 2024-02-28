@@ -4,7 +4,6 @@ import comfort from "./assets/car_icons/comfort.png";
 import comfortPlus from "./assets/car_icons/comfort-plus.png";
 import business from "./assets/car_icons/business.png";
 import { Checkbox } from "@/components/ui/checkbox";
-import Confirmation from "@/components/ui/confirmation";
 import { useEffect, useState } from "react";
 
 import {
