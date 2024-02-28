@@ -77,18 +77,18 @@ class CarsController extends Controller
      *                     type="array",
      *                     description="Расписание работы парка",
      *     @OA\Items(
- *         type="object",
- *         @OA\Property(property="day", type="string", description="День недели на русском"),
- *         @OA\Property(property="start", type="object", description="Время начала",
- *             @OA\Property(property="hours", type="integer", description="Часы (0-23)"),
- *             @OA\Property(property="minutes", type="integer", description="Минуты (0-59)")
- *         ),
- *         @OA\Property(property="end", type="object", description="Время окончания",
- *             @OA\Property(property="hours", type="integer", description="Часы (0-23)"),
- *             @OA\Property(property="minutes", type="integer", description="Минуты (0-59)")
- *         )
- *     )
- * ),
+     *         type="object",
+     *         @OA\Property(property="day", type="string", description="День недели на русском"),
+     *         @OA\Property(property="start", type="object", description="Время начала",
+     *             @OA\Property(property="hours", type="integer", description="Часы (0-23)"),
+     *             @OA\Property(property="minutes", type="integer", description="Минуты (0-59)")
+     *         ),
+     *         @OA\Property(property="end", type="object", description="Время окончания",
+     *             @OA\Property(property="hours", type="integer", description="Часы (0-23)"),
+     *             @OA\Property(property="minutes", type="integer", description="Минуты (0-59)")
+     *         )
+     *     )
+     * ),
      *                 @OA\Property(property="about", type="string", description="Описание парка"),
      *                 @OA\Property(property="phone", type="string", description="Телефон парка"),
      *                 @OA\Property(property="commission", type="number", description="Комиссия"),
@@ -145,7 +145,7 @@ class CarsController extends Controller
         $brand = $request->brand;
         $model = $request->model;
 
-        $carClassValues = $request->car_class?$request->car_class:[];
+        $carClassValues = $request->car_class ? $request->car_class : [];
         $translatedValues = [];
 
         if (count($carClassValues) > 0) {
@@ -297,7 +297,7 @@ class CarsController extends Controller
 
         $uniqueCars = $cars->unique(function ($item) {
             return $item->division_id . $item->park_id . $item->tariff_id . $item->rent_term_id .
-            $item->fuel_type . $item->transmission_type . $item->brand . $item->model . $item->year_produced;
+                $item->fuel_type . $item->transmission_type . $item->brand . $item->model . $item->year_produced;
         });
         $cars = collect($uniqueCars)->values()->all();
 
@@ -327,7 +327,7 @@ class CarsController extends Controller
             $car['self_employed'] = $selfEmployed;
             $car['about'] = $about;
             $commissionFormatted = number_format($commission, 2);
-$car['commission'] = rtrim(rtrim($commissionFormatted, '0'), '.');
+            $car['commission'] = rtrim(rtrim($commissionFormatted, '0'), '.');
         }
         foreach ($cars as $car) {
             unset(
@@ -359,43 +359,43 @@ $car['commission'] = rtrim(rtrim($commissionFormatted, '0'), '.');
      *     summary="Бронирование автомобиля",
      *     tags={"Cars"},
      *     security={{"bearerAuth": {}}},
- * @OA\RequestBody(
- *     required=true,
- *     @OA\JsonContent(
- *         @OA\Property(property="id", type="integer", description="Идентификатор машины"),
- *     ),
- * ),
- * @OA\Response(
- *     response="200",
- *     description="Успешное бронирование",
- *     @OA\MediaType(
- *         mediaType="application/json",
- *         @OA\Schema(
- *             @OA\Property(property="booking", type="object",
- *                 @OA\Property(property="status", type="string",ref="#/components/schemas/BookingStatus"),
- *                 @OA\Property(property="id", type="integer"),
- *                 @OA\Property(property="start_date", type="string"),
- *                 @OA\Property(property="end_date", type="string"),
- *                 @OA\Property(property="car", type="object",
- *                     @OA\Property(property="id", type="integer"),
- *                     @OA\Property(property="fuel_type", type="string", description="Тип топлива",ref="#/components/schemas/FuelType"),
- *                     @OA\Property(property="transmission_type", type="string", description="Тип трансмиссии",ref="#/components/schemas/TransmissionType"),
- *                     @OA\Property(property="brand", type="string"),
- *                     @OA\Property(property="model", type="string"),
- *                     @OA\Property(property="year_produced", type="integer"),
- *                     @OA\Property(property="images", type="array", @OA\Items(type="string"), description="Ссылки на изображения"),
- *                     @OA\Property(property="сar_class", type="string", description="Класс тарифа", ref="#/components/schemas/CarClass"),
- *                     @OA\Property(property="division", type="object",
- *                         @OA\Property(property="coords", type="string"),
- *                         @OA\Property(property="address", type="string"),
- *                         @OA\Property(property="park", type="object",
- *                             @OA\Property(property="phone", type="string"),
- *                             @OA\Property(property="url", type="string"),
- *                             @OA\Property(property="commission", type="integer"),
- *                             @OA\Property(property="self_employed", type="integer"),
- *                             @OA\Property(property="park_name", type="string"),
- *                             @OA\Property(property="about", type="string"),
-    *             @OA\Property(
+     * @OA\RequestBody(
+     *     required=true,
+     *     @OA\JsonContent(
+     *         @OA\Property(property="id", type="integer", description="Идентификатор машины"),
+     *     ),
+     * ),
+     * @OA\Response(
+     *     response="200",
+     *     description="Успешное бронирование",
+     *     @OA\MediaType(
+     *         mediaType="application/json",
+     *         @OA\Schema(
+     *             @OA\Property(property="booking", type="object",
+     *                 @OA\Property(property="status", type="string",ref="#/components/schemas/BookingStatus"),
+     *                 @OA\Property(property="id", type="integer"),
+     *                 @OA\Property(property="start_date", type="string"),
+     *                 @OA\Property(property="end_date", type="string"),
+     *                 @OA\Property(property="car", type="object",
+     *                     @OA\Property(property="id", type="integer"),
+     *                     @OA\Property(property="fuel_type", type="string", description="Тип топлива",ref="#/components/schemas/FuelType"),
+     *                     @OA\Property(property="transmission_type", type="string", description="Тип трансмиссии",ref="#/components/schemas/TransmissionType"),
+     *                     @OA\Property(property="brand", type="string"),
+     *                     @OA\Property(property="model", type="string"),
+     *                     @OA\Property(property="year_produced", type="integer"),
+     *                     @OA\Property(property="images", type="array", @OA\Items(type="string"), description="Ссылки на изображения"),
+     *                     @OA\Property(property="сar_class", type="string", description="Класс тарифа", ref="#/components/schemas/CarClass"),
+     *                     @OA\Property(property="division", type="object",
+     *                         @OA\Property(property="coords", type="string"),
+     *                         @OA\Property(property="address", type="string"),
+     *                         @OA\Property(property="park", type="object",
+     *                             @OA\Property(property="phone", type="string"),
+     *                             @OA\Property(property="url", type="string"),
+     *                             @OA\Property(property="commission", type="integer"),
+     *                             @OA\Property(property="self_employed", type="integer"),
+     *                             @OA\Property(property="park_name", type="string"),
+     *                             @OA\Property(property="about", type="string"),
+     *             @OA\Property(
      *                 property="working_hours",
      *                 type="array",
      *                 description="Расписание работы парка",
@@ -418,26 +418,26 @@ $car['commission'] = rtrim(rtrim($commissionFormatted, '0'), '.');
      *                     )
      *                 )
      *             ),
- *                         ),
- *                     ),
- *                 ),
- *                 @OA\Property(property="rent_term", type="object",
- *                     @OA\Property(property="deposit_amount_daily", type="number"),
- *                     @OA\Property(property="deposit_amount_total", type="number"),
- *                     @OA\Property(property="minimum_period_days", type="integer"),
- *                     @OA\Property(property="is_buyout_possible", type="integer"),
- *                     @OA\Property(property="schemas", type="array",
- *                         @OA\Items(
- *                             @OA\Property(property="daily_amount", type="integer"),
- *                             @OA\Property(property="non_working_days", type="integer"),
- *                             @OA\Property(property="working_days", type="integer"),
- *                         ),
- *                     ),
- *                 ),
- *             ),
- *         ),
- *     ),
- * ),
+     *                         ),
+     *                     ),
+     *                 ),
+     *                 @OA\Property(property="rent_term", type="object",
+     *                     @OA\Property(property="deposit_amount_daily", type="number"),
+     *                     @OA\Property(property="deposit_amount_total", type="number"),
+     *                     @OA\Property(property="minimum_period_days", type="integer"),
+     *                     @OA\Property(property="is_buyout_possible", type="integer"),
+     *                     @OA\Property(property="schemas", type="array",
+     *                         @OA\Items(
+     *                             @OA\Property(property="daily_amount", type="integer"),
+     *                             @OA\Property(property="non_working_days", type="integer"),
+     *                             @OA\Property(property="working_days", type="integer"),
+     *                         ),
+     *                     ),
+     *                 ),
+     *             ),
+     *         ),
+     *     ),
+     * ),
      *     @OA\Response(
      *         response="403",
      *         description="Пользователь не зарегистрирован или не верифицирован",
@@ -458,83 +458,85 @@ $car['commission'] = rtrim(rtrim($commissionFormatted, '0'), '.');
      * @return \Illuminate\Http\JsonResponse JSON-ответ с результатом бронирования
      */
     public function Book(Request $request)
-{
-    $rent_time = 3;
-    $user = Auth::guard('sanctum')->user();
+    {
+        $rent_time = 3;
+        $user = Auth::guard('sanctum')->user();
 
-    // Проверка статуса пользователя
-    // if ($user->user_status !== UserStatus::Verified->value) {
-    //     return response()->json(['message' => 'Пользователь не зарегистрирован или не верифицирован'], 403);
-    // }
+        // Проверка статуса пользователя
+        // if ($user->user_status !== UserStatus::Verified->value) {
+        //     return response()->json(['message' => 'Пользователь не зарегистрирован или не верифицирован'], 403);
+        // }
 
-    $car = Car::where('id', $request->id)->with('booking', 'division', 'division.park')->first();
+        $car = Car::where('id', $request->id)->with('booking', 'division', 'division.park')->first();
 
-    if (!$car) {
-        return response()->json(['message' => 'Машина не найдена'], 404);
-    }
+        if (!$car) {
+            return response()->json(['message' => 'Машина не найдена'], 404);
+        }
 
-    if ($car->status !== CarStatus::AvailableForBooking->value) {
-        return response()->json(['message' => 'Машина уже забронирована'], 409);
-    }
+        if ($car->status !== CarStatus::AvailableForBooking->value) {
+            return response()->json(['message' => 'Машина уже забронирована'], 409);
+        }
 
-    $checkBook = Booking::where('driver_id', $user->driver->id)
-        ->where('status', BookingStatus::Booked->value)
-        ->first();
+        $checkBook = Booking::where('driver_id', $user->driver->id)
+            ->where('status', BookingStatus::Booked->value)
+            ->first();
 
-    if ($checkBook) {
-        return response()->json(['message' => 'У пользователя уже есть активная бронь!'], 409);
-    }
+        if ($checkBook) {
+            return response()->json(['message' => 'У пользователя уже есть активная бронь!'], 409);
+        }
 
-    $division = $car->division;
-    $driver = $user->driver;
+        $division = $car->division;
+        $driver = $user->driver;
 
-    //date_default_timezone_set('UTC');
-    $workingHours = json_decode($division->park->working_hours, true);
-    $currentDayOfWeek = Carbon::now()->format('l');
-    $currentTime = Carbon::now();
+        //date_default_timezone_set('UTC');
+        $workingHours = json_decode($division->park->working_hours, true);
+        $currentDayOfWeek = Carbon::now()->format('l');
+        $currentTime = Carbon::now();
+        $isNonWorkingDayToday = false;
+        $todayWorkingHours = null;
 
-    $todayWorkingHours = null;
-foreach($workingHours as $workingDay) {
-    if($workingDay['day'] === $currentDayOfWeek) {
-        $todayWorkingHours = $workingDay;
-        break;
-    }
-    else{$isNonWorkingDayToday = true;}
-}
-$endTimeOfWorkDayToday = Carbon::createFromTime($todayWorkingHours['end']['hours'], $todayWorkingHours['end']['minutes'], 0)->addHours(-$rent_time);
-$startTimeOfWorkDayToday = Carbon::createFromTime($todayWorkingHours['start']['hours'], $todayWorkingHours['start']['minutes'], 0)->addHours(-$rent_time);
+        foreach ($workingHours as $workingDay) {
+            if ($workingDay['day'] === $currentDayOfWeek) {
+                $todayWorkingHours = $workingDay;
+                break;
+            }
+        }
+        if(!$todayWorkingHours) {
+            $isNonWorkingDayToday = true;
+        }
+        $endTimeOfWorkDayToday = Carbon::createFromTime($todayWorkingHours['end']['hours'], $todayWorkingHours['end']['minutes'], 0)->addHours(-$rent_time);
+        $startTimeOfWorkDayToday = Carbon::createFromTime($todayWorkingHours['start']['hours'], $todayWorkingHours['start']['minutes'], 0)->addHours(-$rent_time);
 
-if (($endTimeOfWorkDayToday < $currentTime && $currentTime > $startTimeOfWorkDayToday) || $isNonWorkingDayToday) {
+        if (($endTimeOfWorkDayToday < $currentTime && $currentTime > $startTimeOfWorkDayToday) || $isNonWorkingDayToday) {
 
-    $nextWorkingDayInfo = $this->findNextWorkingDay(Carbon::now()->format('l'), $workingHours);
-    $nextWorkingDay = Carbon::now()->next($nextWorkingDayInfo['day']);
+            $nextWorkingDayInfo = $this->findNextWorkingDay(Carbon::now()->format('l'), $workingHours);
+            $nextWorkingDay = Carbon::now()->next($nextWorkingDayInfo['day']);
 
-$startTimeOfWorkDayTomorrow = Carbon::create($nextWorkingDay->year, $nextWorkingDay->month, $nextWorkingDay->day, $nextWorkingDayInfo['start']['hours'], $nextWorkingDayInfo['start']['minutes'], 0);$newEndTime = $startTimeOfWorkDayTomorrow->addHours($rent_time);
+            $startTimeOfWorkDayTomorrow = Carbon::create($nextWorkingDay->year, $nextWorkingDay->month, $nextWorkingDay->day, $nextWorkingDayInfo['start']['hours'], $nextWorkingDayInfo['start']['minutes'], 0);
+            $newEndTime = $startTimeOfWorkDayTomorrow->addHours($rent_time);
+        } elseif ($currentTime < $startTimeOfWorkDayToday) {
+            $newEndTime = $startTimeOfWorkDayToday->addHours($rent_time)->addHours($rent_time);
+        } else {
+            $newEndTime = $currentTime->addHours($rent_time);
+        }
+        $booking = new Booking();
+        $booking->car_id = $request->id;
+        $booking->park_id = $division->park_id;
 
-}elseif ($currentTime < $startTimeOfWorkDayToday) {
-    $newEndTime = $startTimeOfWorkDayToday->addHours($rent_time)->addHours($rent_time);
-} else {
-    $newEndTime = $currentTime->addHours($rent_time);
-}
-    $booking = new Booking();
-    $booking->car_id = $request->id;
-    $booking->park_id = $division->park_id;
+        $booking->booked_at = Carbon::now()->toIso8601ZuluString();
+        $booking->booked_until = Carbon::parse($newEndTime)->toIso8601ZuluString();
+        $booking->status = BookingStatus::Booked->value;
+        $booking->driver_id = $driver->id;
+        $booking->save();
+
+        $car->status = CarStatus::Booked->value;
+        $car->save();
+
+        $workingHours = json_decode($car->division->park->working_hours, true);
 
 
-    $booking->booked_at = Carbon::now()->toIso8601ZuluString();
-    $booking->booked_until = Carbon::parse($newEndTime)->toIso8601ZuluString();
-    $booking->status = BookingStatus::Booked->value;
-    $booking->driver_id = $driver->id;
-    $booking->save();
-
-    $car->status = CarStatus::Booked->value;
-    $car->save();
-
-    $workingHours = json_decode($car->division->park->working_hours, true);
-
-
-    $car->division->park->working_hours = $workingHours;
-    $booked = $booking;
+        $car->division->park->working_hours = $workingHours;
+        $booked = $booking;
         $booked->status = BookingStatus::from($booked->status)->name;
         $booked->start_date = $booked->booked_at;
         $booked->end_date = $booked->booked_until;
@@ -543,36 +545,61 @@ $startTimeOfWorkDayTomorrow = Carbon::create($nextWorkingDay->year, $nextWorking
         $booked->car->transmission_type = TransmissionType::from($booked->car->transmission_type)->name;
         $booked->car->images = json_decode($booked->car->images);
         $booked->car->fuel_type = FuelType::from($booked->car->fuel_type)->name;
-        $booked->rent_term = RentTerm::where('id', $car->rent_term_id)->with('schemas')->select('deposit_amount_daily','deposit_amount_total','minimum_period_days','is_buyout_possible','id')->first();
-        unset($booked->created_at, $booked->updated_at, $booked->booked_at, $booked->booked_until,
-$booked->park_id, $booked->driver_id, $car->booking, $car->created_at, $car->updated_at, $car->status, $car->car_id, $car->division_id,
-$car->park_id,$car->tariff_id,$car->rent_term_id,$car->division->id,$car->division->park_id,
-$car->division->city_id,$car->division->created_at,$car->division->updated_at,$car->division->name,
-$car->division->park->id,$car->division->park->id,$car->division->park->API_key,
-$car->division->park->created_at,$car->division->park->updated_at,$car->tariff,
-$car->division->park->created_at, $booked->rent_term->id);
-foreach ($booked->rent_term->schemas as $schema) {
-unset($schema->created_at, $schema->updated_at, $schema->id, $schema->rent_term_id);
-}
-
-    $api = new APIController;
-    $api->notifyParkOnBookingStatusChanged($booking->id, true);
-
-    return response()->json(['booking' => $booking], 200);
-}
-
-private function findNextWorkingDay($currentDay, $workingHours) {
-    $nextDay = Carbon::now()->addDay();
-    for ($i=0; $i < 7; $i++) {
-        $nextDayName = $nextDay->format('l');
-        $nextDayInfo = collect($workingHours)->firstWhere('day', $nextDayName);
-        if($nextDayInfo) {
-            return $nextDayInfo;
+        $booked->rent_term = RentTerm::where('id', $car->rent_term_id)->with('schemas')->select('deposit_amount_daily', 'deposit_amount_total', 'minimum_period_days', 'is_buyout_possible', 'id')->first();
+        unset(
+            $booked->created_at,
+            $booked->updated_at,
+            $booked->booked_at,
+            $booked->booked_until,
+            $booked->park_id,
+            $booked->driver_id,
+            $car->booking,
+            $car->created_at,
+            $car->updated_at,
+            $car->status,
+            $car->car_id,
+            $car->division_id,
+            $car->park_id,
+            $car->tariff_id,
+            $car->rent_term_id,
+            $car->division->id,
+            $car->division->park_id,
+            $car->division->city_id,
+            $car->division->created_at,
+            $car->division->updated_at,
+            $car->division->name,
+            $car->division->park->id,
+            $car->division->park->id,
+            $car->division->park->API_key,
+            $car->division->park->created_at,
+            $car->division->park->updated_at,
+            $car->tariff,
+            $car->division->park->created_at,
+            $booked->rent_term->id
+        );
+        foreach ($booked->rent_term->schemas as $schema) {
+            unset($schema->created_at, $schema->updated_at, $schema->id, $schema->rent_term_id);
         }
-        $nextDay->addDay();
+
+        $api = new APIController;
+        $api->notifyParkOnBookingStatusChanged($booking->id, true);
+
+        return response()->json(['booking' => $booking], 200);
     }
-    return null;
-}
+
+    private function findNextWorkingDay($currentDay, $workingHours)
+    {
+        $nextDay = Carbon::now()->addDay();
+        for ($i = 0; $i < 7; $i++) {
+            $nextDayName = $nextDay->format('l');
+            $nextDayInfo = collect($workingHours)->firstWhere('day', $nextDayName);
+            if ($nextDayInfo) {
+                return $nextDayInfo;
+            }
+            $nextDay->addDay();
+        }
+        return null;
+    }
 
     /**
      * Отмена бронирования автомобиля (аутентифицированный запрос)
@@ -687,7 +714,8 @@ private function findNextWorkingDay($currentDay, $workingHours) {
      * @param \Illuminate\Http\Request $request Объект запроса, содержащий идентификатор автомобиля для отмены бронирования
      * @return \Illuminate\Http\JsonResponse JSON-ответ с результатом отмены бронирования
      */
-    public function GetBrandList() {
+    public function GetBrandList()
+    {
         $brandList = Car::select('brand')->distinct()->orderBy('brand', 'asc')->get()->pluck('brand')->toArray();
         return response()->json(['brands' => $brandList]);
     }
