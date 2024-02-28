@@ -135,19 +135,19 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
         <div className="space-y-2">
           <h1 className="my-4 text-center">{`${car.brand} ${car.model} ${car.year_produced}`}</h1>
 
-          <p className="text-base font-semibold text-gray">
+          <p className="text-base font-regular text-gray">
             Парк: {car.park_name}
           </p>
           <Separator />
-          <p className="text-base font-semibold text-gray">
+          <p className="text-base font-regular text-gray">
             Адрес: {car.division?.address}
           </p>
           <Separator />
-          <p className="text-base font-semibold text-gray">
+          <p className="text-base font-regular text-gray">
             Телефон: {car.phone}
           </p>
           <Separator />
-          <p className="text-base font-semibold text-gray">
+          <p className="text-base font-regular text-gray">
             Минимум дней аренды: {car.rent_term?.minimum_period_days}
           </p>
           <br />
@@ -179,9 +179,9 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
             })}
           </div>
           <Collapsible>
-            <CollapsibleTrigger>О парке ▼</CollapsibleTrigger>
+            <CollapsibleTrigger className="mb-4" >О парке ▼</CollapsibleTrigger>
             <CollapsibleContent>
-              <div className="text-sm text-gray-700">{car.about}</div>
+              <div className="text-sm text-gray-700 mb-4">{car.about}</div>
             </CollapsibleContent>
           </Collapsible>
         </div>

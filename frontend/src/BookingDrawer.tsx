@@ -74,13 +74,13 @@ export const BookingDrawer = () => {
             );
           })}
 
-          <div className="flex space-x-1 ">
+          <div className="flex space-x-3 ">
             <img
               className="object-cover w-1/3 h-auto rounded-xl"
               src={booking.car!.images![0]}
               alt=""
             />
-            <div>
+            <div >
               <p className="font-semibold">{`${booking.car?.brand} ${booking.car?.model}`}</p>
               <Separator />
               <p className="font-semibold">{`Парк: ${booking.car?.division?.park?.park_name}`}</p>
@@ -171,7 +171,7 @@ export const BookingDrawer = () => {
               </div>
             </>
           )}
-          <Separator />
+          <Separator className=""/>
           <div className="flex items-center">
             <p className="w-1/2 font-semibold">Дата начала бронирования:</p>
             {format(booking.start_date!, "dd.MM.yyyy HH:mm")}
