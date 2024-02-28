@@ -151,20 +151,32 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
             Минимум дней аренды: {car.rent_term?.minimum_period_days}
           </p>
           <br />
-          <div className="min-h-48">
-            {car.working_hours?.map((x) => (
-              <div className="flex items-center" key={x.day}>
-                <div className="text-sm capitalize w-28">
-                  {getDayOfWeekDisplayName(x.day as DayOfWeek)}
+          <div className="min-h-28">
+            {Object.keys(DayOfWeek).map((x) => {
+              const { working_hours } = car;
+              const currentDay = working_hours!.find(({ day }) => day === x)!;
+              return (
+                <div className="flex items-center" key={x}>
+                  <div className="text-sm capitalize w-28">
+                    {getDayOfWeekDisplayName(x as any)}
+                  </div>
+                  {currentDay && (
+                    <>
+                      {formatWorkingTime(
+                        currentDay.start!.hours!,
+                        currentDay.start!.minutes!
+                      )}{" "}
+                      -{" "}
+                      {formatWorkingTime(
+                        currentDay.end!.hours!,
+                        currentDay.end!.minutes!
+                      )}
+                    </>
+                  )}
+                  {!currentDay && <>Выходной</>}
                 </div>
-                {formatWorkingTime(
-                  x.start!.hours!,
-                  x.start!.minutes!,
-                  x.end!.hours!,
-                  x.end!.minutes!
-                )}
-              </div>
-            ))}
+              );
+            })}
           </div>
           <Collapsible>
             <CollapsibleTrigger>О парке ▼</CollapsibleTrigger>

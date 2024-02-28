@@ -199,23 +199,7 @@ class AuthController extends Controller
                 $booking->car->division = Division::where('id', $booking->car->division_id)->with('park')->select('address', 'park_id', 'coords')->first();
                 $booking->rent_term = RentTerm::where('id', $booking->car->rent_term_id)->with('schemas')->select('deposit_amount_daily', 'deposit_amount_total', 'minimum_period_days', 'is_buyout_possible', 'id')->first();
                 $workingHours = json_decode($booking->car->division->park->working_hours, true);
-                $daysOfWeek = [
-                    'Monday' => 'понедельник',
-                    'Tuesday' => 'вторник',
-                    'Wednesday' => 'среда',
-                    'Thursday' => 'четверг',
-                    'Friday' => 'пятница',
-                    'Saturday' => 'суббота',
-                    'Sunday' => 'воскресенье'
-                ];
-                $translatedWorkingHours = [];
-                foreach ($workingHours as $workingDay) {
-                    $day = $workingDay['day'];
-                    $translatedDay = $daysOfWeek[$day];
-                    $workingDay['day'] = $translatedDay;
-                    $translatedWorkingHours[] = $workingDay;
-                }
-                $booking->car->division->park->working_hours = $translatedWorkingHours;
+                $booking->car->division->park->working_hours = $workingHours;
                 unset(
                     $booking->created_at,
                     $booking->updated_at,

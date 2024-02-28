@@ -141,7 +141,7 @@ export const BookingDrawer = () => {
                 Минимум дней аренды: {booking.rent_term?.minimum_period_days}
               </p>
               <div className="min-h-28">
-                {[DayOfWeek.Monday, DayOfWeek.Tuesday].map((x) => {
+                {Object.keys(DayOfWeek).map((x) => {
                   const { working_hours } = booking.car!.division!.park!;
                   const currentDay = working_hours!.find(
                     ({ day }) => day === x
@@ -149,7 +149,7 @@ export const BookingDrawer = () => {
                   return (
                     <div className="flex items-center" key={x}>
                       <div className="text-sm capitalize w-28">
-                        {getDayOfWeekDisplayName(x)}
+                        {getDayOfWeekDisplayName(x as any)}
                       </div>
                       {currentDay && (
                         <>
