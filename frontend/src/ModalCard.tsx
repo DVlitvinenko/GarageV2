@@ -135,7 +135,7 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
         <div className="space-y-2">
           <h1 className="my-4 text-center sm:text-left">{`${car.brand} ${car.model} ${car.year_produced}`}</h1>
 
-          <p className="text-base font-regular text-gray">
+          <p className="text-base font-medium text-gray">
             Парк: {car.park_name}
           </p>
           <Separator />
@@ -150,8 +150,8 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
           <p className="text-base font-regular text-gray">
             Минимум дней аренды: {car.rent_term?.minimum_period_days}
           </p>
-          <br />
-          <div className="min-h-28">
+          <Separator />
+             <div className="min-h-28">
             {Object.keys(DayOfWeek).map((x) => {
               const { working_hours } = car;
               const currentDay = working_hours!.find(({ day }) => day === x)!;
@@ -179,14 +179,14 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
             })}
           </div>
           <Collapsible>
-            <CollapsibleTrigger className="mb-4">О парке ▼</CollapsibleTrigger>
+            <CollapsibleTrigger className="mb-2">О парке ▼</CollapsibleTrigger>
             <CollapsibleContent>
-              <div className="mb-4 text-sm text-gray-700">{car.about}</div>
+              <div className="text-sm text-gray-700 mb-2">{car.about}</div>
             </CollapsibleContent>
           </Collapsible>
         </div>
-
-        <div className="flex flex-wrap items-center justify-start gap-1 mb-3">
+        <Separator />
+        <div className="flex flex-wrap items-center justify-start gap-1 mb-3 mt-2">
           <Badge variant="card" className="px-0 py-0 bg-grey ">
             <span className="flex items-center h-full px-2 bg-white rounded-xl">
               Депозит {formatRoubles(car.rent_term!.deposit_amount_total!)}
