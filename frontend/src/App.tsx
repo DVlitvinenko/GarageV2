@@ -6,25 +6,17 @@ import { client } from "./backend";
 import { Finder } from "./Finder";
 import { Account } from "./Account";
 import { DriverLogin } from "./DriverLogin";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { userAtom } from "./atoms";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faClockRotateLeft,
-  faRightFromBracket,
   faRightToBracket,
   faTaxi,
   faUser,
-  faWarehouse,
 } from "@fortawesome/free-solid-svg-icons";
 import { User } from "./api-client";
 import { CityPicker } from "./CityPicker";
-import { Badge } from "@/components/ui/badge";
-import {
-  formatRoubles,
-  getFuelTypeDisplayName,
-  getTransmissionDisplayName,
-} from "@/lib/utils";
 import { BookingDrawer } from "./BookingDrawer";
 import { BookingTimer } from "./BookingTimer";
 
@@ -68,11 +60,11 @@ function App() {
 }
 
 export default App;
-const LogoutHandler = () => {
-  client.logout();
-  localStorage.clear();
-  window.location.href = "/";
-};
+// const LogoutHandler = () => {
+//   client.logout();
+//   localStorage.clear();
+//   window.location.href = "/";
+// };
 
 const Menu = ({ user }: { user: User }) => (
   <div className="flex mx-auto space-x-4 cursor-pointer justify-evenly w-60 sm:justify-start sm:mx-0 sm:w-full sm:space-x-8">

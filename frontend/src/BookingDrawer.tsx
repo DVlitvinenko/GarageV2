@@ -1,25 +1,8 @@
-import { Button } from "@/components/ui/button";
-import { Body17, BookingStatus, Bookings, DayOfWeek } from "./api-client";
+import { BookingStatus, DayOfWeek } from "./api-client";
 import { Separator } from "@/components/ui/separator";
-import { useTimer } from "react-timer-hook";
-import {
-  addDays,
-  addHours,
-  addSeconds,
-  format,
-  formatDistanceToNow,
-  formatISO,
-} from "date-fns";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { format } from "date-fns";
+import { useRecoilState } from "recoil";
 import { userAtom } from "./atoms";
-import { reject } from "ramda";
-import { useState } from "react";
-import { client } from "./backend";
 import { Badge } from "@/components/ui/badge";
 import {
   formatRoubles,
@@ -30,7 +13,7 @@ import {
 } from "@/lib/utils";
 
 export const BookingDrawer = () => {
-  const [user, setUser] = useRecoilState(userAtom);
+  const [user] = useRecoilState(userAtom);
 
   if (!user) {
     return <></>;
@@ -80,7 +63,7 @@ export const BookingDrawer = () => {
               src={booking.car!.images![0]}
               alt=""
             />
-            <div >
+            <div>
               <p className="font-semibold">{`${booking.car?.brand} ${booking.car?.model}`}</p>
               <Separator />
               <p className="font-semibold">{`Парк: ${booking.car?.division?.park?.park_name}`}</p>
@@ -171,7 +154,7 @@ export const BookingDrawer = () => {
               </div>
             </>
           )}
-          <Separator className=""/>
+          <Separator className="" />
           <div className="flex items-center">
             <p className="w-1/2 font-semibold">Дата начала бронирования:</p>
             {format(booking.start_date!, "dd.MM.yyyy HH:mm")}
