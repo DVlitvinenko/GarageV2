@@ -36,8 +36,6 @@ import { client } from "./backend";
 import Confirmation from "@/components/ui/confirmation";
 import SliderImages from "@/components/ui/slider-images";
 import { useState } from "react";
-import { Value } from "@radix-ui/react-select";
-import { toPairsIn } from "ramda";
 
 export const ModalCard = ({ car }: { car: Cars2 }) => {
   const [user, setUser] = useRecoilState(userAtom);
