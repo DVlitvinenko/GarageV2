@@ -53,7 +53,6 @@ class CarsController extends Controller
      *                 @OA\Property(property="non_working_days", type="integer", description="Количество нерабочих дней"),
      *                 @OA\Property(property="working_days", type="integer", description="Количество рабочих дней"),
      *             ),
-     *             @OA\Property(property="self_employed", type="boolean", description="Работа с самозанятыми"),
      *             @OA\Property(property="is_buyout_possible", type="boolean", description="Возможность выкупа"),
      *             @OA\Property(property="model", type="array", description="Модель автомобиля",@OA\Items()),
      *             @OA\Property(property="car_class", type="array", description="Класс автомобиля (1 - Эконом, 2 - Комфорт, 3 - Комфорт+, 4 - Бизнес)",@OA\Items(ref="#/components/schemas/CarClass"))
@@ -93,7 +92,6 @@ class CarsController extends Controller
      *                 @OA\Property(property="about", type="string", description="Описание парка"),
      *                 @OA\Property(property="phone", type="string", description="Телефон парка"),
      *                 @OA\Property(property="commission", type="number", description="Комиссия"),
-     *                 @OA\Property(property="self_employed", type="boolean", description="Работа с самозанятыми"),
      *                 @OA\Property(property="city", type="string"),
      *                 @OA\Property(property="division", type="object", description="Данные о подразделении",
      *                     @OA\Property(property="address", type="string", description="Адрес"),
@@ -158,7 +156,6 @@ class CarsController extends Controller
         }
         $translatedValues = array_values($translatedValues);
         $carClass = $translatedValues;
-        $selfEmployed = $request->self_employed;
         $isBuyoutPossible = $request->is_buyout_possible;
         $commission = $request->commission;
 
@@ -235,11 +232,6 @@ class CarsController extends Controller
                 $query->whereIn('class', $carClass);
             });
         }
-        if ($selfEmployed) {
-            $carsQuery->whereHas('division.park', function ($query) use ($selfEmployed) {
-                $query->where('self_employed', $selfEmployed);
-            });
-        }
         if ($commission) {
             $carsQuery->whereHas('division.park', function ($query) use ($commission) {
                 $query->where('commission', '<=', $commission);
@@ -270,7 +262,7 @@ class CarsController extends Controller
                 $query->select('id', 'daily_amount', 'non_working_days', 'working_days', 'rent_term_id')->orderBy('daily_amount', $sorting);
             },
             'division.park' => function ($query) {
-                $query->select('id', 'park_name', 'commission', 'self_employed', 'phone', 'about');
+                $query->select('id', 'park_name', 'commission', 'phone', 'about');
             },
             'division' => function ($query) {
                 $query->select('id', 'coords', 'address', 'name', 'park_id', 'city_id', 'working_hours');
@@ -317,7 +309,6 @@ class CarsController extends Controller
             $commission = $car['division']['park']['commission'];
             $phone = $car['division']['park']['phone'];
             $about = $car['division']['park']['about'];
-            $selfEmployed = $car['division']['park']['self_employed'];
             $workingHours = json_decode($car['division']['working_hours'], true);
 
             if (isset($car['division']['park']['park_name'])) {
@@ -331,7 +322,6 @@ class CarsController extends Controller
             $car['park_name'] = $parkName;
             $car['working_hours'] = $workingHours;
             $car['phone'] = $phone;
-            $car['self_employed'] = $selfEmployed;
             $car['about'] = $about;
             $commissionFormatted = number_format($commission, 2);
             $car['commission'] = rtrim(rtrim($commissionFormatted, '0'), '.');
@@ -422,7 +412,6 @@ class CarsController extends Controller
      *                             @OA\Property(property="phone", type="string"),
      *                             @OA\Property(property="url", type="string"),
      *                             @OA\Property(property="commission", type="integer"),
-     *                             @OA\Property(property="self_employed", type="integer"),
      *                             @OA\Property(property="park_name", type="string"),
      *                             @OA\Property(property="about", type="string")
      *                         ),

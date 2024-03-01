@@ -909,7 +909,6 @@ class APIController extends Controller
      *         @OA\JsonContent(
      *             @OA\Property(property="url", type="string", description="URL парка"),
      *             @OA\Property(property="commission", type="number", description="Комиссия"),
-     *             @OA\Property(property="self_employed", type="boolean", description="Работает ли парк с самозанятыми, true - если работает"),
      *             @OA\Property(property="park_name", type="string", description="Название парка"),
      *             @OA\Property(property="about", type="string", description="Описание парка"),
      *             @OA\Property(property="phone", type="string", description="Телефон парка"),
@@ -936,7 +935,6 @@ class APIController extends Controller
      *             @OA\Property(property="errors", type="object", example={
      *                 "url": {"Поле url должно быть строкой."},
      *                 "commission": {"Поле commission должно быть числом."},
-     *                 "self_employed": {"Поле self_employed должно быть булевым значением."},
      *                 "park_name": {"Поле park_name должно быть строкой."},
      *                 "about": {"Поле about должно быть строкой."},
      *                 "working_hours": {"Поле working_hours должно быть в формате JSON."},
@@ -959,7 +957,6 @@ class APIController extends Controller
         $validator = Validator::make($request->all(), [
             'url' => 'string',
             'commission' => 'numeric',
-            'self_employed' => 'boolean',
             'park_name' => 'string',
             'about' => 'string','phone' => 'string',
         ]);
@@ -971,9 +968,6 @@ class APIController extends Controller
         }
         if ($request->commission) {
             $park->commission = $request->commission;
-        }
-        if ($request->self_employed) {
-            $park->self_employed = $request->self_employed;
         }
         if ($request->park_name) {
             $park->park_name = $request->park_name;

@@ -125,7 +125,7 @@ export const BookingDrawer = () => {
               </p>
               <div className="min-h-28">
                 {Object.keys(DayOfWeek).map((x) => {
-                  const { working_hours } = booking.car!.division!.park!;
+                  const { working_hours } = booking.car!.division!;
                   const currentDay = working_hours!.find(
                     ({ day }) => day === x
                   )!;

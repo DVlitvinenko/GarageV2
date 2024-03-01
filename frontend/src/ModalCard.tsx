@@ -181,12 +181,12 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
           <Collapsible>
             <CollapsibleTrigger className="mb-2">О парке ▼</CollapsibleTrigger>
             <CollapsibleContent>
-              <div className="text-sm text-gray-700 mb-2">{car.about}</div>
+              <div className="mb-2 text-sm text-gray-700">{car.about}</div>
             </CollapsibleContent>
           </Collapsible>
         </div>
         <Separator />
-        <div className="flex flex-col justify-start gap-1 mb-1 mt-2">
+        <div className="flex flex-col justify-start gap-1 mt-2 mb-1">
           <div>
             <Badge variant="card" className="px-0 py-0 bg-grey ">
               <span className="flex items-center h-full px-2 bg-white rounded-xl">

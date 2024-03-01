@@ -140,7 +140,6 @@ class AuthController extends Controller
      *                                 @OA\Property(property="phone", type="string"),
      *                                 @OA\Property(property="url", type="string"),
      *                                 @OA\Property(property="commission", type="integer"),
-     *                                 @OA\Property(property="self_employed", type="integer"),
      *                                 @OA\Property(property="park_name", type="string"),
      *                                 @OA\Property(property="about", type="string"),
      *                             )
