@@ -7,33 +7,21 @@ interface SliderImagesProps {
 const SliderImages = ({ images }: SliderImagesProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [scrollEnd, setScrollEnd] = useState(false);
 
-  const handleMove = () => {
-    // if (containerRef.current) {
-    //   const containerWidth = containerRef.current.offsetWidth;
-    //   const scrollLeft = containerRef.current.scrollLeft;
-    //   const index = Math.round(scrollLeft / containerWidth);
-    //   setActiveIndex(index);
-    // }
-  };
-
-  const handleMoveEnd = () => {
-    // if (containerRef.current) {
-    //   containerRef.current.scrollTo({
-    //     left: activeIndex * containerRef.current.offsetWidth,
-    //     behavior: "smooth",
-    //   });
-    // }
-  };
-  const handleClick = (index) => {
-    setActiveIndex(index);
+  const handleScroll = () => {
     if (containerRef.current) {
-      containerRef.current.scrollTo({
-        left: activeIndex * containerRef.current.offsetWidth,
-        behavior: "smooth",
-      });
+      setScrollEnd(false);
+      const containerWidth = containerRef.current.offsetWidth;
+      const scrollLeft = containerRef.current.scrollLeft;
+      const index = Math.round(scrollLeft / containerWidth);
+      setActiveIndex(index);
+      setTimeout(() => {
+        () => setScrollEnd(true);
+      }, 1000);
     }
   };
+
   useEffect(() => {
     if (containerRef.current) {
       containerRef.current.scrollTo({
@@ -48,8 +36,7 @@ const SliderImages = ({ images }: SliderImagesProps) => {
       <div
         className={`absolute flex items-center justify-start h-64 sm:h-80 space-x-1 pr-1 overflow-scroll overflow-x-auto scrollbar-hide `}
         ref={containerRef}
-        onTouchMove={handleMove}
-        onTouchEnd={handleMoveEnd}
+        onScroll={handleScroll}
       >
         {images.map((x, i) => (
           <img
@@ -74,7 +61,7 @@ const SliderImages = ({ images }: SliderImagesProps) => {
               <img
                 className="object-cover w-full h-full rounded-xl"
                 src={x}
-                onClick={() => handleClick(i)}
+                onClick={() => setActiveIndex(i)}
                 alt=""
               />
             </div>

@@ -155,6 +155,15 @@ export const Finder = () => {
   const filteredBrands = brands.filter((brand) =>
     brand.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  useEffect(
+    () =>
+      setFilters({
+        ...filters,
+        car_vin: searchTerm,
+      }),
+    [searchTerm]
+  );
+
   return (
     <>
       {/* <div onClick={() => navigate("login/driver")} className="fixed top-5 right-5">Войти</div> */}
@@ -294,18 +303,6 @@ export const Finder = () => {
                           </span>
                         );
                       })}
-                      <input
-                        className="w-full px-2 py-2 border-2 border-yellow rounded-xl focus-visible:outline-none"
-                        type="text"
-                        placeholder="Поиск по VIN"
-                        value={filters.car_vin ? filters.car_vin : ""}
-                        onChange={(e) =>
-                          setFilters({
-                            ...filters,
-                            car_vin: e.target.value,
-                          })
-                        }
-                      />
                     </div>
 
                     <DialogFooter>
