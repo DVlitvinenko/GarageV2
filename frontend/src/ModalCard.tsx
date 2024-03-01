@@ -233,7 +233,7 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
             </Badge>
           </div>
         </div>
-        <div className="flex flex-wrap gap-1 pb-20 mb-16">
+        <div className="flex flex-wrap gap-1 pb-10">
           {schemas!.slice(0, 3).map((currentSchema, i) => (
             <Badge
               key={`${currentSchema.working_days}/${currentSchema.non_working_days}${i}`}
@@ -254,10 +254,10 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
           <SelectTrigger className="w-1/2 h-auto pb-1 border-none pl-3text-left bg-grey rounded-xl">
             <SelectValue placeholder="Схема аренды" />
           </SelectTrigger>
-          <SelectContent className="w-full h-auto p-1 text-left border-none bg-grey rounded-xl">
+          <SelectContent className="w-full h-auto p-1 pb-0 text-left border-none bg-grey rounded-xl">
             {schemas!.map((currentSchema, i) => (
               <SelectItem
-                className="rounded-xl"
+                className="mb-1 border rounded-xl border-zinc-300"
                 key={`${currentSchema.working_days}/${currentSchema.non_working_days}${i}`}
                 value={`${currentSchema.id}`}
               >
