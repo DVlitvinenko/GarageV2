@@ -1,6 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
@@ -28,10 +35,15 @@ import { useRecoilState } from "recoil";
 import { client } from "./backend";
 import Confirmation from "@/components/ui/confirmation";
 import SliderImages from "@/components/ui/slider-images";
+import { useState } from "react";
+import { Value } from "@radix-ui/react-select";
+import { toPairsIn } from "ramda";
 
 export const ModalCard = ({ car }: { car: Cars2 }) => {
   const [user, setUser] = useRecoilState(userAtom);
-
+  const [selectedSchema, setSelectedSchema] = useState(
+    car.rent_term!.schemas![0]!.id
+  );
   const navigate = useNavigate();
 
   const activeBooking = user?.bookings!.find(
@@ -58,6 +70,7 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
     const bookingData = await client.book(
       new Body16({
         id: car.id,
+        schema_id: selectedSchema,
       })
     );
 
@@ -179,14 +192,16 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
             })}
           </div>
           <Collapsible>
-            <CollapsibleTrigger className="mb-2">О парке ▼</CollapsibleTrigger>
+            <CollapsibleTrigger className="mb-2 focus:outline-none">
+              О парке ▼
+            </CollapsibleTrigger>
             <CollapsibleContent>
               <div className="mb-2 text-sm text-gray-700">{car.about}</div>
             </CollapsibleContent>
           </Collapsible>
         </div>
         <Separator />
-        <div className="flex flex-col justify-start gap-1 mt-2 mb-1">
+        <div className="flex flex-col gap-1 mt-2 mb-1">
           <div>
             <Badge variant="card" className="px-0 py-0 bg-grey ">
               <span className="flex items-center h-full px-2 bg-white rounded-xl">
@@ -232,16 +247,27 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
         </div>
       </div>
       <div className="fixed bottom-0 left-0 flex justify-center w-full px-2 py-2 space-x-2 bg-white border-t border-pale">
-        <Badge variant="schema" className="w-1/2 h-auto border-none bg-grey">
-          {`${
-            car.rent_term?.schemas![0]?.daily_amount !== undefined
-              ? formatRoubles(car.rent_term?.schemas![0]!.daily_amount)
-              : ""
-          }`}
-          <div className="text-xs font-medium text-black">{`${
-            car.rent_term?.schemas![0]!.working_days
-          } раб. / ${car.rent_term?.schemas![0]!.non_working_days} вых.`}</div>
-        </Badge>
+        <Select
+          onValueChange={(value) => setSelectedSchema(Number(value))}
+          defaultValue={`${schemas![0].id}`}
+        >
+          <SelectTrigger className="w-1/2 h-auto pl-3 text-left border-none bg-grey rounded-xl">
+            <SelectValue placeholder="Схема аренды" />
+          </SelectTrigger>
+          <SelectContent className="w-full h-auto p-1 text-left border-none bg-grey rounded-xl">
+            {schemas!.map((currentSchema, i) => (
+              <SelectItem
+                className="rounded-xl"
+                key={`${currentSchema.working_days}/${currentSchema.non_working_days}${i}`}
+                value={`${currentSchema.id}`}
+              >
+                {`${formatRoubles(currentSchema.daily_amount!)}`}
+                <div className="text-xs font-medium text-black">{`${currentSchema.working_days} раб. / ${currentSchema.non_working_days} вых.`}</div>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
         {!activeBooking && (
           <div className="w-1/2">
             <Confirmation

@@ -430,6 +430,26 @@
                                     "phone": {
                                         "description": "Телефон водителя",
                                         "type": "string"
+                                    },
+                                    "schema": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "daily_amount": {
+                                                    "description": "Суточная стоимость",
+                                                    "type": "integer"
+                                                },
+                                                "non_working_days": {
+                                                    "description": "Количество нерабочих дней",
+                                                    "type": "integer"
+                                                },
+                                                "working_days": {
+                                                    "description": "Количество рабочих дней",
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
                                     }
                                 },
                                 "type": "object"
@@ -900,10 +920,6 @@
                                         "description": "Комиссия",
                                         "type": "number"
                                     },
-                                    "self_employed": {
-                                        "description": "Работает ли парк с самозанятыми, true - если работает",
-                                        "type": "boolean"
-                                    },
                                     "park_name": {
                                         "description": "Название парка",
                                         "type": "string"
@@ -973,9 +989,6 @@
                                                 ],
                                                 "commission": [
                                                     "Поле commission должно быть числом."
-                                                ],
-                                                "self_employed": [
-                                                    "Поле self_employed должно быть булевым значением."
                                                 ],
                                                 "park_name": [
                                                     "Поле park_name должно быть строкой."
@@ -1829,9 +1842,6 @@
                                                                                     "commission": {
                                                                                         "type": "integer"
                                                                                     },
-                                                                                    "self_employed": {
-                                                                                        "type": "integer"
-                                                                                    },
                                                                                     "park_name": {
                                                                                         "type": "string"
                                                                                     },
@@ -2171,10 +2181,6 @@
                                         },
                                         "type": "object"
                                     },
-                                    "self_employed": {
-                                        "description": "Работа с самозанятыми",
-                                        "type": "boolean"
-                                    },
                                     "is_buyout_possible": {
                                         "description": "Возможность выкупа",
                                         "type": "boolean"
@@ -2297,10 +2303,6 @@
                                                         "description": "Комиссия",
                                                         "type": "number"
                                                     },
-                                                    "self_employed": {
-                                                        "description": "Работа с самозанятыми",
-                                                        "type": "boolean"
-                                                    },
                                                     "city": {
                                                         "type": "string"
                                                     },
@@ -2343,6 +2345,9 @@
                                                                     "properties": {
                                                                         "daily_amount": {
                                                                             "description": "Суточная стоимость",
+                                                                            "type": "integer"
+                                                                        },
+                                                                        "id": {
                                                                             "type": "integer"
                                                                         },
                                                                         "non_working_days": {
@@ -2403,6 +2408,10 @@
                                 "properties": {
                                     "id": {
                                         "description": "Идентификатор машины",
+                                        "type": "integer"
+                                    },
+                                    "schema_id": {
+                                        "description": "Идентификатор схемы аренды",
                                         "type": "integer"
                                     }
                                 },
@@ -2519,9 +2528,6 @@
                                                                             "type": "string"
                                                                         },
                                                                         "commission": {
-                                                                            "type": "integer"
-                                                                        },
-                                                                        "self_employed": {
                                                                             "type": "integer"
                                                                         },
                                                                         "park_name": {

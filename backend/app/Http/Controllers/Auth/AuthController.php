@@ -196,7 +196,12 @@ class AuthController extends Controller
                 $booking->car->fuel_type = FuelType::from($booking->car->fuel_type)->name;
                 $booking->car->images = json_decode($booking->car->images);
                 $booking->car->division = Division::where('id', $booking->car->division_id)->with('park')->select('address', 'park_id', 'coords', 'working_hours')->first();
-                $booking->rent_term = RentTerm::where('id', $booking->car->rent_term_id)->with('schemas')->select('deposit_amount_daily', 'deposit_amount_total', 'minimum_period_days', 'is_buyout_possible', 'id')->first();
+                $booking->rent_term = RentTerm::where('id', $booking->car->rent_term_id)
+                    ->with(['schemas' => function ($query) use ($booking) {
+                        $query->where('id', $booking->schema_id);
+                    }])
+                    ->select('deposit_amount_daily', 'deposit_amount_total', 'minimum_period_days', 'is_buyout_possible', 'id')
+                    ->first();
                 $workingHours = json_decode($booking->car->division->working_hours, true);
                 $booking->car->division->working_hours = $workingHours;
                 unset(

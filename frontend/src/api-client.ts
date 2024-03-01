@@ -1567,6 +1567,7 @@ export class Body4 implements IBody4 {
     driver_name?: string;
     /** Телефон водителя */
     phone?: string;
+    schema?: Schema[];
 
     [key: string]: any;
 
@@ -1589,6 +1590,11 @@ export class Body4 implements IBody4 {
             this.is_booked = _data["is_booked"];
             this.driver_name = _data["driver_name"];
             this.phone = _data["phone"];
+            if (Array.isArray(_data["schema"])) {
+                this.schema = [] as any;
+                for (let item of _data["schema"])
+                    this.schema!.push(Schema.fromJS(item));
+            }
         }
     }
 
@@ -1609,6 +1615,11 @@ export class Body4 implements IBody4 {
         data["is_booked"] = this.is_booked;
         data["driver_name"] = this.driver_name;
         data["phone"] = this.phone;
+        if (Array.isArray(this.schema)) {
+            data["schema"] = [];
+            for (let item of this.schema)
+                data["schema"].push(item.toJSON());
+        }
         return data;
     }
 }
@@ -1622,6 +1633,7 @@ export interface IBody4 {
     driver_name?: string;
     /** Телефон водителя */
     phone?: string;
+    schema?: Schema[];
 
     [key: string]: any;
 }
@@ -1835,8 +1847,6 @@ export class Body8 implements IBody8 {
     url?: string;
     /** Комиссия */
     commission?: number;
-    /** Работает ли парк с самозанятыми, true - если работает */
-    self_employed?: boolean;
     /** Название парка */
     park_name?: string;
     /** Описание парка */
@@ -1863,7 +1873,6 @@ export class Body8 implements IBody8 {
             }
             this.url = _data["url"];
             this.commission = _data["commission"];
-            this.self_employed = _data["self_employed"];
             this.park_name = _data["park_name"];
             this.about = _data["about"];
             this.phone = _data["phone"];
@@ -1885,7 +1894,6 @@ export class Body8 implements IBody8 {
         }
         data["url"] = this.url;
         data["commission"] = this.commission;
-        data["self_employed"] = this.self_employed;
         data["park_name"] = this.park_name;
         data["about"] = this.about;
         data["phone"] = this.phone;
@@ -1898,8 +1906,6 @@ export interface IBody8 {
     url?: string;
     /** Комиссия */
     commission?: number;
-    /** Работает ли парк с самозанятыми, true - если работает */
-    self_employed?: boolean;
     /** Название парка */
     park_name?: string;
     /** Описание парка */
@@ -2423,8 +2429,6 @@ export class Body15 implements IBody15 {
     car_vin?: string;
     /** Данные о сроке аренды */
     schemas?: Schemas2;
-    /** Работа с самозанятыми */
-    self_employed?: boolean;
     /** Возможность выкупа */
     is_buyout_possible?: boolean;
     /** Модель автомобиля */
@@ -2468,7 +2472,6 @@ export class Body15 implements IBody15 {
             this.sorting = _data["sorting"];
             this.car_vin = _data["car_vin"];
             this.schemas = _data["Schemas"] ? Schemas2.fromJS(_data["Schemas"]) : <any>undefined;
-            this.self_employed = _data["self_employed"];
             this.is_buyout_possible = _data["is_buyout_possible"];
             if (Array.isArray(_data["model"])) {
                 this.model = [] as any;
@@ -2515,7 +2518,6 @@ export class Body15 implements IBody15 {
         data["sorting"] = this.sorting;
         data["car_vin"] = this.car_vin;
         data["Schemas"] = this.schemas ? this.schemas.toJSON() : <any>undefined;
-        data["self_employed"] = this.self_employed;
         data["is_buyout_possible"] = this.is_buyout_possible;
         if (Array.isArray(this.model)) {
             data["model"] = [];
@@ -2552,8 +2554,6 @@ export interface IBody15 {
     car_vin?: string;
     /** Данные о сроке аренды */
     schemas?: Schemas2;
-    /** Работа с самозанятыми */
-    self_employed?: boolean;
     /** Возможность выкупа */
     is_buyout_possible?: boolean;
     /** Модель автомобиля */
@@ -2567,6 +2567,8 @@ export interface IBody15 {
 export class Body16 implements IBody16 {
     /** Идентификатор машины */
     id?: number;
+    /** Идентификатор схемы аренды */
+    schema_id?: number;
 
     [key: string]: any;
 
@@ -2586,6 +2588,7 @@ export class Body16 implements IBody16 {
                     this[property] = _data[property];
             }
             this.id = _data["id"];
+            this.schema_id = _data["schema_id"];
         }
     }
 
@@ -2603,6 +2606,7 @@ export class Body16 implements IBody16 {
                 data[property] = this[property];
         }
         data["id"] = this.id;
+        data["schema_id"] = this.schema_id;
         return data;
     }
 }
@@ -2610,6 +2614,8 @@ export class Body16 implements IBody16 {
 export interface IBody16 {
     /** Идентификатор машины */
     id?: number;
+    /** Идентификатор схемы аренды */
+    schema_id?: number;
 
     [key: string]: any;
 }
@@ -6202,6 +6208,68 @@ export interface ICars {
     [key: string]: any;
 }
 
+export class Schema implements ISchema {
+    /** Суточная стоимость */
+    daily_amount?: number;
+    /** Количество нерабочих дней */
+    non_working_days?: number;
+    /** Количество рабочих дней */
+    working_days?: number;
+
+    [key: string]: any;
+
+    constructor(data?: ISchema) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.daily_amount = _data["daily_amount"];
+            this.non_working_days = _data["non_working_days"];
+            this.working_days = _data["working_days"];
+        }
+    }
+
+    static fromJS(data: any): Schema {
+        data = typeof data === 'object' ? data : {};
+        let result = new Schema();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["daily_amount"] = this.daily_amount;
+        data["non_working_days"] = this.non_working_days;
+        data["working_days"] = this.working_days;
+        return data;
+    }
+}
+
+export interface ISchema {
+    /** Суточная стоимость */
+    daily_amount?: number;
+    /** Количество нерабочих дней */
+    non_working_days?: number;
+    /** Количество рабочих дней */
+    working_days?: number;
+
+    [key: string]: any;
+}
+
 export class Schemas implements ISchemas {
     /** Стоимость аренды авто */
     daily_amount?: number;
@@ -6572,8 +6640,6 @@ export class Cars2 implements ICars2 {
     phone?: string;
     /** Комиссия */
     commission?: number;
-    /** Работа с самозанятыми */
-    self_employed?: boolean;
     city?: string;
     /** Данные о подразделении */
     division?: Division;
@@ -6618,7 +6684,6 @@ export class Cars2 implements ICars2 {
             this.about = _data["about"];
             this.phone = _data["phone"];
             this.commission = _data["commission"];
-            this.self_employed = _data["self_employed"];
             this.city = _data["city"];
             this.division = _data["division"] ? Division.fromJS(_data["division"]) : <any>undefined;
             this.rent_term = _data["rent_term"] ? Rent_term.fromJS(_data["rent_term"]) : <any>undefined;
@@ -6659,7 +6724,6 @@ export class Cars2 implements ICars2 {
         data["about"] = this.about;
         data["phone"] = this.phone;
         data["commission"] = this.commission;
-        data["self_employed"] = this.self_employed;
         data["city"] = this.city;
         data["division"] = this.division ? this.division.toJSON() : <any>undefined;
         data["rent_term"] = this.rent_term ? this.rent_term.toJSON() : <any>undefined;
@@ -6691,8 +6755,6 @@ export interface ICars2 {
     phone?: string;
     /** Комиссия */
     commission?: number;
-    /** Работа с самозанятыми */
-    self_employed?: boolean;
     city?: string;
     /** Данные о подразделении */
     division?: Division;
@@ -7767,6 +7829,7 @@ export interface IEnd3 {
 export class Schemas3 implements ISchemas3 {
     /** Суточная стоимость */
     daily_amount?: number;
+    id?: number;
     /** Количество нерабочих дней */
     non_working_days?: number;
     /** Количество рабочих дней */
@@ -7790,6 +7853,7 @@ export class Schemas3 implements ISchemas3 {
                     this[property] = _data[property];
             }
             this.daily_amount = _data["daily_amount"];
+            this.id = _data["id"];
             this.non_working_days = _data["non_working_days"];
             this.working_days = _data["working_days"];
         }
@@ -7809,6 +7873,7 @@ export class Schemas3 implements ISchemas3 {
                 data[property] = this[property];
         }
         data["daily_amount"] = this.daily_amount;
+        data["id"] = this.id;
         data["non_working_days"] = this.non_working_days;
         data["working_days"] = this.working_days;
         return data;
@@ -7818,6 +7883,7 @@ export class Schemas3 implements ISchemas3 {
 export interface ISchemas3 {
     /** Суточная стоимость */
     daily_amount?: number;
+    id?: number;
     /** Количество нерабочих дней */
     non_working_days?: number;
     /** Количество рабочих дней */
@@ -8144,7 +8210,6 @@ export class Park implements IPark {
     phone?: string;
     url?: string;
     commission?: number;
-    self_employed?: number;
     park_name?: string;
     about?: string;
 
@@ -8168,7 +8233,6 @@ export class Park implements IPark {
             this.phone = _data["phone"];
             this.url = _data["url"];
             this.commission = _data["commission"];
-            this.self_employed = _data["self_employed"];
             this.park_name = _data["park_name"];
             this.about = _data["about"];
         }
@@ -8190,7 +8254,6 @@ export class Park implements IPark {
         data["phone"] = this.phone;
         data["url"] = this.url;
         data["commission"] = this.commission;
-        data["self_employed"] = this.self_employed;
         data["park_name"] = this.park_name;
         data["about"] = this.about;
         return data;
@@ -8201,7 +8264,6 @@ export interface IPark {
     phone?: string;
     url?: string;
     commission?: number;
-    self_employed?: number;
     park_name?: string;
     about?: string;
 
@@ -8272,7 +8334,6 @@ export class Park2 implements IPark2 {
     phone?: string;
     url?: string;
     commission?: number;
-    self_employed?: number;
     park_name?: string;
     about?: string;
 
@@ -8296,7 +8357,6 @@ export class Park2 implements IPark2 {
             this.phone = _data["phone"];
             this.url = _data["url"];
             this.commission = _data["commission"];
-            this.self_employed = _data["self_employed"];
             this.park_name = _data["park_name"];
             this.about = _data["about"];
         }
@@ -8318,7 +8378,6 @@ export class Park2 implements IPark2 {
         data["phone"] = this.phone;
         data["url"] = this.url;
         data["commission"] = this.commission;
-        data["self_employed"] = this.self_employed;
         data["park_name"] = this.park_name;
         data["about"] = this.about;
         return data;
@@ -8329,7 +8388,6 @@ export interface IPark2 {
     phone?: string;
     url?: string;
     commission?: number;
-    self_employed?: number;
     park_name?: string;
     about?: string;
 

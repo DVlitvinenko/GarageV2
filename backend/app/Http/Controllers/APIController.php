@@ -439,7 +439,12 @@ class APIController extends Controller
      *             @OA\Property(property="id", type="string", description="VIN-номер автомобиля"),
      *             @OA\Property(property="is_booked", type="integer", description="Статус бронирования. 1 - забронировано, 0 - бронь отменена"),
      *             @OA\Property(property="driver_name", type="string", description="ФИО водителя"),
-     *             @OA\Property(property="phone", type="string", description="Телефон водителя")
+     *             @OA\Property(property="phone", type="string", description="Телефон водителя"),
+     *             @OA\Property(property="schema", type="array", @OA\Items(
+     *                         @OA\Property(property="daily_amount", type="integer", description="Суточная стоимость"),
+     *                         @OA\Property(property="non_working_days", type="integer", description="Количество нерабочих дней"),
+     *                         @OA\Property(property="working_days", type="integer", description="Количество рабочих дней"),
+     *                     ))
      *         )
      *     ),
      *     @OA\Response(
@@ -456,35 +461,44 @@ class APIController extends Controller
      * @return \Illuminate\Http\JsonResponse JSON-ответ с результатом изменения статуса бронирования
      */
 
-    public function notifyParkOnBookingStatusChanged($booking_id, $is_booked)
-    {
-        $booking = Booking::where('id', $booking_id)->first();
-        $car = $booking->car;
-        $user = $booking->driver->user;
-        $park = $car->division->park;
-        $apiKey = $park->API_key;
-        $url = $park->url;
+     public function notifyParkOnBookingStatusChanged($booking_id, $is_booked, $schema=null)
+     {
+         $booking = Booking::with('car', 'driver.user', 'car.division.park', 'car.rentTerm.schemas')
+             ->find($booking_id);
 
-        // if ($url !== null) {
-        //     $client = new Client();
-        //     $response = $client->put($url, [
-        //         'headers' => [
-        //             'X-API-Key' => $apiKey,
-        //         ],
-        //         'json' => [
-        //             'is_booked' => $is_booked,
-        //             'car_id' =>  $car->car_id,
-        //             'driver_name' => $user->name,
-        //             'phone' => $user->phone,
-        //         ],
-        //         'http_errors' => false,
-        //     ]);
-        //     $statusCode = $response->getStatusCode();
-        //     if ($statusCode === 204) {
-        //     } else {
-        //     }
-        // }
-    }
+         if ($booking) {
+             $car = $booking->car;
+             $user = $booking->driver->user;
+             $park = $car->division->park;
+             $apiKey = $park->API_key;
+             $url = $park->url;
+
+            //  if ($url !== null) {
+            //      $client = new Client();
+            //      $response = $client->put($url, [
+            //          'headers' => [
+            //              'X-API-Key' => $apiKey,
+            //          ],
+            //          'json' => [
+            //              'is_booked' => $is_booked,
+            //              'car_id' => $car->car_id,
+            //              'driver_name' => $user->name,
+            //              'phone' => $user->phone,
+            //              'schema' => $schema,
+            //          ],
+            //          'http_errors' => false,
+            //      ]);
+
+            //      $statusCode = $response->getStatusCode();
+
+            //      if ($statusCode === 204) {
+            //          // Handle success response
+            //      } else {
+            //          // Handle other status codes
+            //      }
+            //  }
+         }
+     }
 
     /**
      * Создание или обновление условий аренды

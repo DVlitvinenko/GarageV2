@@ -104,6 +104,7 @@ class CarsController extends Controller
      *                     @OA\Property(property="is_buyout_possible", type="boolean", description="Возможность выкупа"),
      *                     @OA\Property(property="schemas", type="array", @OA\Items(
      *                         @OA\Property(property="daily_amount", type="integer", description="Суточная стоимость"),
+     *                         @OA\Property(property="id", type="integer"),
      *                         @OA\Property(property="non_working_days", type="integer", description="Количество нерабочих дней"),
      *                         @OA\Property(property="working_days", type="integer", description="Количество рабочих дней"),
      *                     )),
@@ -360,6 +361,7 @@ class CarsController extends Controller
      *     required=true,
      *     @OA\JsonContent(
      *         @OA\Property(property="id", type="integer", description="Идентификатор машины"),
+     *         @OA\Property(property="schema_id", type="integer", description="Идентификатор схемы аренды"),
      *     ),
      * ),
      * @OA\Response(
@@ -455,6 +457,10 @@ class CarsController extends Controller
      */
     public function Book(Request $request)
     {
+        $request->validate([
+            'id' => 'required|integer',
+            'schema_id' => 'required|integer'
+        ]);
         $rent_time = 3;
         $user = Auth::guard('sanctum')->user();
 
@@ -463,6 +469,9 @@ class CarsController extends Controller
         //     return response()->json(['message' => 'Пользователь не зарегистрирован или не верифицирован'], 403);
         // }
 
+$schema = Schema::where('id', $request->schema_id)->first();
+if(!$schema){ return response()->json(['message' => 'Схема аренды не найдена'], 404);
+}
         $car = Car::where('id', $request->id)->with('booking', 'division', 'division.park')->first();
 
         if (!$car) {
@@ -519,7 +528,7 @@ class CarsController extends Controller
         $booking = new Booking();
         $booking->car_id = $request->id;
         $booking->park_id = $division->park_id;
-
+        $booking->schema_id = $schema->id;
         $booking->booked_at = Carbon::now()->toIso8601ZuluString();
         $booking->booked_until = Carbon::parse($newEndTime)->toIso8601ZuluString();
         $booking->status = BookingStatus::Booked->value;
@@ -542,7 +551,12 @@ class CarsController extends Controller
         $booked->car->transmission_type = TransmissionType::from($booked->car->transmission_type)->name;
         $booked->car->images = json_decode($booked->car->images);
         $booked->car->fuel_type = FuelType::from($booked->car->fuel_type)->name;
-        $booked->rent_term = RentTerm::where('id', $car->rent_term_id)->with('schemas')->select('deposit_amount_daily', 'deposit_amount_total', 'minimum_period_days', 'is_buyout_possible', 'id')->first();
+        $booked->rent_term = RentTerm::where('id', $car->rent_term_id)
+    ->with(['schemas' => function ($query) use ($booked) {
+        $query->where('id', $booked->schema_id);
+    }])
+    ->select('deposit_amount_daily', 'deposit_amount_total', 'minimum_period_days', 'is_buyout_possible', 'id')
+    ->first();
         unset(
             $booked->created_at,
             $booked->updated_at,
@@ -579,7 +593,7 @@ class CarsController extends Controller
         }
 
         $api = new APIController;
-        $api->notifyParkOnBookingStatusChanged($booking->id, true);
+        $api->notifyParkOnBookingStatusChanged($booking->id, true,$schema);
 
         return response()->json(['booking' => $booking], 200);
     }
