@@ -9,15 +9,24 @@ const SliderImages = ({ images }: SliderImagesProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const handleMove = () => {
-    if (containerRef.current) {
-      const containerWidth = containerRef.current.offsetWidth;
-      const scrollLeft = containerRef.current.scrollLeft;
-      const index = Math.round(scrollLeft / containerWidth);
-      setActiveIndex(index);
-    }
+    // if (containerRef.current) {
+    //   const containerWidth = containerRef.current.offsetWidth;
+    //   const scrollLeft = containerRef.current.scrollLeft;
+    //   const index = Math.round(scrollLeft / containerWidth);
+    //   setActiveIndex(index);
+    // }
   };
 
   const handleMoveEnd = () => {
+    // if (containerRef.current) {
+    //   containerRef.current.scrollTo({
+    //     left: activeIndex * containerRef.current.offsetWidth,
+    //     behavior: "smooth",
+    //   });
+    // }
+  };
+  const handleClick = (index) => {
+    setActiveIndex(index);
     if (containerRef.current) {
       containerRef.current.scrollTo({
         left: activeIndex * containerRef.current.offsetWidth,
@@ -25,7 +34,6 @@ const SliderImages = ({ images }: SliderImagesProps) => {
       });
     }
   };
-
   useEffect(() => {
     if (containerRef.current) {
       containerRef.current.scrollTo({
@@ -66,7 +74,7 @@ const SliderImages = ({ images }: SliderImagesProps) => {
               <img
                 className="object-cover w-full h-full rounded-xl"
                 src={x}
-                onClick={() => setActiveIndex(i)}
+                onClick={() => handleClick(i)}
                 alt=""
               />
             </div>
