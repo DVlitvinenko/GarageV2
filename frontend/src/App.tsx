@@ -12,7 +12,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faClockRotateLeft,
   faRightToBracket,
-  faTaxi,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { User } from "./api-client";
@@ -68,9 +67,8 @@ export default App;
 
 const Menu = ({ user }: { user: User }) => (
   <div className="flex mx-auto space-x-4 cursor-pointer justify-evenly w-60 sm:justify-start sm:mx-0 sm:w-full sm:space-x-8">
-    
     <Link to="/">
-    <div className="text-sm font-black tracking-widest" >МОЙ ГАРАЖ</div>
+      <div className="text-sm font-black tracking-widest">МОЙ ГАРАЖ</div>
       {/* <img className="h-5 sm:h-7" src={logo} alt="logo" /> */}
     </Link>
     {/* <Link className="hover:text-yellow" to="/">

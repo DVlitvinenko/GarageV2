@@ -8,7 +8,7 @@ import React, { ChangeEvent } from "react";
 import { useLocation } from "react-router-dom";
 import { useTimer } from "react-timer-hook";
 export const DriverLogin = () => {
-  const CODE_LENGTH = 8;
+  const CODE_LENGTH = 4;
 
   const [codeRequested, setRequested] = useState(false);
   const [codeHasError, setCodeHasError] = useState(false);
