@@ -110,16 +110,6 @@ class AuthController extends Controller
      *                             description="Информация о дивизионе",
      *                             @OA\Property(property="address", type="string"),
      *                             @OA\Property(property="coords", type="string"),
-     *                             @OA\Property(
-     *                                 property="park",
-     *                                 type="object",
-     *                                 description="Информация о парке",
-     *                                 @OA\Property(property="phone", type="string"),
-     *                                 @OA\Property(property="url", type="string"),
-     *                                 @OA\Property(property="commission", type="integer"),
-     *                                 @OA\Property(property="self_employed", type="integer"),
-     *                                 @OA\Property(property="park_name", type="string"),
-     *                                 @OA\Property(property="about", type="string"),
      *             @OA\Property(
      *                 property="working_hours",
      *                 type="array",
@@ -142,7 +132,17 @@ class AuthController extends Controller
      *                         @OA\Property(property="minutes", type="integer", description="Минуты (0-59)")
      *                     )
      *                 )
-     *             )
+     *             ),
+     *                             @OA\Property(
+     *                                 property="park",
+     *                                 type="object",
+     *                                 description="Информация о парке",
+     *                                 @OA\Property(property="phone", type="string"),
+     *                                 @OA\Property(property="url", type="string"),
+     *                                 @OA\Property(property="commission", type="integer"),
+     *                                 @OA\Property(property="self_employed", type="integer"),
+     *                                 @OA\Property(property="park_name", type="string"),
+     *                                 @OA\Property(property="about", type="string"),
      *                             )
      *                         )
      *                     )
@@ -196,10 +196,10 @@ class AuthController extends Controller
                 $booking->car->transmission_type = TransmissionType::from($booking->car->transmission_type)->name;
                 $booking->car->fuel_type = FuelType::from($booking->car->fuel_type)->name;
                 $booking->car->images = json_decode($booking->car->images);
-                $booking->car->division = Division::where('id', $booking->car->division_id)->with('park')->select('address', 'park_id', 'coords')->first();
+                $booking->car->division = Division::where('id', $booking->car->division_id)->with('park')->select('address', 'park_id', 'coords', 'working_hours')->first();
                 $booking->rent_term = RentTerm::where('id', $booking->car->rent_term_id)->with('schemas')->select('deposit_amount_daily', 'deposit_amount_total', 'minimum_period_days', 'is_buyout_possible', 'id')->first();
-                $workingHours = json_decode($booking->car->division->park->working_hours, true);
-                $booking->car->division->park->working_hours = $workingHours;
+                $workingHours = json_decode($booking->car->division->working_hours, true);
+                $booking->car->division->working_hours = $workingHours;
                 unset(
                     $booking->created_at,
                     $booking->updated_at,

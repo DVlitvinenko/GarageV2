@@ -263,10 +263,10 @@ class CarsController extends Controller
                 $query->select('id', 'daily_amount', 'non_working_days', 'working_days', 'rent_term_id')->orderBy('daily_amount', $sorting);
             },
             'division.park' => function ($query) {
-                $query->select('id', 'park_name', 'commission', 'self_employed', 'phone', 'about', 'working_hours');
+                $query->select('id', 'park_name', 'commission', 'self_employed', 'phone', 'about');
             },
             'division' => function ($query) {
-                $query->select('id', 'coords', 'address', 'name', 'park_id', 'city_id');
+                $query->select('id', 'coords', 'address', 'name', 'park_id', 'city_id', 'working_hours');
             }
         ])
             ->select(
@@ -311,7 +311,7 @@ class CarsController extends Controller
             $phone = $car['division']['park']['phone'];
             $about = $car['division']['park']['about'];
             $selfEmployed = $car['division']['park']['self_employed'];
-            $workingHours = json_decode($car['division']['park']['working_hours'], true);
+            $workingHours = json_decode($car['division']['working_hours'], true);
 
             if (isset($car['division']['park']['park_name'])) {
                 $parkName = $car['division']['park']['park_name'];
@@ -388,13 +388,6 @@ class CarsController extends Controller
      *                     @OA\Property(property="division", type="object",
      *                         @OA\Property(property="coords", type="string"),
      *                         @OA\Property(property="address", type="string"),
-     *                         @OA\Property(property="park", type="object",
-     *                             @OA\Property(property="phone", type="string"),
-     *                             @OA\Property(property="url", type="string"),
-     *                             @OA\Property(property="commission", type="integer"),
-     *                             @OA\Property(property="self_employed", type="integer"),
-     *                             @OA\Property(property="park_name", type="string"),
-     *                             @OA\Property(property="about", type="string"),
      *             @OA\Property(
      *                 property="working_hours",
      *                 type="array",
@@ -418,6 +411,13 @@ class CarsController extends Controller
      *                     )
      *                 )
      *             ),
+     *                         @OA\Property(property="park", type="object",
+     *                             @OA\Property(property="phone", type="string"),
+     *                             @OA\Property(property="url", type="string"),
+     *                             @OA\Property(property="commission", type="integer"),
+     *                             @OA\Property(property="self_employed", type="integer"),
+     *                             @OA\Property(property="park_name", type="string"),
+     *                             @OA\Property(property="about", type="string")
      *                         ),
      *                     ),
      *                 ),
@@ -489,7 +489,7 @@ class CarsController extends Controller
         $driver = $user->driver;
 
         //date_default_timezone_set('UTC');
-        $workingHours = json_decode($division->park->working_hours, true);
+        $workingHours = json_decode($division->working_hours, true);
         $currentDayOfWeek = Carbon::now()->format('l');
         $currentTime = Carbon::now();
         $isNonWorkingDayToday = false;
@@ -532,10 +532,10 @@ class CarsController extends Controller
         $car->status = CarStatus::Booked->value;
         $car->save();
 
-        $workingHours = json_decode($car->division->park->working_hours, true);
+        $workingHours = json_decode($car->division->working_hours, true);
 
 
-        $car->division->park->working_hours = $workingHours;
+        $car->division->working_hours = $workingHours;
         $booked = $booking;
         $booked->status = BookingStatus::from($booked->status)->name;
         $booked->start_date = $booked->booked_at;
