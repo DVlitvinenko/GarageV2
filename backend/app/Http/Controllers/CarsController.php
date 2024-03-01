@@ -48,6 +48,7 @@ class CarsController extends Controller
      *             @OA\Property(property="brand", type="array", description="Марка автомобиля",@OA\Items()),
      *             @OA\Property(property="search", type="array", description="Марка или модель автомобиля",@OA\Items()),
      *             @OA\Property(property="sorting", type="string", description="сортировка, asc или desc"),
+     *             @OA\Property(property="car_vin", type="string", description="VIN авто"),
      *             @OA\Property(property="Schemas", type="object", description="Данные о сроке аренды",
      *                 @OA\Property(property="non_working_days", type="integer", description="Количество нерабочих дней"),
      *                 @OA\Property(property="working_days", type="integer", description="Количество рабочих дней"),
@@ -136,6 +137,7 @@ class CarsController extends Controller
         $transmissionType = $request->transmission_type ? TransmissionType::{$request->transmission_type}->value : null;
         $city = City::where('name', $request->city)->first();
         $search = $request->search;
+        $carVin = $request->car_vin;
         $cityId = $city->id;
         $rentTerm = $request->Schemas;
         if (!$city) {
@@ -221,6 +223,11 @@ class CarsController extends Controller
                     $query->orWhere('brand', 'like', '%' . str_replace(' ', '%', $keyword) . '%')
                         ->orWhere('model', 'like', '%' . str_replace(' ', '%', $keyword) . '%');
                 }
+            });
+        }
+        if ($carVin) {
+            $carsQuery->where(function ($query) use ($carVin) {
+                $query->where('car_id', 'like', '%' . $carVin . '%');
             });
         }
         if (count($carClass) > 0) {

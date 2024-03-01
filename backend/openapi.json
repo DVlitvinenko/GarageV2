@@ -8,7 +8,9 @@
     "paths": {
         "/cars": {
             "put": {
-                "tags": ["API"],
+                "tags": [
+                    "API"
+                ],
                 "summary": "Обновление информации о машине",
                 "description": "Обновление информации о машине",
                 "operationId": "updateCar",
@@ -127,8 +129,10 @@
                 ]
             },
             "post": {
-                "tags": ["API"],
-                "summary": "Добавить несколько автомобилей, все добавленные автомобили будут доступны к бронированию сразу после привязки к ним Условий бронирования (метод: /cars/rent-term)",
+                "tags": [
+                    "API"
+                ],
+                "summary": "Добавить несколько автомобилей, все добавленные автомобили будут доступны к бронированию сразу после привязки к ним Условий бронирования (метод: /cars/rent-term). Выполнение метода возможно только после выполнения методов: обновление информации о парке, создание подразделения, создание тарифа. Статус допуска в бронированию по умолчанию будет 'допущено'",
                 "description": "Добавить несколько автомобилей",
                 "operationId": "pushCars",
                 "requestBody": {
@@ -274,7 +278,9 @@
         },
         "/cars/status": {
             "put": {
-                "tags": ["API"],
+                "tags": [
+                    "API"
+                ],
                 "summary": "Обновление статуса допуска к бронированию",
                 "description": "Обновление статуса допуска к бронированию автомобиля",
                 "operationId": "updateCarStatus",
@@ -397,7 +403,9 @@
         },
         "/URL_АДРЕС_ПАРКА/cars/outbound/status": {
             "put": {
-                "tags": ["API"],
+                "tags": [
+                    "API"
+                ],
                 "summary": "Изменить статус бронирования автомобиля, ОТ МОЕГО ГАРАЖА",
                 "description": "Изменить статус бронирования автомобиля\n\nЭтот метод используется для передачи данных ОТ МОЕГО ГАРАЖА.",
                 "operationId": "notifyParkOnBookingStatusChanged",
@@ -446,7 +454,9 @@
         },
         "/parks/rent-terms": {
             "post": {
-                "tags": ["API"],
+                "tags": [
+                    "API"
+                ],
                 "summary": "Создание или обновление условий аренды",
                 "description": "Создание или обновление условий аренды\n\nЭтот метод позволяет создавать новые или обновлять существующие условия аренды для парков.",
                 "operationId": "createOrUpdateRentTerm",
@@ -623,7 +633,9 @@
         },
         "/cars/rent-term": {
             "put": {
-                "tags": ["API"],
+                "tags": [
+                    "API"
+                ],
                 "summary": "Обновление условия аренды для автомобиля",
                 "description": "Обновление условия аренды для автомобиля\n\nЭтот метод позволяет обновлять условие аренды для конкретного автомобиля по его VIN-номеру.",
                 "operationId": "updateCarRentTerm",
@@ -745,7 +757,9 @@
         },
         "/cars/booking": {
             "put": {
-                "tags": ["API"],
+                "tags": [
+                    "API"
+                ],
                 "summary": "Обновление статуса брони автомобиля",
                 "description": "Обновление условия аренды для автомобиля\n\nЭтот метод позволяет обновлять статус брони для конкретного автомобиля по его VIN-номеру.",
                 "operationId": "updateCarBookingStatus",
@@ -866,7 +880,9 @@
         },
         "/parks": {
             "put": {
-                "tags": ["API"],
+                "tags": [
+                    "API"
+                ],
                 "summary": "Обновление информации о парке",
                 "description": "Обновление информации о парке\n\nЭтот метод позволяет обновлять информацию о парке.",
                 "operationId": "updateParkInfo",
@@ -899,46 +915,6 @@
                                     "phone": {
                                         "description": "Телефон парка",
                                         "type": "string"
-                                    },
-                                    "working_hours": {
-                                        "description": "Расписание работы парка",
-                                        "type": "array",
-                                        "items": {
-                                            "properties": {
-                                                "day": {
-                                                    "$ref": "#/components/schemas/DayOfWeek"
-                                                },
-                                                "start": {
-                                                    "description": "Время начала работы",
-                                                    "properties": {
-                                                        "hours": {
-                                                            "description": "Часы (0-23)",
-                                                            "type": "integer"
-                                                        },
-                                                        "minutes": {
-                                                            "description": "Минуты (0-59)",
-                                                            "type": "integer"
-                                                        }
-                                                    },
-                                                    "type": "object"
-                                                },
-                                                "end": {
-                                                    "description": "Время окончания работы",
-                                                    "properties": {
-                                                        "hours": {
-                                                            "description": "Часы (0-23)",
-                                                            "type": "integer"
-                                                        },
-                                                        "minutes": {
-                                                            "description": "Минуты (0-59)",
-                                                            "type": "integer"
-                                                        }
-                                                    },
-                                                    "type": "object"
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
                                     }
                                 },
                                 "type": "object"
@@ -1031,7 +1007,9 @@
         },
         "/parks/division": {
             "put": {
-                "tags": ["API"],
+                "tags": [
+                    "API"
+                ],
                 "summary": "Обновление подразделения парка",
                 "description": "Обновление подразделения парка\n\nЭтот метод позволяет обновлять подразделение в парке.",
                 "operationId": "updateParkDivision",
@@ -1056,6 +1034,50 @@
                                     "name": {
                                         "description": "Название подразделения",
                                         "type": "string"
+                                    },
+                                    "timezone_difference": {
+                                        "description": "Часовой пояс, разница во времени с +0",
+                                        "type": "integer"
+                                    },
+                                    "working_hours": {
+                                        "description": "Расписание работы парка",
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "day": {
+                                                    "$ref": "#/components/schemas/DayOfWeek"
+                                                },
+                                                "start": {
+                                                    "description": "Время начала работы",
+                                                    "properties": {
+                                                        "hours": {
+                                                            "description": "Часы (0-23)",
+                                                            "type": "integer"
+                                                        },
+                                                        "minutes": {
+                                                            "description": "Минуты (0-59)",
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "end": {
+                                                    "description": "Время окончания работы",
+                                                    "properties": {
+                                                        "hours": {
+                                                            "description": "Часы (0-23)",
+                                                            "type": "integer"
+                                                        },
+                                                        "minutes": {
+                                                            "description": "Минуты (0-59)",
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
                                     }
                                 },
                                 "type": "object"
@@ -1150,7 +1172,9 @@
                 ]
             },
             "post": {
-                "tags": ["API"],
+                "tags": [
+                    "API"
+                ],
                 "summary": "Создание подразделения парка",
                 "description": "Создание подразделения парка\n\nЭтот метод позволяет создавать подразделение в парке.",
                 "operationId": "createParkDivision",
@@ -1175,6 +1199,50 @@
                                     "name": {
                                         "description": "Название подразделения",
                                         "type": "string"
+                                    },
+                                    "timezone_difference": {
+                                        "description": "Часовой пояс, разница во времени с +0",
+                                        "type": "integer"
+                                    },
+                                    "working_hours": {
+                                        "description": "Расписание работы парка",
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "day": {
+                                                    "$ref": "#/components/schemas/DayOfWeek"
+                                                },
+                                                "start": {
+                                                    "description": "Время начала работы",
+                                                    "properties": {
+                                                        "hours": {
+                                                            "description": "Часы (0-23)",
+                                                            "type": "integer"
+                                                        },
+                                                        "minutes": {
+                                                            "description": "Минуты (0-59)",
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "end": {
+                                                    "description": "Время окончания работы",
+                                                    "properties": {
+                                                        "hours": {
+                                                            "description": "Часы (0-23)",
+                                                            "type": "integer"
+                                                        },
+                                                        "minutes": {
+                                                            "description": "Минуты (0-59)",
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
                                     }
                                 },
                                 "type": "object"
@@ -1262,7 +1330,9 @@
         },
         "/parks/tariff": {
             "put": {
-                "tags": ["API"],
+                "tags": [
+                    "API"
+                ],
                 "summary": "Обновление требований к кандидатам",
                 "description": "Обновление требований к кандидатам\n\nЭтот метод позволяет обновлять тарифы авто с критериями блокерами для парков.",
                 "operationId": "upfateTariff",
@@ -1395,7 +1465,9 @@
                 ]
             },
             "post": {
-                "tags": ["API"],
+                "tags": [
+                    "API"
+                ],
                 "summary": "Требования к кандидатам",
                 "description": "Требования к кандидатам\n\nЭтот метод позволяет создавать новые тарифы авто с критериями блокерами для парков. В одном городе для парка может быть толкьо один тариф заданного класса.",
                 "operationId": "createTariff",
@@ -1550,7 +1622,9 @@
         },
         "/user": {
             "get": {
-                "tags": ["Authentication"],
+                "tags": [
+                    "Authentication"
+                ],
                 "summary": "Получение данных пользователя (аутентифицированный запрос)",
                 "description": "Получение данных пользователя (аутентифицированный запрос)",
                 "operationId": "GetUser",
@@ -1703,6 +1777,46 @@
                                                                             "coords": {
                                                                                 "type": "string"
                                                                             },
+                                                                            "working_hours": {
+                                                                                "description": "Расписание работы парка",
+                                                                                "type": "array",
+                                                                                "items": {
+                                                                                    "properties": {
+                                                                                        "day": {
+                                                                                            "$ref": "#/components/schemas/DayOfWeek"
+                                                                                        },
+                                                                                        "start": {
+                                                                                            "description": "Время начала работы",
+                                                                                            "properties": {
+                                                                                                "hours": {
+                                                                                                    "description": "Часы (0-23)",
+                                                                                                    "type": "integer"
+                                                                                                },
+                                                                                                "minutes": {
+                                                                                                    "description": "Минуты (0-59)",
+                                                                                                    "type": "integer"
+                                                                                                }
+                                                                                            },
+                                                                                            "type": "object"
+                                                                                        },
+                                                                                        "end": {
+                                                                                            "description": "Время окончания работы",
+                                                                                            "properties": {
+                                                                                                "hours": {
+                                                                                                    "description": "Часы (0-23)",
+                                                                                                    "type": "integer"
+                                                                                                },
+                                                                                                "minutes": {
+                                                                                                    "description": "Минуты (0-59)",
+                                                                                                    "type": "integer"
+                                                                                                }
+                                                                                            },
+                                                                                            "type": "object"
+                                                                                        }
+                                                                                    },
+                                                                                    "type": "object"
+                                                                                }
+                                                                            },
                                                                             "park": {
                                                                                 "description": "Информация о парке",
                                                                                 "properties": {
@@ -1723,46 +1837,6 @@
                                                                                     },
                                                                                     "about": {
                                                                                         "type": "string"
-                                                                                    },
-                                                                                    "working_hours": {
-                                                                                        "description": "Расписание работы парка",
-                                                                                        "type": "array",
-                                                                                        "items": {
-                                                                                            "properties": {
-                                                                                                "day": {
-                                                                                                    "$ref": "#/components/schemas/DayOfWeek"
-                                                                                                },
-                                                                                                "start": {
-                                                                                                    "description": "Время начала работы",
-                                                                                                    "properties": {
-                                                                                                        "hours": {
-                                                                                                            "description": "Часы (0-23)",
-                                                                                                            "type": "integer"
-                                                                                                        },
-                                                                                                        "minutes": {
-                                                                                                            "description": "Минуты (0-59)",
-                                                                                                            "type": "integer"
-                                                                                                        }
-                                                                                                    },
-                                                                                                    "type": "object"
-                                                                                                },
-                                                                                                "end": {
-                                                                                                    "description": "Время окончания работы",
-                                                                                                    "properties": {
-                                                                                                        "hours": {
-                                                                                                            "description": "Часы (0-23)",
-                                                                                                            "type": "integer"
-                                                                                                        },
-                                                                                                        "minutes": {
-                                                                                                            "description": "Минуты (0-59)",
-                                                                                                            "type": "integer"
-                                                                                                        }
-                                                                                                    },
-                                                                                                    "type": "object"
-                                                                                                }
-                                                                                            },
-                                                                                            "type": "object"
-                                                                                        }
                                                                                     }
                                                                                 },
                                                                                 "type": "object"
@@ -1810,7 +1884,9 @@
                 ]
             },
             "delete": {
-                "tags": ["Authentication"],
+                "tags": [
+                    "Authentication"
+                ],
                 "summary": "Удаление пользователя и связанных записей",
                 "description": "Удаление пользователя и связанных записей",
                 "operationId": "DeleteUser",
@@ -1857,7 +1933,9 @@
         },
         "/user/login": {
             "post": {
-                "tags": ["Authentication"],
+                "tags": [
+                    "Authentication"
+                ],
                 "summary": "Аутентификация пользователя или регистрация нового",
                 "description": "Аутентификация пользователя или регистрация нового",
                 "operationId": "loginOrRegister",
@@ -1916,7 +1994,9 @@
         },
         "/user/logout": {
             "post": {
-                "tags": ["Authentication"],
+                "tags": [
+                    "Authentication"
+                ],
                 "summary": "Выход пользователя из системы",
                 "description": "Выход пользователя из системы",
                 "operationId": "logout",
@@ -1963,7 +2043,9 @@
         },
         "/user/code": {
             "post": {
-                "tags": ["Authentication"],
+                "tags": [
+                    "Authentication"
+                ],
                 "summary": "Создание и отправка проверочного кода на указанный номер телефона",
                 "description": "Создание и отправка проверочного кода на указанный номер телефона",
                 "operationId": "CreateAndSendCode",
@@ -2023,7 +2105,9 @@
         },
         "/cars/search": {
             "post": {
-                "tags": ["Cars"],
+                "tags": [
+                    "Cars"
+                ],
                 "summary": "Получение списка автомобилей с учетом фильтров (аутентифицированный запрос)",
                 "description": "Получение списка автомобилей с учетом фильтров (аутентифицированный запрос)",
                 "operationId": "SearchCars",
@@ -2067,6 +2151,10 @@
                                     },
                                     "sorting": {
                                         "description": "сортировка, asc или desc",
+                                        "type": "string"
+                                    },
+                                    "car_vin": {
+                                        "description": "VIN авто",
                                         "type": "string"
                                     },
                                     "Schemas": {
@@ -2301,7 +2389,9 @@
         },
         "/auth/cars/booking": {
             "post": {
-                "tags": ["Cars"],
+                "tags": [
+                    "Cars"
+                ],
                 "summary": "Бронирование автомобиля",
                 "description": "Бронирование автомобиля",
                 "operationId": "Book",
@@ -2380,6 +2470,46 @@
                                                                 "address": {
                                                                     "type": "string"
                                                                 },
+                                                                "working_hours": {
+                                                                    "description": "Расписание работы парка",
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "properties": {
+                                                                            "day": {
+                                                                                "$ref": "#/components/schemas/DayOfWeek"
+                                                                            },
+                                                                            "start": {
+                                                                                "description": "Время начала работы",
+                                                                                "properties": {
+                                                                                    "hours": {
+                                                                                        "description": "Часы (0-23)",
+                                                                                        "type": "integer"
+                                                                                    },
+                                                                                    "minutes": {
+                                                                                        "description": "Минуты (0-59)",
+                                                                                        "type": "integer"
+                                                                                    }
+                                                                                },
+                                                                                "type": "object"
+                                                                            },
+                                                                            "end": {
+                                                                                "description": "Время окончания работы",
+                                                                                "properties": {
+                                                                                    "hours": {
+                                                                                        "description": "Часы (0-23)",
+                                                                                        "type": "integer"
+                                                                                    },
+                                                                                    "minutes": {
+                                                                                        "description": "Минуты (0-59)",
+                                                                                        "type": "integer"
+                                                                                    }
+                                                                                },
+                                                                                "type": "object"
+                                                                            }
+                                                                        },
+                                                                        "type": "object"
+                                                                    }
+                                                                },
                                                                 "park": {
                                                                     "properties": {
                                                                         "phone": {
@@ -2399,46 +2529,6 @@
                                                                         },
                                                                         "about": {
                                                                             "type": "string"
-                                                                        },
-                                                                        "working_hours": {
-                                                                            "description": "Расписание работы парка",
-                                                                            "type": "array",
-                                                                            "items": {
-                                                                                "properties": {
-                                                                                    "day": {
-                                                                                        "$ref": "#/components/schemas/DayOfWeek"
-                                                                                    },
-                                                                                    "start": {
-                                                                                        "description": "Время начала работы",
-                                                                                        "properties": {
-                                                                                            "hours": {
-                                                                                                "description": "Часы (0-23)",
-                                                                                                "type": "integer"
-                                                                                            },
-                                                                                            "minutes": {
-                                                                                                "description": "Минуты (0-59)",
-                                                                                                "type": "integer"
-                                                                                            }
-                                                                                        },
-                                                                                        "type": "object"
-                                                                                    },
-                                                                                    "end": {
-                                                                                        "description": "Время окончания работы",
-                                                                                        "properties": {
-                                                                                            "hours": {
-                                                                                                "description": "Часы (0-23)",
-                                                                                                "type": "integer"
-                                                                                            },
-                                                                                            "minutes": {
-                                                                                                "description": "Минуты (0-59)",
-                                                                                                "type": "integer"
-                                                                                            }
-                                                                                        },
-                                                                                        "type": "object"
-                                                                                    }
-                                                                                },
-                                                                                "type": "object"
-                                                                            }
                                                                         }
                                                                     },
                                                                     "type": "object"
@@ -2534,7 +2624,9 @@
         },
         "/auth/cars/cancel-booking": {
             "post": {
-                "tags": ["Cars"],
+                "tags": [
+                    "Cars"
+                ],
                 "summary": "Отмена бронирования автомобиля (аутентифицированный запрос)",
                 "description": "Отмена бронирования автомобиля (аутентифицированный запрос)",
                 "operationId": "cancelBooking",
@@ -2661,7 +2753,9 @@
         },
         "/cars/brand-list": {
             "post": {
-                "tags": ["Cars"],
+                "tags": [
+                    "Cars"
+                ],
                 "summary": "Показать список брендов",
                 "description": "Показать список брендов",
                 "operationId": "GetBrandList",
@@ -2706,7 +2800,9 @@
         },
         "/driver/upload-file": {
             "post": {
-                "tags": ["Files"],
+                "tags": [
+                    "Files"
+                ],
                 "summary": "Загрузить файл",
                 "description": "Загрузить файл и связать его с документами водителя аутентифицированного пользователя",
                 "operationId": "uploadFile",
@@ -2788,12 +2884,22 @@
             "CarClass": {
                 "description": "The unique identifier of a product in our catalog",
                 "type": "string",
-                "enum": ["Economy", "Comfort", "ComfortPlus", "Business"]
+                "enum": [
+                    "Economy",
+                    "Comfort",
+                    "ComfortPlus",
+                    "Business"
+                ]
             },
             "CarStatus": {
                 "description": "The unique identifier of a product in our catalog",
                 "type": "string",
-                "enum": ["AvailableForBooking", "Hidden", "Booked", "Rented"]
+                "enum": [
+                    "AvailableForBooking",
+                    "Hidden",
+                    "Booked",
+                    "Rented"
+                ]
             },
             "DayOfWeek": {
                 "description": "The unique identifier of a product in our catalog",
@@ -2822,22 +2928,36 @@
             "FuelType": {
                 "description": "The unique identifier of a product in our catalog",
                 "type": "string",
-                "enum": ["Gas", "Gasoline"]
+                "enum": [
+                    "Gas",
+                    "Gasoline"
+                ]
             },
             "TransmissionType": {
                 "description": "The unique identifier of a product in our catalog",
                 "type": "string",
-                "enum": ["Mechanics", "Automatic"]
+                "enum": [
+                    "Mechanics",
+                    "Automatic"
+                ]
             },
             "UserStatus": {
                 "description": "The unique identifier of a product in our catalog",
                 "type": "string",
-                "enum": ["DocumentsNotUploaded", "Verification", "Verified"]
+                "enum": [
+                    "DocumentsNotUploaded",
+                    "Verification",
+                    "Verified"
+                ]
             },
             "UserType": {
                 "description": "The unique identifier of a product in our catalog",
                 "type": "string",
-                "enum": ["Driver", "Manager", "Admin"]
+                "enum": [
+                    "Driver",
+                    "Manager",
+                    "Admin"
+                ]
             }
         }
     }
