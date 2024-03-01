@@ -60,6 +60,7 @@ type CarFilter = {
   buyoutPossible: boolean;
   schema: Schemas2 | null;
   sorting: "asc" | "desc";
+  car_vin: string | null;
 };
 
 enum ActiveFilter {
@@ -86,6 +87,7 @@ export const Finder = () => {
     buyoutPossible: false,
     sorting: "asc",
     schema: null,
+    car_vin: null,
   });
 
   const [cars, setCars] = useState<Cars2[]>([]);
@@ -122,6 +124,7 @@ export const Finder = () => {
           self_employed: filters.selfEmployed,
           is_buyout_possible: filters.buyoutPossible,
           schemas: filters.schema || undefined,
+          car_vin: filters.car_vin || undefined,
         })
       );
 
@@ -146,6 +149,7 @@ export const Finder = () => {
       buyoutPossible: false,
       sorting: "asc",
       schema: null,
+      car_vin: null,
     });
   };
 
@@ -174,6 +178,7 @@ export const Finder = () => {
                 }`}
               >
                 <img
+                  alt=""
                   className="w-12 rounded-xl"
                   onClick={() =>
                     setFilters({
@@ -290,7 +295,20 @@ export const Finder = () => {
                           </span>
                         );
                       })}
+                      <input
+                        className="w-full px-2 py-2 border-2 border-yellow rounded-xl focus-visible:outline-none"
+                        type="text"
+                        placeholder="Поиск по VIN"
+                        value={filters.car_vin ? filters.car_vin : ""}
+                        onChange={(e) =>
+                          setFilters({
+                            ...filters,
+                            car_vin: e.target.value,
+                          })
+                        }
+                      />
                     </div>
+
                     <DialogFooter>
                       <DialogClose asChild>
                         <div className="fixed bottom-0 left-0 flex justify-center w-full px-4 py-4 space-x-2 bg-white border-t border-pale">
@@ -303,7 +321,7 @@ export const Finder = () => {
               )}
             </div>
           ))}
-          <Dialog>
+          {/* <Dialog>
             <DialogTrigger asChild>
               <div className="bg-grey text-nowrap rounded-xl px-2.5 py-0.5 h-10 flex items-center relative">
                 {(filters.buyoutPossible ||
@@ -351,7 +369,7 @@ export const Finder = () => {
                 </DialogClose>
               </DialogFooter>
             </DialogContent>
-          </Dialog>
+          </Dialog> */}
           <div className="inline-flex items-center h-10 text-nowrap active:bg-white whitespace-nowrap rounded-xl px-2.5 py-0.5 text-base font-regular text-black transition-colors focus:outline-none bg-grey">
             <FontAwesomeIcon
               onClick={filtersClean}
