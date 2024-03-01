@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import logo from "./assets/logo.png";
+// import logo from "./assets/mon-garage.svg";
 import "./App.css";
 import { Link, Route, Routes } from "react-router-dom";
 import { client } from "./backend";
@@ -68,12 +68,14 @@ export default App;
 
 const Menu = ({ user }: { user: User }) => (
   <div className="flex mx-auto space-x-4 cursor-pointer justify-evenly w-60 sm:justify-start sm:mx-0 sm:w-full sm:space-x-8">
+    
     <Link to="/">
-      <img className="h-5 sm:h-7" src={logo} alt="logo" />
+    <div className="text-sm font-black tracking-widest" >МОЙ ГАРАЖ</div>
+      {/* <img className="h-5 sm:h-7" src={logo} alt="logo" /> */}
     </Link>
-    <Link className="hover:text-yellow" to="/">
+    {/* <Link className="hover:text-yellow" to="/">
       <FontAwesomeIcon icon={faTaxi} className="h-4 sm:h-5" />
-    </Link>{" "}
+    </Link>{" "} */}
     {user && (
       <Link
         className="hover:text-yellow"

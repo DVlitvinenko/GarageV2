@@ -28,8 +28,8 @@ export function getTransmissionDisplayName(
   }
 
   const dict = {
-    [TransmissionType.Automatic]: "Автоматическая",
-    [TransmissionType.Mechanics]: "Ручная",
+    [TransmissionType.Automatic]: "Автомат",
+    [TransmissionType.Mechanics]: "Механика",
   };
 
   return dict[x];

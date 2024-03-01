@@ -133,9 +133,9 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
           </div> */}
         {/* </div> */}
         <div className="space-y-2">
-          <h1 className="my-4 text-center sm:text-left">{`${car.brand} ${car.model} ${car.year_produced}`}</h1>
+          <h1 className="my-4 text-center">{`${car.brand} ${car.model} ${car.year_produced}`}</h1>
 
-          <p className="text-base font-medium text-gray">
+          <p className="text-base font-regular text-gray">
             Парк: {car.park_name}
           </p>
           <Separator />
@@ -151,7 +151,7 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
             Минимум дней аренды: {car.rent_term?.minimum_period_days}
           </p>
           <Separator />
-             <div className="min-h-28">
+          <div className="min-h-28">
             {Object.keys(DayOfWeek).map((x) => {
               const { working_hours } = car;
               const currentDay = working_hours!.find(({ day }) => day === x)!;
@@ -186,26 +186,37 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
           </Collapsible>
         </div>
         <Separator />
-        <div className="flex flex-wrap items-center justify-start gap-1 mb-3 mt-2">
-          <Badge variant="card" className="px-0 py-0 bg-grey ">
-            <span className="flex items-center h-full px-2 bg-white rounded-xl">
-              Депозит {formatRoubles(car.rent_term!.deposit_amount_total!)}
-            </span>
-            <span className="flex items-center h-full px-2 ">
-              {formatRoubles(car.rent_term!.deposit_amount_daily!)}
-              /день
-            </span>
-          </Badge>
-          <Badge variant="card">Комиссия {car.commission}</Badge>
-          <Badge variant="card">{getFuelTypeDisplayName(car.fuel_type)}</Badge>
-          <Badge variant="card">
-            {getTransmissionDisplayName(car.transmission_type)}
-          </Badge>
-
-          {!!car.self_employed && <Badge variant="card">Для самозанятых</Badge>}
-          {!!car.rent_term?.is_buyout_possible && (
-            <Badge variant="card">Выкуп автомобиля</Badge>
-          )}
+        <div className="flex flex-col justify-start gap-1 mb-1 mt-2">
+          <div>
+            <Badge variant="card" className="px-0 py-0 bg-grey ">
+              <span className="flex items-center h-full px-2 bg-white rounded-xl">
+                Депозит {formatRoubles(car.rent_term!.deposit_amount_total!)}
+              </span>
+              <span className="flex items-center h-full px-2 ">
+                {formatRoubles(car.rent_term!.deposit_amount_daily!)}
+                /день
+              </span>
+            </Badge>
+          </div>
+          <div className="mt-1">
+            <Badge variant="card">Комиссия {car.commission} %</Badge>{" "}
+          </div>
+          <div className="mt-1">
+            {/* {!!car.self_employed && (
+                <Badge variant="card">Для самозанятых</Badge>
+              )} */}
+            {!!car.rent_term?.is_buyout_possible && (
+              <Badge variant="card">Выкуп автомобиля</Badge>
+            )}
+          </div>
+          <div className="mt-1 mb-2">
+            <Badge variant="card" className="mr-2">
+              {getFuelTypeDisplayName(car.fuel_type)}
+            </Badge>
+            <Badge variant="card">
+              {getTransmissionDisplayName(car.transmission_type)}
+            </Badge>
+          </div>
         </div>
         <div className="flex flex-wrap gap-1 pb-20 mb-16">
           {schemas!.slice(0, 3).map((currentSchema, i) => (
@@ -215,7 +226,7 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
               variant="schema"
             >
               {`${formatRoubles(currentSchema.daily_amount!)}`}
-              <div className="text-xs font-medium text-black">{`${currentSchema.working_days}раб. /${currentSchema.non_working_days}вых.`}</div>
+              <div className="text-xs font-medium text-black">{`${currentSchema.working_days} раб. / ${currentSchema.non_working_days} вых.`}</div>
             </Badge>
           ))}
         </div>
@@ -229,7 +240,7 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
           }`}
           <div className="text-xs font-medium text-black">{`${
             car.rent_term?.schemas![0]!.working_days
-          }раб. /${car.rent_term?.schemas![0]!.non_working_days}вых.`}</div>
+          } раб. / ${car.rent_term?.schemas![0]!.non_working_days} вых.`}</div>
         </Badge>
         {!activeBooking && (
           <div className="w-1/2">

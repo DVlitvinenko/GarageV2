@@ -34,32 +34,38 @@ export const Card = ({ car }: { car: Cars2 }) => {
           </div>
           <div className="px-4">
             <h1 className="my-2 text-center">{`${car.brand} ${car.model} ${car.year_produced}`}</h1>
-            <div className="flex flex-wrap items-center justify-start gap-1 mb-3">
-              <Badge variant="card" className="px-0 py-0 bg-grey ">
-                <span className="flex items-center h-full px-2 bg-white rounded-xl">
-                  Депозит {formatRoubles(car.rent_term?.deposit_amount_total!)}
-                </span>
-                <span className="flex items-center h-full px-2 ">
-                  {formatRoubles(car.rent_term?.deposit_amount_daily!)}
-                  /день
-                </span>
-              </Badge>
-              <Badge variant="card">Комиссия {car.commission}%</Badge>
-
-              <Badge variant="card">
-                {getFuelTypeDisplayName(car.fuel_type)}
-              </Badge>
-
-              <Badge variant="card">
-                {getTransmissionDisplayName(car.transmission_type)}
-              </Badge>
-
-              {!!car.self_employed && (
+            <div className="flex flex-col justify-start gap-1 mb-2 mt-2">
+              <div>
+                <Badge variant="card" className="px-0 py-0 bg-grey ">
+                  <span className="flex items-center h-full px-2 bg-white rounded-xl">
+                    Депозит{" "}
+                    {formatRoubles(car.rent_term!.deposit_amount_total!)}
+                  </span>
+                  <span className="flex items-center h-full px-2 ">
+                    {formatRoubles(car.rent_term!.deposit_amount_daily!)}
+                    /день
+                  </span>
+                </Badge>
+              </div>
+              <div className="mt-1">
+                <Badge variant="card">Комиссия {car.commission} %</Badge>{" "}
+              </div>
+            </div>
+            <div>
+              {/* {!!car.self_employed && (
                 <Badge variant="card">Для самозанятых</Badge>
-              )}
+              )} */}
               {!!car.rent_term?.is_buyout_possible && (
                 <Badge variant="card">Выкуп автомобиля</Badge>
               )}
+            </div>
+            <div className="mt-2 mb-2">
+              <Badge variant="card" className="mr-2">
+                {getFuelTypeDisplayName(car.fuel_type)}
+              </Badge>
+              <Badge variant="card">
+                {getTransmissionDisplayName(car.transmission_type)}
+              </Badge>
             </div>
             <div className="flex flex-wrap gap-1">
               {currentSchemas?.slice(0, 3).map((currentSchema, i) => (
@@ -69,7 +75,7 @@ export const Card = ({ car }: { car: Cars2 }) => {
                   variant="schema"
                 >
                   {`${formatRoubles(currentSchema.daily_amount!)}`}
-                  <div className="text-xs font-medium text-black">{`${currentSchema.working_days}раб. /${currentSchema.non_working_days}вых.`}</div>
+                  <div className="text-xs font-medium text-black">{`${currentSchema.working_days} раб. / ${currentSchema.non_working_days} вых.`}</div>
                 </Badge>
               ))}
             </div>
