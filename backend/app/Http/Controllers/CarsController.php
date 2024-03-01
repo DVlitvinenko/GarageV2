@@ -486,6 +486,7 @@ class CarsController extends Controller
 
         //date_default_timezone_set('UTC');
         $workingHours = json_decode($division->working_hours, true);
+        $divisionTimezone = $division->timezone_difference;
         $currentDayOfWeek = Carbon::now()->format('l');
         $currentTime = Carbon::now();
         $isNonWorkingDayToday = false;
@@ -500,8 +501,8 @@ class CarsController extends Controller
         if(!$todayWorkingHours) {
             $isNonWorkingDayToday = true;
         }
-        $endTimeOfWorkDayToday = Carbon::createFromTime($todayWorkingHours['end']['hours'], $todayWorkingHours['end']['minutes'], 0)->addHours(-$rent_time);
-        $startTimeOfWorkDayToday = Carbon::createFromTime($todayWorkingHours['start']['hours'], $todayWorkingHours['start']['minutes'], 0)->addHours(-$rent_time);
+        $endTimeOfWorkDayToday = Carbon::createFromTime($todayWorkingHours['end']['hours'], $todayWorkingHours['end']['minutes'], 0)->addHours(-$rent_time-$divisionTimezone);
+        $startTimeOfWorkDayToday = Carbon::createFromTime($todayWorkingHours['start']['hours'], $todayWorkingHours['start']['minutes'], 0)->addHours(-$rent_time-$divisionTimezone);
 
         if (($endTimeOfWorkDayToday < $currentTime && $currentTime > $startTimeOfWorkDayToday) || $isNonWorkingDayToday) {
 
