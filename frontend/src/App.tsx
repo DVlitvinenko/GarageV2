@@ -43,7 +43,6 @@ function App() {
       <div className="flex justify-between my-0 space-x-2">
         <Menu user={user} />
         {/* <span className="font-bold text-md text-gray"></span> */}
-        <CityPicker />
       </div>
       <Link to="bookings">
         <BookingTimer />
@@ -68,7 +67,7 @@ export default App;
 // };
 
 const Menu = ({ user }: { user: User }) => (
-  <div className="flex mx-auto space-x-4 cursor-pointer justify-evenly w-60 sm:justify-start sm:mx-0 sm:w-full sm:space-x-8">
+  <div className="flex justify-between w-full space-x-4 cursor-pointer sm:justify-start sm:mx-0 sm:w-full sm:space-x-8">
     <Link to="/">
       <div className="text-sm font-black tracking-widest">МОЙ ГАРАЖ</div>
       {/* <img className="h-5 sm:h-7" src={logo} alt="logo" /> */}
@@ -89,6 +88,7 @@ const Menu = ({ user }: { user: User }) => (
         <FontAwesomeIcon icon={faClockRotateLeft} className="h-4 sm:h-5" />
       </Link>
     )}
+    <CityPicker />
     {!user && (
       <Link className="hover:text-yellow" to="login/driver">
         <FontAwesomeIcon icon={faRightToBracket} className="h-4 sm:h-5" />
