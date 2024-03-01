@@ -251,7 +251,7 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
           onValueChange={(value) => setSelectedSchema(Number(value))}
           defaultValue={`${schemas![0].id}`}
         >
-          <SelectTrigger className="w-1/2 h-auto pl-3 text-left border-none bg-grey rounded-xl">
+          <SelectTrigger className="w-1/2 h-auto pb-1 border-none pl-3text-left bg-grey rounded-xl">
             <SelectValue placeholder="Схема аренды" />
           </SelectTrigger>
           <SelectContent className="w-full h-auto p-1 text-left border-none bg-grey rounded-xl">
