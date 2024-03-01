@@ -913,29 +913,6 @@ class APIController extends Controller
      *             @OA\Property(property="park_name", type="string", description="Название парка"),
      *             @OA\Property(property="about", type="string", description="Описание парка"),
      *             @OA\Property(property="phone", type="string", description="Телефон парка"),
-     *             @OA\Property(
-     *                 property="working_hours",
-     *                 type="array",
-     *                 description="Расписание работы парка",
-     *                 @OA\Items(
-     *                     type="object",
-     *                     @OA\Property(property="day", type="string", description="День недели на английском",ref="#/components/schemas/DayOfWeek"),
-     *                     @OA\Property(
-     *                         property="start",
-     *                         type="object",
-     *                         description="Время начала работы",
-     *                         @OA\Property(property="hours", type="integer", description="Часы (0-23)"),
-     *                         @OA\Property(property="minutes", type="integer", description="Минуты (0-59)")
-     *                     ),
-     *                     @OA\Property(
-     *                         property="end",
-     *                         type="object",
-     *                         description="Время окончания работы",
-     *                         @OA\Property(property="hours", type="integer", description="Часы (0-23)"),
-     *                         @OA\Property(property="minutes", type="integer", description="Минуты (0-59)")
-     *                     )
-     *                 )
-     *             )
      *     )),
      *     @OA\Response(
      *         response=200,
@@ -984,37 +961,7 @@ class APIController extends Controller
             'commission' => 'numeric',
             'self_employed' => 'boolean',
             'park_name' => 'string',
-            'about' => 'string',
-            'working_hours' => [
-                'required',
-                'array',
-                function ($attribute, $value, $fail) {
-                    $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-                    foreach ($daysOfWeek as $day) {
-                        $found = false;
-                        foreach ($value as $workingDay) {
-                            if ($workingDay['day'] === $day) {
-                                $found = true;
-                                if (!isset($workingDay['start']['hours']) || !isset($workingDay['start']['minutes']) ||
-                                    !isset($workingDay['end']['hours']) || !isset($workingDay['end']['minutes']) ||
-                                    $workingDay['start']['hours'] < 0 || $workingDay['start']['hours'] > 23 ||
-                                    $workingDay['start']['minutes'] < 0 || $workingDay['start']['minutes'] > 59 ||
-                                    $workingDay['end']['hours'] < 0 || $workingDay['end']['hours'] > 23 ||
-                                    $workingDay['end']['minutes'] < 0 || $workingDay['end']['minutes'] > 59
-                                ) {
-                                    $fail('The ' . $attribute . ' field must have valid working hours for ' . $day . '.');
-                                    return;
-                                }
-                            }
-                        }
-                        if (!$found) {
-                            $fail('The ' . $attribute . ' field must contain ' . $day . ' working hours.');
-                            return;
-                        }
-                    }
-                },
-            ],
-            'phone' => 'string',
+            'about' => 'string','phone' => 'string',
         ]);
         if ($validator->fails()) {
             return response()->json(['message' => 'Ошибка валидации', 'errors' => $validator->errors()], 400);
@@ -1034,16 +981,6 @@ class APIController extends Controller
         if ($request->about) {
             $park->about = $request->about;
         }
-        $updatedWorkingHours = $this->sortWorkingHoursByDay($request->working_hours);
-
-        if ($updatedWorkingHours) {
-            $park->working_hours = $updatedWorkingHours;
-            $park->save();
-        }
-        if ($updatedWorkingHours) {
-            $park->working_hours = $updatedWorkingHours;
-            $park->save();
-        }
         if ($request->phone) {
             $park->phone = $request->phone;
         }
@@ -1051,16 +988,6 @@ class APIController extends Controller
         return response()->json(['message' => 'Парк обновлен'], 200);
     }
 
-    private function sortWorkingHoursByDay($workingHours) {
-        $sortFunction = function ($a, $b) {
-            $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-            return array_search($a['day'], $daysOfWeek) - array_search($b['day'], $daysOfWeek);
-        };
-
-        usort($workingHours, $sortFunction);
-
-        return $workingHours;
-    }
     /**
      * Создание подразделения парка
      *
@@ -1078,7 +1005,31 @@ class APIController extends Controller
      *             @OA\Property(property="city", type="string", description="Город подразделения"),
      *             @OA\Property(property="coords", type="string", description="Координаты подразделения"),
      *             @OA\Property(property="address", type="string", description="Адрес подразделения"),
-     *             @OA\Property(property="name", type="string", description="Название подразделения")
+     *             @OA\Property(property="name", type="string", description="Название подразделения"),
+     *             @OA\Property(property="timezone_difference", type="integer", description="Часовой пояс, разница во времени с +0"),
+     *             @OA\Property(
+     *                 property="working_hours",
+     *                 type="array",
+     *                 description="Расписание работы парка",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="day", type="string", description="День недели на английском",ref="#/components/schemas/DayOfWeek"),
+     *                     @OA\Property(
+     *                         property="start",
+     *                         type="object",
+     *                         description="Время начала работы",
+     *                         @OA\Property(property="hours", type="integer", description="Часы (0-23)"),
+     *                         @OA\Property(property="minutes", type="integer", description="Минуты (0-59)")
+     *                     ),
+     *                     @OA\Property(
+     *                         property="end",
+     *                         type="object",
+     *                         description="Время окончания работы",
+     *                         @OA\Property(property="hours", type="integer", description="Часы (0-23)"),
+     *                         @OA\Property(property="minutes", type="integer", description="Минуты (0-59)")
+     *                     )
+     *                 )
+     *             )
      *         )
      *     ),
      *     @OA\Response(
@@ -1125,6 +1076,36 @@ class APIController extends Controller
             'city' => 'required|string|max:250|exists:cities,name',
             'coords' => 'required|string',
             'address' => 'required|string',
+            'timezone_difference' => 'required|integer',
+            'working_hours' => [
+                'required',
+                'array',
+                function ($attribute, $value, $fail) {
+                    $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+                    foreach ($daysOfWeek as $day) {
+                        $found = false;
+                        foreach ($value as $workingDay) {
+                            if ($workingDay['day'] === $day) {
+                                $found = true;
+                                if (!isset($workingDay['start']['hours']) || !isset($workingDay['start']['minutes']) ||
+                                    !isset($workingDay['end']['hours']) || !isset($workingDay['end']['minutes']) ||
+                                    $workingDay['start']['hours'] < 0 || $workingDay['start']['hours'] > 23 ||
+                                    $workingDay['start']['minutes'] < 0 || $workingDay['start']['minutes'] > 59 ||
+                                    $workingDay['end']['hours'] < 0 || $workingDay['end']['hours'] > 23 ||
+                                    $workingDay['end']['minutes'] < 0 || $workingDay['end']['minutes'] > 59
+                                ) {
+                                    $fail('The ' . $attribute . ' field must have valid working hours for ' . $day . '.');
+                                    return;
+                                }
+                            }
+                        }
+                        if (!$found) {
+                            $fail('The ' . $attribute . ' field must contain ' . $day . ' working hours.');
+                            return;
+                        }
+                    }
+                },
+            ],
             'name' => [
                 'required',
                 'string',
@@ -1141,11 +1122,25 @@ class APIController extends Controller
         $division = new Division;
         $division->city_id = $city->id;
         $division->park_id = $park->id;
+        $division->timezone_difference = $request->timezone_difference;
+        $updatedWorkingHours = $this->sortWorkingHoursByDay($request->working_hours);
+        $division->working_hours = json_encode($updatedWorkingHours);
         $division->coords = $request->coords;
         $division->address = $request->address;
         $division->name = $request->name;
         $division->save();
         return response()->json(['message' => 'Подразделение создано', 'id' => $division->id], 200);
+    }
+
+    private function sortWorkingHoursByDay($workingHours) {
+        $sortFunction = function ($a, $b) {
+            $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            return array_search($a['day'], $daysOfWeek) - array_search($b['day'], $daysOfWeek);
+        };
+
+        usort($workingHours, $sortFunction);
+
+        return $workingHours;
     }
     /**
      * Обновление подразделения парка
@@ -1164,7 +1159,31 @@ class APIController extends Controller
      *             @OA\Property(property="id", type="integer", description="Идентификатор подразделения"),
      *             @OA\Property(property="coords", type="string", description="Координаты подразделения"),
      *             @OA\Property(property="address", type="string", description="Адрес подразделения"),
-     *             @OA\Property(property="name", type="string", description="Название подразделения")
+     *             @OA\Property(property="name", type="string", description="Название подразделения"),
+     *             @OA\Property(property="timezone_difference", type="integer", description="Часовой пояс, разница во времени с +0"),
+     *             @OA\Property(
+     *                 property="working_hours",
+     *                 type="array",
+     *                 description="Расписание работы парка",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="day", type="string", description="День недели на английском",ref="#/components/schemas/DayOfWeek"),
+     *                     @OA\Property(
+     *                         property="start",
+     *                         type="object",
+     *                         description="Время начала работы",
+     *                         @OA\Property(property="hours", type="integer", description="Часы (0-23)"),
+     *                         @OA\Property(property="minutes", type="integer", description="Минуты (0-59)")
+     *                     ),
+     *                     @OA\Property(
+     *                         property="end",
+     *                         type="object",
+     *                         description="Время окончания работы",
+     *                         @OA\Property(property="hours", type="integer", description="Часы (0-23)"),
+     *                         @OA\Property(property="minutes", type="integer", description="Минуты (0-59)")
+     *                     )
+     *                 )
+     *             )
      *         )
      *     ),
      *     @OA\Response(
@@ -1216,6 +1235,35 @@ class APIController extends Controller
             'id' => 'required|integer',
             'coords' => 'string',
             'address' => 'string',
+            'timezone_difference' => 'integer',
+            'working_hours' => [
+                'array',
+                function ($attribute, $value, $fail) {
+                    $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+                    foreach ($daysOfWeek as $day) {
+                        $found = false;
+                        foreach ($value as $workingDay) {
+                            if ($workingDay['day'] === $day) {
+                                $found = true;
+                                if (!isset($workingDay['start']['hours']) || !isset($workingDay['start']['minutes']) ||
+                                    !isset($workingDay['end']['hours']) || !isset($workingDay['end']['minutes']) ||
+                                    $workingDay['start']['hours'] < 0 || $workingDay['start']['hours'] > 23 ||
+                                    $workingDay['start']['minutes'] < 0 || $workingDay['start']['minutes'] > 59 ||
+                                    $workingDay['end']['hours'] < 0 || $workingDay['end']['hours'] > 23 ||
+                                    $workingDay['end']['minutes'] < 0 || $workingDay['end']['minutes'] > 59
+                                ) {
+                                    $fail('The ' . $attribute . ' field must have valid working hours for ' . $day . '.');
+                                    return;
+                                }
+                            }
+                        }
+                        if (!$found) {
+                            $fail('The ' . $attribute . ' field must contain ' . $day . ' working hours.');
+                            return;
+                        }
+                    }
+                },
+            ],
             'name' => [
                 'required',
                 'string',
@@ -1230,12 +1278,19 @@ class APIController extends Controller
         }
 
         // Update the division with the provided data
-        $division = Division::where('id', $request->id)->where('park_id', $park->id);
+        $division = Division::where('id', $request->id)->where('park_id', $park->id)->first();
         if ($request->coords) {
             $division->coords = $request->coords;
         }
         if ($request->address) {
             $division->address = $request->address;
+        }
+        $updatedWorkingHours = $this->sortWorkingHoursByDay($request->working_hours);
+        if ($updatedWorkingHours) {
+            $division->working_hours = json_encode($updatedWorkingHours);
+        }
+        if ($request->timezone_difference) {
+            $division->timezone_difference = $request->timezone_difference;
         }
         if ($request->name) {
             $division->name = $request->name;

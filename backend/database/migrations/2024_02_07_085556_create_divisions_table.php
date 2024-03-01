@@ -19,7 +19,8 @@ return new class extends Migration
             $table->string('address');
             $table->timestamps();
             $table->string('name');
-
+            $table->json('working_hours');
+            $table->integer('timezone_difference');
             $table->foreign('park_id')->references('id')->on('parks')->onDelete('cascade');
             $table->foreign('city_id')->references('id')->on('cities')->onDelete('cascade');
         });
