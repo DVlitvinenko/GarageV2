@@ -45,7 +45,9 @@ function App() {
         {/* <span className="font-bold text-md text-gray"></span> */}
         <CityPicker />
       </div>
-      <BookingTimer />
+      <Link to="bookings">
+        <BookingTimer />
+      </Link>
       <Routes>
         <Route path="/" element={<Finder />} />
         <Route path="account" element={<Account user={user} />} />
