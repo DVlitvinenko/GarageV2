@@ -20,6 +20,7 @@ import {
   Cars2,
   DayOfWeek,
   User,
+  Variants,
 } from "./api-client";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -35,7 +36,9 @@ import { useRecoilState } from "recoil";
 import { client } from "./backend";
 import Confirmation from "@/components/ui/confirmation";
 import SliderImages from "@/components/ui/slider-images";
+import CustomModal from "@/components/ui/custom-modal";
 import { useState } from "react";
+import { Dialog, DialogTrigger, DialogContent } from "@radix-ui/react-dialog";
 
 export const ModalCard = ({ car }: { car: Cars2 }) => {
   const [user, setUser] = useRecoilState(userAtom);
@@ -47,8 +50,11 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
   const activeBooking = user?.bookings!.find(
     (x) => x.status === BookingStatus.Booked
   );
+
+  const carVariants = car.variants!;
+
   // временно удаляем проверку на верификацию!!!
-  const book = async () => {
+  const book = async (variant_id: number | null = null) => {
     if (!user) {
       return navigate("login/driver", {
         state: {
@@ -57,10 +63,17 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
       });
     }
 
-    if (activeBooking) {
+    if (activeBooking && !variant_id) {
       await client.cancelBooking(
         new Body17({
           id: activeBooking!.id,
+        })
+      );
+    }
+    if (variant_id) {
+      await client.cancelBooking(
+        new Body17({
+          id: variant_id,
         })
       );
     }
@@ -265,8 +278,61 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
             ))}
           </SelectContent>
         </Select>
-
-        {!activeBooking && (
+        {!!carVariants.length && (
+          <CustomModal
+            trigger={
+              <div className="">
+                <Button className="">Забронировать</Button>
+              </div>
+            }
+            cancel={() => {}}
+            content={
+              <div className="max-w-[352px] p-1 text-gray-700  w-100 rounded-xl -ml-5">
+                <h3 className="mb-4 text-center">
+                  Варианты доступных {car.brand} {car.model}:
+                </h3>
+                {carVariants.map(({ id, images }, i) => (
+                  <div className="" key={`modal_card${id}${i}`}>
+                    <div className="flex mb-2 space-x-1 overflow-x-auto scrollbar-hide rounded-xl">
+                      {images!.map((x, i) => (
+                        <img
+                          alt=""
+                          key={`modal_image${i}`}
+                          className="object-cover w-10/12 rounded-sm h-52"
+                          src={x}
+                        />
+                      ))}
+                    </div>
+                    {!!activeBooking && (
+                      <div className="w-full mb-2">
+                        <Confirmation
+                          title={`У вас есть активная бронь: ${activeBooking.car?.brand} ${activeBooking.car?.model}. Отменить и забронировать ${car.brand} ${car.model}?`}
+                          type="green"
+                          accept={() => book(id)}
+                          cancel={() => {}}
+                          trigger={<Button className="">Выбрать</Button>}
+                        />
+                      </div>
+                    )}
+                    {!activeBooking && (
+                      <div className="w-full mb-2">
+                        <Confirmation
+                          title={`Забронировать ${car.brand} ${car.model}?`}
+                          type="green"
+                          accept={() => book(id)}
+                          cancel={() => {}}
+                          trigger={<Button className="">Выбрать</Button>}
+                        />
+                      </div>
+                    )}
+                    <Separator className="my-4" />
+                  </div>
+                ))}
+              </div>
+            }
+          />
+        )}
+        {!activeBooking && carVariants.length < 1 && (
           <div className="w-1/2">
             <Confirmation
               title={`Забронировать ${car.brand} ${car.model}?`}
@@ -277,7 +343,7 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
             />
           </div>
         )}
-        {!!activeBooking && (
+        {!!activeBooking && carVariants.length < 1 && (
           <div className="w-1/2">
             <Confirmation
               title={`У вас есть активная бронь: ${activeBooking.car?.brand} ${activeBooking.car?.model}. Отменить и забронировать ${car.brand} ${car.model}?`}

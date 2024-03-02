@@ -25,6 +25,7 @@ export const Card = ({ car }: { car: Cars2 }) => {
             <div className="flex space-x-1 overflow-x-auto scrollbar-hide rounded-xl">
               {car.images?.map((x, i) => (
                 <img
+                  alt=""
                   key={`${x}${i}`}
                   className="object-cover w-10/12 rounded-sm h-52"
                   src={x}
@@ -34,7 +35,7 @@ export const Card = ({ car }: { car: Cars2 }) => {
           </div>
           <div className="px-4">
             <h1 className="my-2 text-center">{`${car.brand} ${car.model} ${car.year_produced}`}</h1>
-            <div className="flex flex-col justify-start gap-1 mb-2 mt-2">
+            <div className="flex flex-col justify-start gap-1 mt-2 mb-2">
               <div>
                 <Badge variant="card" className="px-0 py-0 bg-grey ">
                   <span className="flex items-center h-full px-2 bg-white rounded-xl">

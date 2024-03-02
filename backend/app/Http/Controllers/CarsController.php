@@ -72,6 +72,11 @@ class CarsController extends Controller
      *                 @OA\Property(property="images", type="array", @OA\Items(type="string"), description="Ссылки на изображения"),
      *                 @OA\Property(property="сar_class", type="string", description="Класс тарифа", ref="#/components/schemas/CarClass"),
      *                 @OA\Property(property="park_name", type="string", description="Название парка"),
+     *                 @OA\Property(property="variants", type="array", @OA\Items(
+     *                         type="object",
+     *                         @OA\Property(property="id", type="integer"),
+     *                         @OA\Property(property="images", type="array", @OA\Items(type="string"), description="Ссылки на изображения")
+     *                     )),
      *                 @OA\Property(
      *                     property="working_hours",
      *                     type="array",
@@ -294,40 +299,71 @@ class CarsController extends Controller
 
         $carsQuery->offset($offset)->limit($limit);
         $cars = $carsQuery->get();
-
         $uniqueCars = $cars->unique(function ($item) {
             return $item->division_id . $item->park_id . $item->tariff_id . $item->rent_term_id .
                 $item->fuel_type . $item->transmission_type . $item->brand . $item->model . $item->year_produced;
         });
-        $cars = collect($uniqueCars)->values()->all();
 
-        foreach ($cars as $car) {
-            $car['images'] = json_decode($car['images']);
-            $car['fuel_type'] = FuelType::from($car['fuel_type'])->name;
-            $car['transmission_type'] = TransmissionType::from($car['transmission_type'])->name;
-            $classCar = $car['tariff']['class'];
-            $end = CarClass::from($classCar)->name;
-            $commission = $car['division']['park']['commission'];
-            $phone = $car['division']['park']['phone'];
-            $about = $car['division']['park']['about'];
-            $workingHours = json_decode($car['division']['working_hours'], true);
-
-            if (isset($car['division']['park']['park_name'])) {
-                $parkName = $car['division']['park']['park_name'];
-            } else {
-                $parkName = 'Не удалось получить название парка';
+        $similarCars = Car::where(function ($query) use ($uniqueCars) {
+            foreach ($uniqueCars as $uniqueCar) {
+                $query->orWhere(function ($subQuery) use ($uniqueCar) {
+                    $subQuery->where('division_id', $uniqueCar->division_id)
+                        ->where('park_id', $uniqueCar->park_id)
+                        ->where('tariff_id', $uniqueCar->tariff_id)
+                        ->where('rent_term_id', $uniqueCar->rent_term_id)
+                        ->where('fuel_type', $uniqueCar->fuel_type)
+                        ->where('transmission_type', $uniqueCar->transmission_type)
+                        ->where('brand', $uniqueCar->brand)
+                        ->where('model', $uniqueCar->model)
+                        ->where('year_produced', $uniqueCar->year_produced);
+                });
             }
-            $city = $car['division']['city']['name'];
-            $car['city'] = $city;
-            $car['CarClass'] = $end;
-            $car['park_name'] = $parkName;
-            $car['working_hours'] = $workingHours;
-            $car['phone'] = $phone;
-            $car['about'] = $about;
-            $commissionFormatted = number_format($commission, 2);
-            $car['commission'] = rtrim(rtrim($commissionFormatted, '0'), '.');
-        }
-        foreach ($cars as $car) {
+        })->get();
+
+        foreach ($uniqueCars as $car) {
+            $car['variants'] = $similarCars->filter(function ($similarCar) use ($car) {
+                return $similarCar->division_id == $car->division_id &&
+                       $similarCar->park_id == $car->park_id &&
+                       $similarCar->tariff_id == $car->tariff_id &&
+                       $similarCar->rent_term_id == $car->rent_term_id &&
+                       $similarCar->fuel_type == $car->fuel_type &&
+                       $similarCar->transmission_type == $car->transmission_type &&
+                       $similarCar->brand == $car->brand &&
+                       $similarCar->model == $car->model &&
+                       $similarCar->year_produced == $car->year_produced;
+            })->map(function ($similarCar) {
+                return [
+                    'id' => $similarCar->id,
+                    'images' => json_decode($similarCar->images)
+                ];
+            })->values()->all();}
+            $formattedCars = [];
+            foreach ($uniqueCars as $car) {
+                $formattedCar = $car;
+                $formattedCar['images'] = json_decode($car['images']);
+                $formattedCar['fuel_type'] = FuelType::from($car['fuel_type'])->name;
+                $formattedCar['transmission_type'] = TransmissionType::from($car['transmission_type'])->name;
+                $classCar = $car['tariff']['class'];
+                $end = CarClass::from($classCar)->name;
+                $commission = $car['division']['park']['commission'];
+                $phone = $car['division']['park']['phone'];
+                $about = $car['division']['park']['about'];
+                $workingHours = json_decode($car['division']['working_hours'], true);
+                $parkName = $car['division']['park']['park_name'] ?? 'Не удалось получить название парка';
+                $city = $car['division']['city']['name'];
+                $formattedCar['city'] = $city;
+                $formattedCar['CarClass'] = $end;
+                $formattedCar['park_name'] = $parkName;
+                $formattedCar['working_hours'] = $workingHours;
+                $formattedCar['phone'] = $phone;
+                $formattedCar['about'] = $about;
+                $commissionFormatted = number_format($commission, 2);
+                $formattedCar['commission'] = rtrim(rtrim($commissionFormatted, '0'), '.');
+
+                $formattedCars[] = $formattedCar;
+            }
+
+        foreach ($formattedCars as $car) {
             unset(
                 $car['division']['park'],
                 $car['division']['id'],
@@ -335,6 +371,7 @@ class CarsController extends Controller
                 $car['division']['city'],
                 $car['division']['name'],
                 $car['division']['city_id'],
+                $car['division']['working_hours'],
                 $car['division_id'],
                 $car['park_id'],
                 $car['tariff_id'],
@@ -343,7 +380,7 @@ class CarsController extends Controller
                 $car['division']['park_id'],
             );
         }
-        return response()->json(['cars' => $cars]);
+        return response()->json(['cars' => $formattedCars]);
     }
 
 
@@ -731,3 +768,4 @@ if(!$schema){ return response()->json(['message' => 'Схема аренды н�
         return response()->json(['brands' => $brandList]);
     }
 }
+
