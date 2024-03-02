@@ -23,11 +23,19 @@ export const BookingDrawer = () => {
   if (!bookings.length) {
     return <>У вас пока нет бронирований</>;
   }
-  const sortedBookings = [...bookings].sort((a, b) => {
-    if (a.end_date! > b.end_date!) return -1;
-    if (a.end_date! < b.end_date!) return 1;
-    return 0;
-  });
+  const sortedBookings = [...bookings]
+    .filter((x) =>
+      [
+        BookingStatus.RentStart,
+        BookingStatus.Booked,
+        BookingStatus.BookingTimeOver,
+      ].includes(x!.status!)
+    )
+    .sort((a, b) => {
+      if (a.end_date! > b.end_date!) return -1;
+      if (a.end_date! < b.end_date!) return 1;
+      return 0;
+    });
   return (
     <>
       {sortedBookings.map((booking) => (

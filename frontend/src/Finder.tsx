@@ -77,7 +77,7 @@ const staticSchemas = [
 
 export const Finder = () => {
   const [filters, setFilters] = useState<CarFilter>({
-    carClass: [CarClass.Economy],
+    carClass: [],
     commission: DEFAULT_COMMISSION_PERCENTAGE,
     fuelType: null,
     brands: [],

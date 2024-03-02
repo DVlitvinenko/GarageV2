@@ -23,7 +23,7 @@ const SliderImages = ({ images }: SliderImagesProps) => {
   };
 
   useEffect(() => {
-    if (containerRef.current) {
+    if (containerRef.current && scrollEnd) {
       containerRef.current.scrollTo({
         left: activeIndex * containerRef.current.offsetWidth,
         behavior: "smooth",
