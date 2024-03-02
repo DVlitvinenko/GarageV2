@@ -547,10 +547,12 @@ if(!$schema){ return response()->json(['message' => 'Схема аренды н�
         if(!$todayWorkingHours) {
             $isNonWorkingDayToday = true;
         }
-        $endTimeOfWorkDayToday = Carbon::createFromTime($todayWorkingHours['end']['hours'], $todayWorkingHours['end']['minutes'], 0)->addHours(-$rent_time-$divisionTimezone);
-        $startTimeOfWorkDayToday = Carbon::createFromTime($todayWorkingHours['start']['hours'], $todayWorkingHours['start']['minutes'], 0)->addHours(-$rent_time-$divisionTimezone);
+        if($todayWorkingHours) {
+            $endTimeOfWorkDayToday = Carbon::createFromTime($todayWorkingHours['end']['hours'], $todayWorkingHours['end']['minutes'], 0)->addHours(-$rent_time-$divisionTimezone);
+            $startTimeOfWorkDayToday = Carbon::createFromTime($todayWorkingHours['start']['hours'], $todayWorkingHours['start']['minutes'], 0)->addHours(-$rent_time-$divisionTimezone);
+        }else{$endTimeOfWorkDayToday=null;$startTimeOfWorkDayToday=null;}
 
-        if (($endTimeOfWorkDayToday < $currentTime && $currentTime > $startTimeOfWorkDayToday) || $isNonWorkingDayToday) {
+        if ($endTimeOfWorkDayToday && $startTimeOfWorkDayToday && (($endTimeOfWorkDayToday < $currentTime && $currentTime > $startTimeOfWorkDayToday) || $isNonWorkingDayToday)) {
 
             $nextWorkingDayInfo = $this->findNextWorkingDay(Carbon::now()->format('l'), $workingHours);
             $nextWorkingDay = Carbon::now()->next($nextWorkingDayInfo['day']);

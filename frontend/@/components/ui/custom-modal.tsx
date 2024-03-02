@@ -18,14 +18,15 @@ const CustomModal = ({ content, cancel, trigger }: CustomModalProps) => {
   return (
     <>
       {isOpen && (
-        <div className="fixed top-0 left-0 z-[51] flex flex-col items-center justify-center w-full h-full bg-white overflow-y-auto pb-10  ">
-          {content}
-          <div
-            className="fixed bottom-0 left-0 flex w-full p-2 space-x-2 bg-white {
-          
+        <div className="fixed top-0 left-0 z-[51] flex flex-col items-center justify-center w-full h-full bg-white overflow-y-auto ">
+          <div className="absolute pb-10 top-10 ">
+            {content}
+            <div
+              className="fixed bottom-0 left-0 flex w-full p-2 space-x-2 bg-white {
           }"
-          >
-            <Button onClick={handleCancel}>Назад</Button>
+            >
+              <Button onClick={handleCancel}>Назад</Button>
+            </div>
           </div>
         </div>
       )}

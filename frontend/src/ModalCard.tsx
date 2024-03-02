@@ -63,24 +63,17 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
       });
     }
 
-    if (activeBooking && !variant_id) {
+    if (activeBooking) {
       await client.cancelBooking(
         new Body17({
           id: activeBooking!.id,
         })
       );
     }
-    if (variant_id) {
-      await client.cancelBooking(
-        new Body17({
-          id: variant_id,
-        })
-      );
-    }
     // if (user.user_status === UserStatus.Verified) {
     const bookingData = await client.book(
       new Body16({
-        id: car.id,
+        id: variant_id ? variant_id : car.id,
         schema_id: selectedSchema,
       })
     );
@@ -278,7 +271,7 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
             ))}
           </SelectContent>
         </Select>
-        {!!carVariants.length && (
+        {carVariants.length > 1 && (
           <CustomModal
             trigger={
               <div className="">
@@ -332,7 +325,7 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
             }
           />
         )}
-        {!activeBooking && carVariants.length < 1 && (
+        {!activeBooking && carVariants.length <= 1 && (
           <div className="w-1/2">
             <Confirmation
               title={`Забронировать ${car.brand} ${car.model}?`}
@@ -343,7 +336,7 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
             />
           </div>
         )}
-        {!!activeBooking && carVariants.length < 1 && (
+        {!!activeBooking && carVariants.length <= 1 && (
           <div className="w-1/2">
             <Confirmation
               title={`У вас есть активная бронь: ${activeBooking.car?.brand} ${activeBooking.car?.model}. Отменить и забронировать ${car.brand} ${car.model}?`}
