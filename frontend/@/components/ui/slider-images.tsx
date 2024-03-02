@@ -1,3 +1,4 @@
+import { ZoomInIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 interface SliderImagesProps {
