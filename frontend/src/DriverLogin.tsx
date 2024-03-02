@@ -112,7 +112,7 @@ export const DriverLogin = () => {
                 className="mt-1"
                 onChange={handleCodeChange}
                 id="code"
-                placeholder="_ _ _ _ _ _ _"
+                placeholder="_ _ _ _"
               />
               {codeHasError && (
                 <p className="my-4 text-center text-red">
