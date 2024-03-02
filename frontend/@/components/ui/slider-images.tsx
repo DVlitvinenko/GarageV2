@@ -7,29 +7,24 @@ interface SliderImagesProps {
 const SliderImages = ({ images }: SliderImagesProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [scrollEnd, setScrollEnd] = useState(false);
 
   const handleScroll = () => {
     if (containerRef.current) {
-      setScrollEnd(false);
       const containerWidth = containerRef.current.offsetWidth;
       const scrollLeft = containerRef.current.scrollLeft;
       const index = Math.round(scrollLeft / containerWidth);
       setActiveIndex(index);
-      setTimeout(() => {
-        () => setScrollEnd(true);
-      }, 1000);
     }
   };
-
-  useEffect(() => {
-    if (containerRef.current && scrollEnd) {
+  const handleClick = (i) => {
+    setActiveIndex(i);
+    if (containerRef.current) {
       containerRef.current.scrollTo({
-        left: activeIndex * containerRef.current.offsetWidth,
+        left: i * containerRef.current.offsetWidth,
         behavior: "smooth",
       });
     }
-  }, [activeIndex]);
+  };
 
   return (
     <div className="relative h-64 sm:h-80">
@@ -61,7 +56,7 @@ const SliderImages = ({ images }: SliderImagesProps) => {
               <img
                 className="object-cover w-full h-full rounded-xl"
                 src={x}
-                onClick={() => setActiveIndex(i)}
+                onClick={() => handleClick(i)}
                 alt=""
               />
             </div>
