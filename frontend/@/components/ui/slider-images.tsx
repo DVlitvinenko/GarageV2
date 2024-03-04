@@ -27,6 +27,38 @@ const SliderImages = ({ images }: SliderImagesProps) => {
     },
   };
 
+  const openFullScreen = (element) => {
+    if (element.requestFullscreen) {
+      element.requestFullscreen();
+    } else if (element.webkitRequestFullscreen) {
+      element.webkitRequestFullscreen();
+    } else if (element.msRequestFullscreen) {
+      element.msRequestFullscreen();
+    } else if (element.mozRequestFullScreen) {
+      element.mozRequestFullScreen();
+    }
+  };
+
+  const exitFullScreen = () => {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) {
+      document.msExitFullscreen();
+    } else if (document.mozCancelFullScreen) {
+      document.mozCancelFullScreen();
+    }
+  };
+
+  const handleClick = (event) => {
+    const img = event.target;
+    if (!document.fullscreenElement) {
+      openFullScreen(img);
+    } else {
+      exitFullScreen();
+    }
+  };
   const handlePaginationClick = (index: number) => {
     setActiveIndex(index);
     if (sliderRef.current) {
@@ -42,6 +74,8 @@ const SliderImages = ({ images }: SliderImagesProps) => {
           <div key={index}>
             <img
               src={image}
+              onClick={(e) => handleClick(e)}
+              onTouchEnd={(e) => handleClick(e)}
               alt={`Slide ${index}`}
               className="object-cover h-64 rounded-xl sm:min-w-full sm:h-80"
             />
