@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { Button } from "./button";
 
 interface SliderImagesProps {
   images: string[];
@@ -11,6 +12,7 @@ const SliderImages = ({ images }: SliderImagesProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const sliderRef = useRef<Slider>(null);
   const isTransitioning = useRef(false);
+  const [isCkicked, setIsCkecked] = useState(false);
 
   const settings = {
     dots: false,
@@ -27,38 +29,6 @@ const SliderImages = ({ images }: SliderImagesProps) => {
     },
   };
 
-  const openFullScreen = (element) => {
-    if (element.requestFullscreen) {
-      element.requestFullscreen();
-    } else if (element.webkitRequestFullscreen) {
-      element.webkitRequestFullscreen();
-    } else if (element.msRequestFullscreen) {
-      element.msRequestFullscreen();
-    } else if (element.mozRequestFullScreen) {
-      element.mozRequestFullScreen();
-    }
-  };
-
-  const exitFullScreen = () => {
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    } else if (document.webkitExitFullscreen) {
-      document.webkitExitFullscreen();
-    } else if (document.msExitFullscreen) {
-      document.msExitFullscreen();
-    } else if (document.mozCancelFullScreen) {
-      document.mozCancelFullScreen();
-    }
-  };
-
-  const handleClick = (event) => {
-    const img = event.target;
-    if (!document.fullscreenElement) {
-      openFullScreen(img);
-    } else {
-      exitFullScreen();
-    }
-  };
   const handlePaginationClick = (index: number) => {
     setActiveIndex(index);
     if (sliderRef.current) {
@@ -68,41 +38,91 @@ const SliderImages = ({ images }: SliderImagesProps) => {
   };
 
   return (
-    <div className="relative h-64 sm:h-80">
-      <Slider ref={sliderRef} {...settings}>
-        {images.map((image, index) => (
-          <div key={index}>
-            <img
-              src={image}
-              onClick={(e) => handleClick(e)}
-              onTouchEnd={(e) => handleClick(e)}
-              alt={`Slide ${index}`}
-              className="object-cover h-64 rounded-xl sm:min-w-full sm:h-80"
-            />
-          </div>
-        ))}
-      </Slider>
-      <div className="absolute bottom-0 flex justify-center px-1 py-1 mt-2 sm:justify-start sm:w-1/2">
-        {images.map((x, i) => (
-          <div
-            key={`image_${i}`}
-            className={`w-full flex items-center bg-white rounded-xl transition-all h-14 ${
-              i === activeIndex ? "shadow border-2 border-yellow" : "scale-90"
-            }`}
-            onClick={() => handlePaginationClick(i)}
-            style={{
-              cursor: isTransitioning.current ? "not-allowed" : "pointer",
-            }}
-          >
-            <img
-              className="object-cover w-full h-full rounded-xl"
-              src={x}
-              alt=""
-            />
-          </div>
-        ))}
+    <>
+      <div className="relative h-64 sm:h-80">
+        <Slider ref={sliderRef} {...settings}>
+          {images.map((image, index) => (
+            <div key={index}>
+              <img
+                onClick={() => setIsCkecked(!isCkicked)}
+                src={image}
+                alt={`Slide ${index}`}
+                className="object-cover h-64 rounded-xl sm:min-w-full sm:h-80"
+              />
+            </div>
+          ))}
+        </Slider>
+        <div className="absolute bottom-0 flex justify-center px-1 py-1 mt-2 sm:justify-start sm:w-1/2">
+          {images.map((x, i) => (
+            <div
+              key={`image_${i}`}
+              className={`w-full flex items-center bg-white rounded-xl transition-all h-14 ${
+                i === activeIndex ? "shadow border-2 border-yellow" : "scale-90"
+              }`}
+              onClick={() => handlePaginationClick(i)}
+              style={{
+                cursor: isTransitioning.current ? "not-allowed" : "pointer",
+              }}
+            >
+              <img
+                className="object-cover w-full h-full rounded-xl"
+                src={x}
+                alt=""
+              />
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+      {isCkicked && (
+        <div className="fixed top-0 left-0 z-[53] w-full h-full bg-black bg-opacity-95">
+          <div className="relative flex flex-col justify-center h-full sm:h-80">
+            <Slider ref={sliderRef} {...settings}>
+              {images.map((image, index) => (
+                <div key={index}>
+                  <img
+                    onClick={() => setIsCkecked(!isCkicked)}
+                    src={image}
+                    alt={`Slide ${index}`}
+                    className="object-contain h-auto m-auto sm:min-w-full sm:h-80"
+                  />
+                </div>
+              ))}
+            </Slider>
+            <div className="flex justify-center px-1 py-1 mt-2 -bottom-20 sm:justify-start sm:w-1/2">
+              {images.map((x, i) => (
+                <div
+                  key={`image_${i}`}
+                  className={`w-full flex items-center bg-white rounded-xl transition-all h-14 ${
+                    i === activeIndex
+                      ? "shadow border-2 border-yellow"
+                      : "scale-90"
+                  }`}
+                  onClick={() => handlePaginationClick(i)}
+                  style={{
+                    cursor: isTransitioning.current ? "not-allowed" : "pointer",
+                  }}
+                >
+                  <img
+                    className="object-cover w-full h-full rounded-xl"
+                    src={x}
+                    alt=""
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="fixed bottom-0 flex w-full p-2">
+              {" "}
+              <Button
+                className="mx-auto"
+                onClick={() => setIsCkecked(!isCkicked)}
+              >
+                Назад
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
