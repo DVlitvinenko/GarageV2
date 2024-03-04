@@ -1,5 +1,7 @@
-import { ZoomInIcon } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import React, { useState, useRef } from "react";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 interface SliderImagesProps {
   images: string[];
@@ -7,62 +9,64 @@ interface SliderImagesProps {
 
 const SliderImages = ({ images }: SliderImagesProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const sliderRef = useRef<Slider>(null);
+  const isTransitioning = useRef(false);
 
-  const handleScroll = () => {
-    if (containerRef.current) {
-      const containerWidth = containerRef.current.offsetWidth;
-      const scrollLeft = containerRef.current.scrollLeft;
-      const index = Math.round(scrollLeft / containerWidth);
-      setActiveIndex(index);
-    }
+  const settings = {
+    dots: false,
+    infinite: true,
+    speed: 300,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    beforeChange: (current, next) => {
+      setActiveIndex(next);
+      isTransitioning.current = true;
+    },
+    afterChange: () => {
+      isTransitioning.current = false;
+    },
   };
-  const handleClick = (i) => {
-    setActiveIndex(i);
-    if (containerRef.current) {
-      containerRef.current.scrollTo({
-        left: i * containerRef.current.offsetWidth,
-        behavior: "smooth",
-      });
+
+  const handlePaginationClick = (index: number) => {
+    setActiveIndex(index);
+    if (sliderRef.current) {
+      sliderRef.current.slickGoTo(index);
+      isTransitioning.current = true;
     }
   };
 
   return (
     <div className="relative h-64 sm:h-80">
-      <div
-        className={`absolute flex items-center justify-start h-64 sm:h-80 space-x-1 pr-1 overflow-scroll overflow-x-auto scrollbar-hide `}
-        ref={containerRef}
-        onScroll={handleScroll}
-      >
-        {images.map((x, i) => (
-          <img
-            key={`image_${i}`}
-            className="object-cover h-64 rounded-xl sm:min-w-full sm:h-80"
-            src={x}
-            alt={`Slider Image ${i}`}
-          />
+      <Slider ref={sliderRef} {...settings}>
+        {images.map((image, index) => (
+          <div key={index}>
+            <img
+              src={image}
+              alt={`Slide ${index}`}
+              className="object-cover h-64 rounded-xl sm:min-w-full sm:h-80"
+            />
+          </div>
         ))}
-      </div>
+      </Slider>
       <div className="absolute bottom-0 flex justify-center px-1 py-1 mt-2 sm:justify-start sm:w-1/2">
-        {images.map((x, i) => {
-          return (
-            <div
-              key={`image_${i}`}
-              className={`w-full flex items-center bg-white rounded-xl transition-all h-14  ${
-                i === activeIndex
-                  ? "shadow border-2 border-yellow"
-                  : " scale-90"
-              }`}
-            >
-              <img
-                className="object-cover w-full h-full rounded-xl"
-                src={x}
-                onClick={() => handleClick(i)}
-                alt=""
-              />
-            </div>
-          );
-        })}
+        {images.map((x, i) => (
+          <div
+            key={`image_${i}`}
+            className={`w-full flex items-center bg-white rounded-xl transition-all h-14 ${
+              i === activeIndex ? "shadow border-2 border-yellow" : "scale-90"
+            }`}
+            onClick={() => handlePaginationClick(i)}
+            style={{
+              cursor: isTransitioning.current ? "not-allowed" : "pointer",
+            }}
+          >
+            <img
+              className="object-cover w-full h-full rounded-xl"
+              src={x}
+              alt=""
+            />
+          </div>
+        ))}
       </div>
     </div>
   );
