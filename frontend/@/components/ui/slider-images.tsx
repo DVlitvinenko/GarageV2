@@ -12,7 +12,7 @@ const SliderImages = ({ images }: SliderImagesProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const sliderRef = useRef<Slider>(null);
   const isTransitioning = useRef(false);
-  const [isCkicked, setIsCkecked] = useState(false);
+  const [isClicked, setIsClicked] = useState(false);
 
   const settings = {
     dots: false,
@@ -44,7 +44,7 @@ const SliderImages = ({ images }: SliderImagesProps) => {
           {images.map((image, index) => (
             <div key={index}>
               <img
-                onClick={() => setIsCkecked(!isCkicked)}
+                onClick={() => setIsClicked(!isClicked)}
                 src={image}
                 alt={`Slide ${index}`}
                 className="object-cover h-64 rounded-xl sm:min-w-full sm:h-80"
@@ -73,14 +73,14 @@ const SliderImages = ({ images }: SliderImagesProps) => {
           ))}
         </div>
       </div>
-      {isCkicked && (
+      {isClicked && (
         <div className="fixed top-0 left-0 z-[53] w-full h-full bg-black bg-opacity-95">
           <div className="relative flex flex-col justify-center h-full sm:h-80">
             <Slider ref={sliderRef} {...settings}>
               {images.map((image, index) => (
                 <div key={index}>
                   <img
-                    onClick={() => setIsCkecked(!isCkicked)}
+                    onClick={() => setIsClicked(!isClicked)}
                     src={image}
                     alt={`Slide ${index}`}
                     className="object-contain h-auto m-auto sm:min-w-full sm:h-80"
@@ -114,7 +114,7 @@ const SliderImages = ({ images }: SliderImagesProps) => {
               {" "}
               <Button
                 className="mx-auto"
-                onClick={() => setIsCkecked(!isCkicked)}
+                onClick={() => setIsClicked(!isClicked)}
               >
                 Назад
               </Button>
