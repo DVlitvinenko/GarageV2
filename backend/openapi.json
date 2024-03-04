@@ -927,10 +927,6 @@
                                     "about": {
                                         "description": "Описание парка",
                                         "type": "string"
-                                    },
-                                    "phone": {
-                                        "description": "Телефон парка",
-                                        "type": "string"
                                     }
                                 },
                                 "type": "object"
@@ -1046,6 +1042,10 @@
                                     },
                                     "name": {
                                         "description": "Название подразделения",
+                                        "type": "string"
+                                    },
+                                    "phone": {
+                                        "description": "Телефон парка",
                                         "type": "string"
                                     },
                                     "timezone_difference": {
@@ -1211,6 +1211,10 @@
                                     },
                                     "name": {
                                         "description": "Название подразделения",
+                                        "type": "string"
+                                    },
+                                    "phone": {
+                                        "description": "Телефон парка",
                                         "type": "string"
                                     },
                                     "timezone_difference": {
@@ -1790,6 +1794,9 @@
                                                                             "coords": {
                                                                                 "type": "string"
                                                                             },
+                                                                            "phone": {
+                                                                                "type": "string"
+                                                                            },
                                                                             "working_hours": {
                                                                                 "description": "Расписание работы парка",
                                                                                 "type": "array",
@@ -1833,9 +1840,6 @@
                                                                             "park": {
                                                                                 "description": "Информация о парке",
                                                                                 "properties": {
-                                                                                    "phone": {
-                                                                                        "type": "string"
-                                                                                    },
                                                                                     "url": {
                                                                                         "type": "string"
                                                                                     },
@@ -2313,10 +2317,6 @@
                                                         "description": "Описание парка",
                                                         "type": "string"
                                                     },
-                                                    "phone": {
-                                                        "description": "Телефон парка",
-                                                        "type": "string"
-                                                    },
                                                     "commission": {
                                                         "description": "Комиссия",
                                                         "type": "number"
@@ -2333,6 +2333,9 @@
                                                             },
                                                             "coords": {
                                                                 "description": "Координаты подразделения",
+                                                                "type": "string"
+                                                            },
+                                                            "phone": {
                                                                 "type": "string"
                                                             }
                                                         },
@@ -2497,6 +2500,9 @@
                                                                 "address": {
                                                                     "type": "string"
                                                                 },
+                                                                "phone": {
+                                                                    "type": "string"
+                                                                },
                                                                 "working_hours": {
                                                                     "description": "Расписание работы парка",
                                                                     "type": "array",
@@ -2539,9 +2545,6 @@
                                                                 },
                                                                 "park": {
                                                                     "properties": {
-                                                                        "phone": {
-                                                                            "type": "string"
-                                                                        },
                                                                         "url": {
                                                                             "type": "string"
                                                                         },

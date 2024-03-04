@@ -925,7 +925,6 @@ class APIController extends Controller
      *             @OA\Property(property="commission", type="number", description="Комиссия"),
      *             @OA\Property(property="park_name", type="string", description="Название парка"),
      *             @OA\Property(property="about", type="string", description="Описание парка"),
-     *             @OA\Property(property="phone", type="string", description="Телефон парка"),
      *     )),
      *     @OA\Response(
      *         response=200,
@@ -989,9 +988,7 @@ class APIController extends Controller
         if ($request->about) {
             $park->about = $request->about;
         }
-        if ($request->phone) {
-            $park->phone = $request->phone;
-        }
+
         $park->save();
         return response()->json(['message' => 'Парк обновлен'], 200);
     }
@@ -1014,6 +1011,7 @@ class APIController extends Controller
      *             @OA\Property(property="coords", type="string", description="Координаты подразделения"),
      *             @OA\Property(property="address", type="string", description="Адрес подразделения"),
      *             @OA\Property(property="name", type="string", description="Название подразделения"),
+     *             @OA\Property(property="phone", type="string", description="Телефон парка"),
      *             @OA\Property(property="timezone_difference", type="integer", description="Часовой пояс, разница во времени с +0"),
      *             @OA\Property(
      *                 property="working_hours",
@@ -1085,6 +1083,7 @@ class APIController extends Controller
             'coords' => 'required|string',
             'address' => 'required|string',
             'timezone_difference' => 'required|integer',
+            'phone'=>'required|string',
             'working_hours' => [
                 'required',
                 'array',
@@ -1136,6 +1135,7 @@ class APIController extends Controller
         $division->coords = $request->coords;
         $division->address = $request->address;
         $division->name = $request->name;
+        $division->phone = $request->phone;
         $division->save();
         return response()->json(['message' => 'Подразделение создано', 'id' => $division->id], 200);
     }
@@ -1168,6 +1168,7 @@ class APIController extends Controller
      *             @OA\Property(property="coords", type="string", description="Координаты подразделения"),
      *             @OA\Property(property="address", type="string", description="Адрес подразделения"),
      *             @OA\Property(property="name", type="string", description="Название подразделения"),
+     *             @OA\Property(property="phone", type="string", description="Телефон парка"),
      *             @OA\Property(property="timezone_difference", type="integer", description="Часовой пояс, разница во времени с +0"),
      *             @OA\Property(
      *                 property="working_hours",
@@ -1279,6 +1280,7 @@ class APIController extends Controller
                     return $query->where('park_id', $park->id);
                 })->ignore($request->id),
             ],
+            'phone'=>'string'
         ]);
 
         if ($validator->fails()) {
@@ -1302,6 +1304,9 @@ class APIController extends Controller
         }
         if ($request->name) {
             $division->name = $request->name;
+        }
+        if ($request->phone) {
+            $division->phone = $request->phone;
         }
         $division->save();
         return response()->json(['message' => 'Подразделение обновлено'], 200);

@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('API_key');
             $table->string('url');
             $table->float('commission');
-            $table->string('phone');
             $table->string('park_name');
             $table->text('about');
             $table->timestamps();

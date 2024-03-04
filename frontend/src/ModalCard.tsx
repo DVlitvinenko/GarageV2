@@ -161,7 +161,7 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
           </p>
           <Separator />
           <p className="text-base font-regular text-gray">
-            Телефон: {car.phone}
+            Телефон: {car.division?.phone}
           </p>
           <Separator />
           <p className="text-base font-regular text-gray">

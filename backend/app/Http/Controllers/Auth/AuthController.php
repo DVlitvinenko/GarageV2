@@ -110,6 +110,7 @@ class AuthController extends Controller
      *                             description="Информация о дивизионе",
      *                             @OA\Property(property="address", type="string"),
      *                             @OA\Property(property="coords", type="string"),
+     *                             @OA\Property(property="phone", type="string"),
      *             @OA\Property(
      *                 property="working_hours",
      *                 type="array",
@@ -137,7 +138,6 @@ class AuthController extends Controller
      *                                 property="park",
      *                                 type="object",
      *                                 description="Информация о парке",
-     *                                 @OA\Property(property="phone", type="string"),
      *                                 @OA\Property(property="url", type="string"),
      *                                 @OA\Property(property="commission", type="integer"),
      *                                 @OA\Property(property="park_name", type="string"),
@@ -195,7 +195,7 @@ class AuthController extends Controller
                 $booking->car->transmission_type = TransmissionType::from($booking->car->transmission_type)->name;
                 $booking->car->fuel_type = FuelType::from($booking->car->fuel_type)->name;
                 $booking->car->images = json_decode($booking->car->images);
-                $booking->car->division = Division::where('id', $booking->car->division_id)->with('park')->select('address', 'park_id', 'coords', 'working_hours')->first();
+                $booking->car->division = Division::where('id', $booking->car->division_id)->with('park')->select('address', 'park_id', 'coords', 'working_hours', 'phone')->first();
                 $booking->rent_term = RentTerm::where('id', $booking->car->rent_term_id)
                     ->with(['schemas' => function ($query) use ($booking) {
                         $query->where('id', $booking->schema_id);

@@ -11,18 +11,25 @@ import {
   getFuelTypeDisplayName,
   getTransmissionDisplayName,
 } from "@/lib/utils";
+import { useEffect } from "react";
 
 export const BookingDrawer = () => {
   const [user] = useRecoilState(userAtom);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   if (!user) {
     return <></>;
   }
+
   const bookings = user!.bookings!;
 
   if (!bookings.length) {
     return <>У вас пока нет бронирований</>;
   }
+
   const sortedBookings = [...bookings]
     .filter((x) =>
       [
@@ -78,7 +85,7 @@ export const BookingDrawer = () => {
               <Separator />
               <p className="font-semibold">{`Адрес: ${booking.car?.division?.address}`}</p>
               <Separator />
-              <p className="font-semibold">{`Тел.: ${booking.car?.division?.park?.phone}`}</p>
+              <p className="font-semibold">{`Тел.: ${booking.car?.division?.phone}`}</p>
             </div>
           </div>
 

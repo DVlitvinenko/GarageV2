@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('coords');
             $table->string('address');
             $table->timestamps();
+            $table->string('phone');
             $table->string('name');
             $table->json('working_hours');
             $table->integer('timezone_difference');

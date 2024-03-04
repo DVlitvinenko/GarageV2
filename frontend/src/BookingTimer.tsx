@@ -3,7 +3,7 @@ import { Body17, BookingStatus, Bookings, User } from "./api-client";
 import { useTimer } from "react-timer-hook";
 import { useRecoilState } from "recoil";
 import { userAtom } from "./atoms";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { client } from "./backend";
 import Lottie from "react-lottie";
 import dataAnimation from "./assets/hourglass.json";
@@ -26,10 +26,13 @@ export default Animation;
 
 export const BookingTimer = () => {
   const [user, setUser] = useRecoilState(userAtom);
+  const [isPhoneClicked, setIsPhoneClicked] = useState(false);
 
   const activeBooking = user?.bookings!.find(
     (x) => x.status === BookingStatus.Booked
   );
+
+  const divisionPhone = activeBooking?.car?.division!.phone;
 
   const { days, minutes, hours, restart } = useTimer({
     expiryTimestamp: new Date(),
@@ -79,14 +82,33 @@ export const BookingTimer = () => {
           {`${hours}ч:${minutes}м`}
         </span>
       </div>
-      <div className="w-1/2 mb-2">
-        <Confirmation
-          title="Отмена бронирования. Хотите продолжить?"
-          type="red"
-          accept={cancelBooking}
-          cancel={() => {}}
-          trigger={<Button variant="reject">Отменить</Button>}
-        />
+      <div className="flex w-full mb-2 space-x-1">
+        <Button
+          className="w-1/2"
+          onClick={() => {
+            setIsPhoneClicked(true);
+          }}
+        >
+          {isPhoneClicked ? (
+            <div
+              onClick={() => (window.location.href = `tel:${divisionPhone}`)}
+            >
+              {divisionPhone}
+            </div>
+          ) : (
+            <span>Позвонить в парк</span>
+          )}
+        </Button>
+
+        <div className="w-1/2">
+          <Confirmation
+            title="Отмена бронирования. Хотите продолжить?"
+            type="red"
+            accept={cancelBooking}
+            cancel={() => {}}
+            trigger={<Button variant="reject">Отменить</Button>}
+          />
+        </div>
       </div>
     </div>
   );

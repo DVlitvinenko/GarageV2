@@ -95,12 +95,12 @@ class CarsController extends Controller
      *     )
      * ),
      *                 @OA\Property(property="about", type="string", description="Описание парка"),
-     *                 @OA\Property(property="phone", type="string", description="Телефон парка"),
      *                 @OA\Property(property="commission", type="number", description="Комиссия"),
      *                 @OA\Property(property="city", type="string"),
      *                 @OA\Property(property="division", type="object", description="Данные о подразделении",
      *                     @OA\Property(property="address", type="string", description="Адрес"),
      *                     @OA\Property(property="coords", type="string", description="Координаты подразделения"),
+     *                     @OA\Property(property="phone", type="string"),
      *                 ),
      *                 @OA\Property(property="rent_term", type="object", description="Данные о сроке аренды",
      *                     @OA\Property(property="deposit_amount_daily", type="number", description="Сумма депозита за день"),
@@ -268,10 +268,10 @@ class CarsController extends Controller
                 $query->select('id', 'daily_amount', 'non_working_days', 'working_days', 'rent_term_id')->orderBy('daily_amount', $sorting);
             },
             'division.park' => function ($query) {
-                $query->select('id', 'park_name', 'commission', 'phone', 'about');
+                $query->select('id', 'park_name', 'commission', 'about');
             },
             'division' => function ($query) {
-                $query->select('id', 'coords', 'address', 'name', 'park_id', 'city_id', 'working_hours');
+                $query->select('id', 'coords', 'address', 'name', 'park_id','phone', 'city_id', 'working_hours');
             }
         ])
             ->select(
@@ -424,6 +424,7 @@ class CarsController extends Controller
      *                     @OA\Property(property="division", type="object",
      *                         @OA\Property(property="coords", type="string"),
      *                         @OA\Property(property="address", type="string"),
+     *                         @OA\Property(property="phone", type="string"),
      *             @OA\Property(
      *                 property="working_hours",
      *                 type="array",
@@ -448,7 +449,6 @@ class CarsController extends Controller
      *                 )
      *             ),
      *                         @OA\Property(property="park", type="object",
-     *                             @OA\Property(property="phone", type="string"),
      *                             @OA\Property(property="url", type="string"),
      *                             @OA\Property(property="commission", type="integer"),
      *                             @OA\Property(property="park_name", type="string"),

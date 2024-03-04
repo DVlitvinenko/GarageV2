@@ -1851,8 +1851,6 @@ export class Body8 implements IBody8 {
     park_name?: string;
     /** Описание парка */
     about?: string;
-    /** Телефон парка */
-    phone?: string;
 
     [key: string]: any;
 
@@ -1875,7 +1873,6 @@ export class Body8 implements IBody8 {
             this.commission = _data["commission"];
             this.park_name = _data["park_name"];
             this.about = _data["about"];
-            this.phone = _data["phone"];
         }
     }
 
@@ -1896,7 +1893,6 @@ export class Body8 implements IBody8 {
         data["commission"] = this.commission;
         data["park_name"] = this.park_name;
         data["about"] = this.about;
-        data["phone"] = this.phone;
         return data;
     }
 }
@@ -1910,8 +1906,6 @@ export interface IBody8 {
     park_name?: string;
     /** Описание парка */
     about?: string;
-    /** Телефон парка */
-    phone?: string;
 
     [key: string]: any;
 }
@@ -1925,6 +1919,8 @@ export class Body9 implements IBody9 {
     address?: string;
     /** Название подразделения */
     name?: string;
+    /** Телефон парка */
+    phone?: string;
     /** Часовой пояс, разница во времени с +0 */
     timezone_difference?: number;
     /** Расписание работы парка */
@@ -1951,6 +1947,7 @@ export class Body9 implements IBody9 {
             this.coords = _data["coords"];
             this.address = _data["address"];
             this.name = _data["name"];
+            this.phone = _data["phone"];
             this.timezone_difference = _data["timezone_difference"];
             if (Array.isArray(_data["working_hours"])) {
                 this.working_hours = [] as any;
@@ -1977,6 +1974,7 @@ export class Body9 implements IBody9 {
         data["coords"] = this.coords;
         data["address"] = this.address;
         data["name"] = this.name;
+        data["phone"] = this.phone;
         data["timezone_difference"] = this.timezone_difference;
         if (Array.isArray(this.working_hours)) {
             data["working_hours"] = [];
@@ -1996,6 +1994,8 @@ export interface IBody9 {
     address?: string;
     /** Название подразделения */
     name?: string;
+    /** Телефон парка */
+    phone?: string;
     /** Часовой пояс, разница во времени с +0 */
     timezone_difference?: number;
     /** Расписание работы парка */
@@ -2013,6 +2013,8 @@ export class Body10 implements IBody10 {
     address?: string;
     /** Название подразделения */
     name?: string;
+    /** Телефон парка */
+    phone?: string;
     /** Часовой пояс, разница во времени с +0 */
     timezone_difference?: number;
     /** Расписание работы парка */
@@ -2039,6 +2041,7 @@ export class Body10 implements IBody10 {
             this.coords = _data["coords"];
             this.address = _data["address"];
             this.name = _data["name"];
+            this.phone = _data["phone"];
             this.timezone_difference = _data["timezone_difference"];
             if (Array.isArray(_data["working_hours"])) {
                 this.working_hours = [] as any;
@@ -2065,6 +2068,7 @@ export class Body10 implements IBody10 {
         data["coords"] = this.coords;
         data["address"] = this.address;
         data["name"] = this.name;
+        data["phone"] = this.phone;
         data["timezone_difference"] = this.timezone_difference;
         if (Array.isArray(this.working_hours)) {
             data["working_hours"] = [];
@@ -2084,6 +2088,8 @@ export interface IBody10 {
     address?: string;
     /** Название подразделения */
     name?: string;
+    /** Телефон парка */
+    phone?: string;
     /** Часовой пояс, разница во времени с +0 */
     timezone_difference?: number;
     /** Расписание работы парка */
@@ -6637,8 +6643,6 @@ export class Cars2 implements ICars2 {
     working_hours?: Working_hours3[];
     /** Описание парка */
     about?: string;
-    /** Телефон парка */
-    phone?: string;
     /** Комиссия */
     commission?: number;
     city?: string;
@@ -6688,7 +6692,6 @@ export class Cars2 implements ICars2 {
                     this.working_hours!.push(Working_hours3.fromJS(item));
             }
             this.about = _data["about"];
-            this.phone = _data["phone"];
             this.commission = _data["commission"];
             this.city = _data["city"];
             this.division = _data["division"] ? Division.fromJS(_data["division"]) : <any>undefined;
@@ -6733,7 +6736,6 @@ export class Cars2 implements ICars2 {
                 data["working_hours"].push(item.toJSON());
         }
         data["about"] = this.about;
-        data["phone"] = this.phone;
         data["commission"] = this.commission;
         data["city"] = this.city;
         data["division"] = this.division ? this.division.toJSON() : <any>undefined;
@@ -6763,8 +6765,6 @@ export interface ICars2 {
     working_hours?: Working_hours3[];
     /** Описание парка */
     about?: string;
-    /** Телефон парка */
-    phone?: string;
     /** Комиссия */
     commission?: number;
     city?: string;
@@ -7331,6 +7331,7 @@ export class Division implements IDivision {
     address?: string;
     /** Координаты подразделения */
     coords?: string;
+    phone?: string;
 
     [key: string]: any;
 
@@ -7351,6 +7352,7 @@ export class Division implements IDivision {
             }
             this.address = _data["address"];
             this.coords = _data["coords"];
+            this.phone = _data["phone"];
         }
     }
 
@@ -7369,6 +7371,7 @@ export class Division implements IDivision {
         }
         data["address"] = this.address;
         data["coords"] = this.coords;
+        data["phone"] = this.phone;
         return data;
     }
 }
@@ -7378,6 +7381,7 @@ export interface IDivision {
     address?: string;
     /** Координаты подразделения */
     coords?: string;
+    phone?: string;
 
     [key: string]: any;
 }
@@ -7969,6 +7973,7 @@ export interface ISchemas3 {
 export class Division2 implements IDivision2 {
     coords?: string;
     address?: string;
+    phone?: string;
     /** Расписание работы парка */
     working_hours?: Working_hours4[];
     park?: Park;
@@ -7992,6 +7997,7 @@ export class Division2 implements IDivision2 {
             }
             this.coords = _data["coords"];
             this.address = _data["address"];
+            this.phone = _data["phone"];
             if (Array.isArray(_data["working_hours"])) {
                 this.working_hours = [] as any;
                 for (let item of _data["working_hours"])
@@ -8016,6 +8022,7 @@ export class Division2 implements IDivision2 {
         }
         data["coords"] = this.coords;
         data["address"] = this.address;
+        data["phone"] = this.phone;
         if (Array.isArray(this.working_hours)) {
             data["working_hours"] = [];
             for (let item of this.working_hours)
@@ -8029,6 +8036,7 @@ export class Division2 implements IDivision2 {
 export interface IDivision2 {
     coords?: string;
     address?: string;
+    phone?: string;
     /** Расписание работы парка */
     working_hours?: Working_hours4[];
     park?: Park;
@@ -8151,6 +8159,7 @@ export interface ISchemas5 {
 export class Division3 implements IDivision3 {
     address?: string;
     coords?: string;
+    phone?: string;
     /** Расписание работы парка */
     working_hours?: Working_hours5[];
     /** Информация о парке */
@@ -8175,6 +8184,7 @@ export class Division3 implements IDivision3 {
             }
             this.address = _data["address"];
             this.coords = _data["coords"];
+            this.phone = _data["phone"];
             if (Array.isArray(_data["working_hours"])) {
                 this.working_hours = [] as any;
                 for (let item of _data["working_hours"])
@@ -8199,6 +8209,7 @@ export class Division3 implements IDivision3 {
         }
         data["address"] = this.address;
         data["coords"] = this.coords;
+        data["phone"] = this.phone;
         if (Array.isArray(this.working_hours)) {
             data["working_hours"] = [];
             for (let item of this.working_hours)
@@ -8212,6 +8223,7 @@ export class Division3 implements IDivision3 {
 export interface IDivision3 {
     address?: string;
     coords?: string;
+    phone?: string;
     /** Расписание работы парка */
     working_hours?: Working_hours5[];
     /** Информация о парке */
@@ -8281,7 +8293,6 @@ export interface IWorking_hours4 {
 }
 
 export class Park implements IPark {
-    phone?: string;
     url?: string;
     commission?: number;
     park_name?: string;
@@ -8304,7 +8315,6 @@ export class Park implements IPark {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
-            this.phone = _data["phone"];
             this.url = _data["url"];
             this.commission = _data["commission"];
             this.park_name = _data["park_name"];
@@ -8325,7 +8335,6 @@ export class Park implements IPark {
             if (this.hasOwnProperty(property))
                 data[property] = this[property];
         }
-        data["phone"] = this.phone;
         data["url"] = this.url;
         data["commission"] = this.commission;
         data["park_name"] = this.park_name;
@@ -8335,7 +8344,6 @@ export class Park implements IPark {
 }
 
 export interface IPark {
-    phone?: string;
     url?: string;
     commission?: number;
     park_name?: string;
@@ -8405,7 +8413,6 @@ export interface IWorking_hours5 {
 }
 
 export class Park2 implements IPark2 {
-    phone?: string;
     url?: string;
     commission?: number;
     park_name?: string;
@@ -8428,7 +8435,6 @@ export class Park2 implements IPark2 {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
-            this.phone = _data["phone"];
             this.url = _data["url"];
             this.commission = _data["commission"];
             this.park_name = _data["park_name"];
@@ -8449,7 +8455,6 @@ export class Park2 implements IPark2 {
             if (this.hasOwnProperty(property))
                 data[property] = this[property];
         }
-        data["phone"] = this.phone;
         data["url"] = this.url;
         data["commission"] = this.commission;
         data["park_name"] = this.park_name;
@@ -8459,7 +8464,6 @@ export class Park2 implements IPark2 {
 }
 
 export interface IPark2 {
-    phone?: string;
     url?: string;
     commission?: number;
     park_name?: string;
