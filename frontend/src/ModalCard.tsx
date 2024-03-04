@@ -220,6 +220,16 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
           <div className="mt-1">
             <Badge variant="card">Комиссия {car.commission} %</Badge>{" "}
           </div>
+
+          <div className="mt-1 mb-2 space-x-1">
+            {" "}
+            <Badge variant="card">
+              {getTransmissionDisplayName(car.transmission_type)}
+            </Badge>
+            <Badge variant="card" className="mr-2">
+              {getFuelTypeDisplayName(car.fuel_type)}
+            </Badge>
+          </div>
           <div className="mt-1">
             {/* {!!car.self_employed && (
                 <Badge variant="card">Для самозанятых</Badge>
@@ -227,14 +237,6 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
             {!!car.rent_term?.is_buyout_possible && (
               <Badge variant="card">Выкуп автомобиля</Badge>
             )}
-          </div>
-          <div className="mt-1 mb-2">
-            <Badge variant="card" className="mr-2">
-              {getFuelTypeDisplayName(car.fuel_type)}
-            </Badge>
-            <Badge variant="card">
-              {getTransmissionDisplayName(car.transmission_type)}
-            </Badge>
           </div>
         </div>
         <div className="flex flex-wrap gap-1 pb-10">

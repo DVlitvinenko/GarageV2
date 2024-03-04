@@ -52,6 +52,15 @@ export const Card = ({ car }: { car: Cars2 }) => {
                 <Badge variant="card">Комиссия {car.commission} %</Badge>{" "}
               </div>
             </div>
+
+            <div className="mt-2 mb-2 space-x-1">
+              <Badge variant="card">
+                {getTransmissionDisplayName(car.transmission_type)}
+              </Badge>
+              <Badge variant="card" className="mr-2">
+                {getFuelTypeDisplayName(car.fuel_type)}
+              </Badge>
+            </div>
             <div>
               {/* {!!car.self_employed && (
                 <Badge variant="card">Для самозанятых</Badge>
@@ -59,14 +68,6 @@ export const Card = ({ car }: { car: Cars2 }) => {
               {!!car.rent_term?.is_buyout_possible && (
                 <Badge variant="card">Выкуп автомобиля</Badge>
               )}
-            </div>
-            <div className="mt-2 mb-2">
-              <Badge variant="card" className="mr-2">
-                {getFuelTypeDisplayName(car.fuel_type)}
-              </Badge>
-              <Badge variant="card">
-                {getTransmissionDisplayName(car.transmission_type)}
-              </Badge>
             </div>
             <div className="flex flex-wrap gap-1">
               {currentSchemas?.slice(0, 3).map((currentSchema, i) => (

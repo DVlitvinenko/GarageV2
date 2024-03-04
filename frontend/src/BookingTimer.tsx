@@ -75,7 +75,7 @@ export const BookingTimer = () => {
       <div className="flex flex-col mb-2 text-lg text-center sm:flex-row sm:items-center sm:gap-2">
         До конца бронирования осталось:{" "}
         <span>
-          {!!days && `${days}:`}
+          {!!days && `${days}д:`}
           {`${hours}ч:${minutes}м`}
         </span>
       </div>
