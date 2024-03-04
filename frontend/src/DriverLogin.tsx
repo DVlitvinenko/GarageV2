@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { client } from "./backend";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +17,8 @@ export const DriverLogin = () => {
   const [phone, setPhone] = useState("");
   const [code, setCode] = useState(0);
 
+  const inputRef = useRef(null);
+
   const location = useLocation();
 
   const getCode = async () => {
@@ -29,6 +31,9 @@ export const DriverLogin = () => {
     await client.createAndSendCode(new Body9({ phone }));
     setRequested(true);
     restart(time);
+    setTimeout(() => {
+      inputRef.current && inputRef.current.focus();
+    }, 100);
   };
 
   const login = async () => {
@@ -49,6 +54,41 @@ export const DriverLogin = () => {
     expiryTimestamp: new Date(),
     autoStart: false,
   });
+
+  useEffect(() => {
+    const storedTimerState = localStorage.getItem("timerState");
+    if (storedTimerState) {
+      const timerState = JSON.parse(storedTimerState);
+      if (timerState) {
+        const expiryTimestamp = new Date(
+          new Date().getTime() +
+            timerState.minutes * 60 * 1000 +
+            timerState.seconds * 1000
+        );
+        setRequested(true);
+        restart(expiryTimestamp);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("timerState", JSON.stringify({ minutes, seconds }));
+  }, [minutes, seconds]);
+
+  const handleFocus = () => {
+    if (inputRef.current) {
+      setTimeout(() => {
+        inputRef.current.setSelectionRange(0, 0);
+        inputRef.current.click();
+      }, 300);
+    }
+  };
+
+  useEffect(() => {
+    if (!codeRequested) {
+      localStorage.removeItem("timerState");
+    }
+  }, [codeRequested]);
 
   const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setCode(parseInt(e.target.value));
@@ -98,21 +138,28 @@ export const DriverLogin = () => {
         <div className="max-w-sm mx-auto">
           <Label>Введите ваш телефон</Label>
           <Input
+            type="tel"
+            pattern="[0-9]{1} [0-9]{3} [0-9]{3}-[0-9]{2}-[0-9]{2}"
             className="mt-1"
             onChange={handlePhoneChange}
             value={phone}
-            type="text"
             placeholder="+7 (999) 123-45-67"
+            autoComplete="tel-national"
           />
 
           {codeRequested && (
             <>
               <Label htmlFor="code">Введите код из смс</Label>
               <Input
+                type="number"
+                inputMode="numeric"
+                ref={inputRef}
                 className="mt-1"
                 onChange={handleCodeChange}
                 id="code"
                 placeholder="_ _ _ _"
+                onFocus={handleFocus}
+                autoFocus={true}
               />
               {codeHasError && (
                 <p className="my-4 text-center text-red">
@@ -132,7 +179,7 @@ export const DriverLogin = () => {
               </Button>
             )}
             {(!!minutes || !!seconds) && (
-              <Button className="bg-grey active:bg-grey">
+              <Button className="bg-grey active:bg-grey hover:bg-grey">
                 Повторная отправка кода через: ({`${minutes}:${seconds}`})
               </Button>
             )}
