@@ -57,6 +57,10 @@ export const DriverLogin = () => {
 
   useEffect(() => {
     const storedTimerState = localStorage.getItem("timerState");
+    const storedPhoneState = localStorage.getItem("phone");
+    if (storedPhoneState) {
+      setPhone(JSON.parse(storedPhoneState));
+    }
     if (storedTimerState) {
       const timerState = JSON.parse(storedTimerState);
       if (timerState) {
@@ -73,6 +77,7 @@ export const DriverLogin = () => {
 
   useEffect(() => {
     localStorage.setItem("timerState", JSON.stringify({ minutes, seconds }));
+    localStorage.setItem("phone", JSON.stringify(phone));
   }, [minutes, seconds]);
 
   const handleFocus = () => {
@@ -87,6 +92,7 @@ export const DriverLogin = () => {
   useEffect(() => {
     if (!codeRequested) {
       localStorage.removeItem("timerState");
+      localStorage.removeItem("phone");
     }
   }, [codeRequested]);
 
@@ -120,7 +126,6 @@ export const DriverLogin = () => {
     if (input.length > 9) {
       formattedPhone += `-${input.substring(9, 11)}`;
     }
-
     setPhone(formattedPhone);
   };
 
