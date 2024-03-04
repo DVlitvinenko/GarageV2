@@ -252,12 +252,12 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
           ))}
         </div>
       </div>
-      <div className="fixed bottom-0 left-0 flex justify-center w-full px-2 py-2 space-x-2 bg-white border-t border-pale">
+      <div className="fixed bottom-0 left-0 flex justify-center w-full max-w-[800px] px-2 py-2 space-x-2 bg-white border-t border-pale inset-x-0 mx-auto sm:px-40">
         <Select
           onValueChange={(value) => setSelectedSchema(Number(value))}
           defaultValue={`${schemas![0].id}`}
         >
-          <SelectTrigger className="w-1/2 h-auto pb-1 border-none pl-3text-left bg-grey rounded-xl">
+          <SelectTrigger className="w-1/2 h-auto pb-1 border-none pl-3text-left bg-grey rounded-xl md:px-5 ">
             <SelectValue placeholder="Схема аренды" />
           </SelectTrigger>
           <SelectContent className="w-full h-auto p-1 pb-0 text-left border-none bg-grey rounded-xl">
@@ -277,7 +277,7 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
           <CustomModal
             trigger={
               <div className="">
-                <Button className="">Забронировать</Button>
+                <Button className="max-w-[250px]">Забронировать</Button>
               </div>
             }
             cancel={() => {}}
@@ -328,7 +328,7 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
           />
         )}
         {!activeBooking && carVariants.length <= 1 && (
-          <div className="w-1/2">
+          <div className="w-1/2 max-w-[250px]">
             <Confirmation
               title={`Забронировать ${car.brand} ${car.model}?`}
               type="green"
@@ -339,7 +339,7 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
           </div>
         )}
         {!!activeBooking && carVariants.length <= 1 && (
-          <div className="w-1/2">
+          <div className="w-1/2 max-w-[250px]">
             <Confirmation
               title={`У вас есть активная бронь: ${activeBooking.car?.brand} ${activeBooking.car?.model}. Отменить и забронировать ${car.brand} ${car.model}?`}
               type="green"

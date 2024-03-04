@@ -39,7 +39,7 @@ function App() {
   }, []);
 
   return (
-    <div className="max-w-sm p-4 mx-auto sm:max-w-4xl">
+    <div className="max-w-sm p-4 mx-auto sm:max-w-4xl md:max-w-[1104px]">
       <div className="flex justify-between my-0 space-x-2">
         <Menu user={user} />
         {/* <span className="font-bold text-md text-gray"></span> */}
@@ -67,7 +67,7 @@ export default App;
 // };
 
 const Menu = ({ user }: { user: User }) => (
-  <div className="flex justify-between w-full space-x-4 cursor-pointer sm:justify-start sm:mx-0 sm:w-full sm:space-x-8">
+  <div className="flex justify-between w-full space-x-4 cursor-pointer sm:justify-start sm:mx-0 sm:w-full sm:space-x-8 md:max-w-[1104px] md:justify-between">
     <Link to="/">
       <div className="text-sm font-black tracking-widest">МОЙ ГАРАЖ</div>
       {/* <img className="h-5 sm:h-7" src={logo} alt="logo" /> */}
@@ -88,7 +88,9 @@ const Menu = ({ user }: { user: User }) => (
         <FontAwesomeIcon icon={faClockRotateLeft} className="h-4 sm:h-5" />
       </Link>
     )}
-    <CityPicker />
+    <div className="md:ml-auto md:grow md:flex md:justify-end">
+      <CityPicker />
+    </div>
     {!user && (
       <Link className="hover:text-yellow" to="login/driver">
         <FontAwesomeIcon icon={faRightToBracket} className="h-4 sm:h-5" />

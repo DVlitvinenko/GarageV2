@@ -20,6 +20,7 @@ const SliderImages = ({ images }: SliderImagesProps) => {
     speed: 300,
     slidesToShow: 1,
     slidesToScroll: 1,
+    arrows: false,
     beforeChange: (current, next) => {
       setActiveIndex(next);
       isTransitioning.current = true;
@@ -73,9 +74,9 @@ const SliderImages = ({ images }: SliderImagesProps) => {
           ))}
         </div>
       </div>
-      {isClicked && (
+      {isClicked && window.innerWidth < 800 && (
         <div className="fixed top-0 left-0 z-[53] w-full h-full bg-black bg-opacity-95">
-          <div className="relative flex flex-col justify-center h-full sm:h-80">
+          <div className="relative flex flex-col justify-center h-full m-auto">
             <Slider ref={sliderRef} {...settings}>
               {images.map((image, index) => (
                 <div key={index}>
@@ -83,12 +84,12 @@ const SliderImages = ({ images }: SliderImagesProps) => {
                     onClick={() => setIsClicked(!isClicked)}
                     src={image}
                     alt={`Slide ${index}`}
-                    className="object-contain h-auto m-auto sm:min-w-full sm:h-80"
+                    className="object-contain h-auto m-auto sm:min-w-full"
                   />
                 </div>
               ))}
             </Slider>
-            <div className="flex justify-center px-1 py-1 mt-2 -bottom-20 sm:justify-start sm:w-1/2">
+            <div className="flex justify-center px-1 py-1 mt-2 sm:m-auto sm:space-x-2 -bottom-20 sm:justify-start sm:w-1/2">
               {images.map((x, i) => (
                 <div
                   key={`image_${i}`}
