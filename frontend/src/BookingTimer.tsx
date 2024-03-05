@@ -82,7 +82,7 @@ export const BookingTimer = () => {
           {`${hours}ч:${minutes}м`}
         </span>
       </div>
-      <div className="flex w-full mb-2 space-x-1">
+      <div className="flex w-full mb-2 space-x-1 max-w-[600px]">
         <Button
           className="w-1/2"
           onClick={() => {
