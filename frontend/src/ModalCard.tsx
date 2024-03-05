@@ -111,7 +111,7 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
         <SliderImages
           openIsAffordable={true}
           images={car.images!}
-          classImages=""
+          classImages="md:h-92"
           classPaginationImages=""
         />
         {/* <div className="relative w-full h-52">
@@ -155,92 +155,107 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
           </div> */}
         {/* </div> */}
         <div className="space-y-2">
-          <h1 className="my-4 text-center">{`${car.brand} ${car.model} ${car.year_produced}`}</h1>
+          <h1 className="my-4 text-center ">{`${car.brand} ${car.model} ${car.year_produced}`}</h1>
 
-          <p className="text-base font-regular text-gray">
-            Парк: {car.park_name}
-          </p>
-          <Separator />
-          <p className="text-base font-regular text-gray">
-            Адрес: {car.division?.address}
-          </p>
-          <Separator />
-          <p className="text-base font-regular text-gray">
-            Телефон: {car.division?.phone}
-          </p>
-          <Separator />
-          <p className="text-base font-regular text-gray">
-            Минимум дней аренды: {car.rent_term?.minimum_period_days}
-          </p>
-          <Separator />
-          <div className="min-h-28">
-            {Object.keys(DayOfWeek).map((x) => {
-              const { working_hours } = car;
-              const currentDay = working_hours!.find(({ day }) => day === x)!;
-              return (
-                <div className="flex items-center" key={x}>
-                  <div className="text-sm capitalize w-28">
-                    {getDayOfWeekDisplayName(x as any)}
+          <div className="flex flex-col md:flex-row md:flex-wrap">
+            <div className="md:w-1/2 md:space-y-2">
+              <p className="text-base md:text-lg font-regular text-gray">
+                Парк: {car.park_name}
+              </p>
+              <Separator />
+              <p className="text-base md:text-lg font-regular text-gray">
+                Адрес: {car.division?.address}
+              </p>
+              <Separator />
+              <p className="text-base md:text-lg font-regular text-gray">
+                Телефон: {car.division?.phone}
+              </p>
+              <Separator />
+              <p className="text-base md:text-lg font-regular text-gray">
+                Минимум дней аренды: {car.rent_term?.minimum_period_days}
+              </p>
+              <Separator />
+            </div>
+            <div className="min-h-28 md:w-1/2 ">
+              {Object.keys(DayOfWeek).map((x) => {
+                const { working_hours } = car;
+                const currentDay = working_hours!.find(({ day }) => day === x)!;
+                return (
+                  <div
+                    className="flex items-center md:ml-10 md:text-lg"
+                    key={x}
+                  >
+                    <div className="text-sm capitalize w-28 md:text-lg md:mr-4">
+                      {getDayOfWeekDisplayName(x as any)}
+                    </div>
+                    {currentDay && (
+                      <>
+                        {formatWorkingTime(
+                          currentDay.start!.hours!,
+                          currentDay.start!.minutes!
+                        )}{" "}
+                        -{" "}
+                        {formatWorkingTime(
+                          currentDay.end!.hours!,
+                          currentDay.end!.minutes!
+                        )}
+                      </>
+                    )}
+                    {!currentDay && <>Выходной</>}
                   </div>
-                  {currentDay && (
-                    <>
-                      {formatWorkingTime(
-                        currentDay.start!.hours!,
-                        currentDay.start!.minutes!
-                      )}{" "}
-                      -{" "}
-                      {formatWorkingTime(
-                        currentDay.end!.hours!,
-                        currentDay.end!.minutes!
-                      )}
-                    </>
-                  )}
-                  {!currentDay && <>Выходной</>}
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
           <Collapsible>
-            <CollapsibleTrigger className="mb-2 focus:outline-none">
+            <CollapsibleTrigger className="mb-2 focus:outline-none md:text-lg">
               О парке ▼
             </CollapsibleTrigger>
             <CollapsibleContent>
-              <div className="mb-2 text-sm text-gray-700">{car.about}</div>
+              <div className="mb-2 text-sm text-gray-700 md:text-lg">
+                {car.about}
+              </div>
             </CollapsibleContent>
           </Collapsible>
         </div>
         <Separator />
-        <div className="flex flex-col gap-1 mt-2 mb-1">
+        <div className="flex flex-wrap gap-2 mt-2 mb-2">
           <div>
             <Badge variant="card" className="px-0 py-0 bg-grey ">
-              <span className="flex items-center h-full px-2 bg-white rounded-xl">
+              <span className="flex items-center h-full px-2 bg-white rounded-xl md:text-lg">
                 Депозит {formatRoubles(car.rent_term!.deposit_amount_total!)}
               </span>
-              <span className="flex items-center h-full px-2 ">
+              <span className="flex items-center h-full px-2 md:text-lg">
                 {formatRoubles(car.rent_term!.deposit_amount_daily!)}
                 /день
               </span>
             </Badge>
           </div>
-          <div className="mt-1">
-            <Badge variant="card">Комиссия {car.commission} %</Badge>{" "}
+          <div className="">
+            <Badge variant="card" className="md:text-lg">
+              Комиссия {car.commission} %
+            </Badge>{" "}
           </div>
 
-          <div className="mt-1 mb-2 space-x-1">
+          <div className="">
             {" "}
-            <Badge variant="card">
+            <Badge variant="card" className="md:text-lg">
               {getTransmissionDisplayName(car.transmission_type)}
-            </Badge>
-            <Badge variant="card" className="mr-2">
+            </Badge>{" "}
+          </div>
+          <div className="">
+            <Badge variant="card" className="mr-2 md:text-lg">
               {getFuelTypeDisplayName(car.fuel_type)}
             </Badge>
           </div>
-          <div className="mt-1">
+          <div className="">
             {/* {!!car.self_employed && (
                 <Badge variant="card">Для самозанятых</Badge>
               )} */}
             {!!car.rent_term?.is_buyout_possible && (
-              <Badge variant="card">Выкуп автомобиля</Badge>
+              <Badge variant="card" className="md:text-lg">
+                Выкуп автомобиля
+              </Badge>
             )}
           </div>
         </div>
@@ -248,11 +263,11 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
           {schemas!.slice(0, 3).map((currentSchema, i) => (
             <Badge
               key={`${currentSchema.working_days}/${currentSchema.non_working_days}${i}`}
-              className="flex-col items-start justify-start flex-grow h-full px-2 text-lg font-bold text-wrap"
+              className="flex-col items-start justify-start flex-grow h-full px-2 text-lg font-bold md:text-lg text-wrap"
               variant="schema"
             >
               {`${formatRoubles(currentSchema.daily_amount!)}`}
-              <div className="text-xs font-medium text-black">{`${currentSchema.working_days} раб. / ${currentSchema.non_working_days} вых.`}</div>
+              <div className="text-xs font-medium text-black md:text-lg">{`${currentSchema.working_days} раб. / ${currentSchema.non_working_days} вых.`}</div>
             </Badge>
           ))}
         </div>
@@ -268,12 +283,12 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
           <SelectContent className="w-full h-auto p-1 pb-0 text-left border-none bg-grey rounded-xl">
             {schemas!.map((currentSchema, i) => (
               <SelectItem
-                className="mb-1 border rounded-xl border-zinc-300"
+                className="mb-1 border rounded-xl border-zinc-300 "
                 key={`${currentSchema.working_days}/${currentSchema.non_working_days}${i}`}
                 value={`${currentSchema.id}`}
               >
                 {`${formatRoubles(currentSchema.daily_amount!)}`}
-                <div className="text-xs font-medium text-black">{`${currentSchema.working_days} раб. / ${currentSchema.non_working_days} вых.`}</div>
+                <div className="text-xs font-medium text-black ">{`${currentSchema.working_days} раб. / ${currentSchema.non_working_days} вых.`}</div>
               </SelectItem>
             ))}
           </SelectContent>
@@ -282,7 +297,9 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
           <CustomModal
             trigger={
               <div className="">
-                <Button className="max-w-[250px]">Забронировать</Button>
+                <Button className="max-w-[250px] md:text-lg">
+                  Забронировать
+                </Button>
               </div>
             }
             cancel={() => {}}
