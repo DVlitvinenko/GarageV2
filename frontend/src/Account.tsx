@@ -97,7 +97,7 @@ export const Account = ({ user }: { user: User }) => {
   return (
     <>
       <div className="mx-auto w-80 sm:w-full sm:mx-0">
-        <h1 className="mt-8 text-center md:text-xl">
+        <h1 className="mt-8 text-center md:text-2xl">
           Подтвердите свою личность
         </h1>
 
