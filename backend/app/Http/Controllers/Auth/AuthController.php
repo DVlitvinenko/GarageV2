@@ -381,22 +381,22 @@ class AuthController extends Controller
         ]);
         $phone = $request->phone;
         $user = User::firstOrCreate(['phone' => $phone]);
-        // $code = rand(1000, 9999);
-        $code = 1111;
+        $code = rand(1000, 9999);
+        // $code = 1111;
         $user->code = $code;
         if (!$user->phone) {
             $user->phone = $phone;
         }
         $user->save();
-        // $response = Http::get('https://sms.ru/sms/send', [
-        //     'api_id' => 'AFA267B8-9272-4CEB-CE8B-7EE807275EA9',
-        //     'to' => $phone,
-        //     'msg' => 'Проверочный код: ' . $code,
-        //     'json' => 1
-        // ]);
-        $response = true;
-        // if ($response->successful()) {
-        if ($response) {
+        $response = Http::get('https://sms.ru/sms/send', [
+            'api_id' => 'AFA267B8-9272-4CEB-CE8B-7EE807275EA9',
+            'to' => $phone,
+            'msg' => 'Проверочный код: ' . $code,
+            'json' => 1
+        ]);
+        // $response = true;
+        if ($response->successful()) {
+            // if ($response) {
             return response()->json(['success' => true]);
         } else {
             return response()->json(['success' => false]);
