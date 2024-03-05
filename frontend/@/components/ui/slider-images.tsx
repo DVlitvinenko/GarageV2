@@ -56,7 +56,7 @@ const SliderImages = ({
                 onClick={() => openIsAffordable && setIsClicked(true)}
                 src={image}
                 alt={`Slide ${index}`}
-                className={`object-cover h-64 rounded-xl sm:min-w-full sm:h-80 ${classImages}`}
+                className={`bg-black bg-opacity-90 object-cover w-full h-64 rounded-xl sm:min-w-full sm:h-80 ${classImages}`}
               />
             </div>
           ))}
