@@ -134,11 +134,11 @@ export const Account = ({ user }: { user: User }) => {
             return (
               <div
                 key={type}
-                className="p-4 my-4 text-center rounded-lg shadow max-w-[320px] md:max-w-[540px]"
+                className="p-4 my-4 text-center rounded-lg shadow max-w-[320px] md:max-w-[540px] md:flex md:flex-col md:justify-between"
               >
                 <p className="md:text-xl">{title}</p>
                 <img
-                  className="mx-auto my-8 md:max-h-72"
+                  className="mx-auto my-8 md:max-h-96"
                   src={actualUrl}
                   alt=""
                 />
