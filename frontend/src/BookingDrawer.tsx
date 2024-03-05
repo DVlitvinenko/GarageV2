@@ -72,20 +72,53 @@ export const BookingDrawer = () => {
             );
           })}
 
-          <div className="flex space-x-3 ">
+          <div className="flex space-x-3 md:space-x-5">
             <img
               className="object-cover w-1/3 h-auto rounded-xl"
               src={booking.car!.images![0]}
               alt=""
             />
-            <div>
-              <p className="font-semibold">{`${booking.car?.brand} ${booking.car?.model}`}</p>
+            <div className=" md:space-y-1">
+              <p className="text-base font-semibold">{`${booking.car?.brand} ${booking.car?.model}`}</p>
               <Separator />
-              <p className="font-semibold">{`Парк: ${booking.car?.division?.park?.park_name}`}</p>
+              <p className="text-base font-semibold">{`Парк: ${booking.car?.division?.park?.park_name}`}</p>
               <Separator />
-              <p className="font-semibold">{`Адрес: ${booking.car?.division?.address}`}</p>
+              <p className="text-base font-semibold">{`Адрес: ${booking.car?.division?.address}`}</p>
               <Separator />
-              <p className="font-semibold">{`Тел.: ${booking.car?.division?.phone}`}</p>
+              <p className="text-base font-semibold">{`Тел.: ${booking.car?.division?.phone}`}</p>
+              <div className="hidden space-y-1 md:block">
+                <Separator />
+                <div className="flex items-center">
+                  <p className="text-base font-semibold">
+                    Дата начала бронирования:{" "}
+                    {format(booking.start_date!, "dd.MM.yyyy HH:mm")}
+                  </p>
+                </div>
+                {![BookingStatus.RentOver, BookingStatus.RentStart].includes(
+                  booking.status!
+                ) && (
+                  <>
+                    <Separator />
+                    <div className="flex items-center">
+                      <p className="text-base font-semibold">
+                        Дата окончания бронирования:{" "}
+                        {format(booking.end_date!, "dd.MM.yyyy HH:mm")}
+                      </p>
+                    </div>
+                  </>
+                )}
+                {booking.status === BookingStatus.RentOver && (
+                  <>
+                    <Separator />
+                    <div className="flex items-center">
+                      <p className="text-base font-semibold">
+                        Дата окончания аренды:{" "}
+                        {format(booking.end_date!, "dd.MM.yyyy HH:mm")}
+                      </p>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           </div>
 
@@ -169,33 +202,35 @@ export const BookingDrawer = () => {
               </div>
             </>
           )}
-          <Separator className="" />
-          <div className="flex items-center">
-            <p className="w-1/2 font-semibold">Дата начала бронирования:</p>
-            {format(booking.start_date!, "dd.MM.yyyy HH:mm")}
+          <Separator className="md:hidden" />
+          <div className="md:hidden">
+            <div className="flex items-center">
+              <p className="w-1/2 font-semibold">Дата начала бронирования:</p>
+              {format(booking.start_date!, "dd.MM.yyyy HH:mm")}
+            </div>
+            {![BookingStatus.RentOver, BookingStatus.RentStart].includes(
+              booking.status!
+            ) && (
+              <>
+                <Separator />
+                <div className="flex items-center">
+                  <p className="w-1/2 font-semibold">
+                    Дата окончания бронирования:
+                  </p>
+                  {format(booking.end_date!, "dd.MM.yyyy HH:mm")}
+                </div>
+              </>
+            )}
+            {booking.status === BookingStatus.RentOver && (
+              <>
+                <Separator />
+                <div className="flex items-center">
+                  <p className="w-1/2 font-semibold">Дата окончания аренды:</p>
+                  {format(booking.end_date!, "dd.MM.yyyy HH:mm")}
+                </div>
+              </>
+            )}
           </div>
-          {![BookingStatus.RentOver, BookingStatus.RentStart].includes(
-            booking.status!
-          ) && (
-            <>
-              <Separator />
-              <div className="flex items-center">
-                <p className="w-1/2 font-semibold">
-                  Дата окончания бронирования:
-                </p>
-                {format(booking.end_date!, "dd.MM.yyyy HH:mm")}
-              </div>
-            </>
-          )}
-          {booking.status === BookingStatus.RentOver && (
-            <>
-              <Separator />
-              <div className="flex items-center">
-                <p className="w-1/2 font-semibold">Дата окончания аренды:</p>
-                {format(booking.end_date!, "dd.MM.yyyy HH:mm")}
-              </div>
-            </>
-          )}
         </div>
       ))}
     </>

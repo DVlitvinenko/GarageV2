@@ -47,7 +47,7 @@ export const Account = ({ user }: { user: User }) => {
       placeholderImg: frontPassport,
     },
     {
-      title: "Разворот страних паспорта с пропиской",
+      title: "Разворот страниц паспорта с пропиской",
       type: DriverDocumentType.Image_pasport_address,
       placeholderImg: backPassport,
     },
@@ -97,11 +97,13 @@ export const Account = ({ user }: { user: User }) => {
   return (
     <>
       <div className="mx-auto w-80 sm:w-full sm:mx-0">
-        <h1 className="mt-8 text-center">Подтвердите свою личность</h1>
+        <h1 className="mt-8 text-center md:text-xl">
+          Подтвердите свою личность
+        </h1>
 
         {user.user_status === UserStatus.DocumentsNotUploaded && (
           <>
-            <p className="max-w-sm p-4 mx-auto text-xs font-bold text-center text-white rounded-lg bg-gradient-to-br from-amber-600 to-red">
+            <p className="max-w-sm p-4 mx-auto text-xs font-bold text-center text-white rounded-lg md:max-w-lg md:text-xl bg-gradient-to-br from-amber-600 to-red">
               Вы не можете начать процесс бронирования пока не загрузили
               документы или документы не прошли верификацию
             </p>
@@ -112,13 +114,13 @@ export const Account = ({ user }: { user: User }) => {
         )}
 
         {user.user_status === UserStatus.Verification && (
-          <p className="p-4 text-xs font-bold text-center text-white rounded-lg bg-gradient-to-br from-sky-300 to-sky-800">
+          <p className="p-4 text-xs font-bold text-center text-white rounded-lg bg-gradient-to-br from-sky-300 to-sky-800 md:max-w-lg">
             Верификация в процессе
           </p>
         )}
 
         {user.user_status === UserStatus.Verified && (
-          <p className="p-4 text-xs font-bold text-center text-white rounded-lg bg-gradient-to-br from-green-400 to-green-800">
+          <p className="p-4 text-xs font-bold text-center text-white rounded-lg bg-gradient-to-br from-green-400 to-green-800 md:max-w-lg">
             Вы прошли верификацию
           </p>
         )}
@@ -132,11 +134,11 @@ export const Account = ({ user }: { user: User }) => {
             return (
               <div
                 key={type}
-                className="p-4 my-4 text-center rounded-lg shadow max-w-[320px]"
+                className="p-4 my-4 text-center rounded-lg shadow max-w-[320px] md:max-w-[540px]"
               >
-                <p className="">{title}</p>
+                <p className="md:text-xl">{title}</p>
                 <img className="mx-auto my-8" src={actualUrl} alt="" />
-                <div className="text-center">
+                <div className="text-center md:text-xl">
                   <FileInput
                     title="Загрузить"
                     onChange={(fileList) => onFileSelected(fileList[0], type)}
@@ -147,7 +149,7 @@ export const Account = ({ user }: { user: User }) => {
           })}
         </div>
         <div className="my-8 text-center max-w-[320px] mx-auto">
-          <Button variant="reject" onClick={logout}>
+          <Button variant="reject" className="md:text-xl" onClick={logout}>
             Выйти из приложения
           </Button>
         </div>

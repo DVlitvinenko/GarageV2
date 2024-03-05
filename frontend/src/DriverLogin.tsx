@@ -132,20 +132,16 @@ export const DriverLogin = () => {
   return (
     <>
       <div className="mx-auto w-80 sm:w-full">
-        <h2 className="my-10 text-center">
+        <h2 className="my-10 text-xl text-center">
           Зарегистрируйтесь или войдите в личный кабинет.
         </h2>
-        {location?.state?.bookingAttempt && (
-          <div className="mb-8 text-center text-red ">
-            Чтобы забронировать машину - зарегистрируйтесь
-          </div>
-        )}
+
         <div className="max-w-sm mx-auto">
-          <Label>Введите ваш телефон</Label>
+          <Label className="text-lg">Введите ваш телефон</Label>
           <Input
             type="tel"
             pattern="[0-9]{1} [0-9]{3} [0-9]{3}-[0-9]{2}-[0-9]{2}"
-            className="mt-1"
+            className="h-12 p-4 mt-1 text-lg md:mt-2"
             onChange={handlePhoneChange}
             value={phone}
             placeholder="+7 (999) 123-45-67"
@@ -154,12 +150,14 @@ export const DriverLogin = () => {
 
           {codeRequested && (
             <>
-              <Label htmlFor="code">Введите код из смс</Label>
+              <Label className="text-lg" htmlFor="code">
+                Введите код из смс
+              </Label>
               <Input
                 type="number"
                 inputMode="numeric"
                 ref={inputRef}
-                className="mt-1"
+                className="h-12 p-4 mt-1 text-lg md:mt-2"
                 onChange={handleCodeChange}
                 id="code"
                 placeholder="_ _ _ _"
@@ -167,7 +165,7 @@ export const DriverLogin = () => {
                 autoFocus={true}
               />
               {codeHasError && (
-                <p className="my-4 text-center text-red">
+                <p className="my-4 text-lg text-center text-red">
                   Вы ввели неправильный код
                 </p>
               )}
@@ -176,20 +174,27 @@ export const DriverLogin = () => {
 
           <div className="space-y-6 text-center">
             {!codeRequested && (
-              <Button onAsyncClick={getCode}>Получить код</Button>
+              <Button className="text-lg" onAsyncClick={getCode}>
+                Получить код
+              </Button>
             )}
             {codeRequested && !(!!minutes || !!seconds) && (
-              <Button variant={"reject"} onAsyncClick={getCode}>
+              <Button
+                className="text-lg"
+                variant={"reject"}
+                onAsyncClick={getCode}
+              >
                 Отправить код повторно
               </Button>
             )}
             {(!!minutes || !!seconds) && (
-              <Button className="bg-grey active:bg-grey hover:bg-grey">
-                Повторная отправка кода через: ({`${minutes}:${seconds}`})
+              <Button className="text-lg bg-grey active:bg-grey hover:bg-grey">
+                Повторная отправка через: ({`${minutes}:${seconds}`})
               </Button>
             )}
             {codeRequested && (
               <Button
+                className="text-lg"
                 onAsyncClick={login}
                 disabled={code.toString().length != CODE_LENGTH}
               >
@@ -199,9 +204,9 @@ export const DriverLogin = () => {
           </div>
 
           {codeRequested && (
-            <div className="my-4 text-center">
+            <div className="my-4 text-lg text-center">
               Нажимая &laquo;Войти&raquo; вы соглашаетесь с{" "}
-              <a className="text-blue-800 underline" href="kwol.ru">
+              <a className="text-lg text-blue-800 underline" href="kwol.ru">
                 условиями договора
               </a>
             </div>

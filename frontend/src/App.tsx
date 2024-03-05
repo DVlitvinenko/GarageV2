@@ -83,7 +83,7 @@ const Menu = ({ user }: { user: User }) => (
         to={user ? "account" : "login/driver"}
       >
         <FontAwesomeIcon icon={faUser} className="h-4 sm:h-5 md:hidden" />
-        <div className="hidden text-sm font-semibold md:block">Кабинет</div>
+        <div className="hidden text-xl font-semibold md:block">Кабинет</div>
       </Link>
     )}
     {user && (
@@ -92,7 +92,7 @@ const Menu = ({ user }: { user: User }) => (
           icon={faClockRotateLeft}
           className="h-4 sm:h-5 md:hidden"
         />
-        <div className="hidden text-sm font-semibold md:block">Бронь</div>
+        <div className="hidden text-xl font-semibold md:block">Бронь</div>
       </Link>
     )}
     <div className="flex items-center md:ml-auto md:grow md:flex md:justify-end">
