@@ -457,7 +457,7 @@ export const Finder = () => {
           />
         </div> */}
         {/* <Button variant="outline">Сбросить фильтры</Button> */}
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 md:justify-start">
           {cars.map((car) => {
             return <Card key={car.id} car={car} />;
           })}

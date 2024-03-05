@@ -39,7 +39,7 @@ function App() {
   }, []);
 
   return (
-    <div className="max-w-sm p-4 mx-auto sm:max-w-4xl md:max-w-[1104px]">
+    <div className="max-w-sm p-4 mx-auto sm:max-w-[800px] lg:max-w-[1104px]">
       <div className="flex justify-between my-0 space-x-2">
         <Menu user={user} />
         {/* <span className="font-bold text-md text-gray"></span> */}
@@ -67,9 +67,11 @@ export default App;
 // };
 
 const Menu = ({ user }: { user: User }) => (
-  <div className="flex justify-between w-full space-x-4 cursor-pointer sm:justify-start sm:mx-0 sm:w-full sm:space-x-8 md:max-w-[1104px] md:justify-between">
+  <div className="flex justify-between w-full space-x-4 cursor-pointer sm:mx-0 sm:w-full sm:space-x-8 sm:max-w-[800px] lg:max-w-[1104px] sm:justify-between">
     <Link to="/">
-      <div className="text-sm font-black tracking-widest">МОЙ ГАРАЖ</div>
+      <div className="flex items-center text-sm font-black tracking-widest sm:text-xl">
+        МОЙ ГАРАЖ
+      </div>
       {/* <img className="h-5 sm:h-7" src={logo} alt="logo" /> */}
     </Link>
     {/* <Link className="hover:text-yellow" to="/">
@@ -77,22 +79,27 @@ const Menu = ({ user }: { user: User }) => (
     </Link>{" "} */}
     {user && (
       <Link
-        className="hover:text-yellow"
+        className="flex items-center hover:text-yellow"
         to={user ? "account" : "login/driver"}
       >
-        <FontAwesomeIcon icon={faUser} className="h-4 sm:h-5" />
+        <FontAwesomeIcon icon={faUser} className="h-4 sm:h-5 md:hidden" />
+        <div className="hidden text-sm font-semibold md:block">Кабинет</div>
       </Link>
     )}
     {user && (
-      <Link className="hover:text-yellow" to="bookings">
-        <FontAwesomeIcon icon={faClockRotateLeft} className="h-4 sm:h-5" />
+      <Link className="flex items-center hover:text-yellow" to="bookings">
+        <FontAwesomeIcon
+          icon={faClockRotateLeft}
+          className="h-4 sm:h-5 md:hidden"
+        />
+        <div className="hidden text-sm font-semibold md:block">Бронь</div>
       </Link>
     )}
-    <div className="md:ml-auto md:grow md:flex md:justify-end">
+    <div className="flex items-center md:ml-auto md:grow md:flex md:justify-end">
       <CityPicker />
     </div>
     {!user && (
-      <Link className="hover:text-yellow" to="login/driver">
+      <Link className="flex items-center hover:text-yellow" to="login/driver">
         <FontAwesomeIcon icon={faRightToBracket} className="h-4 sm:h-5" />
       </Link>
     )}

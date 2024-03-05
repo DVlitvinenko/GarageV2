@@ -108,7 +108,12 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
   return (
     <>
       <div className="flex flex-col justify-center pt-4 pb-8 overflow-y-auto ">
-        <SliderImages images={car.images!} />
+        <SliderImages
+          openIsAffordable={true}
+          images={car.images!}
+          classImages=""
+          classPaginationImages=""
+        />
         {/* <div className="relative w-full h-52">
           <div className="flex space-x-4 overflow-scroll overflow-x-auto scrollbar-hide">
             {car.images!.map((x, i) => {
@@ -282,47 +287,46 @@ export const ModalCard = ({ car }: { car: Cars2 }) => {
             }
             cancel={() => {}}
             content={
-              <div className="max-w-[352px] p-1 text-gray-700  w-100 rounded-xl -ml-5">
-                <h3 className="mb-4 text-center">
+              <div className="p-1 text-gray-700 w-100 rounded-xl">
+                <h3 className="mb-4 text-center md:text-xl">
                   Варианты доступных {car.brand} {car.model}:
                 </h3>
-                {carVariants.map(({ id, images }, i) => (
-                  <div className="" key={`modal_card${id}${i}`}>
-                    <div className="flex mb-2 space-x-1 overflow-x-auto scrollbar-hide rounded-xl">
-                      {images!.map((x, i) => (
-                        <img
-                          alt=""
-                          key={`modal_image${i}`}
-                          className="object-cover w-10/12 rounded-sm h-52"
-                          src={x}
-                        />
-                      ))}
+
+                <div className="flex flex-row flex-wrap justify-center gap-4">
+                  {carVariants.map(({ id, images }, i) => (
+                    <div className="max-w-[352px]" key={`modal_card${id}${i}`}>
+                      <SliderImages
+                        openIsAffordable={true}
+                        classImages="h-64 sm:h-64"
+                        classPaginationImages=" sm:justify-between sm:w-full"
+                        images={images!}
+                      />
+                      {!!activeBooking && (
+                        <div className="w-full my-2">
+                          <Confirmation
+                            title={`У вас есть активная бронь: ${activeBooking.car?.brand} ${activeBooking.car?.model}. Отменить и забронировать ${car.brand} ${car.model}?`}
+                            type="green"
+                            accept={() => book(id)}
+                            cancel={() => {}}
+                            trigger={<Button className="">Выбрать</Button>}
+                          />
+                        </div>
+                      )}
+                      {!activeBooking && (
+                        <div className="w-full my-2">
+                          <Confirmation
+                            title={`Забронировать ${car.brand} ${car.model}?`}
+                            type="green"
+                            accept={() => book(id)}
+                            cancel={() => {}}
+                            trigger={<Button className="">Выбрать</Button>}
+                          />
+                        </div>
+                      )}
+                      <Separator className="my-4" />
                     </div>
-                    {!!activeBooking && (
-                      <div className="w-full mb-2">
-                        <Confirmation
-                          title={`У вас есть активная бронь: ${activeBooking.car?.brand} ${activeBooking.car?.model}. Отменить и забронировать ${car.brand} ${car.model}?`}
-                          type="green"
-                          accept={() => book(id)}
-                          cancel={() => {}}
-                          trigger={<Button className="">Выбрать</Button>}
-                        />
-                      </div>
-                    )}
-                    {!activeBooking && (
-                      <div className="w-full mb-2">
-                        <Confirmation
-                          title={`Забронировать ${car.brand} ${car.model}?`}
-                          type="green"
-                          accept={() => book(id)}
-                          cancel={() => {}}
-                          trigger={<Button className="">Выбрать</Button>}
-                        />
-                      </div>
-                    )}
-                    <Separator className="my-4" />
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             }
           />

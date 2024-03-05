@@ -8,6 +8,7 @@ import {
 } from "@/lib/utils";
 import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
 import { ModalCard } from "./ModalCard";
+import SliderImages from "@/components/ui/slider-images";
 
 export const Card = ({ car }: { car: Cars2 }) => {
   const currentSchemas = car.rent_term!.schemas!.sort(
@@ -17,12 +18,12 @@ export const Card = ({ car }: { car: Cars2 }) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <div className="max-w-[352px] p-1 pb-4 mx-auto mb-8 text-gray-700 bg-white shadow-md w-100 rounded-xl">
+        <div className="max-w-[352px] p-1 pb-4 mx-auto mb-8 text-gray-700 bg-white shadow-md w-100 rounded-xl lg:mx-0">
           <div>
             <div className="absolute z-50 p-2 font-medium rounded-tl-lg rounded-br-lg shadow text-gray bg-yellow">
               {car.park_name}
             </div>
-            <div className="flex space-x-1 overflow-x-auto scrollbar-hide rounded-xl">
+            <div className="flex space-x-1 overflow-x-auto scrollbar-hide rounded-xl md:hidden">
               {car.images?.map((x, i) => (
                 <img
                   alt=""
@@ -31,6 +32,14 @@ export const Card = ({ car }: { car: Cars2 }) => {
                   src={x}
                 />
               ))}
+            </div>
+            <div className="hidden md:block">
+              <SliderImages
+                openIsAffordable={false}
+                classImages="h-64 sm:h-64"
+                classPaginationImages=" sm:justify-between sm:w-full"
+                images={car.images!}
+              />
             </div>
           </div>
           <div className="px-4">
