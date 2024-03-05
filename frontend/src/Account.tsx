@@ -137,7 +137,11 @@ export const Account = ({ user }: { user: User }) => {
                 className="p-4 my-4 text-center rounded-lg shadow max-w-[320px] md:max-w-[540px]"
               >
                 <p className="md:text-xl">{title}</p>
-                <img className="mx-auto my-8" src={actualUrl} alt="" />
+                <img
+                  className="mx-auto my-8 md:max-h-72"
+                  src={actualUrl}
+                  alt=""
+                />
                 <div className="text-center md:text-xl">
                   <FileInput
                     title="Загрузить"
