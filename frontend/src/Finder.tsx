@@ -3,8 +3,8 @@ import econom from "./assets/car_icons/econom.png";
 import comfort from "./assets/car_icons/comfort.png";
 import comfortPlus from "./assets/car_icons/comfort-plus.png";
 import business from "./assets/car_icons/business.png";
-import { Checkbox } from "@/components/ui/checkbox";
 import { useEffect, useState } from "react";
+
 import {
   Body15,
   CarClass,
@@ -42,7 +42,10 @@ import { useRecoilValue } from "recoil";
 import { cityAtom } from "./atoms";
 import { Badge } from "@/components/ui/badge";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRightArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowRightArrowLeft,
+  faTrashCan,
+} from "@fortawesome/free-solid-svg-icons";
 import { Separator } from "@/components/ui/separator";
 const DEFAULT_COMMISSION_PERCENTAGE = 0;
 
@@ -56,6 +59,7 @@ type CarFilter = {
   buyoutPossible: boolean;
   schema: Schemas2 | null;
   sorting: "asc" | "desc";
+  car_vin: string | null;
 };
 
 enum ActiveFilter {
@@ -73,7 +77,7 @@ const staticSchemas = [
 
 export const Finder = () => {
   const [filters, setFilters] = useState<CarFilter>({
-    carClass: [CarClass.Economy],
+    carClass: [],
     commission: DEFAULT_COMMISSION_PERCENTAGE,
     fuelType: null,
     brands: [],
@@ -82,6 +86,7 @@ export const Finder = () => {
     buyoutPossible: false,
     sorting: "asc",
     schema: null,
+    car_vin: null,
   });
 
   const [cars, setCars] = useState<Cars2[]>([]);
@@ -118,6 +123,7 @@ export const Finder = () => {
           self_employed: filters.selfEmployed,
           is_buyout_possible: filters.buyoutPossible,
           schemas: filters.schema || undefined,
+          car_vin: filters.car_vin || undefined,
         })
       );
 
@@ -131,14 +137,38 @@ export const Finder = () => {
   //   setFilters({ ...filters, commission: value });
   // }, 300);
 
+  const filtersClean = () => {
+    setFilters({
+      carClass: [],
+      commission: DEFAULT_COMMISSION_PERCENTAGE,
+      fuelType: null,
+      brands: [],
+      transmissionType: null,
+      selfEmployed: false,
+      buyoutPossible: false,
+      sorting: "asc",
+      schema: null,
+      car_vin: null,
+    });
+  };
+
   const filteredBrands = brands.filter((brand) =>
     brand.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  useEffect(
+    () =>
+      setFilters({
+        ...filters,
+        car_vin: searchTerm,
+      }),
+    [searchTerm]
+  );
+
   return (
     <>
       {/* <div onClick={() => navigate("login/driver")} className="fixed top-5 right-5">Войти</div> */}
       <div className="">
-        <div className="flex justify-between mx-auto my-2 h-fit">
+        <div className="flex justify-between mx-auto my-2 h-fit sm:justify-start">
           {[
             [CarClass.Economy, econom, "Эконом"],
             [CarClass.Comfort, comfort, "Комфорт"],
@@ -151,11 +181,12 @@ export const Finder = () => {
             return (
               <div
                 key={carClass}
-                className={`w-20 flex flex-col items-center bg-white rounded-xl transition-all h-fit pb-2 ${
+                className={`cursor-pointer w-20 flex flex-col items-center bg-white rounded-xl transition-all h-fit pb-2 ${
                   isActive ? "shadow border-2 border-yellow" : " scale-90"
                 }`}
               >
                 <img
+                  alt=""
                   className="w-12 rounded-xl"
                   onClick={() =>
                     setFilters({
@@ -178,7 +209,7 @@ export const Finder = () => {
               title: (
                 <FontAwesomeIcon
                   icon={faArrowRightArrowLeft}
-                  className="px-1 rotate-90"
+                  className="px-1 rotate-90 cursor-pointer"
                 />
               ),
               filter: ActiveFilter.Sorting,
@@ -209,23 +240,30 @@ export const Finder = () => {
                 <div className="absolute top-0 right-0 w-1.5 h-1.5 rounded-full  bg-red"></div>
               )}
               {!!filter && (
-                <Badge
-                  className={`${activeFilter === filter ? "bg-white" : ""} `}
-                  onClick={() =>
-                    setActiveFilter(activeFilter === filter ? null : filter)
-                  }
-                >
-                  {title}
-                </Badge>
+                <div className="cursor-pointer">
+                  <Badge
+                    className={`${activeFilter === filter ? "bg-white" : ""} `}
+                    onClick={() =>
+                      setActiveFilter(activeFilter === filter ? null : filter)
+                    }
+                  >
+                    {title}
+                  </Badge>
+                </div>
               )}
 
               {!filter && (
                 <Dialog>
                   <DialogTrigger asChild>
-                    <span className="bg-grey text-nowrap whitespace-nowrap rounded-xl px-2.5 py-0.5 h-10 flex items-center">
-                      {filters.brands.length
-                        ? filters.brands.join(", ")
-                        : "Все марки"}
+                    <span className="bg-grey cursor-pointer text-nowrap whitespace-nowrap rounded-xl px-2.5 py-0.5 h-10 flex items-center">
+                      {filters.brands.length > 3 &&
+                        `${filters.brands.slice(0, 3).join(", ")} и еще ${
+                          filters.brands.length - 3
+                        }`}
+                      {!!filters.brands.length &&
+                        filters.brands.length <= 3 &&
+                        `${filters.brands.join(", ")}`}
+                      {!filters.brands.length && "Все марки"}
                     </span>
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-[800px]">
@@ -250,7 +288,7 @@ export const Finder = () => {
 
                         return (
                           <span
-                            className={`text-xl font-bold w-full py-2 ${
+                            className={`cursor-pointer text-xl font-bold w-full py-2 ${
                               isActive ? "text-black" : "text-zinc-500"
                             }`}
                             key={title}
@@ -268,10 +306,15 @@ export const Finder = () => {
                         );
                       })}
                     </div>
+
                     <DialogFooter>
                       <DialogClose asChild>
-                        <div className="fixed bottom-0 left-0 flex justify-center w-full px-4 py-4 space-x-2 bg-white border-t border-pale">
-                          <Button>Выбрать</Button>
+                        <div className="fixed bottom-0 left-0 flex justify-center w-full">
+                          <div className="max-w-[800px] w-full flex justify-center bg-white border-t  border-pale px-4 py-4 space-x-2">
+                            <div className="sm:max-w-[250px] w-full">
+                              <Button>Выбрать</Button>
+                            </div>
+                          </div>
                         </div>
                       </DialogClose>
                     </DialogFooter>
@@ -280,7 +323,7 @@ export const Finder = () => {
               )}
             </div>
           ))}
-          <Dialog>
+          {/* <Dialog>
             <DialogTrigger asChild>
               <div className="bg-grey text-nowrap rounded-xl px-2.5 py-0.5 h-10 flex items-center relative">
                 {(filters.buyoutPossible ||
@@ -328,14 +371,23 @@ export const Finder = () => {
                 </DialogClose>
               </DialogFooter>
             </DialogContent>
-          </Dialog>
+          </Dialog> */}
+          <div className="cursor-pointer inline-flex items-center h-10 text-nowrap active:bg-white whitespace-nowrap rounded-xl px-2.5 py-0.5 text-base font-regular text-black transition-colors focus:outline-none bg-grey">
+            <FontAwesomeIcon
+              onClick={filtersClean}
+              icon={faTrashCan}
+              className="px-1"
+            />
+          </div>
         </div>
         <div className="flex my-2 mb-4 space-x-1 overflow-scroll overflow-x-auto scrollbar-hide">
           {activeFilter === ActiveFilter.Sorting &&
             ["asc", "desc"].map((sorting, i) => (
               <Badge
                 key={`sorting ${i}`}
-                className={`${filters.sorting === sorting ? "bg-white" : ""} `}
+                className={`${
+                  filters.sorting === sorting ? "bg-white" : ""
+                } cursor-pointer`}
                 onClick={() =>
                   setFilters({
                     ...filters,
@@ -351,7 +403,9 @@ export const Finder = () => {
             [null, ...staticSchemas].map((schema, i) => (
               <Badge
                 key={`schema ${i}`}
-                className={`${filters.schema === schema ? "bg-white" : ""} `}
+                className={`${
+                  filters.schema === schema ? "bg-white" : ""
+                } cursor-pointer`}
                 onClick={() => {
                   return setFilters({
                     ...filters,
@@ -373,7 +427,7 @@ export const Finder = () => {
                     filters.transmissionType === transmissionType
                       ? "bg-white"
                       : ""
-                  } `}
+                  } cursor-pointer`}
                   onClick={() => {
                     return setFilters({
                       ...filters,
@@ -391,7 +445,7 @@ export const Finder = () => {
                 key={`fuelType ${i}`}
                 className={`${
                   filters.fuelType === fuelType ? "bg-white" : ""
-                } `}
+                } cursor-pointer`}
                 onClick={() => {
                   return setFilters({
                     ...filters,
@@ -413,9 +467,11 @@ export const Finder = () => {
           />
         </div> */}
         {/* <Button variant="outline">Сбросить фильтры</Button> */}
-        {cars.map((car) => {
-          return <Card key={car.id} car={car} />;
-        })}
+        <div className="flex flex-wrap gap-2 md:justify-start ">
+          {cars.map((car) => {
+            return <Card key={car.id} car={car} />;
+          })}
+        </div>
       </div>
     </>
   );

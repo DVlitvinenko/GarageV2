@@ -1,6 +1,7 @@
 import { type ClassValue, clsx } from "clsx";
-import { FuelType, TransmissionType } from "../../src/api-client";
+import { DayOfWeek, FuelType, TransmissionType } from "../../src/api-client";
 import { twMerge } from "tailwind-merge";
+import { format } from "date-fns";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -27,8 +28,8 @@ export function getTransmissionDisplayName(
   }
 
   const dict = {
-    [TransmissionType.Automatic]: "Автоматическая",
-    [TransmissionType.Mechanics]: "Ручная",
+    [TransmissionType.Automatic]: "Автомат",
+    [TransmissionType.Mechanics]: "Механика",
   };
 
   return dict[x];
@@ -40,3 +41,20 @@ export const formatRoubles = (amount: number) =>
     maximumSignificantDigits: 3,
     currency: "RUB",
   }).format(amount);
+
+export function formatWorkingTime(hours: number, minutes: number) {
+  return `${format(new Date(2000, 0, 0, hours, minutes), "HH:mm")}`;
+}
+
+export const getDayOfWeekDisplayName = (day: DayOfWeek) => {
+  const daysOfWeek = {
+    [DayOfWeek.Monday]: "понедельник",
+    [DayOfWeek.Tuesday]: "вторник",
+    [DayOfWeek.Wednesday]: "среда",
+    [DayOfWeek.Thursday]: "четверг",
+    [DayOfWeek.Friday]: "пятница",
+    [DayOfWeek.Saturday]: "суббота",
+    [DayOfWeek.Sunday]: "воскресенье",
+  };
+  return daysOfWeek[day];
+};

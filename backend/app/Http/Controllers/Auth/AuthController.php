@@ -110,23 +110,14 @@ class AuthController extends Controller
      *                             description="Информация о дивизионе",
      *                             @OA\Property(property="address", type="string"),
      *                             @OA\Property(property="coords", type="string"),
-     *                             @OA\Property(
-     *                                 property="park",
-     *                                 type="object",
-     *                                 description="Информация о парке",
-     *                                 @OA\Property(property="phone", type="string"),
-     *                                 @OA\Property(property="url", type="string"),
-     *                                 @OA\Property(property="commission", type="integer"),
-     *                                 @OA\Property(property="self_employed", type="integer"),
-     *                                 @OA\Property(property="park_name", type="string"),
-     *                                 @OA\Property(property="about", type="string"),
+     *                             @OA\Property(property="phone", type="string"),
      *             @OA\Property(
      *                 property="working_hours",
      *                 type="array",
      *                 description="Расписание работы парка",
      *                 @OA\Items(
      *                     type="object",
-     *                     @OA\Property(property="day", type="string", description="День недели на английском",ref="#/components/schemas/DayList"),
+     *                     @OA\Property(property="day", type="string", description="День недели на английском",ref="#/components/schemas/DayOfWeek"),
      *                     @OA\Property(
      *                         property="start",
      *                         type="object",
@@ -142,7 +133,15 @@ class AuthController extends Controller
      *                         @OA\Property(property="minutes", type="integer", description="Минуты (0-59)")
      *                     )
      *                 )
-     *             )
+     *             ),
+     *                             @OA\Property(
+     *                                 property="park",
+     *                                 type="object",
+     *                                 description="Информация о парке",
+     *                                 @OA\Property(property="url", type="string"),
+     *                                 @OA\Property(property="commission", type="integer"),
+     *                                 @OA\Property(property="park_name", type="string"),
+     *                                 @OA\Property(property="about", type="string"),
      *                             )
      *                         )
      *                     )
@@ -196,31 +195,20 @@ class AuthController extends Controller
                 $booking->car->transmission_type = TransmissionType::from($booking->car->transmission_type)->name;
                 $booking->car->fuel_type = FuelType::from($booking->car->fuel_type)->name;
                 $booking->car->images = json_decode($booking->car->images);
-                $booking->car->division = Division::where('id', $booking->car->division_id)->with('park')->select('address', 'park_id', 'coords')->first();
-                $booking->rent_term = RentTerm::where('id', $booking->car->rent_term_id)->with('schemas')->select('deposit_amount_daily', 'deposit_amount_total', 'minimum_period_days', 'is_buyout_possible', 'id')->first();
-                $workingHours = json_decode($booking->car->division->park->working_hours, true);
-                $daysOfWeek = [
-                    'Monday' => 'понедельник',
-                    'Tuesday' => 'вторник',
-                    'Wednesday' => 'среда',
-                    'Thursday' => 'четверг',
-                    'Friday' => 'пятница',
-                    'Saturday' => 'суббота',
-                    'Sunday' => 'воскресенье'
-                ];
-                $translatedWorkingHours = [];
-                foreach ($workingHours as $workingDay) {
-                    $day = $workingDay['day'];
-                    $translatedDay = $daysOfWeek[$day];
-                    $workingDay['day'] = $translatedDay;
-                    $translatedWorkingHours[] = $workingDay;
-                }
-                $booking->car->division->park->working_hours = $translatedWorkingHours;
+                $booking->car->division = Division::where('id', $booking->car->division_id)->with('park')->select('address', 'park_id', 'coords', 'working_hours', 'phone')->first();
+                $booking->rent_term = RentTerm::where('id', $booking->car->rent_term_id)
+                    ->with(['schemas' => function ($query) use ($booking) {
+                        $query->where('id', $booking->schema_id);
+                    }])
+                    ->select('deposit_amount_daily', 'deposit_amount_total', 'minimum_period_days', 'is_buyout_possible', 'id')
+                    ->first();
+                $workingHours = json_decode($booking->car->division->working_hours, true);
+                $booking->car->division->working_hours = $workingHours;
                 unset(
                     $booking->created_at,
                     $booking->updated_at,
-                    $booking->booking_at,
-                    $booking->booking_until,
+                    $booking->booked_at,
+                    $booking->booked_until,
                     $booking->park_id,
                     $booking->driver_id,
                     $booking->car->booking,
@@ -393,7 +381,8 @@ class AuthController extends Controller
         ]);
         $phone = $request->phone;
         $user = User::firstOrCreate(['phone' => $phone]);
-        $code = rand(10000000, 99999999);
+        $code = rand(1000, 9999);
+        // $code = 1111;
         $user->code = $code;
         if (!$user->phone) {
             $user->phone = $phone;
@@ -405,7 +394,9 @@ class AuthController extends Controller
             'msg' => 'Проверочный код: ' . $code,
             'json' => 1
         ]);
+        // $response = true;
         if ($response->successful()) {
+            // if ($response) {
             return response()->json(['success' => true]);
         } else {
             return response()->json(['success' => false]);

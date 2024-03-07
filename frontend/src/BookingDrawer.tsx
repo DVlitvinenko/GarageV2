@@ -1,77 +1,130 @@
-import { Button } from "@/components/ui/button";
-import { Body17, BookingStatus, Bookings } from "./api-client";
+import { BookingStatus, DayOfWeek } from "./api-client";
 import { Separator } from "@/components/ui/separator";
-import { useTimer } from "react-timer-hook";
-import {
-  addDays,
-  addHours,
-  addSeconds,
-  format,
-  formatDistanceToNow,
-  formatISO,
-} from "date-fns";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { format } from "date-fns";
+import { useRecoilState } from "recoil";
 import { userAtom } from "./atoms";
-import { reject } from "ramda";
-import { useState } from "react";
-import { client } from "./backend";
 import { Badge } from "@/components/ui/badge";
 import {
   formatRoubles,
+  formatWorkingTime,
+  getDayOfWeekDisplayName,
   getFuelTypeDisplayName,
   getTransmissionDisplayName,
 } from "@/lib/utils";
+import { useEffect } from "react";
 
 export const BookingDrawer = () => {
-  const [user, setUser] = useRecoilState(userAtom);
+  const [user] = useRecoilState(userAtom);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   if (!user) {
     return <></>;
   }
+
   const bookings = user!.bookings!;
 
   if (!bookings.length) {
     return <>У вас пока нет бронирований</>;
   }
-  const sortedBookings = [...bookings].sort((a, b) => {
-    if (a.end_date! > b.end_date!) return -1;
-    if (a.end_date! < b.end_date!) return 1;
-    return 0;
-  });
+
+  const sortedBookings = [...bookings]
+    .filter((x) =>
+      [
+        BookingStatus.RentStart,
+        BookingStatus.Booked,
+        BookingStatus.BookingTimeOver,
+      ].includes(x!.status!)
+    )
+    .sort((a, b) => {
+      if (a.end_date! > b.end_date!) return -1;
+      if (a.end_date! < b.end_date!) return 1;
+      return 0;
+    });
   return (
     <>
       {sortedBookings.map((booking) => (
         <div
-          className="overflow-y-auto h-[%] bg-white py-4 px-2 my-2 rounded-xl"
+          className="overflow-y-auto h-[%] bg-white py-2 px-2 my-2 rounded-xl"
           key={`booking${booking.id}`}
         >
-          {booking.status === BookingStatus.Booked && (
-            <p className="mb-2 text-xl font-semibold text-center">
-              Текущая бронь
-            </p>
-          )}
-          <div className="flex space-x-1 ">
+          {[
+            { status: BookingStatus.Booked, text: "Текущая бронь" },
+            { status: BookingStatus.RentStart, text: "Текущая аренда" },
+            {
+              status: BookingStatus.BookingTimeOver,
+              text: "Истекшая бронь",
+            },
+            {
+              status: BookingStatus.RentOver,
+              text: "Завершенная аренда",
+            },
+            { status: BookingStatus.UnBooked, text: "Отмененная бронь" },
+          ].map(({ status, text }) => {
+            return (
+              booking.status === status && (
+                <p key={status} className="mb-2 text-xl font-semibold">
+                  {text}
+                </p>
+              )
+            );
+          })}
+
+          <div className="flex space-x-3 md:space-x-5">
             <img
               className="object-cover w-1/3 h-auto rounded-xl"
               src={booking.car!.images![0]}
               alt=""
             />
-            <div>
-              <p className="font-semibold">{`${booking.car?.brand} ${booking.car?.model}`}</p>
+            <div className=" md:space-y-1">
+              <p className="text-base font-semibold">{`${booking.car?.brand} ${booking.car?.model}`}</p>
               <Separator />
-              <p className="font-semibold">{`Парк: ${booking.car?.division?.park?.park_name}`}</p>
+              <p className="text-base font-semibold">{`Парк: ${booking.car?.division?.park?.park_name}`}</p>
               <Separator />
-              <p className="font-semibold">{`Адрес: ${booking.car?.division?.address}`}</p>
+              <p className="text-base font-semibold">{`Адрес: ${booking.car?.division?.address}`}</p>
               <Separator />
-              <p className="font-semibold">{`Тел.: ${booking.car?.division?.park?.phone}`}</p>
+              <p className="text-base font-semibold">{`Тел.: ${booking.car?.division?.phone}`}</p>
+              <div className="hidden space-y-1 md:block">
+                <Separator />
+                <div className="flex items-center">
+                  <p className="text-base font-semibold">
+                    Дата начала бронирования:{" "}
+                    {format(booking.start_date!, "dd.MM.yyyy HH:mm")}
+                  </p>
+                </div>
+                {![BookingStatus.RentOver, BookingStatus.RentStart].includes(
+                  booking.status!
+                ) && (
+                  <>
+                    <Separator />
+                    <div className="flex items-center">
+                      <p className="text-base font-semibold">
+                        Дата окончания бронирования:{" "}
+                        {format(booking.end_date!, "dd.MM.yyyy HH:mm")}
+                      </p>
+                    </div>
+                  </>
+                )}
+                {booking.status === BookingStatus.RentOver && (
+                  <>
+                    <Separator />
+                    <div className="flex items-center">
+                      <p className="text-base font-semibold">
+                        Дата окончания аренды:{" "}
+                        {format(booking.end_date!, "dd.MM.yyyy HH:mm")}
+                      </p>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           </div>
-          {booking.status === BookingStatus.Booked && (
+
+          {[BookingStatus.RentStart, BookingStatus.Booked].includes(
+            booking!.status!
+          ) && (
             <>
               <div className="flex flex-wrap items-center justify-start gap-1 my-3 ">
                 <Badge variant="card" className="px-0 py-0 bg-grey ">
@@ -85,25 +138,25 @@ export const BookingDrawer = () => {
                   </span>
                 </Badge>
                 <Badge variant="card">
-                  Комиссия {booking.car?.division?.park?.commission}
+                  Комиссия {booking.car!.division!.park!.commission}
                 </Badge>
                 <Badge variant="card">
-                  {getFuelTypeDisplayName(booking.car?.fuel_type)}
+                  {getFuelTypeDisplayName(booking.car!.fuel_type)}
                 </Badge>
                 <Badge variant="card">
-                  {getTransmissionDisplayName(booking.car?.transmission_type)}
+                  {getTransmissionDisplayName(booking.car!.transmission_type)}
                 </Badge>
 
-                {!!booking.car?.division?.park?.self_employed && (
+                {booking.car!.division!.park!.self_employed && (
                   <Badge variant="card">Для самозанятых</Badge>
                 )}
-                {!!booking.rent_term?.is_buyout_possible && (
+                {!!booking.rent_term!.is_buyout_possible && (
                   <Badge variant="card">Выкуп автомобиля</Badge>
                 )}
               </div>
               <div className="flex flex-wrap gap-1 pb-2 mb-1">
-                {booking.rent_term?.schemas
-                  ?.slice(0, 3)
+                {booking
+                  .rent_term!.schemas!.slice(0, 3)
                   .map((currentSchema, i) => (
                     <Badge
                       key={`${currentSchema.working_days}/${currentSchema.non_working_days}${i}`}
@@ -119,25 +172,64 @@ export const BookingDrawer = () => {
                 Минимум дней аренды: {booking.rent_term?.minimum_period_days}
               </p>
               <div className="min-h-28">
-                {booking.car?.division?.park?.working_hours?.map((x) => (
-                  <div className="flex items-center" key={x.day}>
-                    <div className="text-sm capitalize w-28">{x.day}</div>{" "}
-                    {x.start?.hours}:{x.start?.minutes} - {x.end?.hours}:
-                    {x.end?.minutes}
-                  </div>
-                ))}
+                {Object.keys(DayOfWeek).map((x) => {
+                  const { working_hours } = booking.car!.division!;
+                  const currentDay = working_hours!.find(
+                    ({ day }) => day === x
+                  )!;
+                  return (
+                    <div className="flex items-center" key={x}>
+                      <div className="text-sm capitalize w-28">
+                        {getDayOfWeekDisplayName(x as any)}
+                      </div>
+                      {currentDay && (
+                        <>
+                          {formatWorkingTime(
+                            currentDay.start!.hours!,
+                            currentDay.start!.minutes!
+                          )}{" "}
+                          -{" "}
+                          {formatWorkingTime(
+                            currentDay.end!.hours!,
+                            currentDay.end!.minutes!
+                          )}
+                        </>
+                      )}
+                      {!currentDay && <>Выходной</>}
+                    </div>
+                  );
+                })}
               </div>
             </>
           )}
-          <Separator />
-          <div className="flex items-center">
-            <p className="w-1/2 font-semibold">Дата начала бронирования:</p>
-            {format(booking.start_date!, "dd.MM.yyyy HH:mm")}
-          </div>
-          <Separator />
-          <div className="flex items-center">
-            <p className="w-1/2 font-semibold">Дата окончания бронирования:</p>
-            {format(booking.end_date!, "dd.MM.yyyy HH:mm")}
+          <Separator className="md:hidden" />
+          <div className="md:hidden">
+            <div className="flex items-center">
+              <p className="w-1/2 font-semibold">Дата начала бронирования:</p>
+              {format(booking.start_date!, "dd.MM.yyyy HH:mm")}
+            </div>
+            {![BookingStatus.RentOver, BookingStatus.RentStart].includes(
+              booking.status!
+            ) && (
+              <>
+                <Separator />
+                <div className="flex items-center">
+                  <p className="w-1/2 font-semibold">
+                    Дата окончания бронирования:
+                  </p>
+                  {format(booking.end_date!, "dd.MM.yyyy HH:mm")}
+                </div>
+              </>
+            )}
+            {booking.status === BookingStatus.RentOver && (
+              <>
+                <Separator />
+                <div className="flex items-center">
+                  <p className="w-1/2 font-semibold">Дата окончания аренды:</p>
+                  {format(booking.end_date!, "dd.MM.yyyy HH:mm")}
+                </div>
+              </>
+            )}
           </div>
         </div>
       ))}

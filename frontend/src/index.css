@@ -26,6 +26,17 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'Gilroyx';
+  src: local('Gilroy'),
+  url('assets/fonts/Gilroy-Black.ttf') format('ttf'),
+  url('assets/fonts/Gilroy-Black.woff') format('woff'),
+  url('assets/fonts/Gilroy-Black.woff2') format('woff2'),
+  url('assets/fonts/Gilroy-Black.eot') format('embedded-opentype');
+  font-weight: 900;
+  font-style: normal;
+}
+
 @layer base {
   h1 {
     @apply mb-1 mb-4 text-xl font-bold text-black;
@@ -46,6 +57,9 @@
   a {
     @apply text-sm font-medium;
   }
+}
+.font-black {
+    font-family: 'Gilroyx', sans-serif;
 }
 
 :root {

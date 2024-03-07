@@ -132,7 +132,7 @@
                 "tags": [
                     "API"
                 ],
-                "summary": "Добавить несколько автомобилей, все добавленные автомобили будут доступны к бронированию сразу после привязки к ним Условий бронирования (метод: /cars/rent-term)",
+                "summary": "Добавить несколько автомобилей, все добавленные автомобили будут доступны к бронированию сразу после привязки к ним Условий бронирования (метод: /cars/rent-term). Выполнение метода возможно только после выполнения методов: обновление информации о парке, создание подразделения, создание тарифа. Статус допуска в бронированию по умолчанию будет 'допущено'",
                 "description": "Добавить несколько автомобилей",
                 "operationId": "pushCars",
                 "requestBody": {
@@ -430,6 +430,26 @@
                                     "phone": {
                                         "description": "Телефон водителя",
                                         "type": "string"
+                                    },
+                                    "schema": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "daily_amount": {
+                                                    "description": "Суточная стоимость",
+                                                    "type": "integer"
+                                                },
+                                                "non_working_days": {
+                                                    "description": "Количество нерабочих дней",
+                                                    "type": "integer"
+                                                },
+                                                "working_days": {
+                                                    "description": "Количество рабочих дней",
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
                                     }
                                 },
                                 "type": "object"
@@ -900,10 +920,6 @@
                                         "description": "Комиссия",
                                         "type": "number"
                                     },
-                                    "self_employed": {
-                                        "description": "Работает ли парк с самозанятыми, true - если работает",
-                                        "type": "boolean"
-                                    },
                                     "park_name": {
                                         "description": "Название парка",
                                         "type": "string"
@@ -911,50 +927,6 @@
                                     "about": {
                                         "description": "Описание парка",
                                         "type": "string"
-                                    },
-                                    "phone": {
-                                        "description": "Телефон парка",
-                                        "type": "string"
-                                    },
-                                    "working_hours": {
-                                        "description": "Расписание работы парка",
-                                        "type": "array",
-                                        "items": {
-                                            "properties": {
-                                                "day": {
-                                                    "$ref": "#/components/schemas/DayList"
-                                                },
-                                                "start": {
-                                                    "description": "Время начала работы",
-                                                    "properties": {
-                                                        "hours": {
-                                                            "description": "Часы (0-23)",
-                                                            "type": "integer"
-                                                        },
-                                                        "minutes": {
-                                                            "description": "Минуты (0-59)",
-                                                            "type": "integer"
-                                                        }
-                                                    },
-                                                    "type": "object"
-                                                },
-                                                "end": {
-                                                    "description": "Время окончания работы",
-                                                    "properties": {
-                                                        "hours": {
-                                                            "description": "Часы (0-23)",
-                                                            "type": "integer"
-                                                        },
-                                                        "minutes": {
-                                                            "description": "Минуты (0-59)",
-                                                            "type": "integer"
-                                                        }
-                                                    },
-                                                    "type": "object"
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
                                     }
                                 },
                                 "type": "object"
@@ -1014,9 +986,6 @@
                                                 "commission": [
                                                     "Поле commission должно быть числом."
                                                 ],
-                                                "self_employed": [
-                                                    "Поле self_employed должно быть булевым значением."
-                                                ],
                                                 "park_name": [
                                                     "Поле park_name должно быть строкой."
                                                 ],
@@ -1074,6 +1043,54 @@
                                     "name": {
                                         "description": "Название подразделения",
                                         "type": "string"
+                                    },
+                                    "phone": {
+                                        "description": "Телефон парка",
+                                        "type": "string"
+                                    },
+                                    "timezone_difference": {
+                                        "description": "Часовой пояс, разница во времени с +0",
+                                        "type": "integer"
+                                    },
+                                    "working_hours": {
+                                        "description": "Расписание работы парка",
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "day": {
+                                                    "$ref": "#/components/schemas/DayOfWeek"
+                                                },
+                                                "start": {
+                                                    "description": "Время начала работы",
+                                                    "properties": {
+                                                        "hours": {
+                                                            "description": "Часы (0-23)",
+                                                            "type": "integer"
+                                                        },
+                                                        "minutes": {
+                                                            "description": "Минуты (0-59)",
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "end": {
+                                                    "description": "Время окончания работы",
+                                                    "properties": {
+                                                        "hours": {
+                                                            "description": "Часы (0-23)",
+                                                            "type": "integer"
+                                                        },
+                                                        "minutes": {
+                                                            "description": "Минуты (0-59)",
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
                                     }
                                 },
                                 "type": "object"
@@ -1195,6 +1212,54 @@
                                     "name": {
                                         "description": "Название подразделения",
                                         "type": "string"
+                                    },
+                                    "phone": {
+                                        "description": "Телефон парка",
+                                        "type": "string"
+                                    },
+                                    "timezone_difference": {
+                                        "description": "Часовой пояс, разница во времени с +0",
+                                        "type": "integer"
+                                    },
+                                    "working_hours": {
+                                        "description": "Расписание работы парка",
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "day": {
+                                                    "$ref": "#/components/schemas/DayOfWeek"
+                                                },
+                                                "start": {
+                                                    "description": "Время начала работы",
+                                                    "properties": {
+                                                        "hours": {
+                                                            "description": "Часы (0-23)",
+                                                            "type": "integer"
+                                                        },
+                                                        "minutes": {
+                                                            "description": "Минуты (0-59)",
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "end": {
+                                                    "description": "Время окончания работы",
+                                                    "properties": {
+                                                        "hours": {
+                                                            "description": "Часы (0-23)",
+                                                            "type": "integer"
+                                                        },
+                                                        "minutes": {
+                                                            "description": "Минуты (0-59)",
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
                                     }
                                 },
                                 "type": "object"
@@ -1285,8 +1350,8 @@
                 "tags": [
                     "API"
                 ],
-                "summary": "Обновление тарифа авто с критериями блокерами",
-                "description": "Обновление тарифа авто с критериями блокерами\n\nЭтот метод позволяет обновлять тарифы авто с критериями блокерами для парков.",
+                "summary": "Обновление требований к кандидатам",
+                "description": "Обновление требований к кандидатам\n\nЭтот метод позволяет обновлять тарифы авто с критериями блокерами для парков.",
                 "operationId": "upfateTariff",
                 "requestBody": {
                     "required": true,
@@ -1420,8 +1485,8 @@
                 "tags": [
                     "API"
                 ],
-                "summary": "Создание тарифа авто с критериями блокерами",
-                "description": "Создание тарифа авто с критериями блокерами\n\nЭтот метод позволяет создавать новые тарифы авто с критериями блокерами для парков. В одном городе для парка может быть толкьо один тариф заданного класса.",
+                "summary": "Требования к кандидатам",
+                "description": "Требования к кандидатам\n\nЭтот метод позволяет создавать новые тарифы авто с критериями блокерами для парков. В одном городе для парка может быть толкьо один тариф заданного класса.",
                 "operationId": "createTariff",
                 "requestBody": {
                     "required": true,
@@ -1729,19 +1794,56 @@
                                                                             "coords": {
                                                                                 "type": "string"
                                                                             },
+                                                                            "phone": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "working_hours": {
+                                                                                "description": "Расписание работы парка",
+                                                                                "type": "array",
+                                                                                "items": {
+                                                                                    "properties": {
+                                                                                        "day": {
+                                                                                            "$ref": "#/components/schemas/DayOfWeek"
+                                                                                        },
+                                                                                        "start": {
+                                                                                            "description": "Время начала работы",
+                                                                                            "properties": {
+                                                                                                "hours": {
+                                                                                                    "description": "Часы (0-23)",
+                                                                                                    "type": "integer"
+                                                                                                },
+                                                                                                "minutes": {
+                                                                                                    "description": "Минуты (0-59)",
+                                                                                                    "type": "integer"
+                                                                                                }
+                                                                                            },
+                                                                                            "type": "object"
+                                                                                        },
+                                                                                        "end": {
+                                                                                            "description": "Время окончания работы",
+                                                                                            "properties": {
+                                                                                                "hours": {
+                                                                                                    "description": "Часы (0-23)",
+                                                                                                    "type": "integer"
+                                                                                                },
+                                                                                                "minutes": {
+                                                                                                    "description": "Минуты (0-59)",
+                                                                                                    "type": "integer"
+                                                                                                }
+                                                                                            },
+                                                                                            "type": "object"
+                                                                                        }
+                                                                                    },
+                                                                                    "type": "object"
+                                                                                }
+                                                                            },
                                                                             "park": {
                                                                                 "description": "Информация о парке",
                                                                                 "properties": {
-                                                                                    "phone": {
-                                                                                        "type": "string"
-                                                                                    },
                                                                                     "url": {
                                                                                         "type": "string"
                                                                                     },
                                                                                     "commission": {
-                                                                                        "type": "integer"
-                                                                                    },
-                                                                                    "self_employed": {
                                                                                         "type": "integer"
                                                                                     },
                                                                                     "park_name": {
@@ -1749,46 +1851,6 @@
                                                                                     },
                                                                                     "about": {
                                                                                         "type": "string"
-                                                                                    },
-                                                                                    "working_hours": {
-                                                                                        "description": "Расписание работы парка",
-                                                                                        "type": "array",
-                                                                                        "items": {
-                                                                                            "properties": {
-                                                                                                "day": {
-                                                                                                    "$ref": "#/components/schemas/DayList"
-                                                                                                },
-                                                                                                "start": {
-                                                                                                    "description": "Время начала работы",
-                                                                                                    "properties": {
-                                                                                                        "hours": {
-                                                                                                            "description": "Часы (0-23)",
-                                                                                                            "type": "integer"
-                                                                                                        },
-                                                                                                        "minutes": {
-                                                                                                            "description": "Минуты (0-59)",
-                                                                                                            "type": "integer"
-                                                                                                        }
-                                                                                                    },
-                                                                                                    "type": "object"
-                                                                                                },
-                                                                                                "end": {
-                                                                                                    "description": "Время окончания работы",
-                                                                                                    "properties": {
-                                                                                                        "hours": {
-                                                                                                            "description": "Часы (0-23)",
-                                                                                                            "type": "integer"
-                                                                                                        },
-                                                                                                        "minutes": {
-                                                                                                            "description": "Минуты (0-59)",
-                                                                                                            "type": "integer"
-                                                                                                        }
-                                                                                                    },
-                                                                                                    "type": "object"
-                                                                                                }
-                                                                                            },
-                                                                                            "type": "object"
-                                                                                        }
                                                                                     }
                                                                                 },
                                                                                 "type": "object"
@@ -2105,6 +2167,10 @@
                                         "description": "сортировка, asc или desc",
                                         "type": "string"
                                     },
+                                    "car_vin": {
+                                        "description": "VIN авто",
+                                        "type": "string"
+                                    },
                                     "Schemas": {
                                         "description": "Данные о сроке аренды",
                                         "properties": {
@@ -2118,10 +2184,6 @@
                                             }
                                         },
                                         "type": "object"
-                                    },
-                                    "self_employed": {
-                                        "description": "Работа с самозанятыми",
-                                        "type": "boolean"
                                     },
                                     "is_buyout_possible": {
                                         "description": "Возможность выкупа",
@@ -2192,6 +2254,24 @@
                                                         "description": "Название парка",
                                                         "type": "string"
                                                     },
+                                                    "variants": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "images": {
+                                                                    "description": "Ссылки на изображения",
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "string"
+                                                                    }
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    },
                                                     "working_hours": {
                                                         "description": "Расписание работы парка",
                                                         "type": "array",
@@ -2237,17 +2317,9 @@
                                                         "description": "Описание парка",
                                                         "type": "string"
                                                     },
-                                                    "phone": {
-                                                        "description": "Телефон парка",
-                                                        "type": "string"
-                                                    },
                                                     "commission": {
                                                         "description": "Комиссия",
                                                         "type": "number"
-                                                    },
-                                                    "self_employed": {
-                                                        "description": "Работа с самозанятыми",
-                                                        "type": "boolean"
                                                     },
                                                     "city": {
                                                         "type": "string"
@@ -2261,6 +2333,9 @@
                                                             },
                                                             "coords": {
                                                                 "description": "Координаты подразделения",
+                                                                "type": "string"
+                                                            },
+                                                            "phone": {
                                                                 "type": "string"
                                                             }
                                                         },
@@ -2291,6 +2366,9 @@
                                                                     "properties": {
                                                                         "daily_amount": {
                                                                             "description": "Суточная стоимость",
+                                                                            "type": "integer"
+                                                                        },
+                                                                        "id": {
                                                                             "type": "integer"
                                                                         },
                                                                         "non_working_days": {
@@ -2351,6 +2429,10 @@
                                 "properties": {
                                     "id": {
                                         "description": "Идентификатор машины",
+                                        "type": "integer"
+                                    },
+                                    "schema_id": {
+                                        "description": "Идентификатор схемы аренды",
                                         "type": "integer"
                                     }
                                 },
@@ -2418,18 +2500,55 @@
                                                                 "address": {
                                                                     "type": "string"
                                                                 },
+                                                                "phone": {
+                                                                    "type": "string"
+                                                                },
+                                                                "working_hours": {
+                                                                    "description": "Расписание работы парка",
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "properties": {
+                                                                            "day": {
+                                                                                "$ref": "#/components/schemas/DayOfWeek"
+                                                                            },
+                                                                            "start": {
+                                                                                "description": "Время начала работы",
+                                                                                "properties": {
+                                                                                    "hours": {
+                                                                                        "description": "Часы (0-23)",
+                                                                                        "type": "integer"
+                                                                                    },
+                                                                                    "minutes": {
+                                                                                        "description": "Минуты (0-59)",
+                                                                                        "type": "integer"
+                                                                                    }
+                                                                                },
+                                                                                "type": "object"
+                                                                            },
+                                                                            "end": {
+                                                                                "description": "Время окончания работы",
+                                                                                "properties": {
+                                                                                    "hours": {
+                                                                                        "description": "Часы (0-23)",
+                                                                                        "type": "integer"
+                                                                                    },
+                                                                                    "minutes": {
+                                                                                        "description": "Минуты (0-59)",
+                                                                                        "type": "integer"
+                                                                                    }
+                                                                                },
+                                                                                "type": "object"
+                                                                            }
+                                                                        },
+                                                                        "type": "object"
+                                                                    }
+                                                                },
                                                                 "park": {
                                                                     "properties": {
-                                                                        "phone": {
-                                                                            "type": "string"
-                                                                        },
                                                                         "url": {
                                                                             "type": "string"
                                                                         },
                                                                         "commission": {
-                                                                            "type": "integer"
-                                                                        },
-                                                                        "self_employed": {
                                                                             "type": "integer"
                                                                         },
                                                                         "park_name": {
@@ -2437,46 +2556,6 @@
                                                                         },
                                                                         "about": {
                                                                             "type": "string"
-                                                                        },
-                                                                        "working_hours": {
-                                                                            "description": "Расписание работы парка",
-                                                                            "type": "array",
-                                                                            "items": {
-                                                                                "properties": {
-                                                                                    "day": {
-                                                                                        "$ref": "#/components/schemas/DayList"
-                                                                                    },
-                                                                                    "start": {
-                                                                                        "description": "Время начала работы",
-                                                                                        "properties": {
-                                                                                            "hours": {
-                                                                                                "description": "Часы (0-23)",
-                                                                                                "type": "integer"
-                                                                                            },
-                                                                                            "minutes": {
-                                                                                                "description": "Минуты (0-59)",
-                                                                                                "type": "integer"
-                                                                                            }
-                                                                                        },
-                                                                                        "type": "object"
-                                                                                    },
-                                                                                    "end": {
-                                                                                        "description": "Время окончания работы",
-                                                                                        "properties": {
-                                                                                            "hours": {
-                                                                                                "description": "Часы (0-23)",
-                                                                                                "type": "integer"
-                                                                                            },
-                                                                                            "minutes": {
-                                                                                                "description": "Минуты (0-59)",
-                                                                                                "type": "integer"
-                                                                                            }
-                                                                                        },
-                                                                                        "type": "object"
-                                                                                    }
-                                                                                },
-                                                                                "type": "object"
-                                                                            }
                                                                         }
                                                                     },
                                                                     "type": "object"
@@ -2849,7 +2928,7 @@
                     "Rented"
                 ]
             },
-            "DayList": {
+            "DayOfWeek": {
                 "description": "The unique identifier of a product in our catalog",
                 "type": null,
                 "enum": [
